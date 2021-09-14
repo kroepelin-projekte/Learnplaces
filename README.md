@@ -12,6 +12,7 @@ the old learnplaces plugin.
 | v1.X  | 5.2 - 5.3 | 7.0 |
 | v2.X | 5.3 - 5.4 | 7.0 - 7.2 |
 | v3.X | 5.4 - 6 | 7.0 - 7.4 |
+| v4.X | 6 - 7 | 7.0 - 7.4 |
 
 ## Installation
 
@@ -105,10 +106,10 @@ This project is licensed under the GNU GPLv3 License - see the LICENSE.md file f
 
 ## Contact
 
-studer + raimann ag  
-Farbweg 9  
+fluxlabs AG
+Scheunenstrasse 19
 3400 Burgdorf  
 Switzerland
 
-[info@studer-raimann.ch](mailto:info@studer-raimann.ch)  
-<https://www.studer-raimann.ch>
+[connect@fluxlabs.ch](mailto:connect@fluxlabs.ch)  
+<https://fluxlabs.ch>
