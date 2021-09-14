@@ -96,11 +96,8 @@ final class xsrlMapBlockGUI {
 	}
 
 
-	public function executeCommand() {
+	public function executeCommand(): bool {
 
-	    if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
-            $this->template->getStandardTemplate();
-        }
 		$cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
 		$this->tabs->activateTab(self::TAB_ID);
 
@@ -140,7 +137,7 @@ final class xsrlMapBlockGUI {
 		return false;
 	}
 
-	private function index() {
+	private function index(): void {
 
 		try {
 			/**
@@ -161,7 +158,7 @@ final class xsrlMapBlockGUI {
 		}
 	}
 
-	private function add() {
+	private function add(): void {
 		$this->controlFlow->saveParameter($this, PlusView::POSITION_QUERY_PARAM);
 
 		$config = $this->configService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
@@ -173,7 +170,7 @@ final class xsrlMapBlockGUI {
 		$this->template->setContent($form->getHTML());
 	}
 
-	private function create() {
+	private function create(): void {
 		$form = new MapBlockEditFormView(new MapBlockModel());
 		try {
 			$queries = $this->request->getQueryParams();
@@ -205,7 +202,7 @@ final class xsrlMapBlockGUI {
 		}
 	}
 
-	private function edit() {
+	private function edit(): void {
 		$blockId = $this->getBlockId();
 		$block = $this->mapBlockService->find($blockId);
 		$form = new MapBlockEditFormView($block);
@@ -213,7 +210,7 @@ final class xsrlMapBlockGUI {
 		$this->template->setContent($form->getHTML());
 	}
 
-	private function update() {
+	private function update(): void {
 
 		$form = new MapBlockEditFormView(new MapBlockModel());
 		try {
@@ -236,7 +233,7 @@ final class xsrlMapBlockGUI {
 		}
 	}
 
-	private function delete() {
+	private function delete(): void {
 		$blockId = $this->getBlockId();
 		$this->redirectInvalidRequests($blockId);
 		$this->mapBlockService->delete($blockId);
@@ -244,7 +241,7 @@ final class xsrlMapBlockGUI {
 		$this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
 	}
 
-	private function confirm() {
+	private function confirm(): void {
 		$queries = $this->request->getQueryParams();
 		$confirm = new ilConfirmationGUI();
 		$confirm->setHeaderText($this->plugin->txt('confirm_delete_header'));
@@ -260,7 +257,7 @@ final class xsrlMapBlockGUI {
 		$this->template->setContent($confirm->getHTML());
 	}
 
-	private function cancel() {
+	private function cancel(): void {
 		$this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
 	}
 

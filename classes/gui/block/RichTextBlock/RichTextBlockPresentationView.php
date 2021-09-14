@@ -74,7 +74,7 @@ final class RichTextBlockPresentationView implements Renderable {
 	/**
 	 * @inheritDoc
 	 */
-	public function getHtml() {
+	public function getHtml(): string {
 		if(is_null($this->model))
 			throw new LogicException('The rich text block view requires a model to render its content.');
 

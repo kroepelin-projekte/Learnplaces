@@ -110,7 +110,7 @@ final class MapBlockPresentationView {
 	/**
 	 * @inheritDoc
 	 */
-	public function getHtml() {
+	public function getHtml(): string {
 		if(is_null($this->model))
 			throw new LogicException('The picture block view requires a model to render its content.');
 

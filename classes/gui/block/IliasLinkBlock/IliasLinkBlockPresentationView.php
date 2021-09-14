@@ -64,7 +64,7 @@ final class IliasLinkBlockPresentationView implements Renderable {
 		$this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.ilias_link.html', true, true);
 	}
 
-	private function initView() {
+	private function initView(): void {
 
 		$objectId = ilObject::_lookupObjectId($this->model->getRefId());
 
@@ -73,7 +73,7 @@ final class IliasLinkBlockPresentationView implements Renderable {
 		$this->template->setVariable('DESCRIPTION', ilObject::_lookupDescription($objectId));
 	}
 
-	public function setModel(ILIASLinkBlockModel $model) {
+	public function setModel(ILIASLinkBlockModel $model): void {
 		$this->model = $model;
 		$this->initView();
 	}
@@ -82,7 +82,7 @@ final class IliasLinkBlockPresentationView implements Renderable {
 	/**
 	 * @inheritDoc
 	 */
-	public function getHtml() {
+	public function getHtml(): string {
 		if(is_null($this->model))
 			throw new LogicException('The picture block view requires a model to render its content.');
 

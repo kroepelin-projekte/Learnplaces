@@ -29,11 +29,9 @@ trait ReadOnlyViewAware {
 	/**
 	 * @param bool $readonly
 	 *
-	 * @return ReadOnlyViewAware
+	 * @return void
 	 */
-	public function setReadonly(bool $readonly): self {
+	public function setReadonly(bool $readonly): void {
 		$this->readonly = $readonly;
-
-		return $this;
 	}
 }

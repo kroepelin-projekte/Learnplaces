@@ -63,11 +63,11 @@ final class PictureUploadBlockPresentationView implements Renderable {
 	}
 
 
-	private function initView() {
+	private function initView(): void {
 		$this->template->setVariable('CONTENT', $this->plugin->txt('picture_upload_block_content'));
 	}
 
-	public function setModel(PictureUploadBlockModel $model) {
+	public function setModel(PictureUploadBlockModel $model): void {
 		$this->model = $model;
 	}
 
@@ -75,7 +75,7 @@ final class PictureUploadBlockPresentationView implements Renderable {
 	/**
 	 * @inheritDoc
 	 */
-	public function getHtml() {
+	public function getHtml(): string {
 		if(is_null($this->model))
 			throw new LogicException('The picture upload block view requires a model to render its content.');
 

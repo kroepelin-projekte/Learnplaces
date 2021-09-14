@@ -143,7 +143,7 @@ final class xsrlContentGUI {
 	}
 
 
-	public function executeCommand() {
+	public function executeCommand(): bool {
 
 	    if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
             $this->template->getStandardTemplate();
@@ -192,7 +192,7 @@ final class xsrlContentGUI {
 	}
 
 	//actions
-	private function index() {
+	private function index(): void {
 
 		$toolbar = new ilToolbarGUI();
 		$saveSequenceButton = ilSubmitButton::getInstance();
@@ -224,7 +224,7 @@ final class xsrlContentGUI {
 		$this->template->setContent($template->get());
 	}
 
-	private function add() {
+	private function add(): void {
 		$learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
 		foreach ($learnplace->getBlocks() as $block) {
 			if($block instanceof MapBlockModel) {
@@ -238,7 +238,7 @@ final class xsrlContentGUI {
 		$this->template->setContent($this->blockAddGUI->getHTML());
 	}
 
-	private function create() {
+	private function create(): void {
 		$blockAdd = $this->blockAddGUI;
 		if($blockAdd->checkInput()) {
 			$input = intval($blockAdd->getInput(BlockAddFormGUI::POST_BLOCK_TYPES, true));
@@ -255,11 +255,11 @@ final class xsrlContentGUI {
 		$this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
 	}
 
-	private function cancel() {
+	private function cancel(): void {
 		$this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
 	}
 
-	private function sequence() {
+	private function sequence(): void {
 		$learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
 		$blockIterator = new AppendIterator();
 

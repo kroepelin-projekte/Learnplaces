@@ -16,7 +16,7 @@ interface Renderable {
 	 *
 	 * @return string
 	 */
-	public function getHtml();
+	public function getHtml(): string;
 
 
 	/**
@@ -26,5 +26,5 @@ interface Renderable {
 	 *
 	 * @return void
 	 */
-	public function setReadonly(bool $readonly);
+	public function setReadonly(bool $readonly): void;
 }
