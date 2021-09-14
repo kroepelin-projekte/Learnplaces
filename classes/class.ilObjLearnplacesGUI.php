@@ -195,7 +195,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
      *
      */
     protected function setSubtabs() {
-        if (ilObjUdfEditorAccess::hasWriteAccess()) {
+        if ($this->accessGuard->hasWritePermission()) {
             $this->learnplaceTabs->addSubTab(self::SUBTAB_CONTENT, $this->lng->txt(self::SUBTAB_CONTENT), $this->ctrl->getLinkTarget($this));
 
             if($this->accessGuard->hasWritePermission() && !$this->hasMap())
