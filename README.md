@@ -3,8 +3,8 @@ Learnplaces 2 is a ground up rewritten drop in replacement of
 the old learnplaces plugin.
 
 ## Requirements
-* Version: ILIAS 5.4 or 6
-* PHP 7.0 - 7.4
+* Version: ILIAS 6 or 7
+* PHP 7.2 - 7.4
 
 ### Compatibility Table
 |Plugin Version   | ILIAS Versions | PHP Versions  |
@@ -12,7 +12,7 @@ the old learnplaces plugin.
 | v1.X  | 5.2 - 5.3 | 7.0 |
 | v2.X | 5.3 - 5.4 | 7.0 - 7.2 |
 | v3.X | 5.4 - 6 | 7.0 - 7.4 |
-| v4.X | 6 - 7 | 7.0 - 7.4 |
+| v4.X | 6 - 7 | 7.2 - 7.4 |
 
 ## Installation
 
