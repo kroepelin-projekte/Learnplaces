@@ -31,11 +31,10 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView {
 		return true;
 	}
 
-
 	/**
 	 * @inheritDoc
 	 */
-	protected function initBlockSpecificForm() {
+	protected function initBlockSpecificForm(): void {
 		$textArea = new ilTextareaInputGUI($this->plugin->txt('rich_text_block_content'), self::POST_CONTENT);
 		$textArea->setRequired(true);
 		$textArea->setUseRte(true);
@@ -106,7 +105,7 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView {
 	/**
 	 * @inheritDoc
 	 */
-	protected function getObject() {
+	protected function getObject(): void {
 		$this->block->setContent($this->getInput(self::POST_CONTENT));
 	}
 }

@@ -62,7 +62,7 @@ final class PictureBlockPresentationView implements Renderable {
 		$this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.picture.html', true, true);
 	}
 
-	private function initView() {
+	private function initView(): void {
 		$this->template->setVariable('TITLE', $this->model->getTitle());
 		if(!is_null($this->model->getPicture()))
 			$this->template->setVariable('PICTURE_PATH', $this->model->getPicture()->getOriginalPath());
@@ -70,7 +70,7 @@ final class PictureBlockPresentationView implements Renderable {
 		$this->template->setVariable('DESCRIPTION', $this->model->getDescription());
 	}
 
-	public function setModel(PictureBlockModel $model) {
+	public function setModel(PictureBlockModel $model): void {
 		$this->model = $model;
 		$this->initView();
 	}
@@ -79,7 +79,7 @@ final class PictureBlockPresentationView implements Renderable {
 	/**
 	 * @inheritDoc
 	 */
-	public function getHtml() {
+	public function getHtml(): string {
 		if(is_null($this->model))
 			throw new LogicException('The picture block view requires a model to render its content.');
 

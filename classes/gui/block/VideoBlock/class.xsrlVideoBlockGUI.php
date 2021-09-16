@@ -117,10 +117,6 @@ final class xsrlVideoBlockGUI
 
     public function executeCommand()
     {
-
-        if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
-            $this->template->getStandardTemplate();
-        }
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
         $this->tabs->activateTab(self::TAB_ID);
 
@@ -149,7 +145,7 @@ final class xsrlVideoBlockGUI
         return false;
     }
 
-    private function add()
+    private function add(): void
     {
         $this->controlFlow->saveParameter($this, PlusView::POSITION_QUERY_PARAM);
         $this->controlFlow->saveParameter($this, PlusView::ACCORDION_QUERY_PARAM);
@@ -163,7 +159,7 @@ final class xsrlVideoBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
-    private function create()
+    private function create(): void
     {
         $form = new VideoBlockEditFormView(new VideoBlockModel());
         try {
@@ -221,7 +217,7 @@ final class xsrlVideoBlockGUI
         }
     }
 
-    private function edit()
+    private function edit(): void
     {
         $blockId = $this->getBlockId();
         $block = $this->videoBlockService->find($blockId);
@@ -230,7 +226,7 @@ final class xsrlVideoBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
-    private function update()
+    private function update(): void
     {
         $tempBlock = new VideoBlockModel();
         $tempBlock->setId(PHP_INT_MAX);
@@ -282,7 +278,7 @@ final class xsrlVideoBlockGUI
         }
     }
 
-    private function delete()
+    private function delete(): void
     {
         $queries = $this->request->getQueryParams();
         $blockId = intval($queries[self::BLOCK_ID_QUERY_KEY]);
@@ -293,7 +289,7 @@ final class xsrlVideoBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
-    private function confirm()
+    private function confirm(): void
     {
         $queries = $this->request->getQueryParams();
 
@@ -311,7 +307,7 @@ final class xsrlVideoBlockGUI
         $this->template->setContent($confirm->getHTML());
     }
 
-    private function cancel()
+    private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
@@ -322,7 +318,7 @@ final class xsrlVideoBlockGUI
         return intval($queries[self::BLOCK_ID_QUERY_KEY]);
     }
 
-    private function regenerateSequence()
+    private function regenerateSequence(): void
     {
         $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
         $this->learnplaceService->store($learnplace);

@@ -69,7 +69,7 @@ final class AccordionBlockPresentationView implements Renderable {
 		$this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.accordion.html', true, true);
 	}
 
-	private function initView() {
+	private function initView(): void {
 		$this->contentView->setBlocks($this->model->getBlocks());
 		$this->contentView->setAccordionId($this->model->getId());
 		$this->contentView->setReadonly($this->isReadonly());
@@ -80,14 +80,14 @@ final class AccordionBlockPresentationView implements Renderable {
 		$this->template->setVariable('EXPANDED', $this->model->isExpand() ? 'in' : '');
 	}
 
-	public function setModel(AccordionBlockModel $model) {
+	public function setModel(AccordionBlockModel $model): void {
 		$this->model = $model;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function getHtml() {
+	public function getHtml(): string {
 		if(is_null($this->model))
 			throw new LogicException('The accordion block view requires a model to render its content.');
 

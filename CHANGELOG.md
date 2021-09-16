@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 16.09.2021
+### Added
+- ILIAS 7 Support
+### Removed
+- ILIAS 5.4 is no longer supported
+
+### BREAKING CHANGES
+- ILIAS 5.4 is no longer supported
+
 ## [3.0.0] - 04.02.2021
 ### Added
 - Link action for ILIAS object

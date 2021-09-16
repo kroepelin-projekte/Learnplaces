@@ -74,7 +74,7 @@ final class VideoBlockPresentationView implements Renderable {
 	/**
 	 * @inheritDoc
 	 */
-	public function getHtml() {
+	public function getHtml(): string {
 		if(is_null($this->model))
 			throw new LogicException('The video block view requires a model to render its content.');
 

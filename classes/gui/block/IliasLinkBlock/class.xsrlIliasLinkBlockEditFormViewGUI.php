@@ -31,7 +31,7 @@ final class xsrlIliasLinkBlockEditFormViewGUI extends AbstractBlockEditFormView 
 	/**
 	 * @inheritDoc
 	 */
-	protected function initBlockSpecificForm() {
+	protected function initBlockSpecificForm(): void {
 		$link = new ilLinkInputGUI($this->plugin->txt('ilias_link_block_select_target'), self::POST_REFID);
 		$link->setInternalLinkFilterTypes(['RepositoryItem']);
 		$link->setRequired(true);
@@ -64,11 +64,12 @@ final class xsrlIliasLinkBlockEditFormViewGUI extends AbstractBlockEditFormView 
 	/**
 	 * @inheritDoc
 	 */
-	protected function getObject() {
+	protected function getObject(): void {
 		//raw value looks like "xsrl|74"
 		$rawValue = $this->getInput(self::POST_REFID);
 		$delimiter = '|';
-		$lastElement = end(explode($delimiter, $rawValue));
+        $values = explode($delimiter, $rawValue);
+		$lastElement = end($values);
 		$this->block->setRefId(intval($lastElement));
 	}
 
