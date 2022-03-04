@@ -34,7 +34,7 @@ final class xsrlIliasLinkBlockGUI
     use BlockIdReferenceValidationAware;
     use ReferenceIdAware;
 
-    const TAB_ID = 'Content';
+    const TAB_ID = 'content';
     const BLOCK_ID_QUERY_KEY = 'block';
     const ANCHOR_TEMPLATE = 'sequence-';
 

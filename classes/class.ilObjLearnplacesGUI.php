@@ -89,7 +89,6 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 	 * Main Triage to following GUI-Classes
 	 */
 	public function executeCommand() {
-		$this->setSubtabs();
 		$nextClass = $this->ctrl->getNextClass();
 
 		/**
@@ -114,28 +113,37 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 
 		switch ($nextClass) {
 			case "":
-			case strtolower(static::class):
+			case strtolower(ilObjLearnplacesGUI::class):
 				parent::executeCommand();
 				break;
 			case strtolower(xsrlContentGUI::class):
                 $this->renderTabs();
+                $this->setSubtabs();
                 $this->learnplaceTabs->activateSubTab(xsrlContentGUI::TAB_ID);
                 $this->ctrl->forwardCommand(PluginContainer::resolve(xsrlContentGUI::class));
                 break;
 			case strtolower(xsrlPictureUploadBlockGUI::class):
 				$this->renderTabs();
+                $this->setSubtabs();
+                $this->learnplaceTabs->activateSubTab(xsrlContentGUI::TAB_ID);
 				$this->ctrl->forwardCommand(PluginContainer::resolve(xsrlPictureUploadBlockGUI::class));
 				break;
 			case strtolower(xsrlPictureBlockGUI::class):
 				$this->renderTabs();
+                $this->setSubtabs();
+                $this->learnplaceTabs->activateSubTab(xsrlContentGUI::TAB_ID);
 				$this->ctrl->forwardCommand(PluginContainer::resolve(xsrlPictureBlockGUI::class));
 				break;
 			case strtolower(xsrlRichTextBlockGUI::class):
 				$this->renderTabs();
+                $this->setSubtabs();
+                $this->learnplaceTabs->activateSubTab(xsrlContentGUI::TAB_ID);
 				$this->ctrl->forwardCommand(PluginContainer::resolve(xsrlRichTextBlockGUI::class));
 				break;
 			case strtolower(xsrlIliasLinkBlockGUI::class):
 				$this->renderTabs();
+                $this->setSubtabs();
+                $this->learnplaceTabs->activateSubTab(xsrlContentGUI::TAB_ID);
 				$this->ctrl->forwardCommand(PluginContainer::resolve(xsrlIliasLinkBlockGUI::class));
 				break;
 			case strtolower(xsrlIliasLinkBlockEditFormViewGUI::class):
@@ -144,16 +152,21 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 				break;
 			case strtolower(xsrlMapBlockGUI::class):
                 $this->renderTabs();
+                $this->setSubtabs();
                 $this->learnplaceTabs->activateTab(xsrlContentGUI::TAB_ID);
                 $this->learnplaceTabs->activateSubTab(xsrlMapBlockGUI::TAB_ID);
                 $this->ctrl->forwardCommand(PluginContainer::resolve(xsrlMapBlockGUI::class));
 				break;
 			case strtolower(xsrlVideoBlockGUI::class):
 				$this->renderTabs();
+                $this->setSubtabs();
+                $this->learnplaceTabs->activateSubTab(xsrlContentGUI::TAB_ID);
 				$this->ctrl->forwardCommand(PluginContainer::resolve(xsrlVideoBlockGUI::class));
 				break;
 			case strtolower(xsrlAccordionBlockGUI::class):
 				$this->renderTabs();
+                $this->setSubtabs();
+                $this->learnplaceTabs->activateSubTab(xsrlContentGUI::TAB_ID);
 				$this->ctrl->forwardCommand(PluginContainer::resolve(xsrlAccordionBlockGUI::class));
 				break;
 			case strtolower(xsrlSettingGUI::class):
