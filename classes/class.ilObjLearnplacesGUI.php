@@ -35,9 +35,6 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 
 	const DEFAULT_CMD = CommonControllerAction::CMD_INDEX;
 
-    const SUBTAB_CONTENT = 'content';
-    const SUBTAB_MAP = 'map';
-
 	const TAB_ID_PERMISSION = 'id_permissions';
 	/**
 	 * @var MapBlockService $mapBlockService
@@ -121,8 +118,8 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 				parent::executeCommand();
 				break;
 			case strtolower(xsrlContentGUI::class):
-                $this->learnplaceTabs->activateSubTab(self::SUBTAB_CONTENT);
                 $this->renderTabs();
+                $this->learnplaceTabs->activateSubTab(xsrlContentGUI::TAB_ID);
                 $this->ctrl->forwardCommand(PluginContainer::resolve(xsrlContentGUI::class));
                 break;
 			case strtolower(xsrlPictureUploadBlockGUI::class):
@@ -146,8 +143,9 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 				$this->ctrl->forwardCommand(new xsrlIliasLinkBlockEditFormViewGUI(new ILIASLinkBlockModel()));
 				break;
 			case strtolower(xsrlMapBlockGUI::class):
-                $this->learnplaceTabs->activateSubTab(self::SUBTAB_MAP);
                 $this->renderTabs();
+                $this->learnplaceTabs->activateTab(xsrlContentGUI::TAB_ID);
+                $this->learnplaceTabs->activateSubTab(xsrlMapBlockGUI::TAB_ID);
                 $this->ctrl->forwardCommand(PluginContainer::resolve(xsrlMapBlockGUI::class));
 				break;
 			case strtolower(xsrlVideoBlockGUI::class):
@@ -196,7 +194,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
      */
     protected function setSubtabs() {
         if ($this->accessGuard->hasWritePermission()) {
-            $this->learnplaceTabs->addSubTab(self::SUBTAB_CONTENT, $this->lng->txt(self::SUBTAB_CONTENT), $this->ctrl->getLinkTarget($this));
+            $this->learnplaceTabs->addSubTab(xsrlContentGUI::TAB_ID, $this->lng->txt(xsrlContentGUI::TAB_ID), $this->ctrl->getLinkTarget($this));
 
             if($this->accessGuard->hasWritePermission() && !$this->hasMap())
                 $this->learnplaceTabs->addSubTab(xsrlMapBlockGUI::TAB_ID, $this->plugin->txt('tabs_map'), $this->ctrl->getLinkTargetByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_ADD));
