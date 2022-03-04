@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [4.0.2] - unreleased
 ### Fixed
 - Map sub tab activation
+- Tab activation for create and edit block forms
+### Removed
+- Content sub tabs in the settings
 
 ## [4.0.1] - 20.10.2021
 ### Fixed
