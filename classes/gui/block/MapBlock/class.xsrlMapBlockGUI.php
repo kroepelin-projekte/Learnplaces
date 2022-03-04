@@ -99,7 +99,6 @@ final class xsrlMapBlockGUI {
 	public function executeCommand(): bool {
 
 		$cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
-		$this->tabs->activateTab(self::TAB_ID);
 
 		switch ($cmd) {
 			case CommonControllerAction::CMD_INDEX:
