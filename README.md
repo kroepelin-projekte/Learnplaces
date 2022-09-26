@@ -104,12 +104,7 @@ This project is licensed under the GNU GPLv3 License - see the LICENSE.md file f
 
 [mockery/mockery](https://github.com/mockery/mockery)
 
-## Contact
+## Maintenance
+fluxlabs ag, support@fluxlabs.ch
 
-fluxlabs AG
-Scheunenstrasse 19
-3400 Burgdorf  
-Switzerland
-
-[connect@fluxlabs.ch](mailto:connect@fluxlabs.ch)  
-<https://fluxlabs.ch>
+This project is maintained by fluxlabs. 
