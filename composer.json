@@ -22,7 +22,8 @@
     },
     "autoload": {
         "psr-4": {
-            "SRAG\\Learnplaces\\": "classes/"
+            "SRAG\\Learnplaces\\": "classes/",
+            "fluxlabs\\learnplaces\\": "src/"
         },
         "classmap": [
             "./classes/persistence/mapping",

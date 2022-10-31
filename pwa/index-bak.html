@@ -1,0 +1,193 @@
+<html>
+<header>
+    <link href="https://unpkg.com/@primer/css@^20.2.4/dist/primer.css" rel="stylesheet" />
+    <script src="./contexts/flux-ui-http-request/FluxUiHttpRequestApi.mjs" type="module"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+</header>
+<body>
+<div id="map" style="width: 600px; height: 400px;"></div>
+<div id="popup" class="ol-popup">
+    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    <div id="popup-content"></div>
+</div>
+<div class="d-flex flex-justify-end position-relative">
+    <details class="details-reset details-overlay" open>
+        <summary class="btn" aria-haspopup="true">
+            <svg aria-hidden="true" role="img" class="octicon octicon-three-bars" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" style="display: inline-block; user-select: none; vertical-align: text-bottom; overflow: visible;"><path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z"></path></svg>
+        </summary>
+        <div class="SelectMenu right-0">
+            <div class="SelectMenu-modal">
+                <div class="SelectMenu-list">
+                    <button class="SelectMenu-item" role="menuitem">Item 1</button>
+                    <button class="SelectMenu-item" role="menuitem">Item 2</button>
+                    <button class="SelectMenu-item" role="menuitem">Item 3</button>
+                </div>
+            </div>
+        </div>
+    </details>
+</div>
+
+<div class="d-sm-none" style="height: 600px"><!-- min height for < sm --></div>
+<div class="d-none d-sm-block" style="height: 180px"><!-- min height for > sm --></div>
+
+<button id="find-me">Show my location</button><br />
+<p id="status"></p>
+<a id="map-link" target="_blank"></a>
+
+<p id="reader"></p>
+
+<div class="Box Box--spacious f1">
+    <div class="Box-header">
+        <h3 class="Box-title f1">
+            Box title
+        </h3>
+    </div>
+    <div class="Box-body">
+        Box body
+    </div>
+    <ul>
+        <li class="Box-row">
+            Box row one
+        </li>
+        <li class="Box-row">
+            Box row two
+        </li>
+    </ul>
+    <div class="Box-footer">
+        Box footer
+    </div>
+</div>
+
+
+<script>
+  function geoFindMe() {
+
+    const status = document.querySelector('#status');
+    const mapLink = document.querySelector('#map-link');
+
+    mapLink.href = '';
+    mapLink.textContent = '';
+
+    function success(position) {
+      const latitude  = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      status.textContent = '';
+      mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+      mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
+    }
+
+    function error() {
+      status.textContent = 'Unable to retrieve your location';
+    }
+
+    if (!navigator.geolocation) {
+      status.textContent = 'Geolocation is not supported by your browser';
+    } else {
+      status.textContent = 'Locating…';
+      navigator.geolocation.getCurrentPosition(success, error);
+    }
+
+  }
+
+  document.querySelector('#find-me').addEventListener('click', geoFindMe);
+</script>
+
+<script>
+  function onScanSuccess(decodedText, decodedResult) {
+    // handle the scanned code as you like, for example:
+    console.log(`Code matched = ${decodedText}`, decodedResult);
+  }
+
+  function onScanFailure(error) {
+    // handle scan failure, usually better to ignore and keep scanning.
+    // for example:
+    console.warn(`Code scan error = ${error}`);
+  }
+
+  let html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader",
+    { fps: 10, qrbox: {width: 250, height: 250} },
+    /* verbose= */ false);
+  html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+</script>
+
+
+
+<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js">
+
+  /**
+   * https://openstreetmap.be/en/projects/howto/openlayers.html
+   */
+</script>
+
+<script>
+  var attribution = new ol.control.Attribution({
+    collapsible: false
+  });
+
+  var map = new ol.Map({
+    controls: ol.control.defaults({attribution: false}).extend([attribution]),
+    layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM({
+          url: 'https://tile.openstreetmap.be/osmbe/{z}/{x}/{y}.png',
+          attributions: [ ol.source.OSM.ATTRIBUTION, 'Tiles courtesy of <a href="https://geo6.be/">GEO-6</a>' ],
+          maxZoom: 18
+        })
+      })
+    ],
+    target: 'map',
+    view: new ol.View({
+      center: ol.proj.fromLonLat([4.35247, 50.84673]),
+      maxZoom: 18,
+      zoom: 12
+    })
+  });
+
+  var layer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+      features: [
+        new ol.Feature({
+          geometry: new ol.geom.Point(ol.proj.fromLonLat([4.35247, 50.84673]))
+        })
+      ]
+    })
+  });
+  map.addLayer(layer);
+
+  var container = document.getElementById('popup');
+  var content = document.getElementById('popup-content');
+  var closer = document.getElementById('popup-closer');
+
+  var overlay = new ol.Overlay({
+    element: container,
+    autoPan: true,
+    autoPanAnimation: {
+      duration: 250
+    }
+  });
+  map.addOverlay(overlay);
+
+  closer.onclick = function() {
+    overlay.setPosition(undefined);
+    closer.blur();
+    return false;
+  };
+
+  map.on('singleclick', function (event) {
+    if (map.hasFeatureAtPixel(event.pixel) === true) {
+      var coordinate = event.coordinate;
+
+      content.innerHTML = '<b>Hello world!</b><br />I am a popup.';
+      overlay.setPosition(coordinate);
+    } else {
+      overlay.setPosition(undefined);
+      closer.blur();
+    }
+  });
+
+</script>
+</body>
+</html>
