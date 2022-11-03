@@ -1,4 +1,4 @@
-import Api from './src/Adapters/Api/Api.mjs';
+import FluxUiHttpRequestAsyncApi from './src/Adapters/Api/FluxUiHttpRequestAsyncApi.mjs';
 export default class FluxUiHttpRequestApi {
   static new() {
     return new this();
@@ -12,7 +12,7 @@ export default class FluxUiHttpRequestApi {
   }
 
   fetch() {
-      return Api.new().fetch()
+      return FluxUiHttpRequestAsyncApi.new().fetch()
   }
 }
 const api = FluxUiHttpRequestApi.new();

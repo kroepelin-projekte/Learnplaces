@@ -33,7 +33,7 @@ class AsyncApi
         );
     }
 
-    public function createCourseMenuData() : void
+    public function projectCourseMenuData() : void
     {
         $this->service->createCourses();
     }
@@ -44,7 +44,7 @@ class AsyncApi
         $menuData = CourseMenuData::fromCourses($courses);
         $this->publish(
             StatusEnum::$STATUS_OK,
-            'CourseMenuDataCreated',
+            'CourseMenuDataProjected',
             $menuData
         );
     }

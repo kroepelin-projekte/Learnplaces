@@ -18,7 +18,7 @@ class PwaAggregate
         return new self($domainEventPublisher);
     }
 
-    private function __construct(Ports\DomainEventPublisher $domainEventPublisher)
+    private function __construclst(Ports\DomainEventPublisher $domainEventPublisher)
     {
         $this->domainEventPublisher = $domainEventPublisher;
     }

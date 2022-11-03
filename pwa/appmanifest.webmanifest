@@ -1,0 +1,27 @@
+{
+    "id": "fluxpwa",
+   "name": "ilias learnplaces",
+   "short-name": "fluxpwa",
+   "description": "lorem ipsum",
+   "lang": "en (English)",
+   "icons": [{
+             "src": "./assets/illustration-04.svg",
+             "sizes": "165x150",
+             "type": "image/svg",
+             "purpose": "any"
+            },
+            {
+                         "src": "./assets/pegasus.webp",
+                          "sizes": "240x240",
+                         "type": "image/webp",
+                         "purpose": "any"
+                        }
+
+
+            ],
+    "display": "standalone",
+    "orientation": "natural",
+    "scope": "./",
+    "start_url": "./index.html",
+    "categories": ["learning", "technology", "web"]
+}
