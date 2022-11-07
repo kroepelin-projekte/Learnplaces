@@ -58,10 +58,8 @@ export default class Aggregate  {
     );
   }
 
-  fetchData() {
-      const element = document.getElementById(this.id);
-
-      //getEndpointConfiguration @see index.html
+  fetchDataFromOffline(payload) {
+      
 
       //fetch data from Offline if exists
 
