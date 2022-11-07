@@ -218,7 +218,7 @@ final class xsrlContentGUI {
 
         $button = ilLinkButton::getInstance();
         $button->setCaption('PLAY', false);
-        $button->setUrl('http://127.0.0.1/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/pwa');
+        $button->setUrl('/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/pwa');
         $button->setPrimary(true);
         $toolbar->addButtonInstance($button);
 
