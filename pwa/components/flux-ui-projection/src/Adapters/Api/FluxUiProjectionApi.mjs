@@ -1,6 +1,8 @@
 import FluxBroadcastChannelApi
   from '../../../../flux-ui-broadcast-channel/src/Adapters/Api/FluxBroadcastChannelApi.mjs';
 import Aggregate from '../../Core/Domain/Aggregate.mjs';
+import domainMessage from '../../Core/Domain/DomainMessage.mjs';
+import artefact from '../../Core/Domain/Artefact.mjs';
 
 export default class FluxUiProjectionApi {
 
@@ -12,6 +14,8 @@ export default class FluxUiProjectionApi {
    * @var {BroadcastChannelBinding}
    */
   #broadcastChannelBinding;
+
+  #aggregate;
 
 
   /**
@@ -31,10 +35,24 @@ export default class FluxUiProjectionApi {
   }
 
   #initReactors() {
+    this.#broadcastChannelBinding.addListener(
+      domainMessage.slotchanged,
+      (message) => this.#onSlotChanged(message.data)
+    )
+  }
 
+  /**
+   * @param message
+   */
+  #onSlotChanged(message) {
+    const payload = message.payload
+    const slotChangedReactors = [];
+    slotChangedReactors[artefact.fluxAppElementArtefact.slotNameComponentApi] = (changedSlot) => this.#aggregate.initComponent(changedSlot.data)
+
+    slotChangedReactors[payload.name](payload)
   }
 
   #initAggregate() {
-    Aggregate.create(this.tagName, this.#broadcastChannelBinding.publishCallback(true));
+    this.#aggregate = Aggregate.create(this.tagName, this.#broadcastChannelBinding.publishCallback(true));
   }
 }

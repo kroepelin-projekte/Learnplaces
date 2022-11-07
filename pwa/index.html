@@ -12,20 +12,20 @@
 <flux-app id="flux-app">
     <data slot="flux-component-api" value='{"tagName":"flux-layout-header", "src":"./components/flux-ui-layout-item/src/Adapters/Api/FluxLayoutItemApi.mjs"}'></data>
     <data slot="flux-component-api" value='{"tagName":"flux-layout-header-menu", "src":"./components/flux-ui-layout-item/src/Adapters/Api/FluxLayoutItemApi.mjs"}'></data>
-    <data slot="flux-component-api" value='{"tagName":"flux-projection-item-list", "src":"./components/flux-ui-projection/src/Adapters/Api/FluxUiProjectionApi.mjs"}'></data>
+    <data slot="flux-component-api" value='{"tagName":"flux-layout-header-menu-item", "src":"./components/flux-ui-layout-item/src/Adapters/Api/FluxLayoutItemApi.mjs"}'></data>
+
+
+
+    <data slot="flux-component-api" value='{"tagName":"flux-projection", "src":"./components/flux-ui-projection/src/Adapters/Api/FluxUiProjectionApi.mjs"}'></data>
     <data slot="flux-component-api" value='{"tagName":"flux-data-fetcher-offline-first", "src":"./components/flux-ui-data-fetcher/src/Adapters/Api/FluxUiDataFetcherApi.mjs"}'></data>
 
-
 </flux-app>
-
 
 <flux-layout-header id="flux-layout-header">
     <flux-layout-header-menu id="flux-layout-header-menu" slot="flux-layout-header-menu">
         <span slot="flux-layout-header-menu-title">Courses</span>
 
-        <flux-projection-item-list>
 
-        </flux-projection-item-list>
 
         <button class="SelectMenu-item" role="menuitem" slot="flux-layout-header-menu-item" id="2" >Example</button>
         <button class="SelectMenu-item" role="menuitem" slot="flux-layout-header-menu-item" id="3" >dd</button>
@@ -33,6 +33,11 @@
 
     </flux-layout-header-menu>
 </flux-layout-header>
+
+
+<flux-projection>
+    <data slot="projection-type" value='{"react":"flux-layout-header-menu-item-list/published","publish":"flux-layout-header-menu/appendChild","templateId":"flux-layout-header-menu-item-template","type":"item-list"}'></data>
+</flux-projection>
 
 
 <flux-data-fetcher-offline-first id="getHeaderMenuData">

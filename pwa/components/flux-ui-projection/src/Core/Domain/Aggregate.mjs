@@ -1,13 +1,12 @@
 import domainMessage from './DomainMessage.mjs';
 import artefact from './Artefact.mjs';
-import projectionType from './ProjectionTypes/ProjectionType.mjs';
 
 export default class Aggregate  {
 
   /**
-   * @var {FluxProjectionType}
+   * @var {string}
    */
-  #fluxProjectionType;
+  tagName;
   /**
    * @var {function}
    */
@@ -17,23 +16,30 @@ export default class Aggregate  {
   static create(tagName, publishDomainEventCallback) {
     const obj = new this(tagName, publishDomainEventCallback);
     obj.#initialize();
-    obj.#publish(domainMessage.newCreated(obj.#fluxProjectionType))
+    obj.#publish(domainMessage.newCreated({id: tagName,tagName: tagName}))
     return obj;
   }
 
 
   constructor(tagName, publishDomainEventCallback) {
-    this.#fluxProjectionType = artefact.newProjectionType(tagName)
+    this.tagName = tagName;
     this.#publish = publishDomainEventCallback;
   }
 
 
   #initialize() {
-    document.body.insertAdjacentHTML('afterbegin', this.#fluxProjectionType.template);
+    const templateId = "flux-projection-template";
 
-    const templateId = this.#fluxProjectionType.templateId;
+    document.body.insertAdjacentHTML('afterbegin',
+      '<template id="'+templateId+'">' +
+      '<slot name="projection-type">' +
+      '   <data slot="projection-type" value=""></data>\n' +
+      '</slot>' +
+      '</template>'
+      );
+
     customElements.define(
-      this.#fluxProjectionType.tagName,
+      this.tagName,
       class extends HTMLElement {
         constructor() {
           super();
@@ -46,6 +52,16 @@ export default class Aggregate  {
         }
       }
     );
+  }
+
+  #iniSlotChangedPublisher() {
+    const slot = document.getElementById(this.fluxAppElement.id).shadowRoot.querySelector("slot");
+    slot.addEventListener('slotchange', e => {
+      for (const changedSlot of slot.assignedElements()) {
+        this.#publish(domainMessage.newSlotChanged(artefact.newFluxSlotElement(changedSlot.slot,
+          changedSlot.value)))
+      }
+    });
   }
 
   /*

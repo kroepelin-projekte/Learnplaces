@@ -14,7 +14,7 @@ layoutHeaderMenuItem.template = new class FluxLayoutHeaderMenuItem {
   tagName = layoutHeaderMenuItem.tagName;
   templateId = layoutHeaderMenuItem.templateId;
   template = '<template id="' + this.templateId + '">' +
-    '    <button class="SelectMenu-item" role="menuitem"><slot name="flux-layout-header-menu-item-title">Example</slot></button> ' +
+    '    <button class="SelectMenu-item" role="menuitem" id="#">#</button> ' +
     '</template>';
 
   constructor() {

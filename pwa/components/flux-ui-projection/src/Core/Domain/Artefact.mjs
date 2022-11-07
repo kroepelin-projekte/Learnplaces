@@ -1,12 +1,14 @@
-import projectionType from './ProjectionTypes/ProjectionType.mjs';
-
 const artefact = {};
+
+/**
+ * @typedef {{react: string, publish: string, templateId: string, type: string }} FluxProjectionType
+ */
 
 /**
  * @return {FluxProjectionType}
  */
-artefact.newProjectionType = function(tagName) {
-  return projectionType[tagName]
+artefact.newProjectionType = function(payload) {
+  return payload
 }
 
 /**
