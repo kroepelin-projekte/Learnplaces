@@ -1,0 +1,40 @@
+import FluxBroadcastChannelApi
+  from '../../../../flux-ui-broadcast-channel/src/Adapters/Api/FluxBroadcastChannelApi.mjs';
+import Aggregate from '../../Core/Domain/Aggregate.mjs';
+
+export default class FluxUiProjectionApi {
+
+  /**
+   * @var {string}
+   */
+  tagName;
+  /**
+   * @var {BroadcastChannelBinding}
+   */
+  #broadcastChannelBinding;
+
+
+  /**
+   * @return {FluxUiProjectionApi}
+   */
+  static initialize(tagName) {
+    const channelApi = FluxBroadcastChannelApi.new();
+    const obj = new this(tagName, channelApi.createChannel(tagName));
+    obj.#initReactors();
+    obj.#initAggregate()
+    return obj;
+  }
+
+  constructor(tagName, broadcastChannelBinding) {
+    this.tagName = tagName;
+    this.#broadcastChannelBinding = broadcastChannelBinding
+  }
+
+  #initReactors() {
+
+  }
+
+  #initAggregate() {
+    Aggregate.create(this.tagName, this.#broadcastChannelBinding.publishCallback(true));
+  }
+}

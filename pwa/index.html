@@ -1,173 +1,44 @@
 <!DOCTYPE html>
-<html lang="de">
 <head>
-    <link href="./assets/primer.css" rel="stylesheet" />
-
-    <link rel="manifest" href="./appmanifest.webmanifest">
+    <base id="myBase" href="http://127.0.0.1/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/pwa/" />
+    <link id="primercss" href="./assets/primer.css" rel="stylesheet" />
+    <link rel="manifest" href="./appmanifest.webmanifest" />
     <script src="./app.mjs" type="module"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css" integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <title></title>
 </head>
+
 <body>
 
-<div class="Header" style="height: 60px;">
-    <div class="Header-item position-absolute right-0">
-
-        <details class="details-reset details-overlay" open>
-            <summary class="btn" aria-haspopup="true">
-                Courses
-            </summary>
-            <div class="SelectMenu right-0">
-                <div class="SelectMenu-modal">
-                    <div class="SelectMenu-list">
-                        <button class="SelectMenu-item" role="menuitem">Course 1</button>
-                        <button class="SelectMenu-item" role="menuitem">Course 2</button>
-                        <button class="SelectMenu-item" role="menuitem">Course 3</button>
-                    </div>
-                </div>
-            </div>
-        </details>
-    </div>
-</div>
+<flux-app id="flux-app">
+    <data slot="flux-component-api" value='{"tagName":"flux-layout-header", "src":"./components/flux-ui-layout-item/src/Adapters/Api/FluxLayoutItemApi.mjs"}'></data>
+    <data slot="flux-component-api" value='{"tagName":"flux-layout-header-menu", "src":"./components/flux-ui-layout-item/src/Adapters/Api/FluxLayoutItemApi.mjs"}'></data>
+    <data slot="flux-component-api" value='{"tagName":"flux-projection-item-list", "src":"./components/flux-ui-projection/src/Adapters/Api/FluxUiProjectionApi.mjs"}'></data>
+    <data slot="flux-component-api" value='{"tagName":"flux-data-fetcher-offline-first", "src":"./components/flux-ui-data-fetcher/src/Adapters/Api/FluxUiDataFetcherApi.mjs"}'></data>
 
 
-<div class="container-lg clearfix p-5">
-    <h1 class="pb-5">Course 1</h1>
-    <div class="Box">
-        <div class="Box-body">
-            <span class="Label mr-1 Label--success">Already visited</span>
-            <!-- <span class="Label mr-1 Label--attention">Currently Not CheckedIn</span> -->
-            <span class="Label mr-1 Label--attention">Currently Checked-In for</span>
-            <span class="Counter mr-1 color-bg-success-emphasis color-fg-on-emphasis">22</span> Minutes
-        </div>
-        <div class="Box-body">
-            <button class="btn btn-primary" type="button" id="btnGetLoc">Checkin by GPS</button>
-        </div>
+</flux-app>
 
 
-        <div class="Box-header d-flex flex-items-center">
-            <h3 class="Box-title overflow-hidden flex-auto">
-                Overview
-            </h3>
+<flux-layout-header id="flux-layout-header">
+    <flux-layout-header-menu id="flux-layout-header-menu" slot="flux-layout-header-menu">
+        <span slot="flux-layout-header-menu-title">Courses</span>
+
+        <flux-projection-item-list>
+
+        </flux-projection-item-list>
+
+        <button class="SelectMenu-item" role="menuitem" slot="flux-layout-header-menu-item" id="2" >Example</button>
+        <button class="SelectMenu-item" role="menuitem" slot="flux-layout-header-menu-item" id="3" >dd</button>
 
 
-            <details class="dropdown details-reset details-overlay d-inline-block">
-                <summary class="color-fg-muted p-2 d-inline" aria-haspopup="true">
-                    Dropdown
-                    <div class="dropdown-caret"></div>
-                </summary>
-
-                <ul class="dropdown-menu dropdown-menu-se">
-                    <li><a class="dropdown-item" href="#url">Overview</a></li>
-                    <li><a class="dropdown-item" href="#url">Learnplace 1</a></li>
-                    <li><a class="dropdown-item" href="#url">Learnplace 2</a></li>
-                    <li><a class="dropdown-item" href="#url">Learnplace 3</a></li>
-                </ul>
-            </details>
-        </div>
-
-        <div id="map"  class="Box" style="height: 400px; z-index: 99;" ></div>
+    </flux-layout-header-menu>
+</flux-layout-header>
 
 
+<flux-data-fetcher-offline-first id="getHeaderMenuData">
+    <data slot="endpoint" value='{"src":"http://127.0.0.1/goto.php?target=xsrl_1&client_id=default"}'></data>
+</flux-data-fetcher-offline-first>
 
-
-        <script>
-
-          const map = L.map('map').setView([46.958, 7.47], 13);
-
-          const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          }).addTo(map);
-
-          const marker = L.marker([46.958, 7.47]).addTo(map)
-          .bindPopup('<b>Hello world!</b><br />I am a popup.').openPopup();
-
-          const circle = L.circle([46.944, 7.45], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 500
-          }).addTo(map).bindPopup('Doc - is this 2050?');
-
-          const polygon = L.polygon([
-            [46.954, 7.45],
-            [46.952, 7.42],
-            [46.941, 7.41]
-          ]).addTo(map).bindPopup('I am a polygon.');
-
-
-          const popup = L.popup()
-          .setLatLng([46.940, 7.40])
-          .setContent('I am a  popup.')
-          .openOn(map);
-
-          function onMapClick(e) {
-            popup
-            .setLatLng(e.latlng)
-            .setContent(`You clicked the map at ${e.latlng.toString()}`)
-            .openOn(map);
-          }
-
-          map.on('click', onMapClick);
-
-        </script>
-
-
-
-
-        <div class="Box-body">
-            <details >
-                <summary>Content 1</summary>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-            </details >
-            <details aria-label="Content 1">
-                <summary >Content 2</summary>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-            </details >
-            <details aria-label="Content 1" class="details-reset">
-                <summary >
-
-                </summary>
-            </details >
-            <details aria-label="Content 1">
-                <summary >Content 3</summary>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-            </details >
-        </div>
-        <div class="Box-body">
-            <button class="btn btn-primary" type="button" id="reader">Checkin by QR Code</button>
-        </div>
-    </div>
-</div>
-
-<script>
-  function onScanSuccess(decodedText, decodedResult) {
-    // handle the scanned code as you like, for example:
-    console.log(`Code matched = ${decodedText}`, decodedResult);
-  }
-
-  function onScanFailure(error) {
-    // handle scan failure, usually better to ignore and keep scanning.
-    // for example:
-    console.warn(`Code scan error = ${error}`);
-  }
-
-  let html5QrcodeScanner = new Html5QrcodeScanner(
-    "reader",
-    { fps: 10, qrbox: {width: 250, height: 250} },
-    /* verbose= */ false);
-  html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-</script>
-
-<script>
-  L.DomEvent.on(document.getElementById('btnGetLoc'), 'click', function(){
-    map.locate({setView: true, maxZoom: 16});
-  })
-</script>
 
 
 </body>
-</html>

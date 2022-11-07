@@ -88,9 +88,20 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
      */
     public function executeCommand()
     {
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Service.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Outbounds.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/DomainEventPublisher.php';
 
-        //
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/Config.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractGroupReadableLearnplacesByCourses.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/OutboundsAdapter.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/AsyncApi.php';
+
+
         if ($_GET['ref_id'] == 1) {
+
+
+
             global $DIC;
             $ilDB = $DIC->database();
             $usrId = $this->currentUser->getId();
@@ -120,7 +131,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
             );
 
             //http://127.3.3.3/ilias.php?ref_id=1&cmdClass=ilobjlearnplacesgui&cmdNode=p6:o6&baseClass=ilobjplugindispatchgui&cmd=api-request&api=
-            if ($this->ctrl->getCmd() === "apiRequest") {
+            if ($this->ctrl->getCmd() === "api-request") {
                 fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(
                     $outboundsAdapter
                 );
@@ -319,6 +330,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
                 $this->ctrl->getLinkTargetByClass(xsrlSettingGUI::class, CommonControllerAction::CMD_EDIT));
         }
         parent::setTabs();
+
 
         //add an empty tab to prevent ilias from hiding the entire tab bar if only one tab exists.
         $this->learnplaceTabs->addTab('', '', '#');

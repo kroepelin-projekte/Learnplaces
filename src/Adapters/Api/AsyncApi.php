@@ -6,7 +6,7 @@ use fluxlabs\learnplaces\Core\Ports;
 use fluxlabs\learnplaces\Adapters\Config\OutboundsAdapter;
 use fluxlabs\learnplaces\Core\Domain\Models\Course;
 
-class AsyncApi
+class AsyncApi implements Ports\DomainEventPublisher
 {
 
     private Ports\Outbounds $outbounds;
@@ -15,18 +15,18 @@ class AsyncApi
     public static function new(
         OutboundsAdapter $outboundsAdapter
     ) {
-        return new self($outboundsAdapter, Ports\Service::new($outboundsAdapter));
+        return new self($outboundsAdapter);
     }
 
-    private function __construct(OutboundsAdapter $outboundsAdapter, Ports\Service $service)
+    private function __construct(OutboundsAdapter $outboundsAdapter)
     {
         $this->outbounds = $outboundsAdapter;
-        $this->service = $service;
+        $this->service =  Ports\Service::new($outboundsAdapter, $this);
     }
 
     public function createApiBaseUrl() : void
     {
-        $this->response(
+        $this->publish(
             StatusEnum::$STATUS_OK, 'baseUrlResponse', [
                 'baseUrl' => $this->outbounds->getApiBaseUrl()
             ]
@@ -38,9 +38,9 @@ class AsyncApi
         $this->service->createCourses();
     }
 
-    public function onCoursesCreated(
-        array $courses
-    ) : void {
+
+    function coursesCreated(array $courses)
+    {
         $menuData = CourseMenuData::fromCourses($courses);
         $this->publish(
             StatusEnum::$STATUS_OK,
@@ -48,6 +48,7 @@ class AsyncApi
             $menuData
         );
     }
+
 
     private function publish($status, $messageName, $payload)
     {
