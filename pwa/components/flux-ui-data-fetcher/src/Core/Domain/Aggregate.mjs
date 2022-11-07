@@ -2,6 +2,8 @@ import domainMessage from './DomainMessage.mjs';
 import artefact from './Artefact.mjs';
 import dataFetcherType from './DataFetcherTypes/DataFetcherType.mjs';
 
+const DATA_CACHE_NAME = "learnplaces-data";
+
 export default class Aggregate  {
   /**
    * @var {string} id
@@ -58,15 +60,21 @@ export default class Aggregate  {
     );
   }
 
-  fetchDataFromOffline(payload) {
-      
+  async fetchDataFromOffline(payload) {
+    const cache = await caches.open(DATA_CACHE_NAME);
 
-      //fetch data from Offline if exists
+    const cache_response = await cache.match(payload.src) ?? null;
 
-      //publish data to
-      //this.#publish()
+    if (cache_response !== null) {
+      this.#publish(await cache_response.json());
+      return;
+    }
 
-      //update offline storage
+    const response = await fetch(payload.src);
+
+    cache.put(payload.src, response.clone());
+
+    this.#publish(await response.json());
   }
 
 }
