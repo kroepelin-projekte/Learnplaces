@@ -1,3 +1,0 @@
-{
-  "template": "<template id='flux-layout-header-menu-item-template'><button slot='flux-layout-header-menu-item' class='SelectMenu-item' role='menuitem' id='#'>#</button></template>"
-}

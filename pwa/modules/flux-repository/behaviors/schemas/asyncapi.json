@@ -1,0 +1,43 @@
+{
+  "fluxDataFetcher": {
+    "channelId": "flux-data-fetcher",
+    "reactsOn": {
+      "setBaseUrl": {
+        "address": "flux-data-fetcher/setBaseUrl",
+        "operationId": "setBaseUrl",
+        "payload": {
+          "baseUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "created": {
+        "description": "experimental - should be a configuration",
+        "address": "flux-data-fetcher/created",
+        "operationId": "fetchOnlineFirst",
+        "operationPayload": {
+          "replyTo": "flux-data-fetcher/setBaseUrl",
+          "src": "/goto.php?target=xsrl_1&client_id=default"
+        }
+      }
+    },
+    "publishes": {
+      "created": {
+        "headers": {
+          "address": "flux-data-fetcher/created",
+          "messageId": "created"
+        },
+        "payload": {
+          "tagName": "flux-data-fetcher",
+          "id": "flux-data-fetcher"
+        }
+      }
+    },
+    "artefacts": {
+      "template": {
+        "templateId": "flux-data-fetcher-template",
+        "html": ""
+      }
+    }
+  }
+}

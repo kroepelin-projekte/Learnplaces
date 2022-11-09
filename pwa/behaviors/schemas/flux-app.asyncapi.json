@@ -1,0 +1,18 @@
+{
+  "name": "flux-app-learnplaces",
+  "src": "./modules/src/Adapters/Api/FluxAppApi.mjs",
+  "reactsOn": {
+    "onFluxAppInitialized": {
+      "address": "flux-app/initialized",
+      "operationId": "initializeLayoutComponents",
+      "payload": {
+        "layoutComponentNames": [
+          "flux-layout-header",
+          "flux-layout-header-menu",
+          "flux-layout-header-menu-item"
+        ]
+      },
+      "replyTo": "flux-app/layoutComponentsInitialized"
+    }
+  }
+}

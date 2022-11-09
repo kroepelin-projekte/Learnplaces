@@ -1,0 +1,34 @@
+{
+  "component": "flux-layout-component",
+  "reactsOn": {
+    "initialize": {
+      "address": "flux-layout-component/initialize",
+      "operationId": "initialize",
+      "payload": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "replyTo": "{$name}/initialized"
+    },
+    "onInitialized": {
+      "address": "{$name}/initialized",
+      "operationId": "defineCustomHtmlElement",
+      "payload": {},
+      "replyTo": "{$name}/customHtmlElementDefined"
+    },
+    "onConnected": {
+      "address": "{$name}/connected",
+      "operationId": "create",
+      "payload": {
+        "tagName": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "replyTo": "flux-layout-component/created"
+    }
+  }
+}

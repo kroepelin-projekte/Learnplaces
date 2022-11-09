@@ -1,0 +1,22 @@
+{
+  "reactsOn": {
+    "created": {
+      "address": "flux-layout-header-menu/created",
+      "replyTo": "flux-data-fetcher/baseUrlChanged",
+      "operationId": "changeBaseUrl",
+      "payload": {
+        "baseUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "created": {
+      "address": "flux-data-fetcher/created",
+      "operationId": "fetchOnlineFirst",
+      "replyTo": "flux-data-fetcher/changeBaseUrl",
+      "payload": {
+        "src": "/goto.php?target=xsrl_1&client_id=default"
+      }
+    }
+  }
+}

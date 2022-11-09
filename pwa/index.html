@@ -1,49 +1,27 @@
 <!DOCTYPE html>
 <head>
-    <base id="myBase" href="/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/pwa/" />
-    <link id="primercss" href="./assets/primer.css" rel="stylesheet" />
-    <link rel="manifest" href="./appmanifest.webmanifest" />
+    <base id="flux-pwa-base" href="/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/pwa/" />
+    <link id="primercss" href="./modules/flux-layout-component/behaviors/css/stylesheet.css" rel="stylesheet" />
+    <link rel="manifest" href="appmanifest.webmanifest" />
     <script src="./app.mjs" type="module"></script>
     <title></title>
 </head>
 
 <body>
+<flux-data-fetcher id="flux-data-fetcher" dataCacheName="learnplaces-data"></flux-data-fetcher>
 
-<flux-app id="flux-app">
-    <data slot="flux-component-api" value='{"tagName":"flux-layout-header", "src":"./components/flux-ui-layout-item/src/Adapters/Api/FluxLayoutItemApi.mjs"}'></data>
-    <data slot="flux-component-api" value='{"tagName":"flux-layout-header-menu", "src":"./components/flux-ui-layout-item/src/Adapters/Api/FluxLayoutItemApi.mjs"}'></data>
-    <data slot="flux-component-api" value='{"tagName":"flux-layout-header-menu-item", "src":"./components/flux-ui-layout-item/src/Adapters/Api/FluxLayoutItemApi.mjs"}'></data>
+<flux-learnplaces id="flux-learnplaces"></flux-learnplaces>
 
-
-
-    <data slot="flux-component-api" value='{"tagName":"flux-projection", "src":"./components/flux-ui-projection/src/Adapters/Api/FluxUiProjectionApi.mjs"}'></data>
-    <data slot="flux-component-api" value='{"tagName":"flux-data-fetcher-offline-first", "src":"./components/flux-ui-data-fetcher/src/Adapters/Api/FluxUiDataFetcherApi.mjs"}'></data>
-
-</flux-app>
 
 <flux-layout-header id="flux-layout-header">
     <flux-layout-header-menu id="flux-layout-header-menu" slot="flux-layout-header-menu">
         <span slot="flux-layout-header-menu-title">Courses</span>
-
-
-
         <button class="SelectMenu-item" role="menuitem" slot="flux-layout-header-menu-item" id="2" >Example</button>
         <button class="SelectMenu-item" role="menuitem" slot="flux-layout-header-menu-item" id="3" >dd</button>
 
 
     </flux-layout-header-menu>
 </flux-layout-header>
-
-
-<flux-projection>
-    <data slot="projection-type" value='{"react":"flux-layout-header-menu-item-list/published","publish":"flux-layout-header-menu/appendChild","templateId":"flux-layout-header-menu-item-template","type":"item-list"}'></data>
-</flux-projection>
-
-
-<flux-data-fetcher-offline-first id="getHeaderMenuData">
-    <data slot="endpoint" value='{"src":"/goto.php?target=xsrl_1&client_id=default"}'></data>
-</flux-data-fetcher-offline-first>
-
 
 
 </body>
