@@ -1,13 +1,14 @@
-rep_robj_xsrl_root_create_xsrl#:#Lernort anlegen
-rep_robj_xsrl_cat_create_xsrl#:#Lernort anlegen
-rep_robj_xsrl_crs_create_xsrl#:#Lernort anlegen
-rep_robj_xsrl_grp_create_xsrl#:#Lernort anlegen
-rep_robj_xsrl_fold_create_xsrl#:#Lernort anlegen
-rep_robj_xsrl_xsrl_visible#:#Anzeigen: Lernort ist sichtbar
-rep_robj_xsrl_xsrl_read#:#Lesezugriff: Lernort lesen
-rep_robj_xsrl_xsrl_write#:#Einstellungen bearbeiten: Lernort bearbeiten
-rep_robj_xsrl_xsrl_delete#:#L&ouml;schen: Lernort l&ouml;schen
-rep_robj_xsrl_xsrl_edit_permission#:#Rechteeinstellungen &auml;ndern: Rechteeinstellungen &auml;ndern
+root_create_xsrl#:#Lernort anlegen
+cat_create_xsrl#:#Lernort anlegen
+crs_create_xsrl#:#Lernort anlegen
+grp_create_xsrl#:#Lernort anlegen
+fold_create_xsrl#:#Lernort anlegen
+xsrl_visible#:#Anzeigen: Lernort ist sichtbar
+xsrl_read#:#Lesezugriff: Lernort lesen
+xsrl_write#:#Einstellungen bearbeiten: Lernort bearbeiten
+xsrl_delete#:#L&ouml;schen: Lernort l&ouml;schen
+xsrl_edit_permission#:#Rechteeinstellungen &auml;ndern: Rechteeinstellungen &auml;ndern
+xsrl_copy#:#Kopieren: Lernort kopieren
 
 objs_xsrl#:#Lernorte
 objs_xsrl_duplicate#:#Kopiere bestehenden Lernort
