@@ -1,34 +1,55 @@
-import artefact from './artefact.json' assert { type: 'json' };
-
-const DATA_CACHE_NAME = "learnplaces-data";
+import OutboundAdapter from '../../../flux-repository/src/Adapters/Api/OutboundAdapter.mjs';
+import domainMessage from '../../../flux-repository/src/Core/DomainMessage.mjs';
 
 export default class Aggregate {
   /**
-   * @var {function(
-   *   address:string, payload:object
-   * )}
+   * @var {string}
    */
-  #publish;
+  #name;
+  /**
+   * @var {string}
+   */
+  #baseUrl = "";
+  /**
+   * @var {string}
+   */
+  #id;
+  /**
+   * @function()
+   */
+  #onEvent;
+  /**
+   * @var {OutboundAdapter}
+   */
+  #outbounds
 
-  #artefact;
 
-  static create(publishDomainMessageCallback, replyTo) {
-    const obj = new this(publishDomainMessageCallback);
-    publishDomainMessageCallback(replyTo, { tagName: artefact.tagName });
+  /**
+   *
+   * @param {{name:string}} payload
+   * @param replyTo
+   * @return {Aggregate}
+   */
+  static async initialize(payload, replyTo) {
+    const obj = new this(payload, replyTo);
+
+    obj.#outbounds = OutboundAdapter.new()
+    obj.#onEvent =  await obj.#outbounds.onEvent(obj.#name)
+    obj.#onEvent(replyTo,
+      domainMessage.initialized(payload)
+    )
     return obj;
   }
 
   /**
-   * @private
-   * @param publishDomainMessageCallback
+   * @param {{name: string}} payload
+   * @param {string} replyTo
    */
-  constructor(publishDomainMessageCallback) {
-    this.#publish = publishDomainMessageCallback;
-    this.#artefact = artefact;
-    this.#initialize();
+  constructor(payload, replyTo) {
+    this.#name = payload.name;
   }
 
-
+/*
   #initialize() {
     document.body.insertAdjacentHTML('afterbegin', this.#artefact.template.html);
     const templateId = this.#artefact.template.id;
@@ -53,77 +74,67 @@ export default class Aggregate {
         }
       }
     );
-  }
-
-  change(attributeName, attribute) {
-    this.#artefact[attributeName] = attribute;
-  }
+  }*/
 
   /**
    * @param {{baseUrl: string}} payload
    * @param {string} replyTo
    */
   changeBaseUrl(payload, replyTo) {
-    this.#artefact.baseUrl = payload.baseUrl;
-    this.#publish(
+    this.#baseUrl = payload.baseUrl;
+    this.#onEvent(
       replyTo,
-      { baseUrl: this.#artefact.baseUrl }
+      payload
     )
   }
 
   /**
-   * @param {{address: string}} payload
+   * @param {{address: string, entityName: string}} payload
    * @param {string} replyTo
    */
-  async fetchDataFromOnline(payload, replyTo) {
-    const response = await fetch(payload.address);
+  async fetchFromOnline(payload, replyTo) {
+    console.log(this.#baseUrl + payload.address);
+    const response = await fetch(this.#baseUrl + payload.address);
     const responseData = await response.json();
-    const responsePayload = responseData.data;
+    const responsePayload = await responseData.data
 
-    this.#publish(replyTo, responsePayload)
+    const entityName = payload.entityName;
+    const transformedReplyTo = replyTo.replace("{$entityName}", entityName)
+
+    this.#onEvent(transformedReplyTo, responsePayload)
   }
 
   /**
    * @param {{address: string}} payload
    * @param {string} replyTo
    */
-  async fetchDataFromOffline(payload, replyTo) {
-    if (this.#artefact.dataCacheName === null) {
-      this.#publish(replyTo, { error: "no cache defined" });
-      return;
-    }
-
-    const dataCacheName = this.#artefact.dataCacheName;
+  async fetchFromOffline(payload, replyTo) {
+    const dataCacheName = this.#name;
     const address = payload.address;
 
-    let src = "";
-    if (this.#artefact.baseUrl !== null) {
-      src = this.#artefact.baseUrl + address;
-    } else {
-      src = address;
-    }
+    const entityName = payload.entityName;
+    const transformedReplyTo = replyTo.replace("{$entityName}", entityName)
 
-    const cache = await caches.open(dataCacheName);
-    const cache_response = await cache.match(address) ?? null;
+    const src = this.#baseUrl + address;
 
-    if (cache_response !== null) {
+
+    //const cache = await caches.open(dataCacheName);
+    //const cache_response = await cache.match(address) ?? null;
+
+    /*if (cache_response !== null) {
       const responseData = await cache_response.json();
-      this.#publish(replyTo, await responseData.data);
+      this.#onEvent(transformedReplyTo, await responseData.data);
       return;
-    }
+    }*/
 
+    console.log(src);
     const response = await fetch(src);
     const responseData = await response.json();
-    this.#publish(replyTo, await responseData.data);
+    this.#onEvent(transformedReplyTo, await responseData.data);
 
-    await cache.put(address, responseData.clone());
+    //await cache.put(address, responseData.clone());
   }
 
-  /**
-   * @return {string|null}
-   */
-  #getDataCacheName() {
-    return this.#artefact.id;
-  }
+
 
 }

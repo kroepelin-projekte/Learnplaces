@@ -2,10 +2,11 @@ import FluxMessageStreamApi
   from '../../../../flux-message-stream/src/Adapters/Api/FluxMessageStreamApi.mjs';
 import FluxLayoutComponentApi
   from '../../../../flux-layout-component/src/Adapters/Api/FluxLayoutComponentApi.mjs';
+import FluxRepositoryApi from '../../../../flux-repository/src/Adapters/Api/FluxRepositoryApi.mjs';
 
 export default class OutboundAdapter {
 
-  #logEnabled = true;
+  #logEnabled = false;
   #messageStreamApi;
 
   static new() {
@@ -48,16 +49,20 @@ export default class OutboundAdapter {
     return this.#messageStreamApi.onRegister(name)
   }
 
-  getBehaviors() {
-    return this.importJsonSchema('./behaviors/schemas/flux-app.asyncapi.json');
-  }
-
   /**
-   * @param payload
+   * @param  {{name: string}} payload
    * @return {void}
    */
   initializeLayoutComponent(payload) {
     FluxLayoutComponentApi.initialize(payload)
+  }
+
+  /**
+   * @param {{name: string}} payload
+   * @return {void}
+   */
+  initializeRepositories(payload) {
+    FluxRepositoryApi.initialize(payload)
   }
 
   /**

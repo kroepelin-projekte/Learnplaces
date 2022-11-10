@@ -67,14 +67,15 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess
          */
         return function (array $ref_ids) use ($a_user_id) : array {
             global $DIC;
-            $tree = $DIC->ilTree;
+            $tree = $DIC->repositoryTree();
 
             $crsRefIds = [];
             foreach ($ref_ids as $ref_id) {
-                if ($this->accessControl->checkAccessOfUser($a_user_id, "", "", $ref_id) === true) {
+                $accessControl = PluginContainer::resolve('ilAccess');
+                if ($accessControl->checkAccessOfUser($a_user_id, "read", "", $ref_id) === true) {
                     $crsRefId = $tree->checkForParentType($ref_id, 'crs', true);
                     if ($crsRefId !== false) {
-                        $crsRefIds[$crsRefId] = [...$ref_id];
+                        $crsRefIds[$crsRefId][] = $ref_id;
                     }
                 }
             }

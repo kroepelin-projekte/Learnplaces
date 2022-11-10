@@ -50,7 +50,8 @@ export default class OutboundAdapter {
 
 
   /**
-   * @param {string} name
+   * @param name
+   * @return {Promise<any>}
    */
   async loadTemplate(name) {
     const templateFilePath = this.#appendBaserUrl(this.behaviorsDirectory + "/templates/" + name + "-template.json")

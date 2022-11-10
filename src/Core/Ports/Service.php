@@ -27,9 +27,9 @@ class Service
     public function createApiBaseUrl() : void
     {
         $allLearnplaceRefIds = $this->outbounds->getAllLearnplaceRefIds();
-        $courseRefIds = $this->outbounds->groupReadableLearnplacesByCourses($allLearnplaceRefIds);
+        $courseRefIds = $this->outbounds->groupReadableLearnplaceRefIdsByCourseRefIds($allLearnplaceRefIds);
 
-        $this->outbounds->getLearnplaceCourses($courseRefIds);
+        $this->outbounds->getCourses($courseRefIds);
     }
 
     /**
@@ -38,13 +38,10 @@ class Service
     public function createCourses() : void
     {
         $allLearnplaceRefIds = $this->outbounds->getAllLearnplaceRefIds();
-        $groupedLearnplaces = $this->outbounds->groupReadableLearnplacesByCourses($allLearnplaceRefIds);
+        $groupedLearnplaceRefIds = $this->outbounds->groupReadableLearnplaceRefIdsByCourseRefIds($allLearnplaceRefIds);
 
-        $courses = $this->outbounds->getLearnplaceCourses($groupedLearnplaces);
-
-        $pwaAggregate = Domain\PwaAggregate::new($this->domainEventPublisher)->createCourses(
-
-        );
+        $courses = $this->outbounds->getCourses(array_keys($groupedLearnplaceRefIds));
+        $this->domainEventPublisher->coursesCreated($courses);
     }
 
 }

@@ -14,7 +14,7 @@ class LearnplaceRepository
         return new self($databaseConfig);
     }
 
-    private function __constructor(DatabaseConfig $databaseConfig)
+    private function __construct(DatabaseConfig $databaseConfig)
     {
         $this->databaseConfig = $databaseConfig;
     }

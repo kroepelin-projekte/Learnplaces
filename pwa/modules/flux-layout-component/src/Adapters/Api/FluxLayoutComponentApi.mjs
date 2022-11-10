@@ -44,6 +44,14 @@ export default class FluxLayoutComponentApi {
     Object.entries(reactsOn).forEach(([reactionId, reaction]) => {
       const reactionAddress = reaction.address.replace("{$name}", this.#name)
 
+      if(reactionAddress.includes('{$slot}')) {
+         /* this.#initSlotReactors(
+            reactionAddress,
+            reaction
+          )*/
+          return;
+      }
+
       this.#outbounds.onRegister(this.#name)(
         reactionAddress,
         (message) => this.#reaction(reaction, message),
@@ -61,8 +69,44 @@ export default class FluxLayoutComponentApi {
     };
     try {
       const replyToAddress =  reaction.replyTo.replace("{$name}", this.#name)
-
       this.#aggregate[reaction.operationId](payload, replyToAddress);
+    }
+    catch (e) {
+      console.error(reaction.operationId + " " + e)
+    }
+  }
+
+  async #initSlotReactors(
+    reactionAddress,
+    reaction
+  ) {
+    const template = await this.#outbounds.loadTemplate(this.#name);
+    const slots = await template.slots;
+    if(slots) {
+      Object.entries(slots).forEach(([slotName, slot]) => {
+        const slottedReactionAddress = reactionAddress.replace("{$slot}", slotName)
+
+        this.#outbounds.onRegister(this.#name)(
+          slottedReactionAddress,
+          (message) => this.#slotReaction(slotName, reaction, message),
+          true
+        );
+      });
+    }
+  }
+
+  async #slotReaction(slotName, reaction, message) {
+
+    const payload = {
+      ...reaction.payload,
+      ...message.payload
+    };
+    try {
+      const replyToAddress =  reaction.replyTo.replace("{$name}", this.#name)
+      const slottedReplyToAddress = replyToAddress.replace("{$slot}", slotName)
+      this.#aggregate[reaction.operationId](slotName, payload, slottedReplyToAddress);
+
+
     }
     catch (e) {
       console.error(reaction.operationId + " " + e)

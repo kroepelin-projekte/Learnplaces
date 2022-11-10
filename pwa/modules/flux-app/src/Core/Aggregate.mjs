@@ -21,7 +21,7 @@ export default class Aggregate {
 
 
   /**
-   * @param {name, messageStream, repository} payload
+   * @param {name, messageStream} payload
    * @param replyTo
    * @return {Aggregate}
    */
@@ -30,7 +30,7 @@ export default class Aggregate {
   }
 
   /**
-   * @param {name, messageStream, repository} payload
+   * @param {name, messageStream} payload
    * @param replyTo
    * @private
    */
@@ -45,18 +45,40 @@ export default class Aggregate {
 
 
   /**
-   * @param {{layoutComponentNames: string[]}} payload
+   * @param {{names: string[]}} payload
    * @param  {string} replyTo
    * @return {Promise<void>}
    */
   async initializeLayoutComponents(payload, replyTo) {
-    payload.layoutComponentNames.forEach(
+    payload.names.forEach(
       name => {
           this.#outbounds.initializeLayoutComponent({ name: name })
       }
     );
-
     this.#onEvent(replyTo, payload);
+  }
+
+  /**
+   * @param {{names: string[]}} payload
+   * @param  {string} replyTo
+   * @return {void}
+   */
+  async initializeRepositories(payload, replyTo) {
+    payload.names.forEach(
+      name => {
+        this.#outbounds.initializeRepositories({ name: name })
+      }
+    );
+    this.#onEvent(replyTo, payload);
+  }
+
+  /**
+   * @param {{}} payload
+   * @param  {string} replyTo
+   * @return {void}
+   */
+  async byPass(payload, replyTo) {
+    this.#onEvent(replyTo, payload)
   }
 
 

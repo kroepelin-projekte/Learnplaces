@@ -6,13 +6,46 @@
       "address": "flux-app/initialized",
       "operationId": "initializeLayoutComponents",
       "payload": {
-        "layoutComponentNames": [
+        "names": [
           "flux-layout-header",
           "flux-layout-header-menu",
           "flux-layout-header-menu-item"
         ]
       },
       "replyTo": "flux-app/layoutComponentsInitialized"
+    },
+    "onLayoutComponentsInitialized": {
+      "address": "flux-app/layoutComponentsInitialized",
+      "operationId": "initializeRepositories",
+      "payload": {
+        "names": [
+          "flux-layout-header-menu"
+        ]
+      },
+      "replyTo": "flux-app/repositoryInitialized"
+    },
+    "onLayoutHeaderMenuRepositoryInitialized": {
+      "address": "flux-layout-header-menu/repository/initialized",
+      "operationId": "byPass",
+      "payload": {
+        "entityName": "baseUrl",
+        "address": "/goto.php?target=xsrl_1&client_id=default"
+      },
+      "replyTo": "flux-layout-header-menu/repository/fetchFromOnline"
+    },
+    "onLayoutHeaderMenuRepositoryFetchedBaseUrlFromOnline": {
+      "address": "flux-layout-header-menu/repository/baseUrl/fetched",
+      "operationId": "byPass",
+      "replyTo": "flux-layout-header-menu/repository/changeBaseUrl"
+    },
+    "onLayoutHeaderMenuRepositoryChangedBaseUrl": {
+      "address": "flux-layout-header-menu/repository/changedBaseUrl",
+      "operationId": "byPass",
+      "payload": {
+        "entityName": "flux-layout-header-menu-items",
+        "address": "courses/projectIdValueList"
+      },
+      "replyTo": "flux-layout-header-menu/repository/fetchFromOffline"
     }
   }
 }

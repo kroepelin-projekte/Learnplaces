@@ -27,35 +27,39 @@ class AsyncApi implements Ports\DomainEventPublisher
     public function createApiBaseUrl() : void
     {
         $this->publish(
-            StatusEnum::$STATUS_OK, 'baseUrlResponse', [
+            StatusEnum::$STATUS_OK, 'baseUrlCreated', [
                 'baseUrl' => $this->outbounds->getApiBaseUrl()
             ]
         );
     }
 
-    public function projectCourseMenuData() : void
+    public function projectIdValueList($name) : void
     {
-        $this->service->createCourses();
+        switch($name) {
+            case 'courses':
+                $this->service->createCourses();
+                break;
+        }
     }
 
 
     function coursesCreated(array $courses)
     {
-        $menuData = CourseMenuData::fromCourses($courses);
+        $courseIdValueList = CourseIdValueList::fromCourses($courses);
         $this->publish(
             StatusEnum::$STATUS_OK,
-            'CourseMenuDataProjected',
-            $menuData
+            'courses/idValueListProjected',
+            $courseIdValueList
         );
     }
 
 
-    private function publish($status, $messageName, $payload)
+    private function publish($status, $address, $payload)
     {
         header("Content-Type:application/json");
         header("HTTP/2.0 " . $status);
-        $response['status'] = $status;
-        $response['status_message'] = $messageName;
+        header("statusText: OK");
+        header("address: ".$address);
         $response['data'] = $payload;
 
         $json_response = json_encode($response, JSON_UNESCAPED_SLASHES);

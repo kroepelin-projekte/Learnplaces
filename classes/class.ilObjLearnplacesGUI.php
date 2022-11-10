@@ -88,14 +88,25 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
      */
     public function executeCommand()
     {
-        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Service.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Outbounds.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/DomainEventPublisher.php';
+
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/AsyncApi.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/IdValue.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/CourseIdValueList.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/StatusEnum.php';
+
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Course.php';
+
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Service.php';
+
+
+
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/Config.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractGroupReadableLearnplacesByCourses.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/OutboundsAdapter.php';
-        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/AsyncApi.php';
+
 
 
         if ($_GET['ref_id'] == 1) {
@@ -124,7 +135,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
 
                         public function groupReadableLearnplacesByCourses(array $ref_ids) : array
                         {
-                            ilObjLearnplacesAccess::fnGroupReadableLearnplacesByCourses($this->usrId)($ref_ids);
+                            return ilObjLearnplacesAccess::fnGroupReadableLearnplacesByCourses($this->usrId)($ref_ids);
                         }
                     }
                 )
@@ -132,9 +143,14 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
 
             //http://127.3.3.3/ilias.php?ref_id=1&cmdClass=ilobjlearnplacesgui&cmdNode=p6:o6&baseClass=ilobjplugindispatchgui&cmd=api-request&api=
             if ($this->ctrl->getCmd() === "api-request") {
-                fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(
-                    $outboundsAdapter
-                );
+
+                switch($_GET['api']) {
+                    case 'courses/projectIdValueList':
+                        fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(
+                            $outboundsAdapter
+                        )->projectIdValueList('courses');
+                        break;
+                }
                 exit;
             }
 

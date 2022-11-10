@@ -1,4 +1,13 @@
 {
   "id": "flux-layout-header-template",
+  "slots": {
+    "flux-layout-header-menu": {
+      "name": "flux-layout-header-menu",
+      "templateId": "flux-layout-header-menu-template"
+    }
+  },
+  "events": {
+
+  },
   "html": "<template id='flux-layout-header-template'><div class='Header' style='height: 60px;'><slot name='flux-layout-header-menu'></slot></div></template>"
 }

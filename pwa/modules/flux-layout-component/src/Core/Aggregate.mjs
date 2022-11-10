@@ -1,6 +1,7 @@
 import domainMessage from './DomainMessage.mjs';
 import OutboundAdapter from '../Adapters/Api/OutboundAdapter.mjs';
 import State from './State.mjs';
+import Slot from './Slot.mjs';
 
 export default class Aggregate {
   /**
@@ -32,6 +33,7 @@ export default class Aggregate {
    */
   #outbounds
 
+
   /**
    *
    * @param payload
@@ -61,7 +63,6 @@ export default class Aggregate {
   }
 
 
-
   /**
    * @param {{name: string}} payload
    * @param {string} replyTo
@@ -80,9 +81,11 @@ export default class Aggregate {
     const styleElement = document.createElement('style');
     styleElement.innerHTML = stylesheetText;
 
+
     customElements.define(
       this.#name,
       class extends HTMLElement {
+
         constructor() {
           super();
           const template = document.getElementById(
@@ -91,18 +94,18 @@ export default class Aggregate {
 
           const shadowRoot = this.attachShadow({ mode: "open" });
           shadowRoot.appendChild(template.cloneNode(true));
-
           shadowRoot.append(styleElement);
+          defineId(this.id);
         }
 
         connectedCallback() {
-          defineId('id', this.id);
-          if (this.hasAttributes()) {
+
+          /*if (this.hasAttributes()) {
             for (const name of this.getAttributeNames()) {
               const value = this.getAttribute(name);
               changeAttribute('name', value);
             }
-          }
+          }*/
         }
       }
     );
@@ -110,17 +113,58 @@ export default class Aggregate {
   }
 
   defineId(id) {
-    this.#id = id
+    if(this.#id !== id) {
+      this.applyDefineId(id)
+    }
+
+
+    /*const events = this.#template.events;
+    Object.entries(events).forEach(([id, event]) => {
+        console.log(event);
+    })*/
+
   }
+
+  applyDefineId(id) {
+    this.#id = id
+    console.log(id);
+  }
+
+
 
   async changeAttribute(attributeName, attribute) {
     const updateCache = async (attributeName, attribute) => {
-      const cache = await caches.open(this.#name);
-      await cache.put(attributeName, attribute);
-      this.#onEvent(this.#name + "/" + attributeName + "changed", attribute)
+      /*const cache = await caches.open(this.#name);
+      await cache.put(attributeName, attribute);*/
+      //this.#onEvent(this.#name + "/" + attributeName + "changed", attribute)
     }
-    this.#state.change(attributeName, attribute, updateCache);
+    //this.#state.change(attributeName, attribute, updateCache);
   }
+
+  async replaceSlotData(slotName, payload, replyTo) {
+
+    console.log(this.#template.slots[slotName].templateId);
+
+    /*
+    const element = await document.getElementById(this.#id);
+    const childElement = document.getElementById(
+      this.#template.slots[slotName].templateId
+    ).content.firstChild;
+
+    const items = payload.items;
+    Object.entries(items).forEach(([id, item]) => {
+      childElement.id = item.id;
+      childElement.innerHTML = item.value;
+      element.appendChild(childElement.cloneNode(true))
+    });
+
+
+    this.#onEvent(replyTo, items)
+
+     */
+  }
+
+
 
 
 }

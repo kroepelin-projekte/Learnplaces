@@ -2,9 +2,9 @@
 
 namespace fluxlabs\learnplaces\Adapters\Storage;
 
-use fluxlabs\learnplaces\Core\Domain\Course;
 use PDOException;
 use PDO;
+use fluxlabs\learnplaces\Core\Domain\Models\Course;
 
 class CourseRepository
 {
@@ -16,7 +16,7 @@ class CourseRepository
         return new self($databaseConfig);
     }
 
-    private function __constructor(DatabaseConfig $databaseConfig)
+    private function __construct(DatabaseConfig $databaseConfig)
     {
         $this->databaseConfig = $databaseConfig;
     }
@@ -25,7 +25,7 @@ class CourseRepository
      * @param int[] $courseRefIds
      * @return Course[]
      */
-    public function getLearnplaceCoursesSubset(array $courseRefIds) : array
+    public function getCourses(array $courseRefIds) : array
     {
         try {
             $conn = new PDO("mysql:host=" . $this->databaseConfig->iliasDatabaseHost . ";dbname=" . $this->databaseConfig->iliasDatabaseName,
@@ -37,15 +37,15 @@ class CourseRepository
             echo "Connection failed: " . $e->getMessage();
         }
 
-        $courseRefIdFilter = implode("','", $courseRefIds);
+        $courseRefIdFilter = implode(",", $courseRefIds);
 
-        $sql = "SELECT * FROM ilias.object_data as crs_obj " .
-            ".inner join object_reference as crs_ref on crs_ref.obj_id = crs_obj.obj_id  " .
-            ".inner join tree on tree.parent = crs_ref.ref_id " .
-            ".where crs_obj.type like 'crs' and crs_obj.ref_id in ('" . $courseRefIdFilter . "')";
+        $sql = "SELECT * FROM ilias.object_data as crs_obj "
+            ." inner join object_reference as crs_ref on crs_ref.obj_id = crs_obj.obj_id  "
+            ." where crs_obj.type like 'crs' and crs_ref.ref_id in ('" . $courseRefIdFilter . "')";
         $result = $conn->query($sql);
 
         $data = [];
+
         if ($result->rowCount() > 0) {
             // output data of each row
             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {

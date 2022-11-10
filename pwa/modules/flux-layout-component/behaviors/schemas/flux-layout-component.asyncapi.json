@@ -5,8 +5,11 @@
       "address": "flux-layout-component/initialize",
       "operationId": "initialize",
       "payload": {
-        "name": {
-          "type": "string"
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
         }
       },
       "replyTo": "{$name}/initialized"
@@ -21,11 +24,14 @@
       "address": "{$name}/connected",
       "operationId": "create",
       "payload": {
-        "tagName": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
+        "type": "object",
+        "properties": {
+          "tagName": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
         }
       },
       "replyTo": "flux-layout-component/created"

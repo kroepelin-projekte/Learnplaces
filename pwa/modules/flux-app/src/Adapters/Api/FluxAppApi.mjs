@@ -53,10 +53,18 @@ export default class FluxAppApi {
 
   #reaction(reaction, message) {
 
-    const payload = {
-      ...reaction.payload,
-      ...message.payload
-    };
+    let payload = {};
+    //todo find a better way for this
+    if(reaction.hasOwnProperty('payload')) {
+      payload = {
+        ...reaction.payload,
+      };
+    } else {
+      payload = {
+        ...message.payload
+      }
+    }
+
 
     try {
       this.#aggregate[reaction.operationId](payload, reaction.replyTo);

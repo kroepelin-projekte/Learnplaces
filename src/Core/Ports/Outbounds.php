@@ -10,7 +10,7 @@ interface Outbounds {
      * @param array $groupedLearnplaceRefIds
      * @return Course[]
      */
-    public function getLearnplaceCourses($groupedLearnplaceRefIds) : array;
+    public function getCourses($groupedLearnplaceRefIds) : array;
 
-    public function groupReadableLearnplacesByCourses(array $ref_ids) : array;
+    public function groupReadableLearnplaceRefIdsByCourseRefIds(array $ref_ids) : array;
 }

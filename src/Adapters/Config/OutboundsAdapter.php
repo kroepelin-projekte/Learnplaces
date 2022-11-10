@@ -3,7 +3,7 @@
 namespace fluxlabs\learnplaces\Adapters\Config;
 
 use fluxlabs\learnplaces\Core\Ports;
-use fluxlabs\learnplaces\Core\Domain\Models\Courses;
+use fluxlabs\learnplaces\Core\Domain\Models\Course;
 use fluxlabs\learnplaces\Adapters\Storage;
 
 
@@ -47,15 +47,15 @@ class OutboundsAdapter implements Ports\Outbounds
     }
 
     /**
-     * @param $learnplaceRefIds
-     * @return Courses[]
+     * @param $courseRefIds
+     * @return Course[]
      */
-    public function getLearnplaceCourses($learnplaceRefIds) : array
+    public function getCourses($courseRefIds) : array
     {
-        return Storage\CourseRepository::new($this->databaseConfig)->getLearnplaceCoursesSubset($learnplaceRefIds);
+        return Storage\CourseRepository::new($this->databaseConfig)->getCourses($courseRefIds);
     }
 
-    public function groupReadableLearnplacesByCourses(array $ref_ids) : array
+    public function groupReadableLearnplaceRefIdsByCourseRefIds(array $ref_ids) : array
     {
         return $this->coursesOfReadableLearnplaces->groupReadableLearnplacesByCourses($ref_ids);
     }

@@ -1,4 +1,10 @@
 {
   "id": "flux-layout-header-menu-item-template",
-  "html": "<template id='flux-layout-header-menu-item-template'><button slot='flux-layout-header-menu-item' class='SelectMenu-item' role='menuitem' id='#'>#</button></template>"
+  "slots": {},
+  "events": {
+    "onClick": {
+      "address": "{$name}/{$id}/clicked"
+    }
+  },
+  "html": "<template id='flux-layout-header-menu-item-template'><button slot='flux-layout-header-menu-items' class='SelectMenu-item' role='menuitem' id='#'>#</button></template>"
 }
