@@ -42,6 +42,7 @@ export default class OutboundAdapter {
   }
 
 
+
   async importCss() {
     const path = this.#appendBaserUrl(this.behaviorsDirectory + "/css/stylesheet.css");
     const response = await (await fetch(path));

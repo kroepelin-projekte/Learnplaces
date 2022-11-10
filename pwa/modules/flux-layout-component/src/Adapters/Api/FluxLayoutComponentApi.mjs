@@ -45,10 +45,10 @@ export default class FluxLayoutComponentApi {
       const reactionAddress = reaction.address.replace("{$name}", this.#name)
 
       if(reactionAddress.includes('{$slot}')) {
-         /* this.#initSlotReactors(
+          this.#initSlotReactors(
             reactionAddress,
             reaction
-          )*/
+          )
           return;
       }
 
@@ -88,8 +88,7 @@ export default class FluxLayoutComponentApi {
 
         this.#outbounds.onRegister(this.#name)(
           slottedReactionAddress,
-          (message) => this.#slotReaction(slotName, reaction, message),
-          true
+          (message) => this.#slotReaction(slotName, reaction, message)
         );
       });
     }

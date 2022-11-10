@@ -39,9 +39,10 @@ class CourseRepository
 
         $courseRefIdFilter = implode(",", $courseRefIds);
 
+
         $sql = "SELECT * FROM ilias.object_data as crs_obj "
-            ." inner join object_reference as crs_ref on crs_ref.obj_id = crs_obj.obj_id  "
-            ." where crs_obj.type like 'crs' and crs_ref.ref_id in ('" . $courseRefIdFilter . "')";
+            ." inner join object_reference as crs_ref on crs_ref.obj_id = crs_obj.obj_id and crs_ref.ref_id IN ('" . $courseRefIdFilter . "') "
+            ." where crs_obj.type like 'crs' ";
         $result = $conn->query($sql);
 
         $data = [];

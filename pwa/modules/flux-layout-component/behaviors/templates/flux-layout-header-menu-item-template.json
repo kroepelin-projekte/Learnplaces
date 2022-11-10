@@ -3,8 +3,8 @@
   "slots": {},
   "events": {
     "onClick": {
-      "address": "{$name}/{$id}/clicked"
+      "address": "{$name}/clicked"
     }
   },
-  "html": "<template id='flux-layout-header-menu-item-template'><button slot='flux-layout-header-menu-items' class='SelectMenu-item' role='menuitem' id='#'>#</button></template>"
+  "html": "<template id='flux-layout-header-menu-item-template'><button name='flux-layout-header-menu-item' slot='flux-layout-header-menu-item' class='SelectMenu-item' role='menuitem' id='#'>#</button></template>"
 }

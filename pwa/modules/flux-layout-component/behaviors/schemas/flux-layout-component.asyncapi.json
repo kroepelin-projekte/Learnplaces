@@ -35,6 +35,19 @@
         }
       },
       "replyTo": "flux-layout-component/created"
+    },
+    "onFetched": {
+      "address": "{$name}/repository/{$slot}/fetched",
+      "operationId": "replaceSlotData",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array"
+          }
+        }
+      },
+      "replyTo": "{$name}/slotDataReplaced"
     }
   }
 }

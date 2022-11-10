@@ -8,8 +8,7 @@
       "payload": {
         "names": [
           "flux-layout-header",
-          "flux-layout-header-menu",
-          "flux-layout-header-menu-item"
+          "flux-layout-header-menu"
         ]
       },
       "replyTo": "flux-app/layoutComponentsInitialized"
@@ -42,7 +41,7 @@
       "address": "flux-layout-header-menu/repository/changedBaseUrl",
       "operationId": "byPass",
       "payload": {
-        "entityName": "flux-layout-header-menu-items",
+        "entityName": "flux-layout-header-menu-item",
         "address": "courses/projectIdValueList"
       },
       "replyTo": "flux-layout-header-menu/repository/fetchFromOffline"

@@ -95,11 +95,13 @@ export default class Aggregate {
           const shadowRoot = this.attachShadow({ mode: "open" });
           shadowRoot.appendChild(template.cloneNode(true));
           shadowRoot.append(styleElement);
-          defineId(this.id);
+
         }
 
         connectedCallback() {
 
+          console.log(this.id + "connected");
+          defineId(this.id);
           /*if (this.hasAttributes()) {
             for (const name of this.getAttributeNames()) {
               const value = this.getAttribute(name);
@@ -142,26 +144,43 @@ export default class Aggregate {
   }
 
   async replaceSlotData(slotName, payload, replyTo) {
+    const slotTemplateDefinition = await this.#outbounds.loadTemplate(slotName)
+    const slotTemplateId = slotTemplateDefinition.id
 
-    console.log(this.#template.slots[slotName].templateId);
+    if(document.getElementById(slotTemplateId) === null) {
+      const slotTemplateHtml = slotTemplateDefinition.html;
+      await document.body.insertAdjacentHTML('afterbegin', slotTemplateHtml);
+    }
 
-    /*
     const element = await document.getElementById(this.#id);
-    const childElement = document.getElementById(
-      this.#template.slots[slotName].templateId
-    ).content.firstChild;
+    const slotTemplate = document.getElementById(slotTemplateId);
 
     const items = payload.items;
+    const childElement = slotTemplate.content.firstChild.cloneNode(true);
+
     Object.entries(items).forEach(([id, item]) => {
       childElement.id = item.id;
       childElement.innerHTML = item.value;
+
+
+      if(slotTemplateDefinition.events.hasOwnProperty('onClick')) {
+        const adressDefinition = slotTemplateDefinition.events.onClick.address;
+        const adress = adressDefinition.replace("{$name}", slotName);
+
+        element.addEventListener("click",  () => this.#outbounds.onEvent(this.#name)(
+          adress, {id: item.id}
+        ));
+
+      }
       element.appendChild(childElement.cloneNode(true))
+
+
     });
 
 
     this.#onEvent(replyTo, items)
 
-     */
+
   }
 
 
