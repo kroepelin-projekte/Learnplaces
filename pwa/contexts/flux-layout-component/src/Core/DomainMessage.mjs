@@ -1,10 +1,14 @@
+/** @typedef {{ headers: {context: string, id: string, messageName: string}, payload: Object }} DomainMessage */
+
 export default class DomainMessage {
   /**
-   * @param {{name: string}} payload
-   * @return {{name: string}} payload
+   * @return {DomainMessage}
    */
-  static initialized( payload ) {
-    return payload
+  static initialized() {
+    return {
+      name: "initialized",
+      payload: {}
+    }
   }
 
   /**

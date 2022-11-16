@@ -1,7 +1,10 @@
-import FluxAppApi from './modules/flux-app/src/Adapters/Api/FluxAppApi.mjs';
+import FluxAppApi from './contexts/flux-app/src/Adapters/Api/FluxAppApi.mjs';
 import FluxMessageStreamApi
-  from './modules/flux-message-stream/src/Adapters/Api/FluxMessageStreamApi.mjs';
-import FluxRepositoryApi from './modules/flux-repository/src/Adapters/Api/FluxRepositoryApi.mjs';
+  from './contexts/flux-message-stream/src/Adapters/Api/FluxMessageStreamApi.mjs';
+import FluxRepositoryApi from './contexts/flux-repository/src/Adapters/Api/FluxRepositoryApi.mjs';
+import FluxLayoutComponentApi from "./contexts/flux-layout-component/src/Adapters/Api/FluxLayoutComponentApi.mjs";
+import InitializeFluxLayoutComponent
+    from "./contexts/flux-layout-component/src/Adapters/Api/InitializeFluxLayoutComponent.mjs";
 /*
 try {
   await navigator.serviceWorker.register("/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/pwa/serviceworker.mjs", {
@@ -17,6 +20,10 @@ FluxAppApi.initialize(
     messageStream: FluxMessageStreamApi.initialize(true)
   }
 );
+
+FluxLayoutComponentApi.initialize(InitializeFluxLayoutComponent.new(
+    './contexts/flux-layout-component/behaviors'
+));
 
 
 /*DomMessages.new().onDomContentLoaded((message) => this.#onDOMContentLoaded(message))

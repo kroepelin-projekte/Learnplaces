@@ -1,18 +1,17 @@
 {
   "component": "flux-layout-component",
   "reactsOn": {
-    "initialize": {
-      "address": "flux-layout-component/initialize",
-      "operationId": "initialize",
+    "create": {
+      "address": "flux-layout-component/create",
+      "operationId": "create",
       "payload": {
         "type": "object",
         "properties": {
-          "name": {
+          "id": {
             "type": "string"
           }
         }
-      },
-      "replyTo": "{$name}/initialized"
+      }
     },
     "onInitialized": {
       "address": "{$name}/initialized",

@@ -6,7 +6,7 @@ import FluxRepositoryApi from '../../../../flux-repository/src/Adapters/Api/Flux
 
 export default class OutboundAdapter {
 
-  #logEnabled = false;
+  #logEnabled = true;
   #messageStreamApi;
 
   static new() {
@@ -38,11 +38,17 @@ export default class OutboundAdapter {
   }
 
   /**
-   * @param name
-   * @return {(function(string, string, Object): void)|*}
+   * @return {(function(message): void)}
    */
-  onEvent(name) {
-    return this.#messageStreamApi.onEvent(name)
+  onEvent() {
+    return this.#messageStreamApi.onEvent('flux-app')
+  }
+
+  /**
+   * @return {(function(message): void)}
+   */
+  publish(address, payload) {
+    return this.#messageStreamApi.onEvent('flux-app')
   }
 
   onRegister(name) {

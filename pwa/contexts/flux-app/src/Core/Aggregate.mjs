@@ -39,8 +39,14 @@ export default class Aggregate {
     this.#outbounds = OutboundAdapter.new();
 
     this.#publish = this.#outbounds.publish();
-    this.#onEvent = this.#outbounds.onEvent(this.#name);
-    this.#onEvent(replyTo, {})
+    this.#onEvent = this.#outbounds.onEvent();
+    this.#onEvent({
+      name: "appInitialized",
+      payload: {
+
+      }
+
+    })
   }
 
 
@@ -49,13 +55,13 @@ export default class Aggregate {
    * @param  {string} replyTo
    * @return {Promise<void>}
    */
-  async initializeLayoutComponents(payload, replyTo) {
-    payload.names.forEach(
+  async createLayoutComponents(payload, replyTo) {
+    /*payload.names.forEach(
       name => {
           this.#outbounds.initializeLayoutComponent({ name: name })
       }
     );
-    this.#onEvent(replyTo, payload);
+    this.#onEvent(replyTo, payload);*/
   }
 
   /**
@@ -63,13 +69,13 @@ export default class Aggregate {
    * @param  {string} replyTo
    * @return {void}
    */
-  async initializeRepositories(payload, replyTo) {
-    payload.names.forEach(
+  async createRepositories(payload, replyTo) {
+    /*payload.names.forEach(
       name => {
         this.#outbounds.initializeRepositories({ name: name })
       }
     );
-    this.#onEvent(replyTo, payload);
+    this.#onEvent(replyTo, payload);*/
   }
 
   /**
@@ -78,7 +84,7 @@ export default class Aggregate {
    * @return {void}
    */
   async byPass(payload, replyTo) {
-    this.#onEvent(replyTo, payload)
+     this.#outbounds.onEvent(replyTo.actor)(replyTo.messageId, payload)
   }
 
 

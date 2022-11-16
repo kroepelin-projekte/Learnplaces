@@ -2,33 +2,32 @@
   "name": "flux-app-learnplaces",
   "src": "./modules/src/Adapters/Api/FluxAppApi.mjs",
   "reactsOn": {
-    "onFluxAppInitialized": {
-      "address": "flux-app/initialized",
-      "operationId": "initializeLayoutComponents",
+    "onFluxLayoutComponentInitialized": {
+      "address": "flux-layout-component/initialized",
+      "operationId": "byPass",
       "payload": {
-        "names": [
-          "flux-layout-header",
-          "flux-layout-header-menu"
-        ]
+        "id": "flux-layout-header"
       },
-      "replyTo": "flux-app/layoutComponentsInitialized"
+      "replyTo": {
+        "actor": "flux-layout-component",
+        "messageId": "create"
+      }
     },
     "onLayoutComponentsInitialized": {
-      "address": "flux-app/layoutComponentsInitialized",
-      "operationId": "initializeRepositories",
+      "address": "flux-app/layoutComponentsCreated",
+      "operationId": "createRepositories",
       "payload": {
         "names": [
           "flux-layout-header-menu"
         ]
-      },
-      "replyTo": "flux-app/repositoryInitialized"
+      }
     },
     "onLayoutHeaderMenuRepositoryInitialized": {
       "address": "flux-layout-header-menu/repository/initialized",
       "operationId": "byPass",
       "payload": {
         "entityName": "baseUrl",
-        "address": "/goto.php?target=xsrl_1&client_id=default"
+        "address": "/goto.php?target=xsrl_1&client_id=medi01"
       },
       "replyTo": "flux-layout-header-menu/repository/fetchFromOnline"
     },
