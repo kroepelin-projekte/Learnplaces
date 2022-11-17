@@ -1,6 +1,5 @@
 import Aggregate from '../../Core/Aggregate.mjs';
 import OutboundAdapter from './OutboundAdapter.mjs';
-import behaviors from '../../../../../behaviors/schemas/flux-app.asyncapi.json' assert { type: 'json' };
 
 export default class FluxAppApi {
 
@@ -25,18 +24,24 @@ export default class FluxAppApi {
    * @return {FluxAppApi}
    */
   static async initialize(payload) {
-    return new this(
+    const obj = new this(
       payload
     )
+    obj.#name = payload.name;
+    obj.#outbounds = OutboundAdapter.new();
+    obj.#behaviors =  await this.#outbounds.getApiBehaviors();
+    obj.#initReactors();
+    obj.#aggregate = Aggregate.initialize(payload,"flux-app/initialized");
+
+    return obj;
+
   }
 
   constructor(payload) {
 
-    this.#name = payload.name;
-    this.#behaviors = behaviors;
-    this.#outbounds = OutboundAdapter.new();
-    this.#initReactors();
-    this.#aggregate = Aggregate.initialize(payload,"flux-app/initialized");
+
+
+
   }
 
 

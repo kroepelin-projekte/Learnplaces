@@ -7,6 +7,10 @@ export default class Aggregate {
    */
   #name;
   /**
+   * @var {string}
+   */
+  address = "flux-app";
+  /**
    * @var {OutboundAdapter}
    */
   #outbounds;
@@ -14,6 +18,10 @@ export default class Aggregate {
    * @var
    */
   #onEvent
+  /**
+   * @var
+   */
+  #onCommand
   /**
    * @var {{defineCustomHtmlElement(payload): void}}
    */
@@ -38,8 +46,9 @@ export default class Aggregate {
     this.#name = payload.name;
     this.#outbounds = OutboundAdapter.new();
 
-    this.#publish = this.#outbounds.publish();
-    this.#onEvent = this.#outbounds.onEvent();
+    this.#onCommand = this.#outbounds.commandStream(this.address);
+    this.#onEvent = this.#outbounds.eventStream(this.address);
+
     this.#onEvent({
       name: "appInitialized",
       payload: {
@@ -76,6 +85,17 @@ export default class Aggregate {
       }
     );
     this.#onEvent(replyTo, payload);*/
+  }
+
+  /**
+   * @param {{
+   *   address: string, commandPayload: {name: string}
+   * }} payload
+   * @return {void}
+   */
+  async command(payload) {
+    console.log(payload);
+    this.#onCommand(payload.address, payload.commandPayload);
   }
 
   /**

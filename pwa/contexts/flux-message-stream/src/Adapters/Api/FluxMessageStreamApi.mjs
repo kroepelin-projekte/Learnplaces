@@ -36,59 +36,58 @@ export default class FluxMessageStreamApi {
     }
 
     /**
+     * @param actorAddress
+     * @param messageAddress
      * @param payload
-     * @param address
      */
-    publish(from, to, messageName, payload) {
-
-        if (this.logEnabled === true) {
-            console.group()
-            console.log('Actor');
-            console.log('%c' + from, 'color:blue');
-            console.log('has published')
-            console.log('%c' + messageName + ":", 'color:blue');
-            console.log('%c' + JSON.stringify(payload), 'color:blue');
-            console.log('to')
-            console.log('%c' + to, 'color:blue');
-            console.groupEnd()
-        }
-
-        const address = to + "/" + messageName;
-        const channel = new BroadcastChannel(address);
-        const message = {
-            "headers": {
-                "address": address,
-            },
-            "payload": payload
-        }
-        channel.postMessage(message);
-    }
-
-
-    /**
-     * @return {(function(message): void)}
-     */
-    onEvent(actor) {
+    onCommand(actorAddress) {
         /**
          * @param {Message} message
          * @return void;
          */
-        return (message) => {
-            const address = actor + "/" + message.name;
+        return (address, payload) => {
 
             if (this.logEnabled === true) {
                 console.group()
                 console.log('Actor');
-                console.log('%c' + actor, 'color:blue');
+                console.log('%c' + actorAddress, 'color:blue');
                 console.log('has published')
-                console.log('%c' + JSON.stringify(message.payload), 'color:blue');
+                console.log('%c' + JSON.stringify(payload), 'color:blue');
                 console.log('to')
                 console.log('%c' + address, 'color:blue');
                 console.groupEnd()
             }
 
             const channel = new BroadcastChannel(address)
-            channel.postMessage(message)
+            channel.postMessage(payload)
+        }
+    }
+
+
+    /**
+     * @return {(function(message): void)}
+     */
+    onEvent(actorAddress) {
+        /**
+         * @param {Message} message
+         * @return void;
+         */
+        return (messageName, payload) => {
+            const address = actorAddress + "/" + messageName;
+
+            if (this.logEnabled === true) {
+                console.group()
+                console.log('Actor');
+                console.log('%c' + actorAddress, 'color:blue');
+                console.log('has published')
+                console.log('%c' + JSON.stringify(payload), 'color:blue');
+                console.log('to')
+                console.log('%c' + address, 'color:blue');
+                console.groupEnd()
+            }
+
+            const channel = new BroadcastChannel(address)
+            channel.postMessage(payload)
         }
     }
 }

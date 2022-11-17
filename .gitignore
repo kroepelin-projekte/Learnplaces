@@ -83,4 +83,3 @@ fabric.properties
 Dockerfile
 
 generate-pwa-libs
-pwa/serviceworker.mjs

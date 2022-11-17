@@ -1,5 +1,3 @@
-import behaviors
-  from '../../../behaviors/schemas/flux-repository.asyncapi.json' assert { type: 'json' };
 import OutboundAdapter
   from './OutboundAdapter.mjs';
 import Aggregate from '../../Core/Aggregate.mjs';
@@ -9,12 +7,11 @@ export default class FluxRepositoryApi {
    * @var {string}
    */
   #name;
-
   /**
    * @var {Aggregate}
    */
   #aggregate;
-  #behaviors;
+  #apiBehaviors;
   /**
    * var {OutboundAdapter}
    */
@@ -22,32 +19,26 @@ export default class FluxRepositoryApi {
 
   /**
    * @return {FluxLayoutComponentApi}
+   * @param {InitializeFluxRepository} initializeFluxRepository
    */
-  static async initialize(payload) {
-    const obj = new this(payload);
-    obj.#behaviors = behaviors;
-    obj.#outbounds = OutboundAdapter.new();
+  static async initialize(initializeFluxRepository) {
+    const obj = new this();
+    obj.#outbounds = OutboundAdapter.initialize(initializeFluxRepository.payload);
+    obj.#apiBehaviors = await obj.#outbounds.getApiBehaviors();
+    obj.#aggregate = await Aggregate.initialize(obj.#outbounds);
     await obj.#initReactors();
-
-    obj.#aggregate = await Aggregate.initialize(payload,
-      obj.#name + '/repository/initialized'
-    )
     return obj;
   }
 
-  constructor(payload) {
-    this.#name = payload.name;
+  constructor() {
+
   }
 
   async #initReactors() {
-    const reactsOn = this.#behaviors.reactsOn;
-    Object.entries(reactsOn).forEach(([reactionId, reaction]) => {
-
-      const reactionAddress = reaction.address.replace("{$name}", this.#name)
-
-
-      this.#outbounds.onRegister(this.#name)(
-        reactionAddress,
+    Object.entries(this.#apiBehaviors.reactsOn).forEach(([reactionId, reaction]) => {
+      console.log(reaction);
+      this.#outbounds.onRegister(this.#aggregate.name)(
+        reaction.address,
         (message) => this.#reaction(reaction, message),
         true
       );
@@ -55,16 +46,14 @@ export default class FluxRepositoryApi {
   }
 
 
-  async #reaction(reaction, message) {
+  async #reaction(reaction, messagePayload) {
 
     const payload = {
       ...reaction.payload,
-      ...message.payload
+      ...messagePayload
     };
     try {
-      const replyToAddress =  reaction.replyTo.replace("{$name}", this.#name)
-
-      this.#aggregate[reaction.operationId](payload, replyToAddress);
+      this.#aggregate[reaction.operationId](messagePayload);
     }
     catch (e) {
       console.error(reaction.operationId + " " + e)

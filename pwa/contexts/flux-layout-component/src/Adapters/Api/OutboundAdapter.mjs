@@ -1,6 +1,11 @@
 import FluxMessageStreamApi
   from '../../../../flux-message-stream/src/Adapters/Api/FluxMessageStreamApi.mjs';
 import fluxLayoutHeaderTemplate from "../../../behaviors/templates/flux-layout-header-template.mjs";
+import fluxLayoutMenuTemplate from "../../../behaviors/templates/flux-layout-menu-template.mjs";
+import fluxLayoutMenuItemTemplate from "../../../behaviors/templates/flux-layout-menu-item-template.mjs";
+import fluxLayoutMenuTitleTemplate from "../../../behaviors/templates/flux-layout-menu-title-template.mjs";
+import fluxLayoutContentContainerTemplate from "../../../behaviors/templates/flux-layout-content-container-template.mjs";
+import fluxLayoutMapTemplate from "../../../behaviors/templates/flux-layout-map-template.mjs";
 
 export default class OutboundAdapter {
 
@@ -26,7 +31,7 @@ export default class OutboundAdapter {
   }
 
   async getApiBehaviors() {
-    return await this.#importJsonSchema(this.#behaviorsDirectoryPath + '/api/flux-layout-component.asyncapi.json');
+    return await this.#importJsonSchema(this.#behaviorsDirectoryPath + '/api/flux-layout-component.api.json');
   }
 
   disableLog() {name
@@ -34,12 +39,10 @@ export default class OutboundAdapter {
     this.#messageStreamApi.logEnabled = false;
   }
 
-  onEvent(id = null) {
-    let actor = "flux-layout-component";
-    if(id !== null) {
-      actor = actor + "/" + id;
-    }
-    return  this.#messageStreamApi.onEvent(actor)
+
+
+  eventStream(actorAddress) {
+    return  this.#messageStreamApi.onEvent(actorAddress)
   }
 
   onRegister(name) {
@@ -64,10 +67,18 @@ export default class OutboundAdapter {
     //TODO
     switch(templateId) {
       case 'flux-layout-header-template':
-        console.log(new DOMParser().parseFromString('fluxLayoutHeaderTemplate', 'text/html'));
         return new DOMParser().parseFromString(fluxLayoutHeaderTemplate, 'text/html').querySelector('template');
+      case 'flux-layout-menu-template':
+        return new DOMParser().parseFromString(fluxLayoutMenuTemplate, 'text/html').querySelector('template');
+      case 'flux-layout-menu-title-template':
+        return new DOMParser().parseFromString(fluxLayoutMenuTitleTemplate, 'text/html').querySelector('template');
+      case 'flux-layout-menu-item-template':
+        return new DOMParser().parseFromString(fluxLayoutMenuItemTemplate, 'text/html').querySelector('template');
+      case 'flux-layout-content-container-template':
+        return new DOMParser().parseFromString(fluxLayoutContentContainerTemplate, 'text/html').querySelector('template');
+      case 'flux-layout-map-template':
+        return new DOMParser().parseFromString(fluxLayoutMapTemplate, 'text/html').querySelector('template');
       }
-
   }
 
   async #importApiClass(src) {

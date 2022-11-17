@@ -1,4 +1,7 @@
-/** @typedef {{ headers: {context: string, id: string, messageName: string}, payload: Object }} DomainMessage */
+/** @typedef {{ name: string, payload: Object }} DomainMessage */
+/** @typedef {{name: string, address: string}} ElementCreatedPayload */
+/** @typedef {{parentName: string, slotName: string, name: string, address: string}} SlotElementCreatedPayload */
+/** @typedef {{parentName: string, slotName: string, name: string, data: {id: string, value: string}}} ContentCreatedPayload */
 
 export default class DomainMessage {
   /**
@@ -15,15 +18,12 @@ export default class DomainMessage {
    * @param {{name: string}} payload
    * @return {{name: string}} payload
    */
-  static defined(payload ) {
+  static defined(payload) {
     return payload
   }
 
-  /**
-   * @param {{name: string, id: string}} payload
-   * @return {{name: string, id: string}} payload
-   */
-  static created( payload ) {
-    return payload
-  }
+
+  static elementCreated = "elementCreated";
+  static slotElementCreated = "slotElementCreated";
+  static contentCreated = "contentCreated";
 }

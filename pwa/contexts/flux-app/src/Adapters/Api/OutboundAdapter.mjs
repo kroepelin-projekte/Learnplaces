@@ -25,16 +25,22 @@ export default class OutboundAdapter {
     this.#messageStreamApi.logEnabled = false;
   }
 
-  /**
-   * @return {{defineCustomHtmlElement(*): void}}
-   */
-  publish() {
-    const messageStreamApi = this.#messageStreamApi;
-    return {
-      defineCustomHtmlElement(payload) {
-        messageStreamApi.publish("flux-layout-component/defineCustomHtmlElement", payload)
-      }
-    }
+  commandStream(actorAddress) {
+    return  this.#messageStreamApi.onCommand(actorAddress)
+  }
+
+  async getApiBehaviors() {
+    return await this.#importJsonSchema('./contexts/flux-app/behaviors/api/flux-layout-component.api.json');
+  }
+
+  async #importJsonSchema(src) {
+    const templateFilePath = this.#appendBaserUrl(src)
+    const response =  await (await fetch(templateFilePath, { assert: { type: 'json' } }));
+    return await response.json();
+  }
+
+  eventStream(actorAddress) {
+    return  this.#messageStreamApi.onEvent(actorAddress)
   }
 
   /**

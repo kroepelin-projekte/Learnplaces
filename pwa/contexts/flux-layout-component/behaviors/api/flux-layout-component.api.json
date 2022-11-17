@@ -1,0 +1,75 @@
+{
+  "reactsOn": {
+    "createElement": {
+      "address": "flux-layout-component/createElement",
+      "operationId": "createElement",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "createSlotElement": {
+      "address": "flux-layout-component/createSlotElement",
+      "operationId": "createSlotElement",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "parentName": {
+            "type": "string"
+          },
+          "slotName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "createContent": {
+      "address": "flux-layout-component/createContent",
+      "operationId": "createContent",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "slotName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "onFetched": {
+      "address": "flux-repository/fetched",
+      "operationId": "createContents",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  }
+}

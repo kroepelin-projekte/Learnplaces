@@ -5,21 +5,30 @@ export default class OutboundAdapter {
 
   #logEnabled = true;
   #messageStreamApi;
+  /** @var string */
+  #behaviorsDirectoryPath;
+  /** @var string */
+  baseUrl;
 
 
   /**
-   *
-   * @return {OutboundAdapter}
+   * @param {{behaviorsDirectoryPath: string, baseUrl: string}} payload
    */
-  static new() {
-    return new this();
+  static initialize(payload) {
+    return new this(payload)
   }
 
   /**
    * @private
    */
-  constructor() {
+  constructor(payload) {
+    this.#behaviorsDirectoryPath = payload.behaviorsDirectoryPath;
     this.#messageStreamApi =  FluxMessageStreamApi.initialize(this.#logEnabled)
+    this.baseUrl = payload.baseUrl;
+  }
+
+  async getApiBehaviors() {
+    return await this.#importJsonSchema(this.#behaviorsDirectoryPath + '/api/api.json');
   }
 
   disableLog() {
@@ -27,8 +36,8 @@ export default class OutboundAdapter {
     this.#messageStreamApi.logEnabled = false;
   }
 
-  onEvent(name) {
-    return this.#messageStreamApi.onEvent(name + "/repository")
+  eventStream(actorAddress) {
+    return  this.#messageStreamApi.onEvent(actorAddress)
   }
 
   onRegister(name) {
@@ -37,13 +46,9 @@ export default class OutboundAdapter {
 
 
   async #importJsonSchema(src) {
-    const behaviours = await (await (import(this.#appendBaserUrl(src), {
-      assert: { type: 'json' }
-    })));
-    console.log(behaviours);
-    const loaded = behaviours.default;
-    console.log(loaded);
-    return loaded;
+    const templateFilePath = this.#appendBaserUrl(src)
+    const response =  await (await fetch(templateFilePath, { assert: { type: 'json' } }));
+    return await response.json();
   }
 
   /**

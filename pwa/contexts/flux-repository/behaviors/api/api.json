@@ -1,0 +1,29 @@
+{
+  "channelId": "flux-repository",
+  "reactsOn": {
+    "fetchFromOnline": {
+      "address": "flux-repository/fetchFromOnline",
+      "operationId": "fetchFromOffline",
+      "payload": {
+        "entityName": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        }
+      }
+    },
+    "fetchFromOffline": {
+      "address": "flux-repository/fetchFromOffline",
+      "operationId": "fetchFromOffline",
+      "payload": {
+        "entityName": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

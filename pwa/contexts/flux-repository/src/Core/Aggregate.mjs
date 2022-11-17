@@ -1,19 +1,19 @@
 import OutboundAdapter from '../../../flux-repository/src/Adapters/Api/OutboundAdapter.mjs';
 import domainMessage from '../../../flux-repository/src/Core/DomainMessage.mjs';
+import DomainMessage from '../../../flux-layout-component/src/Core/DomainMessage.mjs';
 
 export default class Aggregate {
   /**
    * @var {string}
    */
-  #name;
+  name = "flux-repository"
   /**
    * @var {string}
    */
-  #baseUrl = "";
-  /**
-   * @var {string}
-   */
-  #id;
+  address = "flux-repository"
+
+  #baseUrl = null;
+
   /**
    * @function()
    */
@@ -26,27 +26,30 @@ export default class Aggregate {
 
   /**
    *
-   * @param {{name:string}} payload
-   * @param replyTo
+   * @param {OutboundAdapter} outboundsAdapter
    * @return {Aggregate}
    */
-  static async initialize(payload, replyTo) {
-    const obj = new this(payload, replyTo);
+  static async initialize(outboundsAdapter) {
+    const obj = new this();
+    obj.#outbounds = outboundsAdapter;
+    obj.#onEvent = await outboundsAdapter.eventStream(obj.address)
+    obj.#baseUrl = outboundsAdapter.baseUrl;
 
-    obj.#outbounds = OutboundAdapter.new()
-    obj.#onEvent =  await obj.#outbounds.onEvent(obj.#name)
-    obj.#onEvent(replyTo,
-      domainMessage.initialized(payload)
-    )
+    await obj.#applyInitialized(
+      DomainMessage.initialized()
+    );
+
     return obj;
   }
 
+  constructor() {}
+
   /**
-   * @param {{name: string}} payload
-   * @param {string} replyTo
+   * @param {DomainMessage} initialized
+   * @return {Promise<void>}
    */
-  constructor(payload, replyTo) {
-    this.#name = payload.name;
+  async #applyInitialized(initialized) {
+    this.#onEvent(initialized.name, initialized.payload)
   }
 
 /*
@@ -76,17 +79,6 @@ export default class Aggregate {
     );
   }*/
 
-  /**
-   * @param {{baseUrl: string}} payload
-   * @param {string} replyTo
-   */
-  changeBaseUrl(payload, replyTo) {
-    this.#baseUrl = payload.baseUrl;
-    this.#onEvent(
-      replyTo,
-      payload
-    )
-  }
 
   /**
    * @param {{address: string, entityName: string}} payload
@@ -106,33 +98,39 @@ export default class Aggregate {
 
   /**
    * @param {{address: string}} payload
-   * @param {string} replyTo
    */
-  async fetchFromOffline(payload, replyTo) {
-    const dataCacheName = this.#name;
+  async fetchFromOffline(payload) {
+    const dataCacheName = this.name;
     const address = payload.address;
 
-    const entityName = payload.entityName;
-    const transformedReplyTo = replyTo.replace("{$entityName}", entityName)
 
     const src = this.#baseUrl + address;
 
 
-    //const cache = await caches.open(dataCacheName);
-    //const cache_response = await cache.match(address) ?? null;
+    const cache = await caches.open(dataCacheName);
+    const cache_response = await cache.match(src) ?? null;
 
-    /*if (cache_response !== null) {
-      const responseData = await cache_response.json();
-      this.#onEvent(transformedReplyTo, await responseData.data);
-      return;
-    }*/
+    let responseData = {};
+    if (cache_response !== null) {
+      console.log(src + '  from CACHE')
+      responseData = await cache_response.json();
+    } else {
+      console.log(src + '  from ONLINE')
 
-    console.log(src);
-    const response = await fetch(src);
-    const responseData = await response.json();
-    this.#onEvent(transformedReplyTo, await responseData.data);
+      const response = await fetch(src);
+      await cache.put(src, response.clone());
+      responseData = await response.json();
+    }
 
-    //await cache.put(address, responseData.clone());
+
+    const messagePayload = {
+      parentName: payload.parentName,
+      slotName: payload.slotName,
+      name: payload.name,
+      data: await responseData.data
+    }
+
+    this.#onEvent("fetched", messagePayload);
   }
 
 

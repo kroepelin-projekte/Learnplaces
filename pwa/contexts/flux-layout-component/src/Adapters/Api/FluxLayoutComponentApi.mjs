@@ -3,8 +3,6 @@ import Aggregate from "../../Core/Aggregate.mjs";
 
 export default class FluxLayoutComponentApi {
 
-    /** @var {string} */
-    #name = "flux-layout-component-api"
     /** @var {Aggregate} */
     #aggregate;
 
@@ -39,7 +37,7 @@ export default class FluxLayoutComponentApi {
                 return;
             }
 
-            this.#outbounds.onRegister(this.#name)(
+            this.#outbounds.onRegister(this.#aggregate.name)(
                 reaction.address,
                 (message) => this.#reaction(reaction, message),
                 true
@@ -53,25 +51,25 @@ export default class FluxLayoutComponentApi {
             if (reactionAddress.includes('{$name}') === false) {
                 return;
             }
-            const reactionAddress = reaction.address.replace("{$name}", this.#name)
-            this.#outbounds.onRegister(this.#name)(
+            const reactionAddress = reaction.address.replace("{$name}", this.#aggregate.name)
+            this.#outbounds.onRegister(this.#aggregate.name)(
                 reactionAddress,
-                (message) => this.#reaction(reaction, message),
+                (messagePayload) => this.#reaction(reaction, messagePayload),
                 true
             );
         });
     }
 
 
-    async #reaction(reaction, message) {
+    async #reaction(reaction, messagePayload) {
 
         const payload = {
             ...reaction.payload,
-            ...message.payload
+            ...messagePayload
         };
         try {
             //const replyToAddress = reaction.replyTo.replace("{$name}", this.#name)
-            this.#aggregate[reaction.operationId](payload);
+            this.#aggregate[reaction.operationId](messagePayload);
         } catch (e) {
             console.log(this.#aggregate);
             console.error(reaction.operationId + " " + e)
@@ -82,13 +80,13 @@ export default class FluxLayoutComponentApi {
         reactionAddress,
         reaction
     ) {
-        const template = await this.#outbounds.loadTemplate(this.#name);
+        const template = await this.#outbounds.loadTemplate(this.#aggregate.name);
         const slots = await template.slots;
         if (slots) {
             Object.entries(slots).forEach(([slotName, slot]) => {
                 const slottedReactionAddress = reactionAddress.replace("{$slot}", slotName)
 
-                this.#outbounds.onRegister(this.#name)(
+                this.#outbounds.onRegister(this.#aggregate.name)(
                     slottedReactionAddress,
                     (message) => this.#slotReaction(slotName, reaction, message)
                 );
@@ -103,7 +101,7 @@ export default class FluxLayoutComponentApi {
             ...message.payload
         };
         try {
-            const replyToAddress = reaction.replyTo.replace("{$name}", this.#name)
+            const replyToAddress = reaction.replyTo.replace("{$name}",this.#aggregate.name)
             const slottedReplyToAddress = replyToAddress.replace("{$slot}", slotName)
             this.#aggregate[reaction.operationId](slotName, payload, slottedReplyToAddress);
 
