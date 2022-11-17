@@ -29,7 +29,7 @@ export default class FluxAppApi {
     )
     obj.#name = payload.name;
     obj.#outbounds = OutboundAdapter.new();
-    obj.#behaviors =  await this.#outbounds.getApiBehaviors();
+    obj.#behaviors =  await obj.#outbounds.getApiBehaviors();
     obj.#initReactors();
     obj.#aggregate = Aggregate.initialize(payload,"flux-app/initialized");
 

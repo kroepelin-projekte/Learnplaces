@@ -116,9 +116,7 @@ export default class Aggregate {
       responseData = await cache_response.json();
     } else {
       console.log(src + '  from ONLINE')
-
       const response = await fetch(src);
-      await cache.put(src, response.clone());
       responseData = await response.json();
     }
 
@@ -131,6 +129,9 @@ export default class Aggregate {
     }
 
     this.#onEvent("fetched", messagePayload);
+
+    const response = await fetch(src);
+    await cache.put(src, response.clone());
   }
 
 

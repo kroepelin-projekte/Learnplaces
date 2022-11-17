@@ -30,7 +30,7 @@ export default class OutboundAdapter {
   }
 
   async getApiBehaviors() {
-    return await this.#importJsonSchema('./contexts/flux-app/behaviors/api/flux-layout-component.api.json');
+    return await this.#importJsonSchema('./behaviors/api/api.json');
   }
 
   async #importJsonSchema(src) {

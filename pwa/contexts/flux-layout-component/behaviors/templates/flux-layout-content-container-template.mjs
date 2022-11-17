@@ -34,16 +34,6 @@ export default `
 
     </div>
 </div>
-<script>
 
-  const map = L.map('map').setView([46.958, 7.47], 13);
-
-  const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }).addTo(map);
-
-
-</script>
     </template>
 `;
