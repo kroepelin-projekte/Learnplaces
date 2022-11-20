@@ -46,14 +46,15 @@ export class OfflineFirstStorage {
         replyTo(cacheResponseData);
       }
     });
-
-    const response = await fetch(src);
-    const clonedResponse = await response.clone();
-    console.log(clonedResponse);
-    const responseData = await clonedResponse.json();
-    if (JSON.stringify(cacheData) !== JSON.stringify(responseData)) {
-      await cache.put(address, response);
-      await replyTo(responseData);
+    if (window.navigator.onLine === true) {
+      const response = await fetch(src);
+      const clonedResponse = await response.clone();
+      console.log(clonedResponse);
+      const responseData = await clonedResponse.json();
+      if (JSON.stringify(cacheData) !== JSON.stringify(responseData)) {
+        await cache.put(address, response);
+        await replyTo(responseData);
+      }
     }
   }
 }
