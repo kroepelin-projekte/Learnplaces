@@ -44,4 +44,29 @@ class Service
         $this->domainEventPublisher->coursesCreated($courses);
     }
 
+    /**
+     * @return  Domain\Models\Course
+     */
+    public function createCourse($id) : void {
+        if($this->outbounds->hasAccessToCourse($id) === false) {
+            return;
+        }
+        $courses = $this->outbounds->getCourses([$id]);
+        $this->domainEventPublisher->courseCreated($courses[0]);
+    }
+
+    /**
+     * @return  Domain\Models\Course[]
+     */
+    public function createLearnplaces(int $courseId) : void
+    {
+        $allLearnplaceRefIds = $this->outbounds->getAllLearnplaceRefIds();
+        $groupedLearnplaceRefIds = $this->outbounds->groupReadableLearnplaceRefIdsByCourseRefIds($allLearnplaceRefIds);
+
+        $relevantLearnplaceRefIds = $groupedLearnplaceRefIds[$courseId];
+
+        $learnplaces = $this->outbounds->getLearnplaces($relevantLearnplaceRefIds);
+        $this->domainEventPublisher->learnplacesCreated($learnplaces);
+    }
+
 }

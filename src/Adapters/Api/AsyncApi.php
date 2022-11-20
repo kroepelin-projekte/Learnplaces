@@ -33,11 +33,23 @@ class AsyncApi implements Ports\DomainEventPublisher
         );
     }
 
-    public function projectIdValueList($name) : void
+    public function projectIdValueList($name, $parentId = null) : void
     {
         switch($name) {
             case 'courses':
                 $this->service->createCourses();
+                break;
+            case 'learnplaces':
+                $this->service->createLearnplaces($parentId);
+                break;
+        }
+    }
+
+    public function projectMetadata($name, $id) : void
+    {
+        switch($name) {
+            case 'course':
+                $this->service->createCourse($id);
                 break;
         }
     }
@@ -50,6 +62,15 @@ class AsyncApi implements Ports\DomainEventPublisher
             StatusEnum::$STATUS_OK,
             'courses/idValueListProjected',
             $courseIdValueList
+        );
+    }
+
+    function courseCreated(Course $course)
+    {
+        $this->publish(
+            StatusEnum::$STATUS_OK,
+            'course/courseMetadataProjected',
+            $course
         );
     }
 
@@ -67,4 +88,13 @@ class AsyncApi implements Ports\DomainEventPublisher
         exit;
     }
 
+    function learnplacesCreated(array $learnplaces)
+    {
+        $idValueList = LearnplaceIdValueList::fromLearnplaces($learnplaces);
+        $this->publish(
+            StatusEnum::$STATUS_OK,
+            'learnplaces/idValueListProjected',
+            $idValueList
+        );
+    }
 }

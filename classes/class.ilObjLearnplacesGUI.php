@@ -94,6 +94,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/AsyncApi.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/IdValue.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/CourseIdValueList.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/LearnplaceIdValueList.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/StatusEnum.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Storage/DatabaseConfig.php';
@@ -101,20 +102,16 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Storage/LearnplaceRepository.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Course.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Learnplace.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Service.php';
 
-
-
-
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/Config.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractGroupReadableLearnplacesByCourses.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractHasAccessToCourse.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/OutboundsAdapter.php';
 
-
-
         if ($_GET['ref_id'] == 1) {
-
 
 
             global $DIC;
@@ -141,6 +138,19 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
                         {
                             return ilObjLearnplacesAccess::fnGroupReadableLearnplacesByCourses($this->usrId)($ref_ids);
                         }
+                    },
+                    new class($usrId) extends \fluxlabs\learnplaces\Adapters\Config\AbstractHasAccessToCourse {
+                        private int $usrId;
+
+                        public function __construct(int $usrId)
+                        {
+                            $this->usrId = $usrId;
+                        }
+
+                        public function hasAccessToCourse(int $ref_id) : bool
+                        {
+                            return ilObjLearnplacesAccess::fnHasAccessToCourse($this->usrId)($ref_id);
+                        }
                     }
                 )
             );
@@ -148,13 +158,31 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
             //http://127.3.3.3/ilias.php?ref_id=1&cmdClass=ilobjlearnplacesgui&cmdNode=p6:o6&baseClass=ilobjplugindispatchgui&cmd=api-request&api=
             if ($this->ctrl->getCmd() === "api-request") {
 
-                switch($_GET['api']) {
-                    case 'courses/projectIdValueList':
+                $apiRequest = $_GET['api'];
+
+                switch (true) {
+                    case stristr($apiRequest, 'courses/projectIdValueList'):
                         fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(
                             $outboundsAdapter
                         )->projectIdValueList('courses');
                         break;
+                    case stristr($apiRequest, 'course/projectMetadata/crs_id/'):
+                        $exploded = explode('course/projectMetadata/crs_id/', $apiRequest);
+                        $id = $exploded[1];
+                        fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(
+                            $outboundsAdapter
+                        )->projectMetadata('course', $id);
+                        break;
+                    case stristr($apiRequest, 'learnplaces/projectIdValueList'):
+                        $exploded = explode('learnplaces/projectIdValueList/crs_id/', $apiRequest);
+                        $courseId = $exploded[1];
+                        fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(
+                            $outboundsAdapter
+                        )->projectIdValueList('learnplaces', $courseId);
+                        break;
+                        break;
                 }
+
                 exit;
             }
 
@@ -350,7 +378,6 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
                 $this->ctrl->getLinkTargetByClass(xsrlSettingGUI::class, CommonControllerAction::CMD_EDIT));
         }
         parent::setTabs();
-
 
         //add an empty tab to prevent ilias from hiding the entire tab bar if only one tab exists.
         $this->learnplaceTabs->addTab('', '', '#');

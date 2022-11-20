@@ -1,0 +1,16 @@
+{
+  "reactions": {
+    "fetchData": {
+      "onMessage": "{$actorName}/fetchData",
+      "process": "fetchData",
+      "payload": {
+        "entityName": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

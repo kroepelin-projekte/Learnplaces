@@ -1,0 +1,23 @@
+{
+  "reactions": {
+    "appendTemplateContent": {
+      "onMessage": "{$actorName}/appendTemplateContent",
+      "process": "appendTemplateContent",
+      "payload": {
+        "type": "object",
+        "properties": {
+          "templateName": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "changeSlotData": {
+      "onMessage": "{$actorName}/changeSlotData",
+      "process": "changeSlotData",
+      "payload": {
+        "type": "object"
+      }
+    }
+  }
+}

@@ -1,81 +1,88 @@
-import Aggregate from '../../Core/Aggregate.mjs';
-import OutboundAdapter from './OutboundAdapter.mjs';
+import Actor from '../../Core/Actor.mjs';
+import MessageStream from '../MessageStream/MessageStream.mjs';
+import Definitions from '../Definitions/Definitions.mjs';
 
 export default class FluxAppApi {
+  /** @var {string} */
+  #id;
+  /** @var {Actor} */
+  #actor;
+  /** @var {MessageStream} */
+  #messageStream;
+  /** @var {Definitions} */
+  #definitions;
 
   /**
-   * @var {string}
+   * @private
    */
-  #name;
-
-  /**
-   * @var {Aggregate}
-   */
-  #aggregate;
-
-  /**
-   * @var {OutboundAdapter}
-   */
-  #outbounds;
-  #behaviors;
-
+  constructor(applicationName) {
+    this.#id = applicationName;
+  }
 
   /**
    * @return {FluxAppApi}
    */
-  static async initialize(payload) {
-    const obj = new this(
-      payload
-    )
-    obj.#name = payload.name;
-    obj.#outbounds = OutboundAdapter.new();
-    obj.#behaviors =  await obj.#outbounds.getApiBehaviors();
-    obj.#initReactors();
-    obj.#aggregate = Aggregate.initialize(payload,"flux-app/initialized");
-
-    return obj;
-
+  static async initialize(applicationId, logEnabled) {
+    const obj = new FluxAppApi(
+      applicationId
+    );
+    obj.#messageStream = await MessageStream.new(obj.#id, logEnabled);
+    await obj.#initDefinitions();
+    await obj.#initReactors();
+    await obj.#initActor()
   }
 
-  constructor(payload) {
-
-
-
-
+  async #initDefinitions() {
+    this.#definitions = await Definitions.new(await document.getElementById("flux-pwa-base").href)
   }
 
-
-  #initReactors() {
-    const reactsOn =  this.#behaviors.reactsOn;
-      Object.entries(reactsOn).forEach(([reactionId, reaction]) => {
-        this.#outbounds.onRegister(  this.#name)(
-          reaction.address,
-          (message) => this.#reaction(reaction, message)
-        );
-      });
-    }
-
-
-  #reaction(reaction, message) {
-
-    let payload = {};
-    //todo find a better way for this
-    if(reaction.hasOwnProperty('payload')) {
-      payload = {
-        ...reaction.payload,
-      };
-    } else {
-      payload = {
-        ...message.payload
+  async #initActor() {
+    this.#actor = await Actor.new(this.#id, (publishAddress, payload) => {
+        this.#publish(
+          publishAddress,
+          payload
+        )
       }
-    }
+    );
+  }
 
+  async #initReactors() {
+    const apiDefinition = await this.#definitions.apiDefinition();
+    Object.entries(apiDefinition.reactions).forEach(([reactionId, reaction]) => {
+      const addressDef = reaction.onMessage;
+      const address = addressDef.replace('{$applicationId}', this.#id);
+      this.#messageStream.register(address, (messagePayload) => {
 
+        let messagePayloadData = null;
+        if(messagePayload.data) {
+          messagePayloadData = {data: messagePayload.data}
+        }
+
+        const payload = {
+          ...reaction.payload.commandPayload,
+          ...messagePayloadData
+        }
+        console.log(payload);
+
+        this.#react(reaction.process,reaction.payload.command, payload)
+      })
+    });
+  }
+
+  async #react(process, command, payload) {
     try {
-      this.#aggregate[reaction.operationId](payload, reaction.replyTo);
+      this.#actor[process](command, payload);
     }
     catch (e) {
-      console.error(reaction.operationId + " " + e)
+      console.error(process + " " + e)
     }
+  }
+
+
+  async #publish(
+    publishAddress, payload
+  ) {
+    const address = publishAddress.replace('{$applicationId}', this.#id);
+    this.#messageStream.publish(address, payload)
   }
 }

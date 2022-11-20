@@ -28,8 +28,9 @@ class CourseIdValueList
             public static function fromCourse(Domain\Models\Course $course) : IdValue
             {
                 return IdValue::new(
-                    "crs_ref_id_".$course->ref_id,
-                    $course->title
+                    'crs_id',
+                    $course->ref_id,
+                    $course->title->value
                 );
             }
         };

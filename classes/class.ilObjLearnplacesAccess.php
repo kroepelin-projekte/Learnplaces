@@ -60,6 +60,14 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess
         return true;
     }
 
+    public static function fnHasAccessToCourse(int $a_user_id) : callable
+    {
+        return function (int $ref_id) use ($a_user_id) : bool {
+            $accessControl = PluginContainer::resolve('ilAccess');
+            return $accessControl->checkAccessOfUser($a_user_id, "read", "", $ref_id);
+        };
+    }
+
     public static function fnGroupReadableLearnplacesByCourses(int $a_user_id) : callable
     {
         /**

@@ -4,7 +4,7 @@ namespace fluxlabs\learnplaces\Core\Domain\Models;
 
 use fluxlabs\learnplaces\Adapters\Api\IdValue;
 
-class Course
+class Learnplace
 {
     public int $ref_id;
     public int $obj_id;
@@ -28,7 +28,7 @@ class Course
     ) {
         $this->ref_id = $ref_id;
         $this->obj_id = $obj_id;
-        $this->title = IdValue::new('crs_id',$ref_id, $title);
-        $this->description =  IdValue::new('crs_id', $ref_id, $description);
+        $this->title = IdValue::new('xsrl_id', $ref_id, $title);
+        $this->description =  IdValue::new('xsrl_id', $ref_id, $description);
     }
 }

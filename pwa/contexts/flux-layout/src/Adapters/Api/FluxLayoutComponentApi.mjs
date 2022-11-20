@@ -1,9 +1,8 @@
-import Actor from '../../Core/Actor.mjs';
-import { OfflineFirstStorage } from '../Storage/OfflineFirstStorage.mjs';
-import Definitions from '../Definitions/Definitions.mjs';
-import MessageStream from '../EventStream/MessageStream.mjs';
+import Actor from "../../Core/Actor.mjs";
+import MessageStream from '../../Adapters/MessageStream/MessageStream.mjs';
+import Definitions from '../../Adapters/Definitions/Definitions.mjs';
 
-export default class FluxRepositoryApi {
+export default class FluxLayoutComponentApi {
   /** @var {string} */
   #actorName;
   /** @var {Actor} */
@@ -15,44 +14,42 @@ export default class FluxRepositoryApi {
 
   /**
    * @private
+   * @param applicationName
    */
   constructor(applicationName) {
-    this.#actorName = applicationName + "/" + "repository";
+    this.#actorName = applicationName + "/" + "layout";
   }
 
   /**
-   * @param applicationName
-   * @param logEnabled
-   * @param projectionApiBaseUrl
-   * @return {void}
+   * @return {FluxLayoutComponentApi}
    */
-  static async initializeOfflineFirstRepository(applicationName, logEnabled, projectionApiBaseUrl) {
-    const obj = new FluxRepositoryApi(applicationName);
+  static async initialize(applicationName, logEnabled) {
+    const obj = new this(applicationName);
     obj.#messageStream = await MessageStream.new(obj.#actorName, logEnabled);
     await obj.#initDefinitions();
     await obj.#initReactors();
-    await obj.#initActor(await OfflineFirstStorage.new(obj.#actorName, projectionApiBaseUrl))
+    await obj.#initActor()
   }
 
   async #initDefinitions() {
     this.#definitions = await Definitions.new(await document.getElementById("flux-pwa-base").href)
   }
 
-  async #initActor(storage) {
-    this.#actor = await Actor.new(this.#actorName, (publishAddress, payload) => {
+  async #initActor() {
+    this.#actor = await Actor.new(this.#actorName, (name, payload) => {
         this.#publish(
-          publishAddress,
+          name,
           payload
         )
       },
-      storage
+      (templateId) => this.#definitions.template(templateId)
     );
   }
 
   async #initReactors() {
     const apiDefinition = await this.#definitions.apiDefinition();
-    Object.entries(apiDefinition.reactions).forEach(([reactionId, reaction]) => {
-      const addressDef = reaction.onMessage
+    Object.entries(await apiDefinition.reactions).forEach(([reactionId, reaction]) => {
+      const addressDef = reaction.onMessage;
       const address = addressDef.replace('{$actorName}', this.#actorName);
       this.#messageStream.register(address, (payload) => this.#reaction(reaction.process, payload))
     });
@@ -67,10 +64,10 @@ export default class FluxRepositoryApi {
     }
   }
 
+
   async #publish(
     publishAddress, payload
   ) {
-    publishAddress.replace('{$actorName}', this.#actorName);
     this.#messageStream.publish(publishAddress, payload)
   }
 

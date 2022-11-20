@@ -1,0 +1,146 @@
+{
+  "name": "flux-app-learnplaces",
+  "src": "./modules/src/Adapters/Api/FluxAppApi.mjs",
+  "reactions": {
+    "createHeader": {
+      "onMessage": "{$applicationId}/layout/created",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/layout/appendTemplateContent",
+        "commandPayload": {
+          "templateName": "header",
+          "parentId": "flux-learnplaces/layout"
+        }
+      }
+    },
+    "createHeaderMenu": {
+      "onMessage": "{$applicationId}/layout/header/created",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/layout/appendTemplateContent",
+        "commandPayload": {
+          "templateName": "menu",
+          "parentId": "flux-learnplaces/layout/header",
+          "slotName": "menu"
+        }
+      }
+    },
+    "createnHeaderMenuTitle": {
+      "onMessage": "{$applicationId}/layout/header/menu/created",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/layout/changeSlotData",
+        "commandPayload": {
+          "parentId": "flux-learnplaces/layout/header/menu",
+          "data": {
+            "title": {
+              "lng_key": "crs_title",
+              "id": "flux-learnplaces/layout/header/menu/title",
+              "value": "Courses"
+            }
+          }
+        }
+      }
+    },
+    "fetchHeaderMenuItems": {
+      "onMessage": "{$applicationId}/repository/created",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/repository/fetchData",
+        "commandPayload": {
+          "projection": "courses/projectIdValueList",
+          "next": {
+            "command": "flux-learnplaces/layout/changeSlotData",
+            "commandPayload": {
+              "parentId": "flux-learnplaces/layout/header/menu"
+            }
+          }
+        }
+      }
+    },
+    "createContentContainer": {
+      "onMessage": "{$applicationId}/repository/created",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/layout/appendTemplateContent",
+        "commandPayload": {
+          "templateName": "content-container",
+          "parentId": "flux-learnplaces/layout"
+        }
+      }
+    },
+    "fetchCourseMetadata": {
+      "onMessage": "{$applicationId}/layout/header/menu/items/clicked",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/repository/fetchData",
+        "commandPayload": {
+          "projection": "course/projectMetadata",
+          "next": {
+            "command": "flux-learnplaces/layout/changeSlotData",
+            "commandPayload": {
+              "parentId": "flux-learnplaces/layout/content-container"
+            }
+          }
+        }
+      }
+    },
+    "createnContentContainerMenu": {
+      "onMessage": "{$applicationId}/layout/header/menu/items/clicked",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/layout/appendTemplateContent",
+        "commandPayload": {
+          "templateName": "menu",
+          "parentId": "flux-learnplaces/layout/content-container",
+          "slotName": "menu"
+        }
+      }
+    },
+    "createnContentContainerMenuTitle": {
+      "onMessage": "{$applicationId}/layout/content-container/menu/created",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/layout/changeSlotData",
+        "commandPayload": {
+          "parentId": "flux-learnplaces/layout/content-container/menu",
+          "data": {
+            "title": {
+              "lng_key": "xsrl_title",
+              "id": "flux-learnplaces/layout/content-container/menu/title",
+              "value": "Learnplaces"
+            }
+          }
+        }
+      }
+    },
+    "fetchContentContainerMenuItems": {
+      "onMessage": "{$applicationId}/layout/header/menu/items/clicked",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/repository/fetchData",
+        "commandPayload": {
+          "projection": "learnplaces/projectIdValueList",
+          "next": {
+            "command": "flux-learnplaces/layout/changeSlotData",
+            "commandPayload": {
+              "parentId": "flux-learnplaces/layout/content-container/menu"
+            }
+          }
+        }
+      }
+    },
+    "loadMap": {
+      "onMessage": "{$applicationId}/layout/content-container/menu/items/clicked",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/layout/appendTemplateContent",
+        "commandPayload": {
+          "templateName": "map",
+          "parentId": "flux-learnplaces/layout/content-container",
+          "slotName": "content"
+        }
+      }
+    }
+  }
+}

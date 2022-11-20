@@ -5,7 +5,7 @@ namespace fluxlabs\learnplaces\Adapters\Config;
 use fluxlabs\learnplaces\Core\Ports;
 use fluxlabs\learnplaces\Core\Domain\Models\Course;
 use fluxlabs\learnplaces\Adapters\Storage;
-
+use fluxlabs\learnplaces\Core\Domain\Models\Learnplace;
 
 class OutboundsAdapter implements Ports\Outbounds
 {
@@ -15,6 +15,7 @@ class OutboundsAdapter implements Ports\Outbounds
      */
     private $databaseConfig;
     private AbstractGroupReadableLearnplacesByCourses $coursesOfReadableLearnplaces;
+    private AbstractHasAccessToCourse $checkCourseAccess;
 
     public static function new(
         Config $config
@@ -22,23 +23,26 @@ class OutboundsAdapter implements Ports\Outbounds
         return new self(
             $config->apiBaseUrl,
             Storage\DatabaseConfig::new(
-            $config->iliasDatabaseHost,
-            $config->iliasDatabaseName,
-            $config->iliasDatabaseUser,
-            $config->iliasDatabasePassword
-        ),
-            $config->getRefIdsFilteredByReadPermission
+                $config->iliasDatabaseHost,
+                $config->iliasDatabaseName,
+                $config->iliasDatabaseUser,
+                $config->iliasDatabasePassword
+            ),
+            $config->getRefIdsFilteredByReadPermission,
+            $config->hasAccessToCourse
         );
     }
 
     private function __construct(
         string $apiBaseUrl,
         Storage\DatabaseConfig $databaseConfig,
-        AbstractGroupReadableLearnplacesByCourses $refIdsFilteredByReadPermission
+        AbstractGroupReadableLearnplacesByCourses $refIdsFilteredByReadPermission,
+        AbstractHasAccessToCourse $hasAccessToCourse
     ) {
         $this->apiBaseUrl = $apiBaseUrl;
         $this->databaseConfig = $databaseConfig;
         $this->coursesOfReadableLearnplaces = $refIdsFilteredByReadPermission;
+        $this->checkCourseAccess = $hasAccessToCourse;
     }
 
     public function getAllLearnplaceRefIds() : array
@@ -55,9 +59,24 @@ class OutboundsAdapter implements Ports\Outbounds
         return Storage\CourseRepository::new($this->databaseConfig)->getCourses($courseRefIds);
     }
 
+    /**
+     * @param array $learnPlaceRefIds
+     * @return Learnplace[]
+     */
+    public function getLearnplaces($learnPlaceRefIds) : array
+    {
+        return Storage\LearnplaceRepository::new($this->databaseConfig)->getLearnplaces($learnPlaceRefIds);
+    }
+
+
     public function groupReadableLearnplaceRefIdsByCourseRefIds(array $ref_ids) : array
     {
         return $this->coursesOfReadableLearnplaces->groupReadableLearnplacesByCourses($ref_ids);
+    }
+
+    public function hasAccessToCourse(int $refId) : bool
+    {
+        return $this->checkCourseAccess->hasAccessToCourse($refId);
     }
 
     public function getApiBaseUrl() : string
