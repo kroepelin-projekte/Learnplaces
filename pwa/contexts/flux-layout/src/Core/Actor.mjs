@@ -1,6 +1,7 @@
 import {
-  created
+  created, slotDataChanged
 } from './Behaviors.mjs';
+import MapElement from './Elements/MapElement.mjs';
 
 export default class Actor {
   /**
@@ -45,6 +46,7 @@ export default class Actor {
   async #create(name) {
     this.#name = name;
     await this.#createCustomElement();
+    MapElement.new(this.#template);
     await this.#applyCreated(
       created(name)
     );
@@ -70,18 +72,6 @@ export default class Actor {
       this.#shadowRoot = shadowRoot;
     }
 
-    //todo at connectedCallback / when slot is connected / get attributes from template
-    const leafletCss = document.createElement('link');
-    leafletCss.rel = "stylesheet";
-    leafletCss.href = "./contexts/flux-layout/node_modules/leaflet/dist/leaflet.css";
-
-    const leafletJs = document.createElement('script');
-    leafletJs.src = "./contexts/flux-layout/node_modules/leaflet/dist/leaflet.js";
-
-    const leafletSrcJs = document.createElement('script');
-    leafletSrcJs.src = "./contexts/flux-layout/node_modules/leaflet/dist/leaflet-src.js";
-
-
     customElements.define(
       tag,
       class extends HTMLElement {
@@ -90,11 +80,6 @@ export default class Actor {
           const shadowRoot = this.attachShadow({ mode: "open" });
           applyShadowRootCreated(shadowRoot);
           shadowRoot.append(styleElement);
-
-          shadowRoot.append(leafletCss);
-
-          shadowRoot.append(leafletJs);
-          shadowRoot.append(leafletSrcJs);
         }
 
         connectedCallback() {
@@ -182,7 +167,7 @@ export default class Actor {
 
         //TODO extract in functions
         //single slotItem
-        if (slotDefinition.getAttribute('slot-value-type') === "item") {
+        if (slotDefinition.getAttribute('slot-value-type') === "key-value-item") {
           const slotItem = slotData;
           let elementContainer = null;
           let element = null;
@@ -210,9 +195,16 @@ export default class Actor {
               slotItem.parentId + "/" + slotName + "/clicked", { data: { id: slotItem.id } }
             ));
           }
+
+          await this.#applySlotDataChanged(slotDataChanged(
+            elementContainerId, [slotItem.id]
+          ))
+          return;
         }
 
-        if (slotDefinition.getAttribute('slot-value-type') === "item-list") {
+        //TODO extract in functions
+        if (slotDefinition.getAttribute('slot-value-type') === "key-value-list") {
+          let idList = [];
           const slotItemList = slotData;
           let elementContainer = null;
           let element = null;
@@ -237,6 +229,7 @@ export default class Actor {
 
             element.textContent = slotItem.value
             element.id = elementContainerId + "/" + +slotItem.id;
+            idList.push(slotItem.id);
 
             if (addOnClickEvent) {
 
@@ -250,9 +243,76 @@ export default class Actor {
             elementContainer.appendChild(element)
           });
           parentElement.appendChild(elementContainer);
+
+          await this.#applySlotDataChanged(slotDataChanged(
+            elementContainerId, idList
+          ))
+          return;
+
+        }
+
+        //TODO extract in functions
+        if (slotDefinition.getAttribute('slot-value-type') === "object-list") {
+          let idList = [];
+          const objectList = slotData;
+          let elementContainer = null;
+
+            console.log(objectList);
+
+          elementContainer = this.#shadowRoot.getElementById(elementContainerId);
+          if (elementContainer) {
+            elementContainer.remove();
+          }
+
+          const templateId = slotDefinition.getAttribute('template-id');
+          await this.#loadTemplate(templateId);
+          const templateContent = this.#shadowRoot.getElementById(templateId)
+          .content
+          .cloneNode(true)
+          elementContainer = document.createElement('div');
+          elementContainer.id = elementContainerId;
+          elementContainer.slot = slotName;
+
+          Object.entries(objectList).forEach(([index, object]) => {
+            const slotObjetId = elementContainerId + "/" + index;
+            const div = document.createElement('div');
+            div.id = slotObjetId;
+            div.className = slotName;
+
+            Object.entries(object).forEach(([propertyName, property]) => {
+                const queryResult = templateContent.querySelectorAll('[name=' + propertyName + ']');
+                console.log(queryResult);
+                if(queryResult !== null) {
+                  const element = queryResult.item(0);
+                  console.log(element);
+                  element.setAttribute('content', property.value);
+                  div.appendChild(element)
+                }
+
+
+            });
+
+            elementContainer.appendChild(div);
+
+            idList.push(slotObjetId);
+          });
+          parentElement.appendChild(elementContainer);
+
+          await this.#applySlotDataChanged(slotDataChanged(
+            elementContainerId, idList
+          ))
+          return;
         }
       }
     }
+  }
+
+  /**
+   * @param {SlotDataChanged} payload
+   * @return {Promise<void>}
+   */
+  async #applySlotDataChanged(payload) {
+    this.#publish(payload.elementContainerId + "/" + slotDataChanged.name, payload)
   }
 
 

@@ -1,8 +1,8 @@
 export default `
     <template id='content-container-template'>
         <div class="container-lg clearfix p-5">
-    <div class="pb-5">  <h1><slot name='title' template-id='string-template' slot-value-type="item"></slot></h1>
-        <p><slot name='description' template-id='string-template' slot-value-type="item"></slot></p>
+    <div class="pb-5">  <h1><slot name='title' template-id='string-template' slot-value-type="key-value-item"></slot></h1>
+        <p><slot name='description' template-id='string-template' slot-value-type="key-value-item"></slot></p>
     </div>
 
     <div class="Box">

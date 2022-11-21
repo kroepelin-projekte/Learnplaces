@@ -4,7 +4,7 @@ import FluxLayoutComponentApi
   from "./contexts/flux-layout/src/Adapters/Api/FluxLayoutComponentApi.mjs";
 
 const applicationName = "flux-learnplaces";
-
+/*
 try {
   await navigator.serviceWorker.register(
     "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/pwa/serviceworker.mjs",
@@ -14,7 +14,7 @@ try {
 }
 catch (error) {
   console.error(error);
-}
+}*/
 
 await FluxAppApi.initialize(applicationName, true);
 await FluxLayoutComponentApi.initialize(applicationName, true);

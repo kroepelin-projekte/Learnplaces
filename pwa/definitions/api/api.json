@@ -141,6 +141,30 @@
           "slotName": "content"
         }
       }
+    },
+    "changeMapMarkers": {
+      "onMessage": "flux-learnplaces/layout/content-container/map/created",
+      "process": "handle",
+      "payload": {
+        "command": "flux-learnplaces/layout/changeSlotData",
+        "commandPayload": {
+          "parentId": "flux-learnplaces/layout/content-container/map",
+          "data": {
+            "marker": {
+              "1": {
+                "longitude": {
+                  "name":  "longitude",
+                  "value": "30"
+                },
+                "latitude": {
+                  "name":  "latitude",
+                  "value": "30"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
