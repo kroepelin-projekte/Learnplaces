@@ -76,7 +76,8 @@ export default class MapElement {
                   //latitude
                   const latitude = marker.lastChild.getAttribute('content');
 
-                  L.marker([longitude, latitude], 13).addTo(map);
+
+                  map.panTo(new L.LatLng(longitude, latitude));
 
                 });
               }
