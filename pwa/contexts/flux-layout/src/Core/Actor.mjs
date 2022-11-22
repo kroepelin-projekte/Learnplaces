@@ -2,12 +2,13 @@ import {
   created, slotDataChanged
 } from './Behaviors.mjs';
 import MapElement from './Elements/MapElement.mjs';
+import AppElement from './Elements/AppElement.mjs';
 
 export default class Actor {
   /**
    * @var {string}
    */
-  #name;
+  #appName;
   /**
    * @var {ShadowRoot}
    */
@@ -30,25 +31,28 @@ export default class Actor {
     this.#template = template;
   }
 
-  /**
-   * @return {Actor}
-   */
-  static async new(name, publish, template) {
+  static async new(appName, publish, template) {
     const obj = new Actor(publish, template);
-    await obj.#create(name);
+    await AppElement.initialize(appName);
+    await MapElement.initialize();
+
+    const element = document.createElement(appName)
+    element.id = appName;
+    await document.body.appendChild(element);
+    obj.#shadowRoot = await element.shadowRoot;
+
+    await obj.createElement(appName + "/" + "layout", "div");
+
     return obj;
   }
 
-  /**
-   * @param {string} name
-   * @return {void}
-   */
-  async #create(name) {
-    this.#name = name;
-    await this.#createCustomElement();
-    MapElement.new(this.#template);
+
+  async createElement(id, tag) {
+    const element = document.createElement(tag);
+    element.id = id;
+    await this.#shadowRoot.appendChild(element);
     await this.#applyCreated(
-      created(name)
+      created(id)
     );
   }
 
@@ -58,40 +62,6 @@ export default class Actor {
    */
   async #applyCreated(payload) {
     this.#publish(payload.id + "/" + created.name, payload)
-  }
-
-  /**
-   * @return {void}
-   */
-  async #createCustomElement() {
-    const linkStyleSheet = document.getElementById('flux-layout-style');
-    const styleElement = document.createElement('style');
-    styleElement.innerHTML = await (await fetch(linkStyleSheet.href)).text();
-    const tag = this.#name.replace("/", "-");
-    const applyShadowRootCreated = (shadowRoot) => {
-      this.#shadowRoot = shadowRoot;
-    }
-
-    customElements.define(
-      tag,
-      class extends HTMLElement {
-        constructor() {
-          super();
-          const shadowRoot = this.attachShadow({ mode: "open" });
-          applyShadowRootCreated(shadowRoot);
-          shadowRoot.append(styleElement);
-        }
-
-        connectedCallback() {
-
-        }
-      }
-    );
-    const element = document.createElement(tag)
-    const div = document.createElement('div');
-    div.id = this.#name;
-    element.shadowRoot.appendChild(div);
-    document.body.appendChild(element)
   }
 
 
@@ -149,8 +119,11 @@ export default class Actor {
 
   async changeSlotData(payload) {
     const parentId = payload.parentId;
-    const parentElement = this.#shadowRoot.getElementById(parentId);
+
+    console.log(parentId);
+    const parentElement = await this.#shadowRoot.getElementById(parentId);
     const shadowRoot = parentElement.shadowRoot;
+
     const data = payload.data;
 
 
@@ -164,7 +137,7 @@ export default class Actor {
         }
 
         const elementContainerId = parentId + "/" + slotName;
-
+        console.log(slotDefinition);
         //TODO extract in functions
         //single slotItem
         if (slotDefinition.getAttribute('slot-value-type') === "key-value-item") {
@@ -248,16 +221,13 @@ export default class Actor {
             elementContainerId, idList
           ))
           return;
-
         }
 
         //TODO extract in functions
-        if (slotDefinition.getAttribute('slot-value-type') === "object-list") {
+        if (slotDefinition.getAttribute('slot-value-type') === "object") {
           let idList = [];
-          const objectList = slotData;
+          const object = slotData;
           let elementContainer = null;
-
-            console.log(objectList);
 
           elementContainer = this.#shadowRoot.getElementById(elementContainerId);
           if (elementContainer) {
@@ -272,14 +242,56 @@ export default class Actor {
           elementContainer = document.createElement('div');
           elementContainer.id = elementContainerId;
           elementContainer.slot = slotName;
-
-          Object.entries(objectList).forEach(([index, object]) => {
-            const slotObjetId = elementContainerId + "/" + index;
-            const div = document.createElement('div');
-            div.id = slotObjetId;
-            div.className = slotName;
+          const slotObjetId = elementContainerId;
 
             Object.entries(object).forEach(([propertyName, property]) => {
+                const queryResult = templateContent.querySelectorAll('[name=' + propertyName + ']');
+              queryResult.forEach(function(element) {
+                element.setAttribute('content', property);
+                elementContainer.appendChild(element)
+                console.log(element);
+              });
+
+            });
+
+          parentElement.appendChild(elementContainer);
+
+          await this.#applySlotDataChanged(slotDataChanged(
+            elementContainerId, [slotObjetId]
+          ))
+          return;
+        }
+
+
+          if (slotDefinition.getAttribute('slot-value-type') === "object-list") {
+            let idList = [];
+            const objectList = slotData;
+            let elementContainer = null;
+
+            console.log(objectList);
+
+            elementContainer = this.#shadowRoot.getElementById(elementContainerId);
+            if (elementContainer) {
+              elementContainer.remove();
+            }
+
+
+            const templateId = slotDefinition.getAttribute('template-id');
+            await this.#loadTemplate(templateId);
+            const templateContent = this.#shadowRoot.getElementById(templateId)
+            .content
+            .cloneNode(true)
+            elementContainer = document.createElement('div');
+            elementContainer.id = elementContainerId;
+            elementContainer.slot = slotName;
+
+            Object.entries(objectList).forEach(([index, object]) => {
+              const slotObjetId = elementContainerId + "/" + index;
+              const div = document.createElement('div');
+              div.id = slotObjetId;
+              div.className = slotName;
+
+              Object.entries(object).forEach(([propertyName, property]) => {
                 const queryResult = templateContent.querySelectorAll('[name=' + propertyName + ']');
                 console.log(queryResult);
                 if(queryResult !== null) {
@@ -290,12 +302,13 @@ export default class Actor {
                 }
 
 
+              });
+
+              elementContainer.appendChild(div);
+
+              idList.push(slotObjetId);
             });
 
-            elementContainer.appendChild(div);
-
-            idList.push(slotObjetId);
-          });
           parentElement.appendChild(elementContainer);
 
           await this.#applySlotDataChanged(slotDataChanged(

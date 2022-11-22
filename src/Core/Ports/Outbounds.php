@@ -1,17 +1,27 @@
 <?php
+
 namespace fluxlabs\learnplaces\Core\Ports;
+
 use fluxlabs\learnplaces\Core\Domain\Models\Course;
 use fluxlabs\learnplaces\Core\Domain\Models\Learnplace;
+use fluxlabs\learnplaces\Core\Domain\Models\Location;
 
-interface Outbounds {
-    public function getApiBaseUrl(): string;
+interface Outbounds
+{
+    public function getApiBaseUrl() : string;
 
     public function getAllLearnplaceRefIds() : array;
+
     /**
      * @param array $groupedLearnplaceRefIds
      * @return Course[]
      */
     public function getCourses($groupedLearnplaceRefIds) : array;
+
+    public function getDefaultLocation() : Location;
+
+    public function getLearnplaceLocation($id) : Location;
+    public function getCourseLocation($id) : Location;
 
     /**
      * @param array $learnPlaceRefIds

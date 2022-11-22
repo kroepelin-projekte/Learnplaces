@@ -4,9 +4,9 @@ namespace fluxlabs\learnplaces\Adapters\Api;
 
 use fluxlabs\learnplaces\Core\Ports;
 use fluxlabs\learnplaces\Adapters\Config\OutboundsAdapter;
-use fluxlabs\learnplaces\Core\Domain\Models\Course;
+use fluxlabs\learnplaces\Core\Domain;
 
-class AsyncApi implements Ports\DomainEventPublisher
+class AsyncApi
 {
 
     private Ports\Outbounds $outbounds;
@@ -21,7 +21,7 @@ class AsyncApi implements Ports\DomainEventPublisher
     private function __construct(OutboundsAdapter $outboundsAdapter)
     {
         $this->outbounds = $outboundsAdapter;
-        $this->service =  Ports\Service::new($outboundsAdapter, $this);
+        $this->service = Ports\Service::new($outboundsAdapter, $this);
     }
 
     public function createApiBaseUrl() : void
@@ -33,54 +33,74 @@ class AsyncApi implements Ports\DomainEventPublisher
         );
     }
 
-    public function projectIdValueList($name, $parentId = null) : void
+    public function projectIdValueList($name, $idOrParentId = null) : void
     {
-        switch($name) {
+        $event = 'IdValueListProjected';
+        switch ($name) {
             case 'courses':
-                $this->service->createCourses();
+                $this->service->projectCourses($this->publishIdValueListProjection($name.'/'.$event));
                 break;
             case 'learnplaces':
-                $this->service->createLearnplaces($parentId);
+                $this->service->projectLearnplaces($this->publishIdValueListProjection($name.'/'.$event), $idOrParentId);
                 break;
         }
     }
 
-    public function projectMetadata($name, $id) : void
+
+    public function projectObject($name, $idOrParentId = null)
     {
-        switch($name) {
+        $event = 'objectProjected';
+        switch ($name) {
+            case 'defaultLocation':
+                $this->service->projectDefaultLocation($this->publishObjectProjection($name.'/'.$event));
+                break;
+            case 'learnplaceLocation':
+                $this->service->projectLearnplaceLocation($this->publishObjectProjection($name.'/'.$event), $idOrParentId);
+                break;
+            case 'courseLocation':
+                $this->service->projectCourseLocation($this->publishObjectProjection($name.'/'.$event), $idOrParentId);
+                break;
             case 'course':
-                $this->service->createCourse($id);
+                $this->service->projectCourse($this->publishObjectProjection($name.'/'.$event), $idOrParentId);
                 break;
         }
     }
 
 
-    function coursesCreated(array $courses)
+    private function publishIdValueListProjection(string $messageId)
     {
-        $courseIdValueList = CourseIdValueList::fromCourses($courses);
-        $this->publish(
-            StatusEnum::$STATUS_OK,
-            'courses/idValueListProjected',
-            $courseIdValueList
-        );
+        /**
+         * @param Domain\Models\IliasObject[]
+         */
+        return function (array $objectList) use ($messageId) {
+
+            $idValueList = IdValueList::fromObjetList($objectList);
+
+            $this->publish(
+                StatusEnum::$STATUS_OK,
+                $messageId,
+                $idValueList
+            );
+        };
     }
 
-    function courseCreated(Course $course)
+    private function publishObjectProjection(string $messageId)
     {
-        $this->publish(
-            StatusEnum::$STATUS_OK,
-            'course/courseMetadataProjected',
-            $course
-        );
+        return function (object $payload) use ($messageId) {
+            $this->publish(
+                StatusEnum::$STATUS_OK,
+                $messageId,
+                $payload
+            );
+        };
     }
-
 
     private function publish($status, $address, $payload)
     {
         header("Content-Type:application/json");
         header("HTTP/2.0 " . $status);
         header("statusText: OK");
-        header("address: ".$address);
+        header("address: " . $address);
         $response['data'] = $payload;
 
         $json_response = json_encode($response, JSON_UNESCAPED_SLASHES);
@@ -88,13 +108,6 @@ class AsyncApi implements Ports\DomainEventPublisher
         exit;
     }
 
-    function learnplacesCreated(array $learnplaces)
-    {
-        $idValueList = LearnplaceIdValueList::fromLearnplaces($learnplaces);
-        $this->publish(
-            StatusEnum::$STATUS_OK,
-            'learnplaces/idValueListProjected',
-            $idValueList
-        );
-    }
+
+
 }

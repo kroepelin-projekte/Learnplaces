@@ -4,6 +4,8 @@ import Definitions from '../../Adapters/Definitions/Definitions.mjs';
 
 export default class FluxLayoutComponentApi {
   /** @var {string} */
+  #appName;
+  /** @var {string} */
   #actorName;
   /** @var {Actor} */
   #actor;
@@ -17,6 +19,7 @@ export default class FluxLayoutComponentApi {
    * @param applicationName
    */
   constructor(applicationName) {
+    this.#appName = applicationName;
     this.#actorName = applicationName + "/" + "layout";
   }
 
@@ -36,7 +39,7 @@ export default class FluxLayoutComponentApi {
   }
 
   async #initActor() {
-    this.#actor = await Actor.new(this.#actorName, (name, payload) => {
+    this.#actor = await Actor.new(this.#appName, (name, payload) => {
         this.#publish(
           name,
           payload

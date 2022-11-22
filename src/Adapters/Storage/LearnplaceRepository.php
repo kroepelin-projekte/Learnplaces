@@ -35,7 +35,7 @@ class LearnplaceRepository
             echo "Connection failed: " . $e->getMessage();
         }
 
-        $sql = 'SELECT xsrl_ref.ref_id FROM ilias.object_data as xsrl_obj inner join object_reference as xsrl_ref on xsrl_ref.obj_id = xsrl_obj.obj_id  where xsrl_obj.type like "xsrl"';
+        $sql = "SELECT xsrl_ref.ref_id FROM ilias.object_data as xsrl_obj inner join object_reference as xsrl_ref on xsrl_ref.obj_id = xsrl_obj.obj_id  where xsrl_obj.type like 'xsrl'";
         $result = $conn->query($sql);
 
         $data = [];

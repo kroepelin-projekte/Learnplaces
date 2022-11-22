@@ -3,26 +3,22 @@
 namespace fluxlabs\learnplaces\Core\Ports;
 
 use fluxlabs\learnplaces\Core\Domain;
+use stdClass;
 
 class Service
 {
     private Outbounds $outbounds;
-    private DomainEventPublisher $domainEventPublisher;
 
     public static function new(
-        Outbounds $outbounds,
-        DomainEventPublisher $domainEventPublisher
-    )
-    {
-        return new self($outbounds, $domainEventPublisher);
+        Outbounds $outbounds
+    ) {
+        return new self($outbounds);
     }
 
-    private function __construct( Outbounds $outbounds, DomainEventPublisher $domainEventPublisher)
+    private function __construct(Outbounds $outbounds)
     {
         $this->outbounds = $outbounds;
-        $this->domainEventPublisher = $domainEventPublisher;
     }
-
 
     public function createApiBaseUrl() : void
     {
@@ -32,41 +28,57 @@ class Service
         $this->outbounds->getCourses($courseRefIds);
     }
 
-    /**
-     * @return  Domain\Models\Course[]
-     */
-    public function createCourses() : void
+    public function projectDefaultLocation(callable $projectTo)
+    {
+        $object = new stdClass();
+        $object->{'location'} = $this->outbounds->getDefaultLocation();
+        $projectTo($object);
+    }
+
+    public function projectLearnplaceLocation(callable $projectTo, $id)
+    {
+        $object = new stdClass();
+        $object->{'location'} = $this->outbounds->getLearnplaceLocation($id);
+        $projectTo($object);
+    }
+
+    public function projectCourseLocation(callable $projectTo, $id)
+    {
+        $object = new stdClass();
+        $object->{'location'} = $this->outbounds->getCourseLocation($id);
+        $projectTo($object);
+    }
+
+
+
+    public function projectCourse(callable $projectTo, $id) : void
+    {
+        if ($this->outbounds->hasAccessToCourse($id) === false) {
+            return;
+        }
+        $courses = $this->outbounds->getCourses([$id]);
+
+        $object = new stdClass();
+        $object->{'course'} = $courses[0];
+        $projectTo($object);
+    }
+
+    public function projectCourses(callable $projectTo) : void
     {
         $allLearnplaceRefIds = $this->outbounds->getAllLearnplaceRefIds();
         $groupedLearnplaceRefIds = $this->outbounds->groupReadableLearnplaceRefIdsByCourseRefIds($allLearnplaceRefIds);
 
-        $courses = $this->outbounds->getCourses(array_keys($groupedLearnplaceRefIds));
-        $this->domainEventPublisher->coursesCreated($courses);
+        $projectTo($this->outbounds->getCourses(array_keys($groupedLearnplaceRefIds)));
     }
 
-    /**
-     * @return  Domain\Models\Course
-     */
-    public function createCourse($id) : void {
-        if($this->outbounds->hasAccessToCourse($id) === false) {
-            return;
-        }
-        $courses = $this->outbounds->getCourses([$id]);
-        $this->domainEventPublisher->courseCreated($courses[0]);
-    }
-
-    /**
-     * @return  Domain\Models\Course[]
-     */
-    public function createLearnplaces(int $courseId) : void
+    public function projectLearnplaces(callable $projectTo, int $courseId) : void
     {
         $allLearnplaceRefIds = $this->outbounds->getAllLearnplaceRefIds();
         $groupedLearnplaceRefIds = $this->outbounds->groupReadableLearnplaceRefIdsByCourseRefIds($allLearnplaceRefIds);
 
         $relevantLearnplaceRefIds = $groupedLearnplaceRefIds[$courseId];
 
-        $learnplaces = $this->outbounds->getLearnplaces($relevantLearnplaceRefIds);
-        $this->domainEventPublisher->learnplacesCreated($learnplaces);
+        $projectTo($this->outbounds->getLearnplaces($relevantLearnplaceRefIds));
     }
 
 }

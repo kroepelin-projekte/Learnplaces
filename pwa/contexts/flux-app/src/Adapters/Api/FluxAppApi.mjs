@@ -54,14 +54,18 @@ export default class FluxAppApi {
       this.#messageStream.register(address, (messagePayload) => {
 
         let messagePayloadData = null;
+
+
+        //const payload = messagePayloadData;
+        const payload = reaction.payload.commandPayload;
+
         if(messagePayload.data) {
-          messagePayloadData = {data: messagePayload.data}
+          payload.data = {
+            ...payload.data,
+            ...messagePayload.data
+          }
         }
 
-        const payload = {
-          ...reaction.payload.commandPayload,
-          ...messagePayloadData
-        }
         console.log(payload);
 
         this.#react(reaction.process,reaction.payload.command, payload)

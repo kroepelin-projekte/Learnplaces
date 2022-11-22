@@ -6,6 +6,7 @@ use fluxlabs\learnplaces\Core\Ports;
 use fluxlabs\learnplaces\Core\Domain\Models\Course;
 use fluxlabs\learnplaces\Adapters\Storage;
 use fluxlabs\learnplaces\Core\Domain\Models\Learnplace;
+use fluxlabs\learnplaces\Core\Domain\Models\Location;
 
 class OutboundsAdapter implements Ports\Outbounds
 {
@@ -82,5 +83,21 @@ class OutboundsAdapter implements Ports\Outbounds
     public function getApiBaseUrl() : string
     {
         return $this->apiBaseUrl;
+    }
+
+    public function getDefaultLocation() : Location
+    {
+        return Storage\LocationRepository::new($this->databaseConfig)->getDefaultLocation();
+    }
+
+    public function getLearnplaceLocation($id) : Location
+    {
+        return Storage\LocationRepository::new($this->databaseConfig)->getLearnplaceLocation($id);
+    }
+
+    public function getCourseLocation($id) : Location
+    {
+        return Storage\LocationRepository::new($this->databaseConfig)->getCourseLocation($id);
+
     }
 }

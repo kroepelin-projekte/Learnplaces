@@ -1,4 +1,4 @@
-import * as L from './../../../node_modules/leaflet/dist/leaflet-src.esm.js';
+import * as L from './../../../libs/leaflet/dist/leaflet-src.esm.js';
 
 export default class MapElement {
 
@@ -18,10 +18,9 @@ export default class MapElement {
 
   }
 
-  static async new() {
+  static async initialize() {
     const obj = new MapElement();
-    obj.#createCustomElement();
-    return obj;
+    await obj.#createCustomElement();
   }
 
   /**
@@ -32,7 +31,8 @@ export default class MapElement {
 
     const styleElement = document.createElement('style');
 
-    styleElement.innerHTML = await (await fetch('./contexts/flux-layout/node_modules/leaflet/dist/leaflet.css')).text();
+    styleElement.innerHTML = await (await fetch(
+      './contexts/flux-layout/libs/leaflet/dist/leaflet.css')).text();
     const applyShadowRootCreated = (shadowRoot) => {
       this.#shadowRoot = shadowRoot;
     }
@@ -63,31 +63,62 @@ export default class MapElement {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
 
+          function onMapClick(e) {
+            L.popup()
+            .setLatLng(e.latlng)
+            .setContent(`${e.latlng.toString()}`)
+            .openOn(map);
+          }
+          map.on('click', onMapClick);
 
           this.addEventListener('slotchange', event => {
-
             let slots = this.querySelectorAll('slot');
-            slots[0].assignedNodes().forEach(
-              (element, key) => {
-                element.childNodes.forEach((
-                  marker, markerIndex) => {
-                  //longitude
-                  const longitude = marker.firstChild.getAttribute('content');
-                  //latitude
-                  const latitude = marker.lastChild.getAttribute('content');
-
-
-                  map.panTo(new L.LatLng(longitude, latitude));
-
+            let markerGroup = L.featureGroup();
+            //if(map.hasLayer(markerGroup)) {
+              //todo
+            markerGroup.clearLayers();
+            //}
+            //marker
+            if (slots[0]) {
+              slots[0].assignedNodes().forEach((props, key) => {
+                props.childNodes.forEach((props, index) => {
+                  this.setMarker(map, markerGroup, props)
                 });
-              }
-            )
+              })
+            }
 
-
-
-
+            //mapCoordinates
+            if (slots[1]) {
+              slots[1].assignedNodes().forEach((elementList, index) => {
+                this.changeMapCoordinates(map, markerGroup, elementList)
+              });
+            }
           });
+        }
 
+        setMarker(map, markerGroup, coordinates, radius) {
+          L.circle([
+            coordinates.childNodes[0].getAttribute('content'),
+            coordinates.childNodes[1].getAttribute('content')
+          ], {
+            color: 'violet',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: radius
+          }).addTo(markerGroup).bindPopup( coordinates.childNodes[1].getAttribute('content'));
+          map.addLayer(markerGroup);
+        }
+
+        changeMapCoordinates(map, markerGroup, coordinates) {
+          map.setView([
+            coordinates.childNodes[0].getAttribute('content'),
+            coordinates.childNodes[1].getAttribute('content')
+            ],
+            coordinates.childNodes[3].getAttribute('content'));
+          //radius
+          if(coordinates.childNodes[2].getAttribute('content') > 0) {
+            this.setMarker(map, markerGroup, coordinates, coordinates.childNodes[2].getAttribute('content'))
+          }
         }
       }
     );

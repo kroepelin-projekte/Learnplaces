@@ -88,21 +88,23 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
      */
     public function executeCommand()
     {
+        //todo
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Outbounds.php';
-        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/DomainEventPublisher.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/AsyncApi.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/IdValue.php';
-        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/CourseIdValueList.php';
-        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/LearnplaceIdValueList.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/IdValueList.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/StatusEnum.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Storage/DatabaseConfig.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Storage/CourseRepository.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Storage/LearnplaceRepository.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Storage/LocationRepository.php';
 
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/IliasObject.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Course.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Learnplace.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Location.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Service.php';
 
@@ -160,29 +162,48 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
 
                 $apiRequest = $_GET['api'];
 
-                switch (true) {
-                    case stristr($apiRequest, 'courses/projectIdValueList'):
-                        fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(
-                            $outboundsAdapter
-                        )->projectIdValueList('courses');
-                        break;
-                    case stristr($apiRequest, 'course/projectMetadata/crs_id/'):
-                        $exploded = explode('course/projectMetadata/crs_id/', $apiRequest);
-                        $id = $exploded[1];
-                        fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(
-                            $outboundsAdapter
-                        )->projectMetadata('course', $id);
-                        break;
-                    case stristr($apiRequest, 'learnplaces/projectIdValueList'):
-                        $exploded = explode('learnplaces/projectIdValueList/crs_id/', $apiRequest);
-                        $courseId = $exploded[1];
-                        fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(
-                            $outboundsAdapter
-                        )->projectIdValueList('learnplaces', $courseId);
-                        break;
-                        break;
-                }
+                $newAsyncApi = function () use ($outboundsAdapter) : fluxlabs\learnplaces\Adapters\Api\AsyncApi {
+                    return fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(
+                        $outboundsAdapter
+                    );
+                };
+                $getContext = function ($apiRequest) : string {
+                    $exploded = explode('/', $apiRequest);
+                    return $exploded[0];
+                };
+                $getIdType = function ($apiRequest, string $type) {
+                    $exploded = explode('/' . $type . '/', $apiRequest);
+                    if (count($exploded) == 2) {
+                        if (stristr('/', $exploded[1])) {
+                            return explode('/', $exploded[1])[0];
+                        }
+                        return $exploded[1];
+                    }
+                    return null;
+                };
 
+                $getId = function ($apiRequest) use ($getIdType) {
+                    $id = $getIdType($apiRequest, 'refId');
+                    if($id) return $id;
+
+                    return $getIdType($apiRequest, 'parentRefId');
+                };
+
+                $handleProjection = function (string $apiRequest) use (
+                    $getContext,
+                    $getId,
+                    $newAsyncApi
+                ) : void {
+                    switch (true) {
+                        case stristr($apiRequest, 'projectIdValueList'):
+                            $newAsyncApi()->projectIdValueList($getContext($apiRequest), $getId($apiRequest));
+                            break;
+                        case stristr($apiRequest, 'projectObject'):
+                            $newAsyncApi()->projectObject($getContext($apiRequest), $getId($apiRequest));
+                            break;
+                    }
+                };
+                $handleProjection($apiRequest);
                 exit;
             }
 

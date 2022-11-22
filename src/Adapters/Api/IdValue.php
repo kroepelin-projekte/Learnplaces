@@ -3,7 +3,7 @@
 namespace fluxlabs\learnplaces\Adapters\Api;
 
 class IdValue {
-    public string $idType;
+    public string $type;
     public string $id;
     public string $value;
 

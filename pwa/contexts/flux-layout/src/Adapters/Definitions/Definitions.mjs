@@ -5,6 +5,7 @@ import String from "../../../definitions/templates/string.mjs";
 import ContentContainer from "../../../definitions/templates/content-container.mjs";
 import Map from "../../../definitions/templates/map.mjs";
 import MapMarker from "../../../definitions/templates/map-marker.mjs";
+import MapLocation from "../../../definitions/templates/map-location.mjs";
 
 
 export default class Definitions {
@@ -52,6 +53,8 @@ export default class Definitions {
         return new DOMParser().parseFromString(Map, 'text/html').querySelector('template');
       case 'map-marker-template':
         return new DOMParser().parseFromString(MapMarker, 'text/html').querySelector('template');
+      case 'map-location-template':
+        return new DOMParser().parseFromString(MapLocation, 'text/html').querySelector('template');
     }
   }
 

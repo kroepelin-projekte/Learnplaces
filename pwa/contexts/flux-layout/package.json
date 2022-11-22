@@ -1,6 +1,0 @@
-{
-  "name": "flux-layout",
-  "dependencies": {
-    "leaflet": "^1.9.3"
-  }
-}

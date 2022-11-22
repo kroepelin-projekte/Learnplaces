@@ -75,7 +75,7 @@
       "payload": {
         "command": "{$applicationId}/repository/fetchData",
         "commandPayload": {
-          "projection": "course/projectMetadata",
+          "projection": "course/projectObject",
           "next": {
             "command": "flux-learnplaces/layout/changeSlotData",
             "commandPayload": {
@@ -85,7 +85,7 @@
         }
       }
     },
-    "createnContentContainerMenu": {
+    "createContentContainerMenu": {
       "onMessage": "{$applicationId}/layout/header/menu/items/clicked",
       "process": "handle",
       "payload": {
@@ -131,7 +131,7 @@
       }
     },
     "loadMap": {
-      "onMessage": "{$applicationId}/layout/content-container/menu/items/clicked",
+      "onMessage": "{$applicationId}/layout/content-container/menu/created",
       "process": "handle",
       "payload": {
         "command": "{$applicationId}/layout/appendTemplateContent",
@@ -142,8 +142,56 @@
         }
       }
     },
-    "changeMapMarkers": {
-      "onMessage": "flux-learnplaces/layout/content-container/map/created",
+    "setDefaultLocation": {
+      "onMessage": "{$applicationId}/layout/content-container/map/created",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/repository/fetchData",
+        "commandPayload": {
+          "projection": "defaultLocation/projectObject",
+          "next": {
+            "command": "flux-learnplaces/layout/changeSlotData",
+            "commandPayload": {
+              "parentId": "flux-learnplaces/layout/content-container/map"
+            }
+          }
+        }
+      }
+    },
+    "setCourseLocation": {
+      "onMessage": "{$applicationId}/layout/header/menu/items/clicked",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/repository/fetchData",
+        "commandPayload": {
+          "projection": "courseLocation/projectObject",
+          "next": {
+            "command": "flux-learnplaces/layout/changeSlotData",
+            "commandPayload": {
+              "parentId": "flux-learnplaces/layout/content-container/map"
+            }
+          }
+        }
+      }
+    },
+    "setLearnplaceLocation": {
+      "onMessage": "{$applicationId}/layout/content-container/menu/items/clicked",
+      "process": "handle",
+      "payload": {
+        "command": "{$applicationId}/repository/fetchData",
+        "commandPayload": {
+          "projection": "learnplaceLocation/projectObject",
+          "next": {
+            "command": "flux-learnplaces/layout/changeSlotData",
+            "commandPayload": {
+              "parentId": "flux-learnplaces/layout/content-container/map"
+            }
+          }
+        }
+      }
+    },
+    "changeCoordinates": {
+      "onMessage": "{$applicationId}/TODO",
       "process": "handle",
       "payload": {
         "command": "flux-learnplaces/layout/changeSlotData",
@@ -166,8 +214,8 @@
         }
       }
     },
-    "example": {
-      "onMessage": "flux-learnplaces/layout/content-container/menu/items/clicked",
+    "changeMapMarkers": {
+      "onMessage": "{$applicationId}/layout/TODO/menu/items/clicked",
       "process": "handle",
       "payload": {
         "command": "flux-learnplaces/layout/changeSlotData",
@@ -176,13 +224,13 @@
           "data": {
             "marker": {
               "1": {
-                "longitude": {
-                  "name":  "longitude",
-                  "value": "60"
-                },
                 "latitude": {
                   "name":  "latitude",
-                  "value": "10"
+                  "value": "51.50"
+                },
+                "longitude": {
+                  "name":  "longitude",
+                  "value": "-0.083"
                 }
               }
             }
