@@ -8,7 +8,7 @@ export default `
     <div class="Box">
         <div class="Box-header d-flex flex-items-center">
             <h3 class="Box-title overflow-hidden flex-auto">
-                Overview (todo)
+                Overview
             </h3>
             <slot name='menu'></slot>
         </div>
