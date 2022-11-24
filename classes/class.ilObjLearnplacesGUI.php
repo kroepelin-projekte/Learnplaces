@@ -189,6 +189,8 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
                     return $getIdType($apiRequest, 'parentRefId');
                 };
 
+
+
                 $handleProjection = function (string $apiRequest) use (
                     $getContext,
                     $getId,

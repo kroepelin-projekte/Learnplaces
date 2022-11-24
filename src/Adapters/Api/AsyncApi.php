@@ -101,7 +101,7 @@ class AsyncApi
         header("HTTP/2.0 " . $status);
         header("statusText: OK");
         header("address: " . $address);
-        $response['data'] = $payload;
+        $response = $payload;
 
         $json_response = json_encode($response, JSON_UNESCAPED_SLASHES);
         echo $json_response;

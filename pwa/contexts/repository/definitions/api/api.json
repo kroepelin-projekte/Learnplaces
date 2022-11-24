@@ -1,0 +1,39 @@
+{
+  "operations": {
+    "fetchData": {
+      "on": {
+        "address": "{$applicationName}/repository/fetchData",
+        "message": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "dataAddress": {
+                "type": "string"
+              },
+              "next": {
+                "address": {
+                  "type": "string"
+                },
+                "payload": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "handles": "fetchData",
+      "publishes": {
+        "address": {
+          "location": "{$message.payload}#/next/address"
+        },
+        "message": {
+          "merge": "{$message.payload}#/next/payload",
+          "payload": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}

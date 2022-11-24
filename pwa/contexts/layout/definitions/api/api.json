@@ -1,0 +1,58 @@
+{
+  "operations": {
+    "appendTemplateContent": {
+      "on": {
+        "address": "{$applicationName}/layout/appendTemplateContent",
+        "message": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "templateName": {
+                "type": "string"
+              },
+              "parentId": {
+                "type": "string"
+              },
+              "slotName": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "handles": "appendTemplateContent"
+    },
+    "changeSlotData": {
+      "on": {
+        "address": "{$applicationName}/layout/changeSlotData",
+        "message": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "parentId": {
+                "type": "string"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "anySlotNameAsKey": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "handles": "changeSlotData"
+    }
+  }
+}

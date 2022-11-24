@@ -1,7 +1,10 @@
-import FluxAppApi from './contexts/flux-app/src/Adapters/Api/FluxAppApi.mjs';
-import FluxRepositoryApi from './contexts/flux-repository/src/Adapters/Api/FluxRepositoryApi.mjs';
-import FluxLayoutComponentApi
-  from "./contexts/flux-layout/src/Adapters/Api/FluxLayoutComponentApi.mjs";
+import FluxGatewayApi from './contexts/gateway/src/Adapters/Api/FluxGatewayApi.mjs';
+import FluxRepositoryApi from './contexts/repository/src/Adapters/Api/FluxRepositoryApi.mjs';
+import FluxLayoutApi
+  from "./contexts/layout/src/Adapters/Api/FluxLayoutApi.mjs";
+import {
+  OfflineFirstStorage
+} from './contexts/repository/src/Adapters/Storage/OfflineFirstStorage.mjs';
 
 const applicationName = "flux-learnplaces";
 /*
@@ -16,20 +19,38 @@ catch (error) {
   console.error(error);
 }*/
 
-await FluxAppApi.initialize(applicationName, true);
-await FluxLayoutComponentApi.initialize(applicationName, true);
-await FluxRepositoryApi.initializeOfflineFirstRepository(
-  applicationName,
-  true,
-  await getRepositoryApiBaseUrl()
+const layout = await FluxLayoutApi.initialize({
+  applicationName: applicationName,
+  logEnabled: true,
+  definitionsBaseUrl: './contexts/layout/definitions'
+});
+const repository = await FluxRepositoryApi.initializeOfflineFirstRepository(
+  {
+    applicationName: applicationName,
+    logEnabled: true,
+    projectionApiBaseUrl: await getRepositoryApiBaseUrl(),
+    definitionsBaseUrl: './contexts/repository/definitions'
+  }
 );
+
+const gateway = await FluxGatewayApi.initialize({
+  applicationName: applicationName,
+  logEnabled: true,
+  definitionsBaseUrl: './definitions'
+});
+
+
+await gateway.initActor();
+await layout.initActor();
+await repository.initActor()
+
 
 async function getRepositoryApiBaseUrl() {
   console.log(window.navigator.onLine);
   if (window.navigator.onLine === true) {
     const apiBase = await fetch('/goto.php?target=xsrl_1&client_id=default');
     const response = await apiBase.json()
-    return response.data.baseUrl;
+    return response.baseUrl;
   } else {
     return "";
   }

@@ -1,0 +1,24 @@
+{
+  "operations": {
+    "ping": {
+      "on": {
+        "address": "{$applicationName}/ping",
+        "message": {
+          "payload": {
+            "type": "object"
+          }
+        }
+      },
+      "handles": "dispatch",
+      "publishes": {
+        "address": "{$applicationName}/pong",
+        "message": {
+          "merge": "{$message.payload}#/payload",
+          "payload": {
+            "pong": "pong"
+          }
+        }
+      }
+    }
+  }
+}
