@@ -83,7 +83,7 @@ class LearnplaceRepository
                     $row['ref_id'],
                     $row['obj_id'],
                     $row['title'],
-                    $row['description'],
+                    (string) $row['description'],
                 );
             }
         }
