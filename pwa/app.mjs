@@ -2,12 +2,9 @@ import FluxGatewayApi from './contexts/gateway/src/Adapters/Api/FluxGatewayApi.m
 import FluxRepositoryApi from './contexts/repository/src/Adapters/Api/FluxRepositoryApi.mjs';
 import FluxLayoutApi
   from "./contexts/layout/src/Adapters/Api/FluxLayoutApi.mjs";
-import {
-  OfflineFirstStorage
-} from './contexts/repository/src/Adapters/Storage/OfflineFirstStorage.mjs';
 
 const applicationName = "flux-learnplaces";
-/*
+
 try {
   await navigator.serviceWorker.register(
     "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/pwa/serviceworker.mjs",
@@ -17,7 +14,7 @@ try {
 }
 catch (error) {
   console.error(error);
-}*/
+}
 
 const layout = await FluxLayoutApi.initialize({
   applicationName: applicationName,
