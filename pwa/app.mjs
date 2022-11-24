@@ -45,7 +45,7 @@ await repository.initActor()
 async function getRepositoryApiBaseUrl() {
   console.log(window.navigator.onLine);
   if (window.navigator.onLine === true) {
-    const apiBase = await fetch('/goto.php?target=xsrl_1&client_id=default');
+    const apiBase = await fetch('/goto.php?target=xsrl_1');
     const response = await apiBase.json()
     return response.baseUrl;
   } else {
