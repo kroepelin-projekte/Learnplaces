@@ -17,7 +17,7 @@ class OutboundsAdapter implements Ports\Outbounds
      */
     private $databaseConfig;
     private AbstractGroupReadableLearnplacesByCourses $coursesOfReadableLearnplaces;
-    private AbstractHasAccessToCourse $checkCourseAccess;
+    private AbstractHasAccessToObject $checkAccess;
     private AbstractCurrentUser $currentUser;
 
     public static function new(
@@ -41,13 +41,13 @@ class OutboundsAdapter implements Ports\Outbounds
         string $apiBaseUrl,
         Storage\DatabaseConfig $databaseConfig,
         AbstractGroupReadableLearnplacesByCourses $refIdsFilteredByReadPermission,
-        AbstractHasAccessToCourse $hasAccessToCourse,
+        AbstractHasAccessToObject $hasAccessToCourse,
         AbstractCurrentUser  $currentUser
     ) {
         $this->apiBaseUrl = $apiBaseUrl;
         $this->databaseConfig = $databaseConfig;
         $this->coursesOfReadableLearnplaces = $refIdsFilteredByReadPermission;
-        $this->checkCourseAccess = $hasAccessToCourse;
+        $this->checkAccess = $hasAccessToCourse;
         $this->currentUser = $currentUser;
     }
 
@@ -82,7 +82,7 @@ class OutboundsAdapter implements Ports\Outbounds
 
     public function hasAccessToCourse(int $refId) : bool
     {
-        return $this->checkCourseAccess->hasAccessToCourse($refId);
+        return $this->checkAccess->hasAccess($refId);
     }
 
     public function getApiBaseUrl() : string
@@ -95,12 +95,12 @@ class OutboundsAdapter implements Ports\Outbounds
         return Storage\LocationRepository::new($this->databaseConfig)->getDefaultLocation();
     }
 
-    public function getLearnplaceLocation($id) : Location
+    public function getLearnplaceLocation(int $id) : Location
     {
         return Storage\LocationRepository::new($this->databaseConfig)->getLearnplaceLocation($id);
     }
 
-    public function getCourseLocation($id) : Location
+    public function getCourseLocation(int $id) : Location
     {
         return Storage\LocationRepository::new($this->databaseConfig)->getCourseLocation($id);
 
@@ -109,5 +109,15 @@ class OutboundsAdapter implements Ports\Outbounds
     public function getCurrentUser() : User
     {
         return $this->currentUser->getCurrentUser();
+    }
+
+    public function getLearnplaceContents(int $id) : array
+    {
+        return Storage\LearnplaceRepository::new($this->databaseConfig)->getLearnplaceContents($id);
+    }
+
+    public function hasAccessToLearnplace(int $refId) : bool
+    {
+        return $this->checkAccess->hasAccess($refId);
     }
 }

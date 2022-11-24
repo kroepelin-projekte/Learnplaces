@@ -10,7 +10,7 @@ class Config
     public string $iliasDatabaseUser;
     public string $iliasDatabasePassword;
     public AbstractGroupReadableLearnplacesByCourses $getRefIdsFilteredByReadPermission;
-    public AbstractHasAccessToCourse $hasAccessToCourse;
+    public AbstractHasAccessToObject $hasAccessToCourse;
     public AbstractCurrentUser $currentUser;
 
     public static function new(
@@ -20,7 +20,7 @@ class Config
         string $iliasDatabaseUser,
         string $iliasDatabasePassword,
         AbstractGroupReadableLearnplacesByCourses $getRefIdsFilteredByReadPermission,
-        AbstractHasAccessToCourse $hasAccessToCourse,
+        AbstractHasAccessToObject $hasAccessToCourse,
         AbstractCurrentUser $currentUser
     )
     : self
@@ -44,7 +44,7 @@ class Config
         string $iliasDatabaseUser,
         string $iliasDatabasePassword,
         AbstractGroupReadableLearnplacesByCourses $getRefIdsFilteredByReadPermission,
-        AbstractHasAccessToCourse $hasAccessToCourse,
+        AbstractHasAccessToObject $hasAccessToCourse,
         AbstractCurrentUser $currentUser
     ) {
         $this->apiBaseUrl = $apiBaseUrl;

@@ -86,4 +86,13 @@ class Service
         $projectTo($this->outbounds->getLearnplaces($relevantLearnplaceRefIds));
     }
 
+    public function projectLearnplaceContents(callable $projectTo, int $learnplaceId) : void
+    {
+        if ($this->outbounds->hasAccessToLearnplace($learnplaceId) === false) {
+            return;
+        }
+
+        $projectTo($this->outbounds->getLearnplaceContents($learnplaceId));
+    }
+
 }

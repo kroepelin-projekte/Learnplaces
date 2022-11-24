@@ -69,6 +69,16 @@ class AsyncApi
         }
     }
 
+    public function projectObjectList($name, $idOrParentId = null)
+    {
+        $event = 'objectListProjected';
+        switch ($name) {
+            case 'learnplaceContents':
+                $this->service->projectLearnplaceContents($this->publishObjectListProjection($name.'/'.$event), $idOrParentId);
+                break;
+        }
+    }
+
 
     private function publishIdValueListProjection(string $messageId)
     {
@@ -83,6 +93,17 @@ class AsyncApi
                 StatusEnum::$STATUS_OK,
                 $messageId,
                 $idValueList
+            );
+        };
+    }
+
+    private function publishObjectListProjection(string $messageId)
+    {
+        return function (array $payload) use ($messageId) {
+            $this->publish(
+                StatusEnum::$STATUS_OK,
+                $messageId,
+                $payload
             );
         };
     }

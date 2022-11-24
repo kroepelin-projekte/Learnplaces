@@ -105,13 +105,14 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Course.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/User.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Learnplace.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/LearnplaceContent.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Location.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Service.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/Config.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractGroupReadableLearnplacesByCourses.php';
-        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractHasAccessToCourse.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractHasAccessToObject.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractCurrentUser.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/OutboundsAdapter.php';
 
@@ -144,7 +145,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
                             return ilObjLearnplacesAccess::fnGroupReadableLearnplacesByCourses($this->usrId)($ref_ids);
                         }
                     },
-                    new class($usrId) extends \fluxlabs\learnplaces\Adapters\Config\AbstractHasAccessToCourse {
+                    new class($usrId) extends \fluxlabs\learnplaces\Adapters\Config\AbstractHasAccessToObject {
                         private int $usrId;
 
                         public function __construct(int $usrId)
@@ -152,9 +153,9 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
                             $this->usrId = $usrId;
                         }
 
-                        public function hasAccessToCourse(int $ref_id) : bool
+                        public function hasAccess(int $ref_id) : bool
                         {
-                            return ilObjLearnplacesAccess::fnHasAccessToCourse($this->usrId)($ref_id);
+                            return ilObjLearnplacesAccess::fnHasAccessToObject($this->usrId)($ref_id);
                         }
                     },
                     new class($currentUser) extends \fluxlabs\learnplaces\Adapters\Config\AbstractCurrentUser {
@@ -221,11 +222,15 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
                         case stristr($apiRequest, 'projectIdValueList'):
                             $newAsyncApi()->projectIdValueList($getContext($apiRequest), $getId($apiRequest));
                             break;
+                        case stristr($apiRequest, 'projectObjectList'):
+                            $newAsyncApi()->projectObjectList($getContext($apiRequest), $getId($apiRequest));
+                            break;
                         case stristr($apiRequest, 'projectObject'):
                             $newAsyncApi()->projectObject($getContext($apiRequest), $getId($apiRequest));
                             break;
                     }
                 };
+
                 $handleProjection($apiRequest);
                 exit;
             }

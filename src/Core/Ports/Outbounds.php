@@ -6,6 +6,7 @@ use fluxlabs\learnplaces\Core\Domain\Models\Course;
 use fluxlabs\learnplaces\Core\Domain\Models\Learnplace;
 use fluxlabs\learnplaces\Core\Domain\Models\Location;
 use fluxlabs\learnplaces\Core\Domain\Models\User;
+use fluxlabs\learnplaces\Core\Domain\Models\LearnplaceContent;
 
 interface Outbounds
 {
@@ -23,8 +24,8 @@ interface Outbounds
 
     public function getDefaultLocation() : Location;
 
-    public function getLearnplaceLocation($id) : Location;
-    public function getCourseLocation($id) : Location;
+    public function getLearnplaceLocation(int $id) : Location;
+    public function getCourseLocation(int $id) : Location;
 
     /**
      * @param array $learnPlaceRefIds
@@ -32,7 +33,15 @@ interface Outbounds
      */
     public function getLearnplaces($learnPlaceRefIds) : array;
 
+    /**
+     * @param int $id
+     * @return LearnplaceContent[] array
+     */
+    public function getLearnplaceContents(int $id) : array;
+
     public function groupReadableLearnplaceRefIdsByCourseRefIds(array $ref_ids) : array;
 
     public function hasAccessToCourse(int $ref_id) : bool;
+
+    public function hasAccessToLearnplace(int $ref_id) : bool;
 }

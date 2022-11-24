@@ -237,56 +237,76 @@
           }
         }
       }
-    }
-  },
-  "changeCoordinates": {
-    "on": {
-      "address": "{$applicationName}/TODO"
     },
-    "handles": "dispatch",
-    "publishes": {
-      "address": "flux-learnplaces/layout/changeSlotData",
-      "message": {
-        "payload": {
-          "parentId": "flux-learnplaces/layout/content-container/map",
-          "data": {
-            "marker": {
-              "1": {
-                "longitude": {
-                  "name": "longitude",
-                  "value": "30"
-                },
-                "latitude": {
-                  "name": "latitude",
-                  "value": "30"
+    "setLearnplaceContents": {
+      "on": {
+        "address": "{$applicationName}/layout/content-container/menu/items/clicked"
+      },
+      "handles": "dispatch",
+      "publishes": {
+        "address": "{$applicationName}/repository/fetchData",
+        "message": {
+          "payload": {
+            "dataAddress": "learnplaceContents/projectObjectList",
+            "next": {
+              "address": "flux-learnplaces/layout/TODO",
+              "payload": {
+                "parentId": "flux-learnplaces/layout/content-container"
+              }
+            }
+          }
+        }
+      }
+    },
+    "changeCoordinates": {
+      "on": {
+        "address": "{$applicationName}/TODO"
+      },
+      "handles": "dispatch",
+      "publishes": {
+        "address": "flux-learnplaces/layout/changeSlotData",
+        "message": {
+          "payload": {
+            "parentId": "flux-learnplaces/layout/content-container/map",
+            "data": {
+              "marker": {
+                "1": {
+                  "longitude": {
+                    "name": "longitude",
+                    "value": "30"
+                  },
+                  "latitude": {
+                    "name": "latitude",
+                    "value": "30"
+                  }
                 }
               }
             }
           }
         }
       }
-    }
-  },
-  "changeMapMarkers": {
-    "on": {
-      "address": "{$applicationName}/layout/TODO/menu/items/clicked"
     },
-    "handles": "dispatch",
-    "publishes": {
-      "address": "flux-learnplaces/layout/changeSlotData",
-      "message": {
-        "payload": {
-          "parentId": "flux-learnplaces/layout/content-container/map",
-          "data": {
-            "marker": {
-              "1": {
-                "latitude": {
-                  "name": "latitude",
-                  "value": "51.50"
-                },
-                "longitude": {
-                  "name": "longitude",
-                  "value": "-0.083"
+    "changeMapMarkers": {
+      "on": {
+        "address": "{$applicationName}/layout/TODO/menu/items/clicked"
+      },
+      "handles": "dispatch",
+      "publishes": {
+        "address": "flux-learnplaces/layout/changeSlotData",
+        "message": {
+          "payload": {
+            "parentId": "flux-learnplaces/layout/content-container/map",
+            "data": {
+              "marker": {
+                "1": {
+                  "latitude": {
+                    "name": "latitude",
+                    "value": "51.50"
+                  },
+                  "longitude": {
+                    "name": "longitude",
+                    "value": "-0.083"
+                  }
                 }
               }
             }

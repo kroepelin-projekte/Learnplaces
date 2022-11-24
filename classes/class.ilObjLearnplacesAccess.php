@@ -60,7 +60,7 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess
         return true;
     }
 
-    public static function fnHasAccessToCourse(int $a_user_id) : callable
+    public static function fnHasAccessToObject(int $a_user_id) : callable
     {
         return function (int $ref_id) use ($a_user_id) : bool {
             $accessControl = PluginContainer::resolve('ilAccess');
