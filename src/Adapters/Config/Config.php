@@ -11,6 +11,7 @@ class Config
     public string $iliasDatabasePassword;
     public AbstractGroupReadableLearnplacesByCourses $getRefIdsFilteredByReadPermission;
     public AbstractHasAccessToCourse $hasAccessToCourse;
+    public AbstractCurrentUser $currentUser;
 
     public static function new(
         string $apiBaseUrl,
@@ -19,7 +20,8 @@ class Config
         string $iliasDatabaseUser,
         string $iliasDatabasePassword,
         AbstractGroupReadableLearnplacesByCourses $getRefIdsFilteredByReadPermission,
-        AbstractHasAccessToCourse $hasAccessToCourse
+        AbstractHasAccessToCourse $hasAccessToCourse,
+        AbstractCurrentUser $currentUser
     )
     : self
     {
@@ -30,7 +32,8 @@ class Config
             $iliasDatabaseUser,
             $iliasDatabasePassword,
             $getRefIdsFilteredByReadPermission,
-            $hasAccessToCourse
+            $hasAccessToCourse,
+            $currentUser
         );
     }
 
@@ -41,7 +44,8 @@ class Config
         string $iliasDatabaseUser,
         string $iliasDatabasePassword,
         AbstractGroupReadableLearnplacesByCourses $getRefIdsFilteredByReadPermission,
-        AbstractHasAccessToCourse $hasAccessToCourse
+        AbstractHasAccessToCourse $hasAccessToCourse,
+        AbstractCurrentUser $currentUser
     ) {
         $this->apiBaseUrl = $apiBaseUrl;
         $this->iliasDatabaseHost = $iliasDatabaseHost;
@@ -50,5 +54,6 @@ class Config
         $this->iliasDatabasePassword = $iliasDatabasePassword;
         $this->getRefIdsFilteredByReadPermission = $getRefIdsFilteredByReadPermission;
         $this->hasAccessToCourse = $hasAccessToCourse;
+        $this->currentUser = $currentUser;
     }
 }

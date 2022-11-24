@@ -88,7 +88,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
      */
     public function executeCommand()
     {
-        //todo
+        //todo replace with psr4 loader
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Outbounds.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/AsyncApi.php';
@@ -103,6 +103,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/IliasObject.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Course.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/User.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Learnplace.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Location.php';
 
@@ -111,6 +112,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/Config.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractGroupReadableLearnplacesByCourses.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractHasAccessToCourse.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/AbstractCurrentUser.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Config/OutboundsAdapter.php';
 
         if ($_GET['ref_id'] == 1) {
@@ -119,6 +121,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
             global $DIC;
             $ilDB = $DIC->database();
             $usrId = $this->currentUser->getId();
+            $currentUser = $this->currentUser;
 
             $outboundsAdapter = fluxlabs\learnplaces\Adapters\Config\OutboundsAdapter::new(
                 fluxlabs\learnplaces\Adapters\Config\Config::new(
@@ -153,7 +156,25 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
                         {
                             return ilObjLearnplacesAccess::fnHasAccessToCourse($this->usrId)($ref_id);
                         }
-                    }
+                    },
+                    new class($currentUser) extends \fluxlabs\learnplaces\Adapters\Config\AbstractCurrentUser {
+                        private $currentUser;
+
+                        public function __construct($currentUser)
+                        {
+                            $this->currentUser = $currentUser;
+                        }
+
+                        public function getCurrentUser() : \fluxlabs\learnplaces\Core\Domain\Models\User
+                        {
+                            return \fluxlabs\learnplaces\Core\Domain\Models\User::new(
+                                $this->currentUser->getId(),
+                                $this->currentUser->getFirstname(),
+                                $this->currentUser->getLastName(),
+                                $this->currentUser->getEmail(),
+                            );
+                        }
+                    },
                 )
             );
 
@@ -184,12 +205,12 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
 
                 $getId = function ($apiRequest) use ($getIdType) {
                     $id = $getIdType($apiRequest, 'refId');
-                    if($id) return $id;
+                    if ($id) {
+                        return $id;
+                    }
 
                     return $getIdType($apiRequest, 'parentRefId');
                 };
-
-
 
                 $handleProjection = function (string $apiRequest) use (
                     $getContext,

@@ -7,6 +7,7 @@ use fluxlabs\learnplaces\Core\Domain\Models\Course;
 use fluxlabs\learnplaces\Adapters\Storage;
 use fluxlabs\learnplaces\Core\Domain\Models\Learnplace;
 use fluxlabs\learnplaces\Core\Domain\Models\Location;
+use fluxlabs\learnplaces\Core\Domain\Models\User;
 
 class OutboundsAdapter implements Ports\Outbounds
 {
@@ -17,6 +18,7 @@ class OutboundsAdapter implements Ports\Outbounds
     private $databaseConfig;
     private AbstractGroupReadableLearnplacesByCourses $coursesOfReadableLearnplaces;
     private AbstractHasAccessToCourse $checkCourseAccess;
+    private AbstractCurrentUser $currentUser;
 
     public static function new(
         Config $config
@@ -30,7 +32,8 @@ class OutboundsAdapter implements Ports\Outbounds
                 $config->iliasDatabasePassword
             ),
             $config->getRefIdsFilteredByReadPermission,
-            $config->hasAccessToCourse
+            $config->hasAccessToCourse,
+            $config->currentUser
         );
     }
 
@@ -38,12 +41,14 @@ class OutboundsAdapter implements Ports\Outbounds
         string $apiBaseUrl,
         Storage\DatabaseConfig $databaseConfig,
         AbstractGroupReadableLearnplacesByCourses $refIdsFilteredByReadPermission,
-        AbstractHasAccessToCourse $hasAccessToCourse
+        AbstractHasAccessToCourse $hasAccessToCourse,
+        AbstractCurrentUser  $currentUser
     ) {
         $this->apiBaseUrl = $apiBaseUrl;
         $this->databaseConfig = $databaseConfig;
         $this->coursesOfReadableLearnplaces = $refIdsFilteredByReadPermission;
         $this->checkCourseAccess = $hasAccessToCourse;
+        $this->currentUser = $currentUser;
     }
 
     public function getAllLearnplaceRefIds() : array
@@ -99,5 +104,10 @@ class OutboundsAdapter implements Ports\Outbounds
     {
         return Storage\LocationRepository::new($this->databaseConfig)->getCourseLocation($id);
 
+    }
+
+    public function getCurrentUser() : User
+    {
+        return $this->currentUser->getCurrentUser();
     }
 }

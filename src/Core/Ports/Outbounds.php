@@ -5,12 +5,15 @@ namespace fluxlabs\learnplaces\Core\Ports;
 use fluxlabs\learnplaces\Core\Domain\Models\Course;
 use fluxlabs\learnplaces\Core\Domain\Models\Learnplace;
 use fluxlabs\learnplaces\Core\Domain\Models\Location;
+use fluxlabs\learnplaces\Core\Domain\Models\User;
 
 interface Outbounds
 {
     public function getApiBaseUrl() : string;
 
     public function getAllLearnplaceRefIds() : array;
+
+    public function getCurrentUser() : User;
 
     /**
      * @param array $groupedLearnplaceRefIds

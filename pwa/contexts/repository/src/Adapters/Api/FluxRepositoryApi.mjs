@@ -19,7 +19,8 @@ export default class FluxRepositoryApi {
   #definitions;
   /** @var {string} */
   #projectionApiBaseUrl;
-
+  /** @var {string} */
+  #projectCurrentUserAddress;
 
   /**
    * @private
@@ -39,8 +40,11 @@ export default class FluxRepositoryApi {
     await obj.#initDefinitions(config.definitionsBaseUrl);
     obj.#projectionApiBaseUrl = config.projectionApiBaseUrl;
     await obj.#initOperations();
+    obj.#projectCurrentUserAddress = config.projectCurrentUserAddress;
     return obj;
   }
+
+
 
   /**
    * @param {string} definitionBaseUrl
@@ -52,7 +56,7 @@ export default class FluxRepositoryApi {
 
   async initActor() {
     const storage = await OfflineFirstStorage.new(this.#actorName, this.#projectionApiBaseUrl)
-    this.#actor = await Actor.new(this.#actorName, (publishTo, payload) => {
+    this.#actor = await Actor.new(this.#actorName, this.#projectCurrentUserAddress, (publishTo, payload) => {
         this.#publish(
             publishTo,
             payload
@@ -60,6 +64,7 @@ export default class FluxRepositoryApi {
       },
       storage
     );
+    this.#actor.fetchData()
   }
 
   async #initOperations() {

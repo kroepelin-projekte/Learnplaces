@@ -71,6 +71,11 @@ class Service
         $projectTo($this->outbounds->getCourses(array_keys($groupedLearnplaceRefIds)));
     }
 
+    public function projectCurrentUser(callable $projectTo) : void
+    {
+        $projectTo($this->outbounds->getCurrentUser());
+    }
+
     public function projectLearnplaces(callable $projectTo, int $courseId) : void
     {
         $allLearnplaceRefIds = $this->outbounds->getAllLearnplaceRefIds();

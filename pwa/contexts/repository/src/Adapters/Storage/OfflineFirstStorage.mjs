@@ -24,14 +24,14 @@ export class OfflineFirstStorage {
 
   /**
    * @param {string} address
-   * @param {object} currentData
+   * @param {object} entityFilter
    * @param {function(jsonObject: string)} replyTo
    */
-  async get(address,currentData = null, replyTo) {
+  async get(address,entityFilter = null, replyTo) {
     const dataCacheName = this.#name;
 
-    if (currentData) {
-      Object.entries(currentData).forEach(([key, value]) => {
+    if (entityFilter) {
+      Object.entries(entityFilter).forEach(([key, value]) => {
         address = address + "/" + key + "/" + value
       })
     }

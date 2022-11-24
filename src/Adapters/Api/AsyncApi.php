@@ -63,6 +63,9 @@ class AsyncApi
             case 'course':
                 $this->service->projectCourse($this->publishObjectProjection($name.'/'.$event), $idOrParentId);
                 break;
+            case 'currentUser':
+                $this->service->projectCurrentUser($this->publishObjectProjection($name.'/'.$event));
+                break;
         }
     }
 

@@ -26,7 +26,8 @@ const repository = await FluxRepositoryApi.initializeOfflineFirstRepository(
     applicationName: applicationName,
     logEnabled: true,
     projectionApiBaseUrl: await getRepositoryApiBaseUrl(),
-    definitionsBaseUrl: './contexts/repository/definitions'
+    definitionsBaseUrl: './contexts/repository/definitions',
+    projectCurrentUserAddress: 'currentUser/projectObject'
   }
 );
 

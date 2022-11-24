@@ -1,10 +1,14 @@
-import { created, dataChanged } from './Behaviors.mjs';
+import { created, currentUserChanged, dataChanged } from './Behaviors.mjs';
 
 export default class Actor {
   /**
    * @var {string}
    */
   #name;
+  /**
+   * @var {string}
+   */
+  #projectCurrentUserAddress;
   /**
    * @function()
    */
@@ -14,6 +18,11 @@ export default class Actor {
    * @var {{get: function( address: string, replyTo: function}}
    */
   #storage
+
+  /**
+   * @var {{id: string, email: string}}
+   */
+  #currentUser = { id: "", email: "" };
 
   /**
    * @private
@@ -26,10 +35,10 @@ export default class Actor {
   /**
    * @return {Actor}
    */
-  static async new(name, publish, repository) {
+  static async new(name, projectCurrentUserAddress, publish, repository) {
     const obj = new Actor(publish, repository);
     await obj.#applyCreated(
-      created(name)
+      created(name, projectCurrentUserAddress)
     );
     return obj;
   }
@@ -40,6 +49,7 @@ export default class Actor {
    */
   async #applyCreated(payload) {
     this.#name = payload.name;
+    this.#projectCurrentUserAddress = payload.projectCurrentUserAddress;
     this.#publish(this.#name + "/" + created.name, payload);
   }
 
@@ -47,18 +57,61 @@ export default class Actor {
    * @param {FetchData} payload
    */
   async fetchData(payload) {
+    await this.changeCurrentUser({
+      address: this.#projectCurrentUserAddress
+    });
+
+    let entityFilter = {}
+    if(payload && payload.hasOwnProperty('data')) {
+      entityFilter = payload.data;
+    }
+
+    const $usrIdParts = this.#currentUser.id.split('/');
+    console.log( this.#currentUser);
+    entityFilter[$usrIdParts[0]] = $usrIdParts[1];
+
+    console.log(entityFilter);
+
     this.#storage.get(
       payload.dataAddress,
-      payload.data,
-      (json) =>
-    {
-      this.#applyDataChanged(dataChanged(payload.next.address, {
-        ...payload.next.payload,
-        ...json
-      }))
-    }
-  )
+      entityFilter, //todo rename
+      (json) => {
+        this.#applyDataChanged(dataChanged(payload.next.address, {
+          ...payload.next.payload,
+          ...json
+        }))
+      }
+    )
   }
+
+  /**
+   * @param {ChangeCurrentUser} payload
+   */
+  async changeCurrentUser(payload) {
+    await this.#storage.get(
+      payload.address,
+      {},
+      (json) => {
+        if (json.id !== this.#currentUser.id) {
+          this.#applyCurrentUserChanged(
+            currentUserChanged(json.id, json.email)
+          )
+        }
+      }
+    )
+  }
+
+  /**
+   * @param {CurrentUserChangedEvent} payload
+   */
+  async #applyCurrentUserChanged(payload) {
+    this.#currentUser = {
+      id: payload.id,
+      email: payload.email
+    }
+    this.#publish(this.#name + "/" + currentUserChanged.name, payload);
+  }
+
 
   /**
    * @param {DataChangedEvent} payload
