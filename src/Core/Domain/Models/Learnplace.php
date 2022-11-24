@@ -16,7 +16,7 @@ class Learnplace extends IliasObject
         int $refId,
         int $objId,
         string $title,
-        string $description
+        $description
     ) : self {
         return new self($refId, $objId, $title, $description);
     }
@@ -25,11 +25,11 @@ class Learnplace extends IliasObject
         int $refId,
         int $objId,
         string $title,
-        string $description
+        $description
     ) {
         $this->id ="refId/".$refId;
         $this->objId = $objId;
         $this->title = $title;
-        $this->description = $description;
+        $this->description = "";
     }
 }
