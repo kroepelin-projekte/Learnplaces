@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="./main.mjs" type="module"></script>
+    <title>example-app</title>
+    <link id="flux-layout-style" href="./../../definitions/css/stylesheet.css" rel="stylesheet" />
+    <link id="flux-layout-leaflet-style" href="./../../libs/leaflet/dist/leaflet.css" rel="stylesheet" />
+</head>
+
+<body>
+<button onclick="createHeader()">create header</button>
+<button onclick="createHeaderMenu()">create header menu</button>
+<button onclick="setHeaderMenuTitle()">set header menu title</button>
+
+
+<script>
+
+  function createHeader() {
+    const channel = new BroadcastChannel('example-app/layout/appendTemplateContent');
+    channel.postMessage(
+      {
+        "templateName": "header",
+        "parentId": "example-app/layout"
+      }
+    );
+  }
+
+  function createHeaderMenu() {
+    const channel = new BroadcastChannel('example-app/layout/appendTemplateContent');
+    channel.postMessage(
+      {
+        "templateName": "menu",
+        "parentId": "example-app/layout/header",
+        "slotName": "menu"
+      }
+    );
+  }
+
+  function setHeaderMenuTitle() {
+    const channel = new BroadcastChannel('example-app/layout/changeSlotData');
+    channel.postMessage(
+      {
+        "parentId": "example-app/layout/header/menu",
+        "data": {
+          "title": {
+            "id": "example-app/layout/header/menu/title",
+            "value": "Courses"
+          }
+        }
+      }
+    );
+  }
+
+</script>
+</body>
+
+</html>
