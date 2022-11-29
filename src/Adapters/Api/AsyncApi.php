@@ -47,7 +47,7 @@ class AsyncApi
     }
 
 
-    public function projectObject($name, $idOrParentId = null)
+    public function projectObject(string $name, $idOrParentId = null)
     {
         $event = 'objectProjected';
         switch ($name) {
@@ -99,11 +99,14 @@ class AsyncApi
 
     private function publishObjectListProjection(string $messageId)
     {
-        return function (array $payload) use ($messageId) {
+        return function (array $objectList) use ($messageId) {
+
+            $objectItemList = ObjectItemList::fromObjetList($objectList);
+
             $this->publish(
                 StatusEnum::$STATUS_OK,
                 $messageId,
-                $payload
+                $objectItemList
             );
         };
     }

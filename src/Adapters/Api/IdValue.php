@@ -15,6 +15,7 @@ class IdValue {
     ): self {
         $obj = new self();
         $obj->idType = $idType;
+        $obj->onClick = $idType."/".$id;
         $obj->id = $id;
         $obj->value = $value;
         return $obj;
