@@ -1,9 +1,9 @@
 {
-    "id": "fluxpwa",
+    "id": "learnplaces",
    "name": "ilias learnplaces",
-   "short-name": "fluxpwa",
-   "description": "lorem ipsum",
-   "lang": "en (English)",
+   "short_name": "learnplaces",
+   "description": "",
+   "lang": "en",
    "icons": [{
              "src": "./assets/illustration-04.svg",
              "sizes": "165x150",
@@ -23,5 +23,6 @@
     "orientation": "natural",
     "scope": "./",
     "start_url": "./index.html",
-    "categories": ["learning", "technology", "web"]
+    "categories": ["learning", "technology", "web"],
+    "dir": "ltr"
 }
