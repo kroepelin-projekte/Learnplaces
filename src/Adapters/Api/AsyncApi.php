@@ -99,14 +99,17 @@ class AsyncApi
 
     private function publishObjectListProjection(string $messageId)
     {
-        return function (array $objectList) use ($messageId) {
+        return function ($objectList) use ($messageId) {
 
-            $objectItemList = ObjectItemList::fromObjetList($objectList);
+            if(is_array($objectList)) {
+                $objectList = ObjectItemList::fromObjetList($objectList);
+            }
+
 
             $this->publish(
                 StatusEnum::$STATUS_OK,
                 $messageId,
-                $objectItemList
+                $objectList
             );
         };
     }

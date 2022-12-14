@@ -17,7 +17,7 @@ use RuntimeException;
  * UPLOAD_ERR_NO_FILE       = 4 (No file was uploaded.)
  * UPLOAD_ERR_NO_TMP_DIR    = 6 (Missing a temporary folder. Introduced in PHP 5.0.3.)
  * UPLOAD_ERR_CANT_WRITE    = 7 (Failed to write file to disk. Introduced in PHP 5.1.0.)
- * UPLOAD_ERR_EXTENSION     = 8 (Value: 8; A PHP extension stopped the file upload. PHP does not provide a way
+ * UPLOAD_ERR_EXTENSION     = 8 (ValueElements: 8; A PHP extension stopped the file upload. PHP does not provide a way
  *                               to ascertain which extension caused the file upload to stop; examining the list
  *                               of loaded extensions with phpinfo() may help. Introduced in PHP 5.2.0.)
  *

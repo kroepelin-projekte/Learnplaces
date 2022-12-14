@@ -111,7 +111,7 @@ class OutboundsAdapter implements Ports\Outbounds
         return $this->currentUser->getCurrentUser();
     }
 
-    public function getLearnplaceContents(int $id) : array
+    public function getLearnplaceContents(int $id) : object
     {
         return Storage\LearnplaceRepository::new($this->databaseConfig)->getLearnplaceContents($id);
     }

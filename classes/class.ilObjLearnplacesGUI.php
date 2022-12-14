@@ -88,12 +88,15 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
      */
     public function executeCommand()
     {
-        //todo replace with psr4 loader
+
+       //
+
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Outbounds.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/AsyncApi.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/IdValue.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/IdValueList.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/ObjectItemList.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Api/StatusEnum.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Storage/DatabaseConfig.php';
@@ -101,11 +104,14 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Storage/LearnplaceRepository.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Adapters/Storage/LocationRepository.php';
 
+
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/IliasObject.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Learnplace.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Course.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/User.php';
-        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Learnplace.php';
-        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/LearnplaceContent.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/ContentList.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/DetailsContent.php';
+        require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/TextContent.php';
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Domain/Models/Location.php';
 
         require_once './Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/src/Core/Ports/Service.php';
@@ -123,6 +129,7 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
             $ilDB = $DIC->database();
             $usrId = $this->currentUser->getId();
             $currentUser = $this->currentUser;
+
 
             $outboundsAdapter = fluxlabs\learnplaces\Adapters\Config\OutboundsAdapter::new(
                 fluxlabs\learnplaces\Adapters\Config\Config::new(
@@ -183,6 +190,9 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
             if ($this->ctrl->getCmd() === "api-request") {
 
                 $apiRequest = $_GET['api'];
+                if(substr($apiRequest, 0, 1) === "/") {
+                    $apiRequest = substr($apiRequest, 1);
+                }
 
                 $newAsyncApi = function () use ($outboundsAdapter) : fluxlabs\learnplaces\Adapters\Api\AsyncApi {
                     return fluxlabs\learnplaces\Adapters\Api\AsyncApi::new(

@@ -6,7 +6,7 @@ use fluxlabs\learnplaces\Core\Domain\Models\Course;
 use fluxlabs\learnplaces\Core\Domain\Models\Learnplace;
 use fluxlabs\learnplaces\Core\Domain\Models\Location;
 use fluxlabs\learnplaces\Core\Domain\Models\User;
-use fluxlabs\learnplaces\Core\Domain\Models\LearnplaceContent;
+use fluxlabs\learnplaces\Core\Domain\Models\TextContent;
 
 interface Outbounds
 {
@@ -35,9 +35,9 @@ interface Outbounds
 
     /**
      * @param int $id
-     * @return LearnplaceContent[] array
+     * @return TextContent[] array
      */
-    public function getLearnplaceContents(int $id) : array;
+    public function getLearnplaceContents(int $id) : object;
 
     public function groupReadableLearnplaceRefIdsByCourseRefIds(array $ref_ids) : array;
 

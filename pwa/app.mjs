@@ -1,7 +1,10 @@
-import FluxGatewayApi from './contexts/gateway/src/Adapters/Api/FluxGatewayApi.mjs';
-import FluxRepositoryApi from './contexts/repository/src/Adapters/Api/FluxRepositoryApi.mjs';
-import FluxLayoutApi
-  from "./contexts/layout/src/Adapters/Api/FluxLayoutApi.mjs";
+import FluxGatewayApi from './libs/gateway/src/Adapters/Api/FluxGatewayApi.mjs';
+import FluxRepositoryApi from './libs/repository/src/Adapters/Api/FluxRepositoryApi.mjs';
+
+import FluxLayoutApi from "./libs/layout/src/Adapters/Api/FluxLayoutApi.mjs";
+import FluxLayoutConfig from "./libs/layout/src/Adapters/Api/FluxLayoutConfig.mjs";
+
+
 
 const __dirname = import.meta.url.substring(0, import.meta.url.lastIndexOf("/"));
 
@@ -65,17 +68,41 @@ pwa_api.initServiceWorker(
 
 const applicationName = "flux-learnplaces";
 
+
 const layout = await FluxLayoutApi.initialize({
   applicationName: applicationName,
   logEnabled: true,
   definitionsBaseUrl: './contexts/layout/definitions'
 });
+
+try {
+  await navigator.serviceWorker.register(
+    "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/pwa/serviceworker.mjs",
+    {
+      type: "module"
+    });
+}
+catch (error) {
+  console.error(error);
+}
+
+await FluxLayoutApi.new(
+  FluxLayoutConfig.new(
+    true,
+    "./libs/layout/definitions",
+    "./libs/layout/definitions/css/stylesheet.css",
+    "./libs/layout/libs/leaflet/dist/leaflet.css",
+  )
+);
+
+
+
 const repository = await FluxRepositoryApi.initializeOfflineFirstRepository(
   {
     applicationName: applicationName,
     logEnabled: true,
     projectionApiBaseUrl: await getRepositoryApiBaseUrl(),
-    definitionsBaseUrl: './contexts/repository/definitions',
+    definitionsBaseUrl: './libs/repository/definitions',
     projectCurrentUserAddress: 'currentUser/projectObject'
   }
 );
@@ -88,7 +115,6 @@ const gateway = await FluxGatewayApi.initialize({
 
 
 await gateway.initActor();
-await layout.initActor();
 await repository.initActor()
 
 
