@@ -82,4 +82,6 @@ fabric.properties
 # Ignore docker files
 Dockerfile
 
-generate-pwa-libs
+/libs
+/pwa/serviceworker.mjs
+/pwa/appmanifest.webmanifest-*.json

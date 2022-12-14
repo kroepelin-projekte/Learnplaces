@@ -1,6 +1,4 @@
-const { APPLICATION_CACHE_FILES, APPLICATION_CACHE_VERSION } = { /*%DATA%*/ };
-
-const APPLICATION_CACHE_PREFIX = "learnplaces-application-";
+const { APPLICATION_CACHE_FILES, APPLICATION_CACHE_PREFIX, APPLICATION_CACHE_VERSION, SKIP_WAITING } = { /*%DATA%*/ };
 
 const APPLICATION_CACHE_NAME = `${APPLICATION_CACHE_PREFIX}${APPLICATION_CACHE_VERSION}`;
 
@@ -78,6 +76,18 @@ async function fetchEvent(request) {
 }
 
 /**
+ * @param {*} data
+ * @returns {Promise<void>}
+ */
+async function messageEvent(data) {
+    if (data !== SKIP_WAITING) {
+        return;
+    }
+
+    await skipWaiting();
+}
+
+/**
  * @returns {Promise<void>}
  */
 async function activateEvent() {
@@ -98,4 +108,10 @@ addEventListener("fetch", e => {
 
 addEventListener("activate", e => {
     e.waitUntil(activateEvent());
+});
+
+addEventListener("message", e => {
+    messageEvent(
+        e.data
+    );
 });
