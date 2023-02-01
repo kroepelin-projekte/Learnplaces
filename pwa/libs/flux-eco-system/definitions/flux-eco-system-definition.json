@@ -1,0 +1,78 @@
+{
+  "id": "flux-eco-system",
+  "asyncapi": "3.0.0-flux-eco",
+  "info": {
+    "title": "flux-eco-system",
+    "description": "an attempt at using a slightly modified async api - for discussion purposes.",
+    "contact": {
+      "email": "support@fluxlabs.ch"
+    },
+    "version": ""
+  },
+  "receives": {
+    "location": "$configs#/receives"
+  },
+  "sends": {
+    "flux-eco-ui-layout-orbital/header-created": {
+      "$ref": " #/components/channels/flux-eco-ui-layout-orbital/header-created"
+    }
+  },
+  "operations": {
+    "connectApplication": {
+      "messageMapping": {
+        "location": "$configs#/operations/connectApplication/messageMapping"
+      },
+      "payload": {
+        "type": "object",
+        "properties": {
+          "applicationDefinitionFilePath": {
+            "type": "string"
+          },
+          "applicationConfigFilePath": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "channels": {
+      "flux-eco-ui-layout-orbital/header-created": {
+        "address": "flux-eco-ui-layout-orbital/header-created",
+        "bindings": {
+          "x-flux-eco-broadcast-channel": {
+          }
+        },
+        "message": {
+          "$ref": "#/components/messages/headersCreated"
+        }
+      }
+    },
+    "messages": {
+      "headersCreated": {
+        "payload": {
+        }
+      }
+    },
+    "schemas": {
+      "applicationDefinitionFilePath": {
+        "type": "string"
+      },
+      "receives": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "type": "string",
+            "operationName": {
+              "type": "string"
+            },
+            "bindings": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    }
+  }
+}

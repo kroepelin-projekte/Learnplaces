@@ -1,0 +1,96 @@
+{
+  "name": "fluxEcoOrchestrator",
+  "apiFilePath": "./libs/flux-eco-ui-layout-orbital/src/Adapters/Api/Api.mjs",
+  "inputs": {
+    "flux-eco-ui-layout-orbital/create-headers": {
+      "channelName": "flux-eco-ui-layout-orbital/create-headers",
+      "bindingTypes": ["broadcastChannel"],
+      "operationName": "createHeaders",
+      "operationPayloadMapping": {
+        "$ref": "$message#/content"
+      }
+    }
+  },
+  "outputs": {
+    "flux-eco-ui-layout-orbital/header-created": {
+      "channelName": "flux-eco-ui-layout-orbital/header-created",
+      "bindingTypes": ["broadcastChannel"],
+      "messageHeaderMapping": {
+      },
+      "header": {
+      },
+      "content": {
+      }
+    }
+  },
+  "operations": {
+    "createHeaders": {
+      "name": "createHeaders",
+      "parameters": {
+        "id": {
+        }
+      }
+    }
+  },
+  "schemas": {
+    "domainMessages": {
+      "headerCreated": {
+        "type": "object",
+        "properties": {
+        }
+      }
+    },
+    "valueObjects": {
+      "address": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "base-path": {
+              "type": "string"
+            },
+            "parameters": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "message": {
+        "header": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "header-element": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/schemas/id"
+            }
+          }
+        }
+      },
+      "id": {
+        "schema": {
+          "type": "string",
+          "reference-objects": {
+          }
+        }
+      }
+    }
+  }
+}
+
+

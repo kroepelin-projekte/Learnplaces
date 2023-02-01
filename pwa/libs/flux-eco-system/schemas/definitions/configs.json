@@ -1,0 +1,29 @@
+{
+  "receives": {
+    "type": "object",
+    "additionalProperties": {
+      "type": "object",
+      "properties": {
+        "type": "string",
+        "operationName": {
+          "type": "string"
+        },
+        "bindings": {
+          "type": "array"
+        }
+      }
+    }
+  },
+  "messageMappings": {
+    "type": "object",
+    "additionalProperties": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
