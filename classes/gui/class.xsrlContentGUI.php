@@ -221,6 +221,7 @@ final class xsrlContentGUI {
 
 		$template->setVariable('CONTENT', $view->getHTML());
 
+        $this->template->addCss(ilLearnplacesPlugin::getInstance()->getStyleSheetLocation('accordion.css'));
 		$this->template->setContent($template->get());
 	}
 

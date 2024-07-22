@@ -1,0 +1,21 @@
+.accordion-arrow {
+    font-size: 40px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 0;
+    transform: rotate(90deg);
+    transition: transform 0.3s ease;
+    transform-origin: center 60%;
+}
+a.collapsed .accordion-arrow {
+    transform: rotate(0deg);
+}
+.accordion-head:hover {
+    filter: brightness(0.96);
+}
