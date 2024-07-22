@@ -185,7 +185,7 @@ final class xsrlContentGUI {
 				break;
 		}
 
-		ilUtil::sendFailure($this->plugin->txt('common_access_denied'), true);
+        $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);
 		$this->controlFlow->redirectByClass(ilRepositoryGUI::class);
 
 		return false;
@@ -251,7 +251,7 @@ final class xsrlContentGUI {
 			return;
 		}
 
-		ilUtil::sendFailure($this->plugin->txt('message_create_failure'), true);
+        $this->template->setOnScreenMessage('failure', $this->plugin->txt('message_create_failure'), true);
 		$this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
 	}
 

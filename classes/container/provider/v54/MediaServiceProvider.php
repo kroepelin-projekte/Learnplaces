@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container\provider\v54;
 
+use Intervention\Image\ImageManager;
 use const ILIAS_ABSOLUTE_PATH;
-use ILIAS\Style\Content\ImageManager;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;

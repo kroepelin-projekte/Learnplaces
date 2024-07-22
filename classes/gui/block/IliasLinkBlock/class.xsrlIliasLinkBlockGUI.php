@@ -138,7 +138,7 @@ final class xsrlIliasLinkBlockGUI
                 break;
         }
 
-        ilUtil::sendFailure($this->plugin->txt('common_access_denied'), true);
+        $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);
         $this->controlFlow->redirectByClass(ilRepositoryGUI::class);
 
         return false;

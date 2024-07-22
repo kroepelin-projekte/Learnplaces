@@ -117,7 +117,7 @@ final class xsrlSettingGUI
                 break;
         }
 
-        ilUtil::sendFailure($this->plugin->txt('common_access_denied'), true);
+        $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);
         $this->controlFlow->redirectByClass(ilRepositoryGUI::class);
 
         return false;
@@ -175,7 +175,7 @@ final class xsrlSettingGUI
             $pluginObject->setDescription($settings->getDescription());
             $pluginObject->update();
 
-            ilUtil::sendSuccess($this->plugin->txt('message_changes_save_success'), true);
+            $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirect($this, CommonControllerAction::CMD_EDIT);
         } catch (ValidationException $ex) {
             $view->setValuesByPost();
