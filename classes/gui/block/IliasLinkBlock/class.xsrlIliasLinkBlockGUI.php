@@ -198,7 +198,7 @@ final class xsrlIliasLinkBlockGUI
                 $anchor .= $block->getSequence();
             }
 
-            ilUtil::sendSuccess($this->plugin->txt('message_changes_save_success'), true);
+            $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
         } catch (ValidationException $ex) {
             $form->setValuesByPost();
@@ -231,7 +231,7 @@ final class xsrlIliasLinkBlockGUI
             $this->iliasLinkService->store($linkBlock);
 
             $anchor = xsrlContentGUI::ANCHOR_TEMPLATE . $block->getSequence();
-            ilUtil::sendSuccess($this->plugin->txt('message_changes_save_success'), true);
+            $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
         } catch (ValidationException $ex) {
             $form->setValuesByPost();
@@ -247,7 +247,7 @@ final class xsrlIliasLinkBlockGUI
 
         $this->iliasLinkService->delete($blockId);
         $this->regenerateSequence();
-        ilUtil::sendSuccess($this->plugin->txt('message_delete_success'), true);
+        $this->template->setOnScreenMessage('success', $this->plugin->txt('message_delete_success'), true);
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 

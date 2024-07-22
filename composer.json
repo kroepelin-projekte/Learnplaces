@@ -14,7 +14,7 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": "^7.0",
+        "php": ">=7.4",
         "intervention/image": "^2.4",
         "league/flysystem": "^1.0",
         "sabre/uri": "^2.1",
@@ -48,7 +48,7 @@
         "secure-http": true,
         "process-timeout": 600,
         "platform": {
-            "php": "7.0.0"
+            "php": "7.4.0"
         }
     },
     "require-dev": {

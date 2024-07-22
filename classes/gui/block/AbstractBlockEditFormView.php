@@ -48,10 +48,8 @@ abstract class AbstractBlockEditFormView extends ilPropertyFormGUI {
 	 * @var ilLearnplacesPlugin $plugin
 	 */
 	protected $plugin;
-	/**
-	 * @var ilCtrl $ctrl
-	 */
-	protected $ctrl;
+
+	protected ilCtrl $ctrl;
 
 
 	/**

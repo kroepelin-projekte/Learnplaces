@@ -53,6 +53,7 @@ final class BlockAddFormGUI extends ilPropertyFormGUI {
 	}
 
 
+    // todo KitchenSink
 	private function initForm() {
 
 		$this->controlFlow->saveParameterByClass(xsrlContentGUI::class, PlusView::POSITION_QUERY_PARAM);
@@ -66,17 +67,17 @@ final class BlockAddFormGUI extends ilPropertyFormGUI {
 		$visibilitySectionHeader->setTitle($this->plugin->txt('block_add_header'));
 		$this->addItem($visibilitySectionHeader);
 
-		$accordionOption = new ilRadioOption($this->plugin->txt('block_accordion'), BlockType::ACCORDION);
+		$accordionOption = new ilRadioOption($this->plugin->txt('block_accordion'), (string)BlockType::ACCORDION);
 		$accordionOption->setDisabled(!$this->accordionEnabled);
 
 		$radioGroup = new ilRadioGroupInputGUI($this->plugin->txt('block_type_title'), self::POST_BLOCK_TYPES);
 		//$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_picture_upload'), BlockType::PICTURE_UPLOAD));
-		$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_picture'), BlockType::PICTURE));
+		$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_picture'), (string)BlockType::PICTURE));
 		$radioGroup->addOption($accordionOption);
-		$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_ilias_link'), BlockType::ILIAS_LINK));
-		$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_rich_text'), BlockType::RICH_TEXT));
-		$radioGroup->addOption((new ilRadioOption($this->plugin->txt('block_video'), BlockType::VIDEO)));
-		$radioGroup->setValue(BlockType::PICTURE);
+		$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_ilias_link'), (string)BlockType::ILIAS_LINK));
+		$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_rich_text'), (string)BlockType::RICH_TEXT));
+		$radioGroup->addOption((new ilRadioOption($this->plugin->txt('block_video'), (string)BlockType::VIDEO)));
+		$radioGroup->setValue((string)BlockType::PICTURE);
 		$this->addItem($radioGroup);
 
 		$this->initButtons();
@@ -112,7 +113,8 @@ final class BlockAddFormGUI extends ilPropertyFormGUI {
 	}
 
 
-	public function getHTML() {
+	public function getHTML(): string
+    {
 		$this->initForm();
 		return parent::getHTML();
 	}

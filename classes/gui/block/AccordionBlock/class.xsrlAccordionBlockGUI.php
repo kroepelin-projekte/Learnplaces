@@ -100,9 +100,9 @@ final class xsrlAccordionBlockGUI
     public function executeCommand(): bool
     {
 
-        if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
+ /*       if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
             $this->template->getStandardTemplate();
-        }
+        }*/
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
         $this->tabs->activateTab(self::TAB_ID);
 
@@ -125,7 +125,8 @@ final class xsrlAccordionBlockGUI
                 }
                 break;
         }
-        ilUtil::sendFailure($this->plugin->txt('common_access_denied'), true);
+
+        $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);
         $this->controlFlow->redirectByClass(ilRepositoryGUI::class);
 
         return false;
@@ -167,7 +168,7 @@ final class xsrlAccordionBlockGUI
             $learnplace->setBlocks($blocks);
             $this->learnplaceService->store($learnplace);
 
-            ilUtil::sendSuccess($this->plugin->txt('message_changes_save_success'), true);
+            $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $anchor = xsrlContentGUI::ANCHOR_TEMPLATE . $block->getSequence();
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
         } catch (ValidationException $ex) {
@@ -203,7 +204,7 @@ final class xsrlAccordionBlockGUI
             $accordion->setVisibility($block->getVisibility());
             $this->accordionService->store($accordion);
 
-            ilUtil::sendSuccess($this->plugin->txt('message_changes_save_success'), true);
+            $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $anchor = xsrlContentGUI::ANCHOR_TEMPLATE . $block->getSequence();
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
         } catch (ValidationException $ex) {
@@ -219,7 +220,7 @@ final class xsrlAccordionBlockGUI
         $this->redirectInvalidRequests($blockId);
         $this->accordionService->delete($blockId);
         $this->regenerateSequence();
-        ilUtil::sendSuccess($this->plugin->txt('message_delete_success'), true);
+        $this->template->setOnScreenMessage('success', $this->plugin->txt('message_delete_success'), true);
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 

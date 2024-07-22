@@ -103,6 +103,7 @@ final class AfterVisitPlaceVisibleDecorator implements LearnplaceService {
 	 */
 	public function store(LearnplaceModel $learnplaceModel): LearnplaceModel {
 		// TODO: Implement store() method.
+        return $learnplaceModel;
 	}
 
 
@@ -110,6 +111,6 @@ final class AfterVisitPlaceVisibleDecorator implements LearnplaceService {
 	 * @inheritDoc
 	 */
 	public function find(int $id): LearnplaceModel {
-		// TODO: Implement find() method.
+		return $this->findByObjectId($id);
 	}
 }

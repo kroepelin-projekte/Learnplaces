@@ -25,7 +25,8 @@ final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI {
 	/**
 	 * @return string
 	 */
-	public function getGuiClass() {
+	public function getGuiClass(): string
+    {
 		return ilObjLearnplacesGUI::class;
 	}
 
@@ -33,7 +34,8 @@ final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI {
 	/**
 	 * @return array
 	 */
-	public function getCommands() {
+	public function getCommands(): array
+    {
 		return parent::getCommands();
 	}
 
@@ -41,7 +43,8 @@ final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI {
 	/**
 	 * @return array
 	 */
-	public function initCommands() {
+	public function initCommands(): array
+    {
 		// Always set
 		$this->timings_enabled = false;
 		$this->subscribe_enabled = false;
@@ -70,7 +73,8 @@ final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI {
 		$this->setType(ilLearnplacesPlugin::PLUGIN_ID);
 	}
 
-	function getProperties() {
+	function getProperties(): array
+    {
 		$properties = parent::getProperties();
 
 		if(!ilObjLearnplacesAccess::checkOnline(intval($this->obj_id))) {

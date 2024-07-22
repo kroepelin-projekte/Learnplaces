@@ -100,7 +100,7 @@ class MapBlockRepositoryImpl implements MapBlockRepository {
 			return $this->mapToDTO($block);
 		}
 		catch (arException $ex) {
-			throw new EntityNotFoundException("No map block belongs to the object id \"$id\".", $ex);
+			throw new EntityNotFoundException("No map block belongs to the object id \"$objectId\".", $ex);
 		}
 	}
 

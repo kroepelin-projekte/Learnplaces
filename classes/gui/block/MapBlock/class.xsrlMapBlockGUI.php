@@ -130,7 +130,7 @@ final class xsrlMapBlockGUI {
 				}
 				break;
 		}
-		ilUtil::sendFailure($this->plugin->txt('common_access_denied'), true);
+        $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);
 		$this->controlFlow->redirectByClass(ilRepositoryGUI::class);
 
 		return false;
@@ -152,7 +152,7 @@ final class xsrlMapBlockGUI {
 			$this->template->setContent($view->getHTML());
 		}
 		catch (LogicException $ex) {
-			ilUtil::sendFailure($this->plugin->txt('error_message_no_map_found'), true);
+            $this->template->setOnScreenMessage('failure', $this->plugin->txt('error_message_no_map_found'), true);
 			$this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
 		}
 	}
@@ -188,7 +188,7 @@ final class xsrlMapBlockGUI {
 			$learnplace->setBlocks($blocks);
 			$this->learnplaceService->store($learnplace);
 
-			ilUtil::sendSuccess($this->plugin->txt('message_changes_save_success'), true);
+            $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
 			$this->controlFlow->redirectByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_INDEX);
 		}
 		catch (ValidationException $ex) {
@@ -223,7 +223,7 @@ final class xsrlMapBlockGUI {
 			$mapBlock->setVisibility($block->getVisibility());
 			$this->mapBlockService->store($mapBlock);
 
-			ilUtil::sendSuccess($this->plugin->txt('message_changes_save_success'), true);
+            $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
 			$this->controlFlow->redirectByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_INDEX);
 		}
 		catch (ValidationException $ex) {
@@ -236,7 +236,7 @@ final class xsrlMapBlockGUI {
 		$blockId = $this->getBlockId();
 		$this->redirectInvalidRequests($blockId);
 		$this->mapBlockService->delete($blockId);
-		ilUtil::sendSuccess($this->plugin->txt('message_delete_success'), true);
+        $this->template->setOnScreenMessage('success', $this->plugin->txt('message_delete_success'), true);
 		$this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
 	}
 

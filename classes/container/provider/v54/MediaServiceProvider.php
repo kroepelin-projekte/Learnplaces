@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace SRAG\Learnplaces\container\provider\v54;
 
 use const ILIAS_ABSOLUTE_PATH;
-use Intervention\Image\ImageManager;
+use ILIAS\Style\Content\ImageManager;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;

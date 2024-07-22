@@ -129,8 +129,8 @@ class FeedbackBlockRepositoryImpl implements FeedbackBlockRepository {
 		$visibility = Visibility::findOrFail($block->getFkVisibility());
 
 		$feedbackBlock
-			->setContent($feedbackBlockEntity->getContent())
-			->setUserId($feedbackBlockEntity->getFkIluserId())
+#			->setContent($feedbackBlockEntity->getContent()) // todo prüfen
+#			->setUserId($feedbackBlockEntity->getFkIluserId())
 			->setId($block->getPkId())
 			->setSequence($block->getSequence())
 			->setConstraint($this->learnplaceConstraintRepository->findByBlockId($block->getPkId()))
@@ -152,8 +152,8 @@ class FeedbackBlockRepositoryImpl implements FeedbackBlockRepository {
 			$activeRecord->setFkBlockId($feedbackBlock->getId());
 		}
 
-		$activeRecord->setContent($feedbackBlock->getContent());
-		$activeRecord->setFkIluserId($feedbackBlock->getUserId());
+#		$activeRecord->setContent($feedbackBlock->getContent());
+#		$activeRecord->setFkIluserId($feedbackBlock->getUserId());
 
 		return $activeRecord;
 	}

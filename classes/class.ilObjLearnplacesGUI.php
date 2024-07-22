@@ -80,7 +80,8 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 	/**
 	 * @inheritDoc
 	 */
-	public function getType() {
+	public function getType(): string
+    {
 		return ilLearnplacesPlugin::PLUGIN_ID;
 	}
 
@@ -88,7 +89,8 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 	/**
 	 * Main Triage to following GUI-Classes
 	 */
-	public function executeCommand() {
+	public function executeCommand(): void
+    {
 		$nextClass = $this->ctrl->getNextClass();
 
 		/**
@@ -190,9 +192,10 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 		}
 	}
 
-	protected function performCommand(string $command) {
+	public function performCommand(string $cmd): void
+    {
 		if($this->accessGuard->hasReadPermission()) {
-			switch ($command) {
+			switch ($cmd) {
 				case CommonControllerAction::CMD_INDEX:
 					$this->index();
 					return;
@@ -223,7 +226,8 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 	 *
 	 * @return string
 	 */
-	public function getAfterCreationCmd() {
+	public function getAfterCreationCmd(): string
+    {
 		return self::DEFAULT_CMD;
 	}
 
@@ -233,7 +237,8 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 	 *
 	 * @return string
 	 */
-	public function getStandardCmd() {
+	public function getStandardCmd(): string
+    {
 		return self::DEFAULT_CMD;
 	}
 
@@ -241,7 +246,8 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 	/**
 	 * @inheritdoc
 	 */
-	protected function supportsCloning() {
+	protected function supportsCloning(): bool
+    {
 		return true;
 	}
 
@@ -249,7 +255,8 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI {
 	/**
 	 * @inheritdoc
 	 */
-	protected function supportsExport() {
+	protected function supportsExport(): bool
+    {
 		return false;
 	}
 

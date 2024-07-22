@@ -46,7 +46,8 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess {
 	 *
 	 * @return    boolean        true, if everything is ok
 	 */
-	public function _checkAccess($a_cmd, $a_permission, $a_ref_id, $a_obj_id, $a_user_id = NULL) {
+	public function _checkAccess($a_cmd, $a_permission, $a_ref_id, $a_obj_id, $a_user_id = NULL): bool
+    {
 		if (is_null($a_user_id)) {
 			$a_user_id = $this->currentUser->getId();
 		}

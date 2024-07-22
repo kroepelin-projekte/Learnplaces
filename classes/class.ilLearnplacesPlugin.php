@@ -38,16 +38,18 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin {
 
 
 
-	public function getPluginName() {
+	public function getPluginName(): string
+    {
 		return self::PLUGIN_NAME;
 	}
 
-    public function allowCopy()
+    public function allowCopy(): bool
     {
         return true;
     }
 
-	protected function uninstallCustom() {
+	protected function uninstallCustom(): void
+    {
 		$this->dropDatabase();
 		$this->deleteFiles();
 	}

@@ -84,8 +84,8 @@ final class MapBlockPresentationView {
 
 		$map = ilMapUtil::getMapGUI();
 		$map->setMapId($map_id = "map_" . hash('sha256', uniqid('map', true)))
-				->setLatitude($this->location->getLatitude())
-				->setLongitude($this->location->getLongitude())
+				->setLatitude((string)$this->location->getLatitude())
+				->setLongitude((string)$this->location->getLongitude())
 				->setZoom($this->configuration->getMapZoomLevel())
 				->setEnableTypeControl(true)
 				->setEnableLargeMapControl(true)

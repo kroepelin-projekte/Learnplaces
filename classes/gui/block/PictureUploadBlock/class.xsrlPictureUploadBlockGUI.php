@@ -130,7 +130,7 @@ final class xsrlPictureUploadBlockGUI
                 }
                 break;
         }
-        ilUtil::sendFailure($this->plugin->txt('common_access_denied'), true);
+        $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);
         $this->controlFlow->redirectByClass(ilRepositoryGUI::class);
 
         return false;
@@ -185,7 +185,7 @@ final class xsrlPictureUploadBlockGUI
                 $anchor .= $block->getSequence();
             }
 
-            ilUtil::sendSuccess($this->plugin->txt('message_changes_save_success'), true);
+            $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
         } catch (ValidationException $ex) {
             $form->setValuesByPost();
@@ -203,7 +203,7 @@ final class xsrlPictureUploadBlockGUI
         $this->redirectInvalidRequests($blockId);
         $this->pictureUploadService->delete($blockId);
         $this->regenerateSequence();
-        ilUtil::sendSuccess($this->plugin->txt('message_delete_success'), true);
+        $this->template->setOnScreenMessage('success', $this->plugin->txt('message_delete_success'), true);
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 

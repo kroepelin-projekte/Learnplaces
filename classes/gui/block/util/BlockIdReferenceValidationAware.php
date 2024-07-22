@@ -34,8 +34,8 @@ trait BlockIdReferenceValidationAware {
 
 	private function redirectInvalidRequests(int $blockId) {
 		if(!$this->blockAccessGuard->isValidBlockReference($blockId)) {
-			ilUtil::sendFailure($this->plugin->txt('common_access_denied'), true);
-			$this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
+            $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);
+            $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
 		}
 	}
 

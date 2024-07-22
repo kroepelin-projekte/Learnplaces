@@ -31,12 +31,13 @@ final class ilObjLearnplaces extends ilObjectPlugin {
 	const TRANSLATE_NEWS_CONTENT = 0; //has to be a number
 	*/
 
-	protected function initType() {
+	protected function initType(): void
+    {
 		$this->setType(ilLearnplacesPlugin::PLUGIN_ID);
 	}
 
-	protected function doCreate() {
-
+	protected function doCreate(bool $clone_mode = false): void
+    {
 		/**
 		 * @var LearnplaceService $learnplaceService
 		 */
@@ -74,12 +75,14 @@ final class ilObjLearnplaces extends ilObjectPlugin {
 	}
 
 
-	protected function doRead() {
+	protected function doRead(): void
+    {
 
 	}
 
 
-	protected function doUpdate() {
+	protected function doUpdate(): void
+    {
 		/*
 		$user = PluginContainer::resolve('ilUser');
 
@@ -95,7 +98,8 @@ final class ilObjLearnplaces extends ilObjectPlugin {
 	}
 
 
-	protected function doDelete() {
+	protected function doDelete(): void
+    {
 		/**
 		 * @var LearnplaceService $learnplaceService
 		 */
@@ -110,7 +114,8 @@ final class ilObjLearnplaces extends ilObjectPlugin {
      * @param int          $a_target_id
      * @param int|null     $a_copy_id
      */
-	protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = null) {
+	protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = null): void
+    {
 		/**
 		 * @var LearnplaceService $learnplaceService
 		 */
