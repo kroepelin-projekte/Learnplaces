@@ -24,7 +24,8 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin {
 	 * ilLearnplacesPlugin constructor.
 	 */
 	public function __construct() {
-		parent::__construct();
+        global $DIC;
+		parent::__construct($DIC->database(), $DIC["component.repository"], 'xsrl');
 
 		self::$instance = $this;
 	}
@@ -84,18 +85,19 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin {
 		$database->dropTable(\SRAG\Learnplaces\persistence\entity\VisitJournal::returnDbTableName(), false);
 	}
 
+    // todo IRSS
 	private function deleteFiles() {
 		/**
 		 * @var FilesystemInterface $filesystem
 		 */
 		$filesystem = PluginContainer::resolve(FilesystemInterface::class);
-		$directories = $filesystem->listContents(ilUtil::getWebspaceDir());
+/*		$directories = $filesystem->listContents(ilUtil::getWebspaceDir());
 
 		$regex = '/\/' . ilLearnplacesPlugin::PLUGIN_ID . '_\d{1,}$/'; // matches for example /xsrl_254
 		foreach ($directories as $directory) {
 			$path = $directory['path'];
 			if(preg_match($regex, $path) === 1)
 				$filesystem->deleteDir($path);
-		}
+		}*/
 	}
 }
