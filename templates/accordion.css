@@ -16,6 +16,6 @@
 a.collapsed .accordion-arrow {
     transform: rotate(0deg);
 }
-.accordion-head:hover {
-    filter: brightness(0.96);
+.accordion-head:hover .panel-body {
+    background-color: #f5f5f5;
 }
