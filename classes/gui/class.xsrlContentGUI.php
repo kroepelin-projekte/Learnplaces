@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use ILIAS\DI\UIServices;
 use Psr\Http\Message\ServerRequestInterface;
 use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\BlockAddFormGUI;
@@ -100,13 +101,17 @@ final class xsrlContentGUI {
 	 */
 	private $accessGuard;
 
+    private UIServices $ui;
+    private ILIAS\HTTP\Services $http;
 
     /**
      * xsrlContentGUI constructor.
      *
      * @param ilTabsGUI $tabs
      * @param ilGlobalPageTemplate | ilTemplate $template
+     * @param UIServices $ui
      * @param ilCtrl $controlFlow
+     * @param $http
      * @param ilLearnplacesPlugin $plugin
      * @param RenderableBlockViewFactory $renderableFactory
      * @param LearnplaceService $learnplaceService
@@ -119,7 +124,9 @@ final class xsrlContentGUI {
 	public function __construct(
 	    ilTabsGUI $tabs,
         $template,
+        UIServices $ui,
         ilCtrl $controlFlow,
+        ILIAS\HTTP\Services $http,
         ilLearnplacesPlugin $plugin,
         RenderableBlockViewFactory $renderableFactory,
         LearnplaceService $learnplaceService,
@@ -131,7 +138,9 @@ final class xsrlContentGUI {
     ) {
 		$this->tabs = $tabs;
 		$this->template = $template;
+        $this->ui = $ui;
 		$this->controlFlow = $controlFlow;
+		$this->http = $http;
 		$this->plugin = $plugin;
 		$this->renderableFactory = $renderableFactory;
 		$this->learnplaceService = $learnplaceService;
@@ -143,13 +152,8 @@ final class xsrlContentGUI {
 	}
 
 
-	public function executeCommand(): bool {
-
-	    if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
-            $this->template->getStandardTemplate();
-        } else {
-	        $this->template->loadStandardTemplate();
-        }
+	public function executeCommand(): bool
+    {
 		$cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
 		$this->tabs->activateTab(self::TAB_ID);
 
@@ -192,9 +196,13 @@ final class xsrlContentGUI {
 	}
 
 	//actions
-	private function index(): void {
-
+	private function index(): void
+    {
 		$toolbar = new ilToolbarGUI();
+/*        $saveSequenceButton = $this->ui->factory()->button()->standard(
+            $this->plugin->txt('content_save_sequence'),
+            $this->controlFlow->getLinkTargetByClass(self::class, self::CMD_SEQUENCE)
+        );*/
 		$saveSequenceButton = ilSubmitButton::getInstance();
 		$saveSequenceButton->setCommand(self::CMD_SEQUENCE);
 		$saveSequenceButton->setCaption($this->plugin->txt('content_save_sequence'), false);
@@ -225,7 +233,8 @@ final class xsrlContentGUI {
 		$this->template->setContent($template->get());
 	}
 
-	private function add(): void {
+	private function add(): void
+    {
 		$learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
 		foreach ($learnplace->getBlocks() as $block) {
 			if($block instanceof MapBlockModel) {
@@ -239,21 +248,30 @@ final class xsrlContentGUI {
 		$this->template->setContent($this->blockAddGUI->getHTML());
 	}
 
-	private function create(): void {
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+	private function create(): void
+    {
 		$blockAdd = $this->blockAddGUI;
-		if($blockAdd->checkInput()) {
-			$input = intval($blockAdd->getInput(BlockAddFormGUI::POST_BLOCK_TYPES, true));
-			$controller = static::$blockTypeViewMapping[$input];
-			$this->controlFlow->saveParameterByClass($controller, PlusView::POSITION_QUERY_PARAM);
-			$this->controlFlow->saveParameterByClass($controller, PlusView::ACCORDION_QUERY_PARAM);
+        $blockAdd->initForm();
+        $form = $blockAdd->getForm();
+        $form = $form->withRequest($this->http->request());
+        $form_data = $form->getData();
 
-			//dispatch to controller which knows how to handle that block
-			$this->controlFlow->redirectByClass($controller, CommonControllerAction::CMD_ADD);
-			return;
+		if($form->getError()) {
+            $this->template->setOnScreenMessage('failure', $this->plugin->txt('message_create_failure'), true);
+            $this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
 		}
 
-        $this->template->setOnScreenMessage('failure', $this->plugin->txt('message_create_failure'), true);
-		$this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
+        $input = intval($form_data[BlockAddFormGUI::POST_VISIBILITY_SECTION][BlockAddFormGUI::POST_BLOCK_TYPES]);
+        $controller = static::$blockTypeViewMapping[$input];
+        $this->controlFlow->saveParameterByClass($controller, PlusView::POSITION_QUERY_PARAM);
+        $this->controlFlow->saveParameterByClass($controller, PlusView::ACCORDION_QUERY_PARAM);
+
+        //dispatch to controller which knows how to handle that block
+        $this->controlFlow->redirectByClass($controller, CommonControllerAction::CMD_ADD);
 	}
 
 	private function cancel(): void {

@@ -33,6 +33,7 @@ use xsrlPictureUploadBlockGUI;
 use xsrlRichTextBlockGUI;
 use xsrlSettingGUI;
 use xsrlVideoBlockGUI;
+use function ILIAS\UI\examples\Layout\Page\Standard\ui;
 
 /**
  * Class GUIProvider
@@ -52,7 +53,9 @@ final class GUIProvider implements ServiceProviderInterface {
 		$pimple[xsrlContentGUI::class] = function ($c) {return new xsrlContentGUI(
             $c->tabs(),
             $c->ui()->mainTemplate(),
+            $c->ui(),
             $c->ctrl(),
+            $c->http(),
 			$c[ilLearnplacesPlugin::class],
 			$c[RenderableBlockViewFactory::class],
 			$c[LearnplaceService::class],

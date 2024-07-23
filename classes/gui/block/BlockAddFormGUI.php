@@ -5,6 +5,7 @@ namespace SRAG\Learnplaces\gui\block;
 
 use ilCtrl;
 use ilFormSectionHeaderGUI;
+use ILIAS\UI\Component\Input\Container\Form\Standard;
 use ilLearnplacesPlugin;
 use ilPropertyFormGUI;
 use ilRadioGroupInputGUI;
@@ -22,100 +23,98 @@ use xsrlContentGUI;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class BlockAddFormGUI extends ilPropertyFormGUI {
+final class BlockAddFormGUI {
 
-	const POST_BLOCK_TYPES = 'post_block_types';
-	const POST_SEQUENCE = 'post_sequence';
-	/**
-	 * @var ilLearnplacesPlugin $plugin
-	 */
-	private $plugin;
-	/**
-	 * @var ilCtrl $controlFlow
-	 */
-	private $controlFlow;
+	public const POST_BLOCK_TYPES = 'post_block_types';
+	public const POST_SEQUENCE = 'post_sequence';
+    public const POST_VISIBILITY_SECTION = 'post_visibility_section';
 
+	private ilLearnplacesPlugin $plugin;
+	private ilCtrl $controlFlow;
 	private $mapEnabled = true;
 	private $accordionEnabled = true;
+    private \ILIAS\DI\UIServices $ui; // todo austauschen container
+    private \ILIAS\UI\Component\Input\Container\Form\Standard $form;
 
-
-	/**
-	 * BlockAddFormGUI constructor.
-	 *
-	 * @param ilLearnplacesPlugin $plugin
-	 * @param ilCtrl              $controlFlow
-	 */
-	public function __construct(ilLearnplacesPlugin $plugin, ilCtrl $controlFlow) {
-		parent::__construct();
-
+    /**
+     * @param ilLearnplacesPlugin $plugin
+     * @param ilCtrl $controlFlow
+     */
+	public function __construct(ilLearnplacesPlugin $plugin, ilCtrl $controlFlow)
+    {
 		$this->plugin = $plugin;
 		$this->controlFlow = $controlFlow;
 	}
 
-
-    // todo KitchenSink
-	private function initForm() {
-
+    /**
+     * @return void
+     * @throws \ilCtrlException
+     */
+    public function initForm(): void
+    {
 		$this->controlFlow->saveParameterByClass(xsrlContentGUI::class, PlusView::POSITION_QUERY_PARAM);
 		$this->controlFlow->saveParameterByClass(xsrlContentGUI::class, PlusView::ACCORDION_QUERY_PARAM);
 
-		$this->setFormAction($this->controlFlow->getFormActionByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX));
-		$this->setPreventDoubleSubmission(true);
+        // todo entfernen
+        global $DIC;
+        $this->ui = $DIC->ui();
+        $input = $DIC->ui()->factory()->input();
+        $field = $input->field();
 
-		//create visibility
-		$visibilitySectionHeader = new ilFormSectionHeaderGUI();
-		$visibilitySectionHeader->setTitle($this->plugin->txt('block_add_header'));
-		$this->addItem($visibilitySectionHeader);
+        //create visibility
+        $radioGroup = $field->radio($this->plugin->txt('block_type_title'), '')
+            ->withOption((string)BlockType::PICTURE, $this->plugin->txt('block_picture'))
+            ->withOption((string)BlockType::ACCORDION, $this->plugin->txt('block_accordion'))
+            ->withOption((string)BlockType::ILIAS_LINK, $this->plugin->txt('block_ilias_link'))
+            ->withOption((string)BlockType::RICH_TEXT, $this->plugin->txt('block_rich_text'))
+            ->withOption((string)BlockType::VIDEO, $this->plugin->txt('block_video'));
 
-		$accordionOption = new ilRadioOption($this->plugin->txt('block_accordion'), (string)BlockType::ACCORDION);
-		$accordionOption->setDisabled(!$this->accordionEnabled);
+        $visibilitySectionHeader = $input->field()->section([
+            self::POST_BLOCK_TYPES => $radioGroup
+        ], $this->plugin->txt('block_add_header'));
 
-		$radioGroup = new ilRadioGroupInputGUI($this->plugin->txt('block_type_title'), self::POST_BLOCK_TYPES);
-		//$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_picture_upload'), BlockType::PICTURE_UPLOAD));
-		$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_picture'), (string)BlockType::PICTURE));
-		$radioGroup->addOption($accordionOption);
-		$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_ilias_link'), (string)BlockType::ILIAS_LINK));
-		$radioGroup->addOption(new ilRadioOption($this->plugin->txt('block_rich_text'), (string)BlockType::RICH_TEXT));
-		$radioGroup->addOption((new ilRadioOption($this->plugin->txt('block_video'), (string)BlockType::VIDEO)));
-		$radioGroup->setValue((string)BlockType::PICTURE);
-		$this->addItem($radioGroup);
-
-		$this->initButtons();
+        $this->form = $input->container()->form()->standard(
+            $this->controlFlow->getFormActionByClass(xsrlContentGUI::class, CommonControllerAction::CMD_CREATE), [
+                self::POST_VISIBILITY_SECTION => $visibilitySectionHeader
+            ]
+        );
 	}
 
-	private function initButtons() {
-		$this->addCommandButton(CommonControllerAction::CMD_CREATE, $this->plugin->txt('common_add'));
-		$this->addCommandButton(CommonControllerAction::CMD_CANCEL, $this->plugin->txt('common_cancel'));
-	}
-
-
-	/**
-	 * @param bool $mapEnabled
-	 *
-	 * @return BlockAddFormGUI
-	 */
+    /**
+     * @param bool $mapEnabled
+     * @return $this
+     */
 	public function setMapEnabled(bool $mapEnabled): BlockAddFormGUI {
 		$this->mapEnabled = $mapEnabled;
 
 		return $this;
 	}
 
-
-	/**
-	 * @param bool $accordionEnabled
-	 *
-	 * @return BlockAddFormGUI
-	 */
+    /**
+     * @param bool $accordionEnabled
+     * @return $this
+     */
 	public function setAccordionEnabled(bool $accordionEnabled): BlockAddFormGUI {
 		$this->accordionEnabled = $accordionEnabled;
 
 		return $this;
 	}
 
-
+    /**
+     * @return string
+     * @throws \ilCtrlException
+     */
 	public function getHTML(): string
     {
-		$this->initForm();
-		return parent::getHTML();
+        $this->initForm();
+		return $this->ui->renderer()->render($this->form);
 	}
+
+    /**
+     * @return Standard
+     */
+    public function getForm(): Standard
+    {
+        return $this->form;
+    }
 }

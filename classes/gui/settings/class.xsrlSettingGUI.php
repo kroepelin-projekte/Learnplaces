@@ -94,10 +94,6 @@ final class xsrlSettingGUI
 
     public function executeCommand()
     {
-
-        if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
-            $this->template->getStandardTemplate();
-        }
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
         $this->tabs->activateTab(self::TAB_ID);
 
