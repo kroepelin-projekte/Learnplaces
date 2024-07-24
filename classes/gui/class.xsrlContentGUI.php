@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use ILIAS\DI\UIServices;
@@ -30,76 +31,76 @@ use SRAG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class xsrlContentGUI {
+final class xsrlContentGUI
+{
+    use ReferenceIdAware;
+    use AccordionAware;
 
-	use ReferenceIdAware;
-	use AccordionAware;
+    public const TAB_ID = 'content';
+    /**
+     * Command to store the sequence numbers
+     */
+    public const CMD_SEQUENCE = 'sequence';
+    /**
+     * The anchor start which is used to
+     * jump to the edited block after leaving the edit / creation view.
+     */
+    public const ANCHOR_TEMPLATE = 'sequence-';
 
-	const TAB_ID = 'content';
-	/**
-	 * Command to store the sequence numbers
-	 */
-	const CMD_SEQUENCE = 'sequence';
-	/**
-	 * The anchor start which is used to
-	 * jump to the edited block after leaving the edit / creation view.
-	 */
-	const ANCHOR_TEMPLATE = 'sequence-';
+    private static $blockTypeViewMapping = [
+        //BlockType::PICTURE_UPLOAD   => xsrlPictureUploadBlockGUI::class,
+        BlockType::PICTURE          => xsrlPictureBlockGUI::class,
+        BlockType::RICH_TEXT        => xsrlRichTextBlockGUI::class,
+        BlockType::ILIAS_LINK       => xsrlIliasLinkBlockGUI::class,
+        BlockType::MAP              => xsrlMapBlockGUI::class,
+        BlockType::VIDEO            => xsrlVideoBlockGUI::class,
+        BlockType::ACCORDION        => xsrlAccordionBlockGUI::class,
+    ];
 
-	private static $blockTypeViewMapping = [
-		//BlockType::PICTURE_UPLOAD   => xsrlPictureUploadBlockGUI::class,
-		BlockType::PICTURE          => xsrlPictureBlockGUI::class,
-		BlockType::RICH_TEXT        => xsrlRichTextBlockGUI::class,
-		BlockType::ILIAS_LINK       => xsrlIliasLinkBlockGUI::class,
-		BlockType::MAP              => xsrlMapBlockGUI::class,
-		BlockType::VIDEO            => xsrlVideoBlockGUI::class,
-		BlockType::ACCORDION        => xsrlAccordionBlockGUI::class,
-	];
-
-	/**
-	 * @var ilTabsGUI $tabs
-	 */
-	private $tabs;
-	/**
-	 * @var ilGlobalPageTemplate $template
-	 */
-	private $template;
-	/**
-	 * @var ilCtrl $controlFlow
-	 */
-	private $controlFlow;
-	/**
-	 * @var ilLearnplacesPlugin $plugin
-	 */
-	private $plugin;
-	/**
-	 * @var RenderableBlockViewFactory $renderableFactory
-	 */
-	private $renderableFactory;
-	/**
-	 * @var LearnplaceService $learnplaceService
-	 */
-	private $learnplaceService;
-	/**
-	 * @var AccordionBlockService $accordionService
-	 */
-	private $accordionService;
-	/**
-	 * @var LearnplaceServiceDecoratorFactory $learnplaceServiceDecorationFactory
-	 */
-	private $learnplaceServiceDecorationFactory;
-	/**
-	 * @var BlockAddFormGUI $blockAddGUI
-	 */
-	private $blockAddGUI;
-	/**
-	 * @var ServerRequestInterface $request
-	 */
-	private $request;
-	/**
-	 * @var AccessGuard $accessGuard
-	 */
-	private $accessGuard;
+    /**
+     * @var ilTabsGUI $tabs
+     */
+    private $tabs;
+    /**
+     * @var ilGlobalPageTemplate $template
+     */
+    private $template;
+    /**
+     * @var ilCtrl $controlFlow
+     */
+    private $controlFlow;
+    /**
+     * @var ilLearnplacesPlugin $plugin
+     */
+    private $plugin;
+    /**
+     * @var RenderableBlockViewFactory $renderableFactory
+     */
+    private $renderableFactory;
+    /**
+     * @var LearnplaceService $learnplaceService
+     */
+    private $learnplaceService;
+    /**
+     * @var AccordionBlockService $accordionService
+     */
+    private $accordionService;
+    /**
+     * @var LearnplaceServiceDecoratorFactory $learnplaceServiceDecorationFactory
+     */
+    private $learnplaceServiceDecorationFactory;
+    /**
+     * @var BlockAddFormGUI $blockAddGUI
+     */
+    private $blockAddGUI;
+    /**
+     * @var ServerRequestInterface $request
+     */
+    private $request;
+    /**
+     * @var AccessGuard $accessGuard
+     */
+    private $accessGuard;
 
     private UIServices $ui;
     private ILIAS\HTTP\Services $http;
@@ -111,7 +112,7 @@ final class xsrlContentGUI {
      * @param ilGlobalPageTemplate | ilTemplate $template
      * @param UIServices $ui
      * @param ilCtrl $controlFlow
-     * @param $http
+     * @param ILIAS\HTTP\Services $http
      * @param ilLearnplacesPlugin $plugin
      * @param RenderableBlockViewFactory $renderableFactory
      * @param LearnplaceService $learnplaceService
@@ -121,8 +122,8 @@ final class xsrlContentGUI {
      * @param ServerRequestInterface $request
      * @param AccessGuard $accessGuard
      */
-	public function __construct(
-	    ilTabsGUI $tabs,
+    public function __construct(
+        ilTabsGUI $tabs,
         $template,
         UIServices $ui,
         ilCtrl $controlFlow,
@@ -136,134 +137,134 @@ final class xsrlContentGUI {
         ServerRequestInterface $request,
         AccessGuard $accessGuard
     ) {
-		$this->tabs = $tabs;
-		$this->template = $template;
+        $this->tabs = $tabs;
+        $this->template = $template;
         $this->ui = $ui;
-		$this->controlFlow = $controlFlow;
-		$this->http = $http;
-		$this->plugin = $plugin;
-		$this->renderableFactory = $renderableFactory;
-		$this->learnplaceService = $learnplaceService;
-		$this->accordionService = $accordionService;
-		$this->learnplaceServiceDecorationFactory = $learnplaceServiceDecorationFactory;
-		$this->blockAddGUI = $blockAddGUI;
-		$this->request = $request;
-		$this->accessGuard = $accessGuard;
-	}
+        $this->controlFlow = $controlFlow;
+        $this->http = $http;
+        $this->plugin = $plugin;
+        $this->renderableFactory = $renderableFactory;
+        $this->learnplaceService = $learnplaceService;
+        $this->accordionService = $accordionService;
+        $this->learnplaceServiceDecorationFactory = $learnplaceServiceDecorationFactory;
+        $this->blockAddGUI = $blockAddGUI;
+        $this->request = $request;
+        $this->accessGuard = $accessGuard;
+    }
 
 
-	public function executeCommand(): bool
+    public function executeCommand(): bool
     {
-		$cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
-		$this->tabs->activateTab(self::TAB_ID);
+        $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
+        $this->tabs->activateTab(self::TAB_ID);
 
-		switch ($cmd) {
-			case CommonControllerAction::CMD_INDEX:
-				if ($this->accessGuard->hasReadPermission()) {
-					$this->index();
+        switch ($cmd) {
+            case CommonControllerAction::CMD_INDEX:
+                if ($this->accessGuard->hasReadPermission()) {
+                    $this->index();
                     if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
                         $this->template->show();
                     } else {
                         $this->template->printToStdout();
                     }
-					return true;
-				}
-				break;
-			case CommonControllerAction::CMD_ADD:
-			case CommonControllerAction::CMD_CANCEL:
-			case CommonControllerAction::CMD_CONFIRM:
-			case CommonControllerAction::CMD_CREATE:
-			case CommonControllerAction::CMD_DELETE:
-			case CommonControllerAction::CMD_EDIT:
-			case CommonControllerAction::CMD_UPDATE:
-			case self::CMD_SEQUENCE:
-				if ($this->accessGuard->hasWritePermission()) {
-					$this->{$cmd}();
+                    return true;
+                }
+                break;
+            case CommonControllerAction::CMD_ADD:
+            case CommonControllerAction::CMD_CANCEL:
+            case CommonControllerAction::CMD_CONFIRM:
+            case CommonControllerAction::CMD_CREATE:
+            case CommonControllerAction::CMD_DELETE:
+            case CommonControllerAction::CMD_EDIT:
+            case CommonControllerAction::CMD_UPDATE:
+            case self::CMD_SEQUENCE:
+                if ($this->accessGuard->hasWritePermission()) {
+                    $this->{$cmd}();
                     if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
                         $this->template->show();
                     } else {
                         $this->template->printToStdout();
                     }
-					return true;
-				}
-				break;
-		}
+                    return true;
+                }
+                break;
+        }
 
         $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);
-		$this->controlFlow->redirectByClass(ilRepositoryGUI::class);
+        $this->controlFlow->redirectByClass(ilRepositoryGUI::class);
 
-		return false;
-	}
+        return false;
+    }
 
-	//actions
-	private function index(): void
+    //actions
+    private function index(): void
     {
-		$toolbar = new ilToolbarGUI();
-/*        $saveSequenceButton = $this->ui->factory()->button()->standard(
-            $this->plugin->txt('content_save_sequence'),
-            $this->controlFlow->getLinkTargetByClass(self::class, self::CMD_SEQUENCE)
-        );*/
-		$saveSequenceButton = ilSubmitButton::getInstance();
-		$saveSequenceButton->setCommand(self::CMD_SEQUENCE);
-		$saveSequenceButton->setCaption($this->plugin->txt('content_save_sequence'), false);
-		$toolbar->addStickyItem($saveSequenceButton);
+        $toolbar = new ilToolbarGUI();
+        /*        $saveSequenceButton = $this->ui->factory()->button()->standard(
+                    $this->plugin->txt('content_save_sequence'),
+                    $this->controlFlow->getLinkTargetByClass(self::class, self::CMD_SEQUENCE)
+                );*/
+        $saveSequenceButton = ilSubmitButton::getInstance();
+        $saveSequenceButton->setCommand(self::CMD_SEQUENCE);
+        $saveSequenceButton->setCaption($this->plugin->txt('content_save_sequence'), false);
+        $toolbar->addStickyItem($saveSequenceButton);
 
-		$writePermission = $this->accessGuard->hasWritePermission();
-		$template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block_list.html', true, true);
+        $writePermission = $this->accessGuard->hasWritePermission();
+        $template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block_list.html', true, true);
 
-		//decorate the learnplace only if the user has no write rights
-		$learnplaceService = ($writePermission) ? $this->learnplaceService : $this->learnplaceServiceDecorationFactory->decorate($this->learnplaceService);
+        //decorate the learnplace only if the user has no write rights
+        $learnplaceService = ($writePermission) ? $this->learnplaceService : $this->learnplaceServiceDecorationFactory->decorate($this->learnplaceService);
 
-		$learnplace = $learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
-		/**
-		 * @var ContentPresentationView $view
-		 */
-		$view = PluginContainer::resolve(ContentPresentationView::class);
-		$view->setBlocks($learnplace->getBlocks());
-		$view->setReadonly(!$writePermission);
+        $learnplace = $learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
+        /**
+         * @var ContentPresentationView $view
+         */
+        $view = PluginContainer::resolve(ContentPresentationView::class);
+        $view->setBlocks($learnplace->getBlocks());
+        $view->setReadonly(!$writePermission);
 
-		if($writePermission) {
-			$template->setVariable('FORM_ACTION', $this->controlFlow->getFormAction($this, self::CMD_SEQUENCE));
-			$template->setVariable('TOOLBAR', $toolbar->getHTML());
-		}
+        if($writePermission) {
+            $template->setVariable('FORM_ACTION', $this->controlFlow->getFormAction($this, self::CMD_SEQUENCE));
+            $template->setVariable('TOOLBAR', $toolbar->getHTML());
+        }
 
-		$template->setVariable('CONTENT', $view->getHTML());
+        $template->setVariable('CONTENT', $view->getHTML());
 
         $this->template->addCss(ilLearnplacesPlugin::getInstance()->getStyleSheetLocation('style.css'));
-		$this->template->setContent($template->get());
-	}
+        $this->template->setContent($template->get());
+    }
 
-	private function add(): void
+    private function add(): void
     {
-		$learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
-		foreach ($learnplace->getBlocks() as $block) {
-			if($block instanceof MapBlockModel) {
-				$this->blockAddGUI->setMapEnabled(false);
-				break;
-			}
-		}
+        $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
+        foreach ($learnplace->getBlocks() as $block) {
+            if($block instanceof MapBlockModel) {
+                $this->blockAddGUI->setMapEnabled(false);
+                break;
+            }
+        }
 
-		$this->blockAddGUI->setAccordionEnabled($this->getCurrentAccordionId($this->request->getQueryParams()) === 0);
+        $this->blockAddGUI->setAccordionEnabled($this->getCurrentAccordionId($this->request->getQueryParams()) === 0);
 
-		$this->template->setContent($this->blockAddGUI->getHTML());
-	}
+        $this->template->setContent($this->blockAddGUI->getHTML());
+    }
 
     /**
      * @return void
      * @throws ilCtrlException
      */
-	private function create(): void
+    private function create(): void
     {
-		$blockAdd = $this->blockAddGUI;
+        $blockAdd = $this->blockAddGUI;
         $blockAdd->initForm();
         $form = $blockAdd->getForm();
         $form = $form->withRequest($this->http->request());
         $form_data = $form->getData();
 
-		if($form->getError()) {
+        if($form->getError()) {
             $this->template->setOnScreenMessage('failure', $this->plugin->txt('message_create_failure'), true);
             $this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
-		}
+        }
 
         $input = intval($form_data[BlockAddFormGUI::POST_VISIBILITY_SECTION][BlockAddFormGUI::POST_BLOCK_TYPES]);
         $controller = static::$blockTypeViewMapping[$input];
@@ -272,68 +273,72 @@ final class xsrlContentGUI {
 
         //dispatch to controller which knows how to handle that block
         $this->controlFlow->redirectByClass($controller, CommonControllerAction::CMD_ADD);
-	}
+    }
 
-	private function cancel(): void {
-		$this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
-	}
+    private function cancel(): void
+    {
+        $this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
+    }
 
-	private function sequence(): void {
-		$learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
-		$blockIterator = new AppendIterator();
+    private function sequence(): void
+    {
+        $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
+        $blockIterator = new AppendIterator();
 
-		foreach ($learnplace->getBlocks() as $block) {
-			if($block instanceof AccordionBlockModel)
-				$blockIterator->append(new ArrayIterator($block->getBlocks()));
-		}
+        foreach ($learnplace->getBlocks() as $block) {
+            if($block instanceof AccordionBlockModel) {
+                $blockIterator->append(new ArrayIterator($block->getBlocks()));
+            }
+        }
 
-		$blockIterator->append(new ArrayIterator($learnplace->getBlocks()));
+        $blockIterator->append(new ArrayIterator($learnplace->getBlocks()));
 
-		$post = $this->request->getParsedBody();
+        $post = $this->request->getParsedBody();
 
-		//yield ['block_12' => '5']
-		$iterator = new RegexIterator(new ArrayIterator($post),  '/^(?:block\_\d+)$/',RegexIterator::MATCH, RegexIterator::USE_KEY);
+        //yield ['block_12' => '5']
+        $iterator = new RegexIterator(new ArrayIterator($post), '/^(?:block\_\d+)$/', RegexIterator::MATCH, RegexIterator::USE_KEY);
 
-		//yield [12 => 5]
-		$mappedBlockGenerator = function (Iterator $iterator) {
-			foreach ($iterator as $key => $entry) {
-				$id = intval(str_replace('block_', '', $key));
-				yield $id => intval($entry);
-			}
-			return;
-		};
-
-
-		$mappedBlocks = $mappedBlockGenerator($iterator);
+        //yield [12 => 5]
+        $mappedBlockGenerator = function (Iterator $iterator) {
+            foreach ($iterator as $key => $entry) {
+                $id = intval(str_replace('block_', '', $key));
+                yield $id => intval($entry);
+            }
+            return;
+        };
 
 
-		//set the new sequence numbers
-		foreach ($mappedBlocks as $id => $sequence) {
-			foreach ($blockIterator as $block) {
-				if($block->getId() === $id) {
-					$block->setSequence($sequence);
+        $mappedBlocks = $mappedBlockGenerator($iterator);
 
-					//sort accordion blocks
-					if($block instanceof AccordionBlockModel) {
-						$block->setBlocks($this->sortBlocksBySequence($block->getBlocks()));
-					}
 
-					break;
-				}
-			}
-		}
+        //set the new sequence numbers
+        foreach ($mappedBlocks as $id => $sequence) {
+            foreach ($blockIterator as $block) {
+                if($block->getId() === $id) {
+                    $block->setSequence($sequence);
 
-		$blocks = $learnplace->getBlocks();
-		$learnplace->setBlocks($this->sortBlocksBySequence($blocks));
+                    //sort accordion blocks
+                    if($block instanceof AccordionBlockModel) {
+                        $block->setBlocks($this->sortBlocksBySequence($block->getBlocks()));
+                    }
 
-		//store new sequence
-		$this->learnplaceService->store($learnplace);
+                    break;
+                }
+            }
+        }
 
-		$this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
-	}
+        $blocks = $learnplace->getBlocks();
+        $learnplace->setBlocks($this->sortBlocksBySequence($blocks));
 
-	private function sortBlocksBySequence(array $blocks): array {
-		usort($blocks, function(BlockModel $a, BlockModel $b) { return $a->getSequence() >= $b->getSequence() ? 1 : -1;});
-		return $blocks;
-	}
+        //store new sequence
+        $this->learnplaceService->store($learnplace);
+
+        $this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
+    }
+
+    private function sortBlocksBySequence(array $blocks): array
+    {
+        usort($blocks, function (BlockModel $a, BlockModel $b) { return $a->getSequence() >= $b->getSequence() ? 1 : -1;});
+        return $blocks;
+    }
 }

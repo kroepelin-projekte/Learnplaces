@@ -24,13 +24,12 @@ use SRAG\Learnplaces\service\security\AccessGuard;
  */
 final class xsrlAccordionBlockGUI
 {
-
     use InsertPositionAware;
     use BlockIdReferenceValidationAware;
     use ReferenceIdAware;
 
-    const TAB_ID = 'content';
-    const BLOCK_ID_QUERY_KEY = 'block';
+    public const TAB_ID = 'content';
+    public const BLOCK_ID_QUERY_KEY = 'block';
 
     /**
      * @var ilTabsGUI $tabs
@@ -96,13 +95,8 @@ final class xsrlAccordionBlockGUI
         $this->blockAccessGuard = $blockAccessGuard;
     }
 
-
     public function executeCommand(): bool
     {
-
- /*       if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
-            $this->template->getStandardTemplate();
-        }*/
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
         $this->tabs->activateTab(self::TAB_ID);
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container\provider\v6;
@@ -33,6 +34,7 @@ use xsrlPictureUploadBlockGUI;
 use xsrlRichTextBlockGUI;
 use xsrlSettingGUI;
 use xsrlVideoBlockGUI;
+
 use function ILIAS\UI\examples\Layout\Page\Standard\ui;
 
 /**
@@ -42,140 +44,152 @@ use function ILIAS\UI\examples\Layout\Page\Standard\ui;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class GUIProvider implements ServiceProviderInterface {
+final class GUIProvider implements ServiceProviderInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function register(Container $pimple)
+    {
+        $pimple[RenderableBlockViewFactory::class] = function ($c) {return new RenderableBlockViewFactoryImpl(); };
 
-	/**
-	 * @inheritDoc
-	 */
-	public function register(Container $pimple) {
-		$pimple[RenderableBlockViewFactory::class] = function ($c) {return new RenderableBlockViewFactoryImpl(); };
+        $pimple[xsrlContentGUI::class] = function ($c) {
+            return new xsrlContentGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ui(),
+                $c->ctrl(),
+                $c->http(),
+                $c[ilLearnplacesPlugin::class],
+                $c[RenderableBlockViewFactory::class],
+                $c[LearnplaceService::class],
+                $c[AccordionBlockService::class],
+                $c[LearnplaceServiceDecoratorFactory::class],
+                $c[BlockAddFormGUI::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
 
-		$pimple[xsrlContentGUI::class] = function ($c) {return new xsrlContentGUI(
-            $c->tabs(),
-            $c->ui()->mainTemplate(),
-            $c->ui(),
-            $c->ctrl(),
-            $c->http(),
-			$c[ilLearnplacesPlugin::class],
-			$c[RenderableBlockViewFactory::class],
-			$c[LearnplaceService::class],
-			$c[AccordionBlockService::class],
-			$c[LearnplaceServiceDecoratorFactory::class],
-			$c[BlockAddFormGUI::class],
-			$c[ServerRequestInterface::class],
-			$c[AccessGuard::class]
-			);
-		};
+        $pimple[xsrlPictureUploadBlockGUI::class] = function ($c) {
+            return new xsrlPictureUploadBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ui(),
+                $c->ctrl(),
+                $c->http(),
+                $c[ilLearnplacesPlugin::class],
+                $c[PictureUploadBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[AccordionBlockService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
 
-		$pimple[xsrlPictureUploadBlockGUI::class] = function ($c) {return new xsrlPictureUploadBlockGUI(
-            $c->tabs(),
-            $c->ui()->mainTemplate(),
-            $c->ctrl(),
-			$c[ilLearnplacesPlugin::class],
-			$c[PictureUploadBlockService::class],
-			$c[LearnplaceService::class],
-			$c[ConfigurationService::class],
-			$c[AccordionBlockService::class],
-			$c[ServerRequestInterface::class],
-			$c[AccessGuard::class]
-		);
-		};
+        $pimple[xsrlPictureBlockGUI::class] = function ($c) {
+            return new xsrlPictureBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[PictureService::class],
+                $c[PictureBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[AccordionBlockService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
 
-		$pimple[xsrlPictureBlockGUI::class] = function ($c) {return new xsrlPictureBlockGUI(
-            $c->tabs(),
-            $c->ui()->mainTemplate(),
-            $c->ctrl(),
-			$c[ilLearnplacesPlugin::class],
-			$c[PictureService::class],
-			$c[PictureBlockService::class],
-			$c[LearnplaceService::class],
-			$c[ConfigurationService::class],
-			$c[AccordionBlockService::class],
-			$c[ServerRequestInterface::class],
-			$c[AccessGuard::class]
-		);
-		};
+        $pimple[xsrlRichTextBlockGUI::class] = function ($c) {
+            return new xsrlRichTextBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[RichTextBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[AccordionBlockService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
 
-		$pimple[xsrlRichTextBlockGUI::class] = function ($c) {return new xsrlRichTextBlockGUI(
-            $c->tabs(),
-            $c->ui()->mainTemplate(),
-            $c->ctrl(),
-			$c[ilLearnplacesPlugin::class],
-			$c[RichTextBlockService::class],
-			$c[LearnplaceService::class],
-			$c[ConfigurationService::class],
-			$c[AccordionBlockService::class],
-			$c[ServerRequestInterface::class],
-			$c[AccessGuard::class]
-		);
-		};
+        $pimple[xsrlIliasLinkBlockGUI::class] = function ($c) {
+            return new xsrlIliasLinkBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[ILIASLinkBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[AccordionBlockService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
 
-		$pimple[xsrlIliasLinkBlockGUI::class] = function ($c) {return new xsrlIliasLinkBlockGUI(
-            $c->tabs(),
-            $c->ui()->mainTemplate(),
-            $c->ctrl(),
-			$c[ilLearnplacesPlugin::class],
-			$c[ILIASLinkBlockService::class],
-			$c[LearnplaceService::class],
-			$c[ConfigurationService::class],
-			$c[AccordionBlockService::class],
-			$c[ServerRequestInterface::class],
-			$c[AccessGuard::class]
-		);
-		};
+        $pimple[xsrlMapBlockGUI::class] = function ($c) {
+            return new xsrlMapBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[MapBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
 
-		$pimple[xsrlMapBlockGUI::class] = function ($c) {return new xsrlMapBlockGUI(
-            $c->tabs(),
-            $c->ui()->mainTemplate(),
-            $c->ctrl(),
-			$c[ilLearnplacesPlugin::class],
-			$c[MapBlockService::class],
-			$c[LearnplaceService::class],
-			$c[ConfigurationService::class],
-			$c[ServerRequestInterface::class],
-			$c[AccessGuard::class]
-		);
-		};
+        $pimple[xsrlVideoBlockGUI::class] = function ($c) {
+            return new xsrlVideoBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[VideoBlockService::class],
+                $c[VideoService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[AccordionBlockService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
 
-		$pimple[xsrlVideoBlockGUI::class] = function ($c) {return new xsrlVideoBlockGUI(
-            $c->tabs(),
-            $c->ui()->mainTemplate(),
-            $c->ctrl(),
-			$c[ilLearnplacesPlugin::class],
-			$c[VideoBlockService::class],
-			$c[VideoService::class],
-			$c[LearnplaceService::class],
-			$c[ConfigurationService::class],
-			$c[AccordionBlockService::class],
-			$c[ServerRequestInterface::class],
-			$c[AccessGuard::class]
-		);
-		};
+        $pimple[xsrlAccordionBlockGUI::class] = function ($c) {
+            return new xsrlAccordionBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[AccordionBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
 
-		$pimple[xsrlAccordionBlockGUI::class] = function ($c) {return new xsrlAccordionBlockGUI(
-            $c->tabs(),
-            $c->ui()->mainTemplate(),
-            $c->ctrl(),
-			$c[ilLearnplacesPlugin::class],
-			$c[AccordionBlockService::class],
-			$c[LearnplaceService::class],
-			$c[ConfigurationService::class],
-			$c[ServerRequestInterface::class],
-			$c[AccessGuard::class]
-		);
-		};
-
-		$pimple[xsrlSettingGUI::class] = function ($c) {return new xsrlSettingGUI(
-            $c->tabs(),
-            $c->ui()->mainTemplate(),
-            $c->ctrl(),
-			$c[ilLearnplacesPlugin::class],
-			$c[ConfigurationService::class],
-			$c[LocationService::class],
-			$c[LearnplaceService::class],
-			$c[ServerRequestInterface::class],
-			$c[AccessGuard::class]
-		);
-		};
-	}
+        $pimple[xsrlSettingGUI::class] = function ($c) {
+            return new xsrlSettingGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[ConfigurationService::class],
+                $c[LocationService::class],
+                $c[LearnplaceService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
+    }
 }

@@ -1,6 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
+use ILIAS\DI\UIServices;
 use Psr\Http\Message\ServerRequestInterface;
 use SRAG\Learnplaces\gui\block\PictureBlock\PictureBlockEditFormView;
 use SRAG\Learnplaces\gui\block\util\AccordionAware;
@@ -26,14 +28,13 @@ use SRAG\Learnplaces\service\security\AccessGuard;
  */
 final class xsrlPictureBlockGUI
 {
-
     use InsertPositionAware;
     use AccordionAware;
     use BlockIdReferenceValidationAware;
     use ReferenceIdAware;
 
-    const TAB_ID = 'content';
-    const BLOCK_ID_QUERY_KEY = 'block';
+    public const TAB_ID = 'content';
+    public const BLOCK_ID_QUERY_KEY = 'block';
 
     /**
      * @var ilTabsGUI $tabs
@@ -79,6 +80,8 @@ final class xsrlPictureBlockGUI
      * @var AccessGuard $blockAccessGuard
      */
     private $blockAccessGuard;
+    private UIServices $ui;
+    private \ILIAS\HTTP\Services $http;
 
 
     /**
@@ -86,7 +89,9 @@ final class xsrlPictureBlockGUI
      *
      * @param ilTabsGUI $tabs
      * @param ilGlobalPageTemplate | ilTemplate $template
+     * @param UIServices $ui
      * @param ilCtrl $controlFlow
+     * @param \ILIAS\HTTP\Services $http
      * @param ilLearnplacesPlugin $plugin
      * @param PictureService $pictureService
      * @param PictureBlockService $pictureBlockService
@@ -152,11 +157,11 @@ final class xsrlPictureBlockGUI
 
         $block->setVisibility($config->getDefaultVisibility());
         $form = new PictureBlockEditFormView($block);
-        $form->fillForm();
+        #$form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 
-    private function create()
+    private function create(): void
     {
         $form = new PictureBlockEditFormView(new PictureBlockModel());
         try {
@@ -169,12 +174,15 @@ final class xsrlPictureBlockGUI
             $block = $form->getBlockModel();
             $block->setId(0); //mitigate block id injection
             $accordionId = $this->getCurrentAccordionId($queries);
-            if ($accordionId > 0)
+            if ($accordionId > 0) {
                 $this->redirectInvalidRequests($accordionId);
+            }
 
-            $picture = $this->pictureService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()));
+/*            $picture = $this->pictureService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()));
             $block->setPicture($picture);
-            $block = $this->pictureBlockService->store($block);
+            $block = $this->pictureBlockService->store($block);*/
+
+            $block->setPicture($form->getFormData()[PictureBlockEditFormView::POST_IMAGE]);
 
             $anchor = xsrlContentGUI::ANCHOR_TEMPLATE;
             if ($accordionId > 0) {
@@ -216,7 +224,7 @@ final class xsrlPictureBlockGUI
         $blockId = $this->getBlockId();
         $block = $this->pictureBlockService->find($blockId);
         $form = new PictureBlockEditFormView($block);
-        $form->fillForm();
+        #$form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 

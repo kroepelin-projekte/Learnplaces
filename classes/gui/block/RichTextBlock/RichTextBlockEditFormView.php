@@ -22,7 +22,7 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView {
 	/**
 	 * @var RichTextBlockModel $block
 	 */
-	protected $block;
+	protected \SRAG\Learnplaces\service\publicapi\model\BlockModel $block;
 
 	/**
 	 * @inheritDoc

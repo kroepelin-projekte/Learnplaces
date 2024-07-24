@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/bootstrap.php';
@@ -10,81 +11,79 @@ use SRAG\Learnplaces\gui\helper\CommonControllerAction;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI {
-
-	/**
-	 * ilObjLearnplacesListGUI constructor.
-	 *
-	 * @param int $context
-	 */
-	public function __construct($context = self::CONTEXT_REPOSITORY) {
-		parent::__construct($context);
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getGuiClass(): string
+final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI
+{
+    /**
+     * ilObjLearnplacesListGUI constructor.
+     *
+     * @param int $context
+     */
+    public function __construct($context = self::CONTEXT_REPOSITORY)
     {
-		return ilObjLearnplacesGUI::class;
-	}
+        parent::__construct($context);
+    }
 
-
-	/**
-	 * @return array
-	 */
-	public function getCommands(): array
+    /**
+     * @return string
+     */
+    public function getGuiClass(): string
     {
-		return parent::getCommands();
-	}
+        return ilObjLearnplacesGUI::class;
+    }
 
-
-	/**
-	 * @return array
-	 */
-	public function initCommands(): array
+    /**
+     * @return array
+     */
+    public function getCommands(): array
     {
-		// Always set
-		$this->timings_enabled = false;
-		$this->subscribe_enabled = false;
-		$this->payment_enabled = false;
-		$this->info_screen_enabled = true;
-		$this->delete_enabled = true;
+        return parent::getCommands();
+    }
 
-		// Should be overwritten according to status
-		$this->cut_enabled = true;
-		$this->copy_enabled = true;
-		$this->link_enabled = true;
-
-		$commands = array(
-			array(
-				'permission' => 'read',
-				'cmd'        => CommonControllerAction::CMD_INDEX,
-				'default'    => true,
-			),
-		);
-
-		return $commands;
-	}
-
-
-	public function initType() {
-		$this->setType(ilLearnplacesPlugin::PLUGIN_ID);
-	}
-
-	function getProperties(): array
+    /**
+     * @return array
+     */
+    public function initCommands(): array
     {
-		$properties = parent::getProperties();
+        // Always set
+        $this->timings_enabled = false;
+        $this->subscribe_enabled = false;
+        $this->payment_enabled = false;
+        $this->info_screen_enabled = true;
+        $this->delete_enabled = true;
 
-		if(!ilObjLearnplacesAccess::checkOnline(intval($this->obj_id))) {
-			$properties[] = [
-				'alert' => true,
-				'property' => $this->txt('common_status'),
-				'value' => $this->txt('common_offline'),
-			];
-		}
+        // Should be overwritten according to status
+        $this->cut_enabled = true;
+        $this->copy_enabled = true;
+        $this->link_enabled = true;
 
-		return $properties;
-	}
+        $commands = array(
+            array(
+                'permission' => 'read',
+                'cmd'        => CommonControllerAction::CMD_INDEX,
+                'default'    => true,
+            ),
+        );
+
+        return $commands;
+    }
+
+    public function initType()
+    {
+        $this->setType(ilLearnplacesPlugin::PLUGIN_ID);
+    }
+
+    public function getProperties(): array
+    {
+        $properties = parent::getProperties();
+
+        if(!ilObjLearnplacesAccess::checkOnline(intval($this->obj_id))) {
+            $properties[] = [
+                'alert' => true,
+                'property' => $this->txt('common_status'),
+                'value' => $this->txt('common_offline'),
+            ];
+        }
+
+        return $properties;
+    }
 }

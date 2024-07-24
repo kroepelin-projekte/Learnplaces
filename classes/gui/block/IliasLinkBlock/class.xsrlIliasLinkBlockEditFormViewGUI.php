@@ -18,7 +18,7 @@ final class xsrlIliasLinkBlockEditFormViewGUI extends AbstractBlockEditFormView 
 	/**
 	 * @var ILIASLinkBlockModel $block
 	 */
-	protected $block;
+	protected \SRAG\Learnplaces\service\publicapi\model\BlockModel $block;
 
 	/**
 	 * @inheritDoc

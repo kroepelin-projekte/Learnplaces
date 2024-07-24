@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container;
@@ -27,24 +28,24 @@ use SRAG\Learnplaces\container\provider\v54\VisibilityServiceProvider;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class PluginContainer {
+final class PluginContainer
+{
+    /**
+     * @var ServiceProviderInterface[] $provider
+     */
+    private static $provider54 = [
+        PluginProvider::class,
+        RepositoryProvider::class,
+        MediaServiceProvider::class,
+        BlockServiceProvider::class,
+        GUIProvider::class,
+        ViewProvider::class,
+        VisibilityServiceProvider::class,
+        HttpServiceProvider::class,
+        SecurityServiceProvider::class,
 
-	/**
-	 * @var ServiceProviderInterface[] $provider
-	 */
-	private static $provider54 = [
-		PluginProvider::class,
-		RepositoryProvider::class,
-		MediaServiceProvider::class,
-		BlockServiceProvider::class,
-		GUIProvider::class,
-		ViewProvider::class,
-		VisibilityServiceProvider::class,
-		HttpServiceProvider::class,
-		SecurityServiceProvider::class,
-
-		//Add new service provider here
-	];
+        //Add new service provider here
+    ];
 
     /**
      * @var ServiceProviderInterface[] $provider
@@ -63,20 +64,21 @@ final class PluginContainer {
         //Add new service provider here
     ];
 
-	/**
-	 * @var Container $container
-	 */
-	private static $container;
+    /**
+     * @var Container $container
+     */
+    private static $container;
 
-	/**
-	 * Bootstraps the plugin dependency container, with all service providers.
-	 * This method requires an registered autoloader and
-	 * the already bootstrapped ILIAS DI container.
-	 *
-	 * @return void
-	 */
-	public static function bootstrap() {
-		static::$container = $GLOBALS['DIC'];
+    /**
+     * Bootstraps the plugin dependency container, with all service providers.
+     * This method requires an registered autoloader and
+     * the already bootstrapped ILIAS DI container.
+     *
+     * @return void
+     */
+    public static function bootstrap()
+    {
+        static::$container = $GLOBALS['DIC'];
 
         if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
             foreach (static::$provider54 as $providerClass) {
@@ -89,17 +91,18 @@ final class PluginContainer {
                 static::$container->register($provider);
             }
         }
-	}
+    }
 
+    /**
+     * @param string $class
+     * @return object
+     */
+    public static function resolve(string $class)
+    {
+        if(!static::$container->offsetExists($class)) {
+            throw new DependencyResolutionException("The class \"$class\" was not found.");
+        }
 
-	/**
-	 * @param string $class
-	 * @return object
-	 */
-	public static function resolve(string $class) {
-		if(!static::$container->offsetExists($class))
-			throw new DependencyResolutionException("The class \"$class\" was not found.");
-
-		return static::$container[$class];
-	}
+        return static::$container[$class];
+    }
 }
