@@ -6,6 +6,7 @@ namespace SRAG\Learnplaces\gui\block\PictureBlock;
 
 use ilFileInputGUI;
 use ILIAS\FileUpload\MimeType;
+use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ILIAS\UI\Component\Input\Field\Section;
 use ilLearnplacesUploadHandlerGUI;
 use ilTextAreaInputGUI;
@@ -72,6 +73,28 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
         $fileUpload = $field->file(new ilLearnplacesUploadHandlerGUI(), $this->plugin->txt('picture_block_select_picture'))
             ->withAcceptedMimeTypes([MimeType::IMAGE__JPEG, MimeType::IMAGE__PNG])
             ->withRequired($this->block->getId() <= 0);
+
+        if ($picture = $this->block->getPicture()) {
+            $resourceId = $picture->getResourceId();
+            $resource = new ResourceIdentification($resourceId);
+            if ($DIC->resourceStorage()->manage()->find($resourceId)) {
+                $src = $DIC->resourceStorage()->consume()->src($resource)->getSrc();
+                $fileUpload = $fileUpload->withAdditionalOnLoadCode(function ($id) use ($src) {
+                    return <<<JS
+                    const file_element = document.getElementById('$id');
+                    const image_element = document.createElement('img');
+                    image_element.src = `$src`;
+                    image_element.alt = 'Preview Image';
+                    image_element.style.marginTop = '20px';
+                    image_element.style.width = '100%';
+                    image_element.style.maxWidth = '1000px';
+                    image_element.style.height = '1000px';
+                    image_element.style.objectFit = 'contain';
+                    file_element.parentElement.append(image_element);
+                    JS;
+                });
+            }
+        }
 
         return $input->field()->section([
             self::POST_TITLE => $title,

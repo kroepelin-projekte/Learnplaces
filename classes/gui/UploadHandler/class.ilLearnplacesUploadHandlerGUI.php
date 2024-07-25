@@ -18,14 +18,14 @@ class ilLearnplacesUploadHandlerGUI extends AbstractCtrlAwareUploadHandler
 {
     private Services $storage;
     /** @var ResourceStakeholder */
-    private Stakeholder $stakeholder;
+    private ilLearnplacesStakeholder $stakeholder;
 
     public function __construct()
     {
         parent::__construct();
         global $DIC;
         $this->storage = $DIC->resourceStorage();
-        $this->stakeholder = new Stakeholder();
+        $this->stakeholder = new ilLearnplacesStakeholder();
     }
 
     public function getUploadURL(): string

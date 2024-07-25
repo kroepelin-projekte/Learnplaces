@@ -241,11 +241,20 @@ final class xsrlPictureBlockGUI
             $oldPicture = $oldPictureBlock->getPicture();
             $block->setPicture($oldPicture);
 
-            $uploadedFiles = $this->request->getUploadedFiles();
+/*            $uploadedFiles = $this->request->getUploadedFiles();
             if (count($uploadedFiles) === 1 && array_pop($uploadedFiles)->getError() === UPLOAD_ERR_OK) {
                 //store new picture
                 $picture = $this->pictureService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()));
                 $block->setPicture($picture);
+
+                //delete old picture
+                $this->pictureService->delete($oldPicture->getId());
+            }*/
+
+            $resourceId = current($form->getFormData()[PictureBlockEditFormView::POST_IMAGE]);
+            if ($resourceId) {
+                //store new picture
+                $picture = $this->pictureService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()), $resourceId);
 
                 //delete old picture
                 $this->pictureService->delete($oldPicture->getId());

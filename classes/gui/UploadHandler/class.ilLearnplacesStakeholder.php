@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use ILIAS\ResourceStorage\Stakeholder\AbstractResourceStakeholder;
 
-class Stakeholder extends AbstractResourceStakeholder
+class ilLearnplacesStakeholder extends AbstractResourceStakeholder
 {
     /**
      * @return string

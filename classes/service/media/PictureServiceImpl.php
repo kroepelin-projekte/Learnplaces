@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\media;
 
+use ILIAS\ResourceStorage\Identification\ResourceIdentification;
+use ilLearnplacesStakeholder;
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
@@ -56,10 +58,6 @@ final class PictureServiceImpl implements PictureService
      * @var FileTypeDetector $fileTypeDetector
      */
     private $fileTypeDetector;
-    /**
-     * @var FilesystemInterface $filesystem
-     */
-    private $filesystem;
 
     /**
      * PictureServiceImpl constructor.
@@ -68,15 +66,13 @@ final class PictureServiceImpl implements PictureService
      * @param PictureRepository      $pictureRepository
      * @param ImageManager           $imageManager
      * @param FileTypeDetector       $fileTypeDetector
-     * @param FilesystemInterface    $filesystem
      */
-    public function __construct(ServerRequestInterface $request, PictureRepository $pictureRepository, ImageManager $imageManager, FileTypeDetector $fileTypeDetector, FilesystemInterface $filesystem)
+    public function __construct(ServerRequestInterface $request, PictureRepository $pictureRepository, ImageManager $imageManager, FileTypeDetector $fileTypeDetector)
     {
         $this->request = $request;
         $this->pictureRepository = $pictureRepository;
         $this->imageManager = $imageManager;
         $this->fileTypeDetector = $fileTypeDetector;
-        $this->filesystem = $filesystem;
     }
 
     /**
@@ -122,17 +118,27 @@ final class PictureServiceImpl implements PictureService
             $picture = $this->pictureRepository->find($pictureId);
             $this->pictureRepository->delete($pictureId);
 
-            $this->deleteFile(PathHelper::generateRelativePathFrom($picture->getOriginalPath()));
-            $this->deleteFile(PathHelper::generateRelativePathFrom($picture->getPreviewPath()));
+            $this->deleteFile($picture->getResourceId());
         } catch (EntityNotFoundException $ex) {
             throw new InvalidArgumentException("Unable to delete picture with id \"$pictureId\".", 0, $ex);
         }
     }
 
-    private function deleteFile(string $path)
+    /**
+     * @param string $resourceId
+     * @return void
+     */
+    private function deleteFile(string $resourceId): void
     {
-        if($this->filesystem->has($path)) {
-            $this->filesystem->delete($path);
+        /*        if($this->filesystem->has($path)) {
+                    $this->filesystem->delete($path);
+                }*/
+
+        global $DIC; // todo
+
+        $resource = new ResourceIdentification($resourceId);
+        if ($DIC->resourceStorage()->manage()->find($resourceId)) {
+            $DIC->resourceStorage()->manage()->remove($resource, new ilLearnplacesStakeholder());
         }
     }
 
