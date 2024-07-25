@@ -64,8 +64,14 @@ final class BlockAddFormGUI
 
         //create visibility
         $radioGroup = $field->radio($this->plugin->txt('block_type_title'), '')
-            ->withOption((string) BlockType::PICTURE, $this->plugin->txt('block_picture'))
-            ->withOption((string) BlockType::ACCORDION, $this->plugin->txt('block_accordion'))
+            ->withOption((string) BlockType::PICTURE, $this->plugin->txt('block_picture'));
+
+        if ($this->accordionEnabled) {
+            $radioGroup = $radioGroup
+                ->withOption((string) BlockType::ACCORDION, $this->plugin->txt('block_accordion'));
+        }
+
+        $radioGroup = $radioGroup
             ->withOption((string) BlockType::ILIAS_LINK, $this->plugin->txt('block_ilias_link'))
             ->withOption((string) BlockType::RICH_TEXT, $this->plugin->txt('block_rich_text'))
             ->withOption((string) BlockType::VIDEO, $this->plugin->txt('block_video'))

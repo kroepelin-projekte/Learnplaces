@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,14 +27,13 @@ use SRAG\Learnplaces\service\security\AccessGuard;
  */
 final class xsrlRichTextBlockGUI
 {
-
     use InsertPositionAware;
     use AccordionAware;
     use BlockIdReferenceValidationAware;
     use ReferenceIdAware;
 
-    const TAB_ID = 'content';
-    const BLOCK_ID_QUERY_KEY = 'block';
+    public const TAB_ID = 'content';
+    public const BLOCK_ID_QUERY_KEY = 'block';
 
     /**
      * @var ilTabsGUI $tabs
@@ -146,8 +146,49 @@ final class xsrlRichTextBlockGUI
 
         $block->setVisibility($config->getDefaultVisibility());
         $form = new RichTextBlockEditFormView($block);
-        $form->fillForm();
-        $this->template->setContent($form->getHTML());
+        #$form->fillForm();
+
+
+        $tinymce_library_src = "./node_modules/tinymce/tinymce.min.js";
+        $this->template->addJavaScript($tinymce_library_src);
+
+        #$content = $this->richTextBlockService->find($this->getBlockId())->getContent();
+        $content = 'test';
+
+        $html_form = $form->getHTML();
+
+        $skin_css_path = ilUtil::getStyleSheetLocation();
+
+        $this->template->addOnLoadCode(
+            <<<JS
+            tinymce.init({
+                selector: '#textarea',
+                inline: false,
+                menubar: false,
+                branding: false,
+                statusbar: false,
+                paste_block_drop: false,
+                paste_data_images: false,
+                paste_as_text: true,
+                paste_word_valid_elements: 'b,strong,i,em,h1,h2,h3,h4,h5',
+                content_css: '$skin_css_path',
+                height : "40vh",
+                content_style: "html body#tinymce {overflow-y: scroll; background: transparent !important; padding: 10px;} body#tinymce::selection {background: transparent !important;} .tox .tox-edit-area .tox-edit-area__iframe {background: transparent !important;} html {overflow-y: scroll !important;} tox tox-tinymce {height: 100%; min-height: 500vh;}",
+                plugins: 'lists autolink link image paste',
+                toolbar: 'undo redo | blocks | bold italic | outdent indent | numlist bullist | link image ',
+                setup: function (editor) {
+                    editor.on("init", function () {
+                          this.setContent(`$content`);
+                        }
+                    );
+                }
+            });
+            JS
+        );
+
+
+
+        $this->template->setContent($html_form);
     }
 
     private function create(): void
@@ -164,8 +205,9 @@ final class xsrlRichTextBlockGUI
             $block = $form->getBlockModel();
             $block->setId(0); //mitigate block id injection
             $accordionId = $this->getCurrentAccordionId($queries);
-            if ($accordionId > 0)
+            if ($accordionId > 0) {
                 $this->redirectInvalidRequests($accordionId);
+            }
 
             $block = $this->richTextBlockService->store($block);
 

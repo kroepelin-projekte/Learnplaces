@@ -14,6 +14,7 @@ use ilPropertyFormGUI;
 use ilRadioGroupInputGUI;
 use ilRadioOption;
 use SRAG\Learnplaces\container\PluginContainer;
+use SRAG\Learnplaces\gui\block\RichTextBlock\RichTextBlockEditFormView;
 use SRAG\Learnplaces\gui\exception\ValidationException;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
 use SRAG\Learnplaces\service\publicapi\model\BlockModel;

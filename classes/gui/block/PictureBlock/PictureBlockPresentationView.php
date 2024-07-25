@@ -5,6 +5,7 @@ namespace SRAG\Learnplaces\gui\block\PictureBlock;
 
 use ilButtonToSplitButtonMenuItemAdapter;
 use ilCtrl;
+use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ilLearnplacesPlugin;
 use ilLinkButton;
 use ilSplitButtonException;
@@ -64,8 +65,14 @@ final class PictureBlockPresentationView implements Renderable {
 
 	private function initView(): void {
 		$this->template->setVariable('TITLE', $this->model->getTitle());
-		if(!is_null($this->model->getPicture()))
-			$this->template->setVariable('PICTURE_PATH', $this->model->getPicture()->getOriginalPath());
+
+        $resource = new ResourceIdentification($this->settings->get('test_file', ''));
+        if ($this->dic->resourceStorage()->manage()->find($resource)) {
+            $src = $this->dic->resourceStorage()->consume()
+                ->src($resource)
+                ->getSrc();
+            $this->template->setVariable('PICTURE_PATH', $src);
+        }
 
 		$this->template->setVariable('DESCRIPTION', $this->model->getDescription());
 	}
