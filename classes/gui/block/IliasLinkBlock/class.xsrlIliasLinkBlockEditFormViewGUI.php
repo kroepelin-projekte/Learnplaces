@@ -5,6 +5,7 @@ declare(strict_types=1);
 use ILIAS\UI\Implementation\Component\Input\Field\Section;
 use SRAG\Learnplaces\gui\block\AbstractBlockEditFormView;
 use SRAG\Learnplaces\service\publicapi\model\ILIASLinkBlockModel;
+use SRAG\Learnplaces\service\publicapi\model\BlockModel;
 
 /**
  * Class IliasLinkBlockEditFormView
@@ -20,7 +21,7 @@ final class xsrlIliasLinkBlockEditFormViewGUI extends AbstractBlockEditFormView
     /**
      * @var ILIASLinkBlockModel $block
      */
-    protected \SRAG\Learnplaces\service\publicapi\model\BlockModel $block;
+    protected BlockModel $block;
 
     /**
      * @inheritDoc

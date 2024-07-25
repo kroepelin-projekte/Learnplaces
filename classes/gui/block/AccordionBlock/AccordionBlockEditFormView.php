@@ -9,6 +9,7 @@ use ILIAS\UI\Implementation\Component\Input\Field\Section;
 use ilTextInputGUI;
 use SRAG\Learnplaces\gui\block\AbstractBlockEditFormView;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
+use SRAG\Learnplaces\service\publicapi\model\BlockModel;
 use SRAG\Learnplaces\service\publicapi\model\AccordionBlockModel;
 use xsrlAccordionBlockGUI;
 
@@ -28,7 +29,7 @@ final class AccordionBlockEditFormView extends AbstractBlockEditFormView
     /**
      * @var AccordionBlockModel $block
      */
-    protected \SRAG\Learnplaces\service\publicapi\model\BlockModel $block;
+    protected BlockModel $block;
 
     /**
      * @inheritDoc
@@ -49,8 +50,12 @@ final class AccordionBlockEditFormView extends AbstractBlockEditFormView
         $input = $ui->factory()->input();
         $field = $input->field();
 
-        $title = $field->text($this->plugin->txt('accordion_block_title'))->withMaxLength(256)->withRequired(true);
-        $expand = $field->checkbox($this->plugin->txt('accordion_block_expand'))->withValue(true);
+        $title = $field->text($this->plugin->txt('accordion_block_title'))
+            ->withValue($this->block->getTitle())
+            ->withMaxLength(256)
+            ->withRequired(true);
+        $expand = $field->checkbox($this->plugin->txt('accordion_block_expand'))
+            ->withValue($this->block->isExpand());
 
         return $input->field()->section([
             self::POST_TITLE => $title,

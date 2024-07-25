@@ -55,7 +55,6 @@ final class AccordionBlockPresentationView implements Renderable
      */
     private $contentView;
 
-
     /**
      * PictureUploadBlockPresentationView constructor.
      *

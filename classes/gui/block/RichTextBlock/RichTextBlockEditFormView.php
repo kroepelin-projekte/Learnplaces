@@ -8,6 +8,7 @@ use ILIAS\UI\Implementation\Component\Input\Field\Section;
 use ilLearnplacesPlugin;
 use ilTextAreaInputGUI;
 use SRAG\Learnplaces\gui\block\AbstractBlockEditFormView;
+use SRAG\Learnplaces\service\publicapi\model\BlockModel;
 use SRAG\Learnplaces\service\publicapi\model\RichTextBlockModel;
 use xsrlRichTextBlockGUI;
 
@@ -24,7 +25,7 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView
     /**
      * @var RichTextBlockModel $block
      */
-    protected \SRAG\Learnplaces\service\publicapi\model\BlockModel $block;
+    protected BlockModel $block;
 
     /**
      * @inheritDoc
