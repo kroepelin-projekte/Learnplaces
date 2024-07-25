@@ -146,7 +146,6 @@ final class xsrlRichTextBlockGUI
 
         $block->setVisibility($config->getDefaultVisibility());
         $form = new RichTextBlockEditFormView($block);
-        #$form->fillForm();
 
 
         $tinymce_library_src = "./node_modules/tinymce/tinymce.min.js";
@@ -246,7 +245,6 @@ final class xsrlRichTextBlockGUI
     {
         $block = $this->richTextBlockService->find($this->getBlockId());
         $form = new RichTextBlockEditFormView($block);
-        $form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 

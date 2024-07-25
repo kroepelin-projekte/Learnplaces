@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,15 +29,14 @@ use SRAG\Learnplaces\service\security\AccessGuard;
  */
 final class xsrlIliasLinkBlockGUI
 {
-
     use InsertPositionAware;
     use AccordionAware;
     use BlockIdReferenceValidationAware;
     use ReferenceIdAware;
 
-    const TAB_ID = 'content';
-    const BLOCK_ID_QUERY_KEY = 'block';
-    const ANCHOR_TEMPLATE = 'sequence-';
+    public const TAB_ID = 'content';
+    public const BLOCK_ID_QUERY_KEY = 'block';
+    public const ANCHOR_TEMPLATE = 'sequence-';
 
     /**
      * @var ilTabsGUI $tabs
@@ -115,8 +115,9 @@ final class xsrlIliasLinkBlockGUI
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
         $this->tabs->activateTab(self::TAB_ID);
 
-        if ($next_class === strtolower(xsrlIliasLinkBlockEditFormViewGUI::class))
+        if ($next_class === strtolower(xsrlIliasLinkBlockEditFormViewGUI::class)) {
             $this->controlFlow->forwardCommand(new xsrlIliasLinkBlockEditFormViewGUI(new ILIASLinkBlockModel()));
+        }
 
         switch ($cmd) {
             case CommonControllerAction::CMD_ADD:
@@ -155,7 +156,6 @@ final class xsrlIliasLinkBlockGUI
         $block->setVisibility($config->getDefaultVisibility());
         $form = new xsrlIliasLinkBlockEditFormViewGUI($block);
 
-        $form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 
@@ -172,8 +172,9 @@ final class xsrlIliasLinkBlockGUI
             $block = $form->getBlockModel();
             $block->setId(0); //mitigate block id injection
             $accordionId = $this->getCurrentAccordionId($queries);
-            if ($accordionId > 0)
+            if ($accordionId > 0) {
                 $this->redirectInvalidRequests($accordionId);
+            }
 
             $block = $this->iliasLinkService->store($block);
 
@@ -211,7 +212,6 @@ final class xsrlIliasLinkBlockGUI
         $blockId = $this->getBlockId();
         $block = $this->iliasLinkService->find($blockId);
         $form = new xsrlIliasLinkBlockEditFormViewGUI($block);
-        $form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 

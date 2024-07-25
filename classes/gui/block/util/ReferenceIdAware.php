@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\gui\block\util;
@@ -6,6 +7,7 @@ namespace SRAG\Learnplaces\gui\block\util;
 use ilAccessHandler;
 use Psr\Http\Message\ServerRequestInterface;
 use SRAG\Learnplaces\service\security\AccessGuard;
+
 use function strcmp;
 
 /**
@@ -15,15 +17,16 @@ use function strcmp;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait ReferenceIdAware {
+trait ReferenceIdAware
+{
+    /**
+     * @var ServerRequestInterface $request
+     */
+    private $request;
 
-	/**
-	 * @var ServerRequestInterface $request
-	 */
-	private $request;
-
-	private function getCurrentRefId(): int {
-		$queries = $this->request->getQueryParams();
-		return intval($queries["ref_id"]);
-	}
+    private function getCurrentRefId(): int
+    {
+        $queries = $this->request->getQueryParams();
+        return intval($queries["ref_id"]);
+    }
 }

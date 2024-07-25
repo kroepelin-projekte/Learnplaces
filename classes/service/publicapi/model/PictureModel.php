@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -12,81 +13,87 @@ use SRAG\Lernplaces\persistence\mapping\PictureDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class PictureModel {
+final class PictureModel
+{
+    use PictureDtoMappingAware;
 
-	use PictureDtoMappingAware;
+    /**
+     * @var int $id
+     */
+    private $id = 0;
 
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
-
-	/**
-	 * @var string $originalPath
-	 */
-	private $originalPath = "";
-	/**
-	 * @var string $previewPath
-	 */
-	private $previewPath = "";
-
-
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+    /**
+     * @var string $originalPath
+     */
+    private $originalPath = "";
+    /**
+     * @var string $previewPath
+     */
+    private $previewPath = "";
 
 
-	/**
-	 * @param int $id
-	 *
-	 * @return PictureModel
-	 */
-	public function setId(int $id): PictureModel {
-		$this->id = $id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getOriginalPath(): string {
-		return $this->originalPath;
-	}
+    /**
+     * @param int $id
+     *
+     * @return PictureModel
+     */
+    public function setId(int $id): PictureModel
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $originalPath
-	 *
-	 * @return PictureModel
-	 */
-	public function setOriginalPath(string $originalPath): PictureModel {
-		$this->originalPath = $originalPath;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getOriginalPath(): string
+    {
+        return $this->originalPath;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getPreviewPath(): string {
-		return $this->previewPath;
-	}
+    /**
+     * @param string $originalPath
+     *
+     * @return PictureModel
+     */
+    public function setOriginalPath(string $originalPath): PictureModel
+    {
+        $this->originalPath = $originalPath;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $previewPath
-	 *
-	 * @return PictureModel
-	 */
-	public function setPreviewPath(string $previewPath): PictureModel {
-		$this->previewPath = $previewPath;
+    /**
+     * @return string
+     */
+    public function getPreviewPath(): string
+    {
+        return $this->previewPath;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param string $previewPath
+     *
+     * @return PictureModel
+     */
+    public function setPreviewPath(string $previewPath): PictureModel
+    {
+        $this->previewPath = $previewPath;
+
+        return $this;
+    }
 }

@@ -20,26 +20,6 @@
         "sabre/uri": "^2.1",
         "wapmorgan/file-type-detector": "^1.1"
     },
-    "autoload": {
-        "psr-4": {
-            "SRAG\\Learnplaces\\": "classes/"
-        },
-        "classmap": [
-            "./classes/persistence/mapping",
-            "./classes/class.ilLearnplacesPlugin.php",
-            "./classes/class.ilObjLearnplaces.php",
-            "./classes/class.ilObjLearnplacesAccess.php",
-            "./classes/class.ilObjLearnplacesGUI.php",
-            "./classes/class.ilObjLearnplacesListGUI.php",
-            "./classes/gui/UploadHandler/class.ilLearnplacesUploadHandlerGUI.php",
-            "./classes/gui"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "SRAG\\Learnplaces\\": "tests/unit/"
-        }
-    },
     "config": {
         "optimize-autoloader": true,
         "classmap-authoritative": true,

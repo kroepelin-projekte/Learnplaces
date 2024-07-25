@@ -212,23 +212,6 @@ abstract class AbstractBlockEditFormView
     }
 
     /**
-     * Fills the form with the data of the block model.
-     *
-     * @return void
-     */
-    public function fillForm()
-    {
-        /*		$values = [
-                    self::POST_ID => $this->block->getId(),
-                    self::POST_VISIBILITY => $this->block->getVisibility(),
-                ];
-
-                $allValues = array_merge($values, $this->createValueArrayForSpecificFormParts());
-
-                $this->setValuesByArray($allValues);*/
-    }
-
-    /**
      * @return string
      */
     public function getHTML(): string

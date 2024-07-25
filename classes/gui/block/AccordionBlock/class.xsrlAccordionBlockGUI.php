@@ -135,7 +135,6 @@ final class xsrlAccordionBlockGUI
 
         $block->setVisibility($config->getDefaultVisibility());
         $form = new AccordionBlockEditFormView($block);
-        $form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 
@@ -178,7 +177,6 @@ final class xsrlAccordionBlockGUI
     {
         $block = $this->accordionService->find($this->getBlockId());
         $form = new AccordionBlockEditFormView($block);
-        $form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 

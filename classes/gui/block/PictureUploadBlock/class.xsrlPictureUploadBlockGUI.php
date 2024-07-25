@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,14 +27,13 @@ use SRAG\Learnplaces\service\security\AccessGuard;
  */
 final class xsrlPictureUploadBlockGUI
 {
-
     use InsertPositionAware;
     use AccordionAware;
     use BlockIdReferenceValidationAware;
     use ReferenceIdAware;
 
-    const TAB_ID = 'content';
-    const BLOCK_ID_QUERY_KEY = 'block';
+    public const TAB_ID = 'content';
+    public const BLOCK_ID_QUERY_KEY = 'block';
 
     /**
      * @var ilTabsGUI $tabs
@@ -146,7 +146,6 @@ final class xsrlPictureUploadBlockGUI
 
         $block->setVisibility($config->getDefaultVisibility());
         $form = new PictureUploadBlockEditFormView($block);
-        $form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 
@@ -160,8 +159,9 @@ final class xsrlPictureUploadBlockGUI
             $block = $form->getBlockModel();
             $block->setId(0); //mitigate block id injection
             $accordionId = $this->getCurrentAccordionId($queries);
-            if ($accordionId > 0)
+            if ($accordionId > 0) {
                 $this->redirectInvalidRequests($accordionId);
+            }
 
             $block = $this->pictureUploadService->store($block);
 

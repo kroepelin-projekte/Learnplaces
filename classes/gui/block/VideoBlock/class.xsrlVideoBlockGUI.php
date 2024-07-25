@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,14 +30,13 @@ use SRAG\Learnplaces\service\security\AccessGuard;
  */
 final class xsrlVideoBlockGUI
 {
-
     use InsertPositionAware;
     use AccordionAware;
     use BlockIdReferenceValidationAware;
     use ReferenceIdAware;
 
-    const TAB_ID = 'content';
-    const BLOCK_ID_QUERY_KEY = 'block';
+    public const TAB_ID = 'content';
+    public const BLOCK_ID_QUERY_KEY = 'block';
 
     /**
      * @var ilTabsGUI $tabs
@@ -155,7 +155,6 @@ final class xsrlVideoBlockGUI
 
         $block->setVisibility($config->getDefaultVisibility());
         $form = new VideoBlockEditFormView($block);
-        $form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 
@@ -172,8 +171,9 @@ final class xsrlVideoBlockGUI
             $block = $form->getBlockModel();
             $block->setId(0); //mitigate block id injection
             $accordionId = $this->getCurrentAccordionId($queries);
-            if ($accordionId > 0)
+            if ($accordionId > 0) {
                 $this->redirectInvalidRequests($accordionId);
+            }
 
             $video = $this->videoService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()));
             $block
@@ -222,7 +222,6 @@ final class xsrlVideoBlockGUI
         $blockId = $this->getBlockId();
         $block = $this->videoBlockService->find($blockId);
         $form = new VideoBlockEditFormView($block);
-        $form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 

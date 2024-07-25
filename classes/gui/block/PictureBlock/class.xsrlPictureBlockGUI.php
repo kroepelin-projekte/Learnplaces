@@ -157,7 +157,6 @@ final class xsrlPictureBlockGUI
 
         $block->setVisibility($config->getDefaultVisibility());
         $form = new PictureBlockEditFormView($block);
-        #$form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 
@@ -224,7 +223,6 @@ final class xsrlPictureBlockGUI
         $blockId = $this->getBlockId();
         $block = $this->pictureBlockService->find($blockId);
         $form = new PictureBlockEditFormView($block);
-        #$form->fillForm();
         $this->template->setContent($form->getHTML());
     }
 

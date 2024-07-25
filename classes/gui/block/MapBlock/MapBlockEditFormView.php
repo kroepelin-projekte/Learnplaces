@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\gui\block\PictureUploadBlock;
@@ -13,42 +14,47 @@ use xsrlMapBlockGUI;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class MapBlockEditFormView extends AbstractBlockEditFormView {
-
-	/**
-	 * @inheritDoc
-	 */
-	protected function hasBlockSpecificParts(): bool {
-		return false;
-	}
-
-
-	/**
-	 * @inheritDoc
-	 */
-	protected function getFormActionUrl(): string {
-		return $this->ctrl->getFormActionByClass(xsrlMapBlockGUI::class);
-	}
+final class MapBlockEditFormView extends AbstractBlockEditFormView
+{
+    /**
+     * @inheritDoc
+     */
+    protected function hasBlockSpecificParts(): bool
+    {
+        return false;
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	protected function initBlockSpecificForm() {
-	}
+    /**
+     * @inheritDoc
+     */
+    protected function getFormActionUrl(): string
+    {
+        return $this->ctrl->getFormActionByClass(xsrlMapBlockGUI::class);
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	protected function createValueArrayForSpecificFormParts(): array {
-		return [];
-	}
+    /**
+     * @inheritDoc
+     */
+    protected function initBlockSpecificForm()
+    {
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	protected function getObject() {
-	}
+    /**
+     * @inheritDoc
+     */
+    protected function createValueArrayForSpecificFormParts(): array
+    {
+        return [];
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    protected function getObject()
+    {
+    }
 }
