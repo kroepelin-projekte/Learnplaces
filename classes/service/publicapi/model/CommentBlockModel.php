@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -12,33 +13,35 @@ use SRAG\Lernplaces\persistence\mapping\CommentBlockDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class CommentBlockModel extends BlockModel {
+final class CommentBlockModel extends BlockModel
+{
+    use CommentBlockDtoMappingAware;
 
-	use CommentBlockDtoMappingAware;
-
-	/**
-	 * @var CommentModel[]
-	 */
-	private $comments = [];
-
-
-	/**
-	 * @return CommentModel[]
-	 */
-	public function getComments(): array {
-		return $this->comments;
-	}
+    /**
+     * @var CommentModel[]
+     */
+    private $comments = [];
 
 
-	/**
-	 * @param CommentModel[] $comments
-	 *
-	 * @return CommentBlockModel
-	 */
-	public function setComments(array $comments): CommentBlockModel {
-		$this->comments = $comments;
+    /**
+     * @return CommentModel[]
+     */
+    public function getComments(): array
+    {
+        return $this->comments;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param CommentModel[] $comments
+     *
+     * @return CommentBlockModel
+     */
+    public function setComments(array $comments): CommentBlockModel
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
 
 }

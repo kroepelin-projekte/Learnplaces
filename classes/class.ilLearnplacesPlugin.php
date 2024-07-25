@@ -22,13 +22,16 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
      */
     public function __construct()
     {
-        global $DIC;
+        global $DIC; //todo
         parent::__construct($DIC->database(), $DIC["component.repository"], 'xsrl');
 
         self::$instance = $this;
     }
 
-    public static function getInstance()
+    /**
+     * @return ilLearnplacesPlugin
+     */
+    public static function getInstance(): ilLearnplacesPlugin
     {
         if(is_null(self::$instance)) {
             self::$instance = new self();
@@ -36,23 +39,35 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
         return self::$instance;
     }
 
+    /**
+     * @return string
+     */
     public function getPluginName(): string
     {
         return self::PLUGIN_NAME;
     }
 
+    /**
+     * @return bool
+     */
     public function allowCopy(): bool
     {
         return true;
     }
 
+    /**
+     * @return void
+     */
     protected function uninstallCustom(): void
     {
         $this->dropDatabase();
         $this->deleteFiles();
     }
 
-    private function dropDatabase()
+    /**
+     * @return void
+     */
+    private function dropDatabase(): void
     {
         $database = PluginContainer::resolve(ilDB::class);
         $database->dropTable(\SRAG\Learnplaces\persistence\entity\AccordionBlock::returnDbTableName(), false);
@@ -83,7 +98,7 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
     }
 
     // todo IRSS
-    private function deleteFiles()
+    private function deleteFiles(): void
     {
         /**
          * @var FilesystemInterface $filesystem

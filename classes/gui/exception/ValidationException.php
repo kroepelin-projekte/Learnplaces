@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\gui\exception;
@@ -16,6 +17,6 @@ use RuntimeException;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class ValidationException extends RuntimeException {
-
+class ValidationException extends RuntimeException
+{
 }

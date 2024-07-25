@@ -15,33 +15,33 @@ use SRAG\Learnplaces\service\publicapi\model\VideoModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-interface VideoService {
+interface VideoService
+{
+    /**
+     * Stores an uploaded video.
+     *
+     * Allowed file formats:
+     * *.mp4
+     *
+     * @param int $objectId     The object id of the learnplace.
+     *
+     * @return VideoModel       The newly created video model.
+     *
+     * @throws LogicException   Thrown if the storeUpload method was called without actual upload.
+     * @throws FileUploadException
+     *                          Thrown if the upload failed or the uploaded file was invalid.
+     */
+    public function storeUpload(int $objectId): VideoModel;
 
-	/**
-	 * Stores an uploaded video.
-	 *
-	 * Allowed file formats:
-	 * *.mp4
-	 *
-	 * @param int $objectId     The object id of the learnplace.
-	 *
-	 * @return VideoModel       The newly created video model.
-	 *
-	 * @throws LogicException   Thrown if the storeUpload method was called without actual upload.
-	 * @throws FileUploadException
-	 *                          Thrown if the upload failed or the uploaded file was invalid.
-	 */
-	public function storeUpload(int $objectId): VideoModel;
 
-
-	/**
-	 * Deletes a files by video model.
-	 * This method will simply ignore missing files.
-	 *
-	 * @param VideoModel $video The video model which should be used to delete all related files.
-	 *
-	 * @return void
-	 */
-	public function delete(VideoModel $video);
+    /**
+     * Deletes a files by video model.
+     * This method will simply ignore missing files.
+     *
+     * @param VideoModel $video The video model which should be used to delete all related files.
+     *
+     * @return void
+     */
+    public function delete(VideoModel $video);
 
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -12,6 +13,7 @@ use SRAG\Lernplaces\persistence\mapping\PictureUploadBlockDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class PictureUploadBlockModel extends BlockModel {
-	use PictureUploadBlockDtoMappingAware;
+final class PictureUploadBlockModel extends BlockModel
+{
+    use PictureUploadBlockDtoMappingAware;
 }

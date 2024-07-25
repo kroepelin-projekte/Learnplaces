@@ -13,24 +13,24 @@ use SRAG\Learnplaces\service\publicapi\model\BlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-interface BlockOperationDispatcher {
+interface BlockOperationDispatcher
+{
+    /**
+     * Deletes all block models.
+     *
+     * @param BlockModel[] $blocks  The blocks which should be deleted.
+     *
+     * @return void
+     */
+    public function deleteAll(array $blocks);
 
-	/**
-	 * Deletes all block models.
-	 *
-	 * @param BlockModel[] $blocks  The blocks which should be deleted.
-	 *
-	 * @return void
-	 */
-	public function deleteAll(array $blocks);
 
-
-	/**
-	 * Stores all given blocks.
-	 *
-	 * @param BlockModel[] $blocks The array of blocks which should be stored.
-	 *
-	 * @return BlockModel[]
-	 */
-	public function storeAll(array $blocks): array;
+    /**
+     * Stores all given blocks.
+     *
+     * @param BlockModel[] $blocks The array of blocks which should be stored.
+     *
+     * @return BlockModel[]
+     */
+    public function storeAll(array $blocks): array;
 }

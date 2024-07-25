@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -12,129 +13,139 @@ use SRAG\Lernplaces\persistence\mapping\LocationDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class LocationModel {
+final class LocationModel
+{
+    use LocationDtoMappingAware;
 
-	use LocationDtoMappingAware;
-
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
-	/**
-	 * @var float $latitude
-	 */
-	private $latitude = 0.0;
-	/**
-	 * @var float $longitude
-	 */
-	private $longitude = 0.0;
-	/**
-	 * @var float $elevation
-	 */
-	private $elevation = 0.0;
-	/**
-	 * @var int $radius
-	 */
-	private $radius = 200;
-
-
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+    /**
+     * @var int $id
+     */
+    private $id = 0;
+    /**
+     * @var float $latitude
+     */
+    private $latitude = 0.0;
+    /**
+     * @var float $longitude
+     */
+    private $longitude = 0.0;
+    /**
+     * @var float $elevation
+     */
+    private $elevation = 0.0;
+    /**
+     * @var int $radius
+     */
+    private $radius = 200;
 
 
-	/**
-	 * @param int $id
-	 *
-	 * @return LocationModel
-	 */
-	public function setId(int $id): LocationModel {
-		$this->id = $id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return float
-	 */
-	public function getLatitude(): float {
-		return $this->latitude;
-	}
+    /**
+     * @param int $id
+     *
+     * @return LocationModel
+     */
+    public function setId(int $id): LocationModel
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param float $latitude
-	 *
-	 * @return LocationModel
-	 */
-	public function setLatitude(float $latitude): LocationModel {
-		$this->latitude = $latitude;
-
-		return $this;
-	}
+    /**
+     * @return float
+     */
+    public function getLatitude(): float
+    {
+        return $this->latitude;
+    }
 
 
-	/**
-	 * @return float
-	 */
-	public function getLongitude(): float {
-		return $this->longitude;
-	}
+    /**
+     * @param float $latitude
+     *
+     * @return LocationModel
+     */
+    public function setLatitude(float $latitude): LocationModel
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param float $longitude
-	 *
-	 * @return LocationModel
-	 */
-	public function setLongitude(float $longitude): LocationModel {
-		$this->longitude = $longitude;
-
-		return $this;
-	}
+    /**
+     * @return float
+     */
+    public function getLongitude(): float
+    {
+        return $this->longitude;
+    }
 
 
-	/**
-	 * @return float
-	 */
-	public function getElevation(): float {
-		return $this->elevation;
-	}
+    /**
+     * @param float $longitude
+     *
+     * @return LocationModel
+     */
+    public function setLongitude(float $longitude): LocationModel
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param float $elevation
-	 *
-	 * @return LocationModel
-	 */
-	public function setElevation(float $elevation): LocationModel {
-		$this->elevation = $elevation;
-
-		return $this;
-	}
+    /**
+     * @return float
+     */
+    public function getElevation(): float
+    {
+        return $this->elevation;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function getRadius(): int {
-		return $this->radius;
-	}
+    /**
+     * @param float $elevation
+     *
+     * @return LocationModel
+     */
+    public function setElevation(float $elevation): LocationModel
+    {
+        $this->elevation = $elevation;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int $radius
-	 *
-	 * @return LocationModel
-	 */
-	public function setRadius(int $radius): LocationModel {
-		$this->radius = $radius;
+    /**
+     * @return int
+     */
+    public function getRadius(): int
+    {
+        return $this->radius;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param int $radius
+     *
+     * @return LocationModel
+     */
+    public function setRadius(int $radius): LocationModel
+    {
+        $this->radius = $radius;
+
+        return $this;
+    }
 
 }

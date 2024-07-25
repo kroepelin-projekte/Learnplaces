@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container\provider\v54;
@@ -28,75 +29,76 @@ use SRAG\Learnplaces\gui\ContentPresentationView;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class ViewProvider implements ServiceProviderInterface {
+final class ViewProvider implements ServiceProviderInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function register(Container $pimple)
+    {
+        $pimple[PictureUploadBlockPresentationView::class] = $pimple->factory(function ($c) {
+            return new PictureUploadBlockPresentationView(
+                $c[ilLearnplacesPlugin::class],
+                $c[ilCtrl::class]
+            );
+        });
 
-	/**
-	 * @inheritDoc
-	 */
-	public function register(Container $pimple) {
-		$pimple[PictureUploadBlockPresentationView::class] = $pimple->factory(function ($c) {
-			return new PictureUploadBlockPresentationView(
-				$c[ilLearnplacesPlugin::class],
-				$c[ilCtrl::class]
-			);
-		});
+        $pimple[PictureBlockPresentationView::class] = $pimple->factory(function ($c) {
+            return new PictureBlockPresentationView(
+                $c[ilLearnplacesPlugin::class],
+                $c[ilCtrl::class]
+            );
+        });
 
-		$pimple[PictureBlockPresentationView::class] = $pimple->factory(function ($c) {
-			return new PictureBlockPresentationView(
-				$c[ilLearnplacesPlugin::class],
-				$c[ilCtrl::class]
-			);
-		});
+        $pimple[RichTextBlockPresentationView::class] = $pimple->factory(function ($c) {
+            return new RichTextBlockPresentationView(
+                $c[ilLearnplacesPlugin::class],
+                $c[ilCtrl::class]
+            );
+        });
 
-		$pimple[RichTextBlockPresentationView::class] = $pimple->factory(function ($c) {
-			return new RichTextBlockPresentationView(
-				$c[ilLearnplacesPlugin::class],
-				$c[ilCtrl::class]
-			);
-		});
+        $pimple[IliasLinkBlockPresentationView::class] = $pimple->factory(function ($c) {
+            return new IliasLinkBlockPresentationView(
+                $c[ilLearnplacesPlugin::class],
+                $c[ilCtrl::class]
+            );
+        });
 
-		$pimple[IliasLinkBlockPresentationView::class] = $pimple->factory(function ($c) {
-			return new IliasLinkBlockPresentationView(
-				$c[ilLearnplacesPlugin::class],
-				$c[ilCtrl::class]
-			);
-		});
+        $pimple[MapBlockPresentationView::class] = $pimple->factory(function ($c) {
+            return new MapBlockPresentationView(
+                $c[ilLearnplacesPlugin::class],
+                $c[ilCtrl::class]
+            );
+        });
 
-		$pimple[MapBlockPresentationView::class] = $pimple->factory(function ($c) {
-			return new MapBlockPresentationView(
-				$c[ilLearnplacesPlugin::class],
-				$c[ilCtrl::class]
-			);
-		});
+        $pimple[VideoBlockPresentationView::class] = $pimple->factory(function ($c) {
+            return new VideoBlockPresentationView(
+                $c[ilLearnplacesPlugin::class],
+                $c[ilCtrl::class]
+            );
+        });
 
-		$pimple[VideoBlockPresentationView::class] = $pimple->factory(function ($c) {
-			return new VideoBlockPresentationView(
-				$c[ilLearnplacesPlugin::class],
-				$c[ilCtrl::class]
-			);
-		});
+        $pimple[AccordionBlockPresentationView::class] = $pimple->factory(function ($c) {
+            return new AccordionBlockPresentationView(
+                $c[ilLearnplacesPlugin::class],
+                $c[ilCtrl::class],
+                $c[ContentPresentationView::class]
+            );
+        });
 
-		$pimple[AccordionBlockPresentationView::class] = $pimple->factory(function ($c) {
-			return new AccordionBlockPresentationView(
-				$c[ilLearnplacesPlugin::class],
-				$c[ilCtrl::class],
-				$c[ContentPresentationView::class]
-			);
-		});
+        $pimple[ContentPresentationView::class] = $pimple->factory(function ($c) {
+            return new ContentPresentationView(
+                $c[ilCtrl::class],
+                $c[ilLearnplacesPlugin::class],
+                $c[RenderableBlockViewFactory::class]
+            );
+        });
 
-		$pimple[ContentPresentationView::class] = $pimple->factory(function ($c) {
-			return new ContentPresentationView(
-				$c[ilCtrl::class],
-				$c[ilLearnplacesPlugin::class],
-				$c[RenderableBlockViewFactory::class]
-			);
-		});
-
-		$pimple[BlockAddFormGUI::class] = $pimple->factory(function ($c) {
-			return new BlockAddFormGUI(
-				$c[ilLearnplacesPlugin::class],
-				$c[ilCtrl::class]
-			);
-		});
-	}
+        $pimple[BlockAddFormGUI::class] = $pimple->factory(function ($c) {
+            return new BlockAddFormGUI(
+                $c[ilLearnplacesPlugin::class],
+                $c[ilCtrl::class]
+            );
+        });
+    }
 }

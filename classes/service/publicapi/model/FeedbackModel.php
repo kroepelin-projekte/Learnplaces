@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -12,80 +13,86 @@ use SRAG\Lernplaces\persistence\mapping\FeedbackDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class FeedbackModel {
+final class FeedbackModel
+{
+    use FeedbackDtoMappingAware;
 
-	use FeedbackDtoMappingAware;
+    /**
+     * @var int $id
+     */
+    private $id = 0;
 
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
-
-	/**
-	 * @var string $content
-	 */
-	private $content = "";
-	/**
-	 * @var int $userId
-	 */
-	private $userId = 0;
-
-
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+    /**
+     * @var string $content
+     */
+    private $content = "";
+    /**
+     * @var int $userId
+     */
+    private $userId = 0;
 
 
-	/**
-	 * @param int $id
-	 *
-	 * @return FeedbackModel
-	 */
-	public function setId(int $id): FeedbackModel {
-		$this->id = $id;
-
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getContent(): string {
-		return $this->content;
-	}
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @param string $content
-	 *
-	 * @return FeedbackModel
-	 */
-	public function setContent(string $content): FeedbackModel {
-		$this->content = $content;
+    /**
+     * @param int $id
+     *
+     * @return FeedbackModel
+     */
+    public function setId(int $id): FeedbackModel
+    {
+        $this->id = $id;
 
-		return $this;
-	}
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function getUserId(): int {
-		return $this->userId;
-	}
+    /**
+     * @param string $content
+     *
+     * @return FeedbackModel
+     */
+    public function setContent(string $content): FeedbackModel
+    {
+        $this->content = $content;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int $userId
-	 *
-	 * @return FeedbackModel
-	 */
-	public function setUserId(int $userId): FeedbackModel {
-		$this->userId = $userId;
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param int $userId
+     *
+     * @return FeedbackModel
+     */
+    public function setUserId(int $userId): FeedbackModel
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
 }

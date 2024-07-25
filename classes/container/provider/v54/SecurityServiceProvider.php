@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container\provider\v54;
@@ -20,15 +21,17 @@ use SRAG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class SecurityServiceProvider implements ServiceProviderInterface {
-
-	public function register(Container $pimple) {
-		$pimple[AccessGuard::class] = function($c) {return new AccessGuardImpl(
-			$c[ServerRequestInterface::class],
-			$c[LearnplaceService::class],
-			$c[LearnplaceServiceDecoratorFactory::class],
-			$c['ilAccess']
-		);
-		};
-	}
+final class SecurityServiceProvider implements ServiceProviderInterface
+{
+    public function register(Container $pimple)
+    {
+        $pimple[AccessGuard::class] = function ($c) {
+            return new AccessGuardImpl(
+                $c[ServerRequestInterface::class],
+                $c[LearnplaceService::class],
+                $c[LearnplaceServiceDecoratorFactory::class],
+                $c['ilAccess']
+            );
+        };
+    }
 }

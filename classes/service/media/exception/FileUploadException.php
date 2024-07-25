@@ -27,6 +27,6 @@ use RuntimeException;
  *
  * @see https://secure.php.net/manual/en/features.file-upload.errors.php
  */
-class FileUploadException extends RuntimeException {
-
+class FileUploadException extends RuntimeException
+{
 }

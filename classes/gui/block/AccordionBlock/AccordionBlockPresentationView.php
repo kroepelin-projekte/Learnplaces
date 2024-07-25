@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\gui\block\AccordionBlock;
@@ -27,113 +28,119 @@ use xsrlAccordionBlockGUI;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class AccordionBlockPresentationView implements Renderable {
+final class AccordionBlockPresentationView implements Renderable
+{
+    use ReadOnlyViewAware;
 
-	use ReadOnlyViewAware;
+    public const SEQUENCE_ID_PREFIX = 'block_';
 
-	const SEQUENCE_ID_PREFIX = 'block_';
-
-	/**
-	 * @var ilLearnplacesPlugin $plugin
-	 */
-	private $plugin;
-	/**
-	 * @var ilTemplate $template
-	 */
-	private $template;
-	/**
-	 * @var ilCtrl $controlFlow
-	 */
-	private $controlFlow;
-	/**
-	 * @var AccordionBlockModel $model
-	 */
-	private $model;
-	/**
-	 * @var ContentPresentationView $contentView
-	 */
-	private $contentView;
+    /**
+     * @var ilLearnplacesPlugin $plugin
+     */
+    private $plugin;
+    /**
+     * @var ilTemplate $template
+     */
+    private $template;
+    /**
+     * @var ilCtrl $controlFlow
+     */
+    private $controlFlow;
+    /**
+     * @var AccordionBlockModel $model
+     */
+    private $model;
+    /**
+     * @var ContentPresentationView $contentView
+     */
+    private $contentView;
 
 
-	/**
-	 * PictureUploadBlockPresentationView constructor.
-	 *
-	 * @param ilLearnplacesPlugin     $plugin
-	 * @param ilCtrl                  $controlFlow
-	 * @param ContentPresentationView $contentView
-	 */
-	public function __construct(ilLearnplacesPlugin $plugin, ilCtrl $controlFlow, ContentPresentationView $contentView) {
-		$this->plugin = $plugin;
-		$this->controlFlow = $controlFlow;
-		$this->contentView = $contentView;
-		$this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.accordion.html', true, true);
-	}
+    /**
+     * PictureUploadBlockPresentationView constructor.
+     *
+     * @param ilLearnplacesPlugin     $plugin
+     * @param ilCtrl                  $controlFlow
+     * @param ContentPresentationView $contentView
+     */
+    public function __construct(ilLearnplacesPlugin $plugin, ilCtrl $controlFlow, ContentPresentationView $contentView)
+    {
+        $this->plugin = $plugin;
+        $this->controlFlow = $controlFlow;
+        $this->contentView = $contentView;
+        $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.accordion.html', true, true);
+    }
 
-	private function initView(): void {
-		$this->contentView->setBlocks($this->model->getBlocks());
-		$this->contentView->setAccordionId($this->model->getId());
-		$this->contentView->setReadonly($this->isReadonly());
+    private function initView(): void
+    {
+        $this->contentView->setBlocks($this->model->getBlocks());
+        $this->contentView->setAccordionId($this->model->getId());
+        $this->contentView->setReadonly($this->isReadonly());
 
-		$this->template->setVariable('ACCORDION_ID', $this->model->getId());
-		$this->template->setVariable('TITLE', $this->model->getTitle());
-		$this->template->setVariable('CONTENT', $this->contentView->getHTML());
-		$this->template->setVariable('EXPANDED', $this->model->isExpand() ? 'in' : '');
-	}
+        $this->template->setVariable('ACCORDION_ID', $this->model->getId());
+        $this->template->setVariable('TITLE', $this->model->getTitle());
+        $this->template->setVariable('CONTENT', $this->contentView->getHTML());
+        $this->template->setVariable('EXPANDED', $this->model->isExpand() ? 'in' : '');
+    }
 
-	public function setModel(AccordionBlockModel $model): void {
-		$this->model = $model;
-	}
+    public function setModel(AccordionBlockModel $model): void
+    {
+        $this->model = $model;
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getHtml(): string {
-		if(is_null($this->model))
-			throw new LogicException('The accordion block view requires a model to render its content.');
+    /**
+     * @inheritDoc
+     */
+    public function getHtml(): string
+    {
+        if(is_null($this->model)) {
+            throw new LogicException('The accordion block view requires a model to render its content.');
+        }
 
-		$this->initView();
-		return $this->wrapWithBlockTemplate($this->template)->get();
-	}
+        $this->initView();
+        return $this->wrapWithBlockTemplate($this->template)->get();
+    }
 
-	/**
-	 * Wraps the given template with the tpl.block.html template.
-	 *
-	 * @param ilTemplate $template      The block template which should be wrapped.
-	 *
-	 * @return ilTemplate               The wrapped template.
-	 *
-	 * @throws ilSplitButtonException   Thrown if something went wrong with the split button.
-	 */
-	private function wrapWithBlockTemplate(ilTemplate $template): ilTemplate {
-		$outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+    /**
+     * Wraps the given template with the tpl.block.html template.
+     *
+     * @param ilTemplate $template      The block template which should be wrapped.
+     *
+     * @return ilTemplate               The wrapped template.
+     *
+     * @throws ilSplitButtonException   Thrown if something went wrong with the split button.
+     */
+    private function wrapWithBlockTemplate(ilTemplate $template): ilTemplate
+    {
+        $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
-		//setup button
-		$splitButton = ilSplitButtonGUI::getInstance();
-		$deleteAction = ilLinkButton::getInstance();
-		$deleteAction->setCaption($this->plugin->txt('common_delete'), false);
-		$deleteAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_CONFIRM) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
+        //setup button
+        $splitButton = ilSplitButtonGUI::getInstance();
+        $deleteAction = ilLinkButton::getInstance();
+        $deleteAction->setCaption($this->plugin->txt('common_delete'), false);
+        $deleteAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_CONFIRM) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
 
-		$editAction = ilLinkButton::getInstance();
-		$editAction->setCaption($this->plugin->txt('common_edit'), false);
-		$editAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
-		$splitButton->setDefaultButton($editAction);
-		$splitButton->addMenuItem(new ilButtonToSplitButtonMenuItemAdapter($deleteAction));
+        $editAction = ilLinkButton::getInstance();
+        $editAction->setCaption($this->plugin->txt('common_edit'), false);
+        $editAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
+        $splitButton->setDefaultButton($editAction);
+        $splitButton->addMenuItem(new ilButtonToSplitButtonMenuItemAdapter($deleteAction));
 
-		//setup sequence number
-		$input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
-		$input->setRequired(true);
-		$input->setValidationRegexp('/^\d+$/');
-		$input->setValue($this->model->getSequence());
-		$input->setRequired(true);
+        //setup sequence number
+        $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
+        $input->setRequired(true);
+        $input->setValidationRegexp('/^\d+$/');
+        $input->setValue($this->model->getSequence());
+        $input->setRequired(true);
 
-		//fill outer template
-		if(!$this->isReadonly()) {
-			$outerTemplate->setVariable('ACTION_BUTTON', $splitButton->render());
-			$outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
-		}
-		$outerTemplate->setVariable('CONTENT', $template->get());
-		$outerTemplate->setVariable('SEQUENCE', $this->model->getSequence());
-		return $outerTemplate;
-	}
+        //fill outer template
+        if(!$this->isReadonly()) {
+            $outerTemplate->setVariable('ACTION_BUTTON', $splitButton->render());
+            $outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
+        }
+        $outerTemplate->setVariable('CONTENT', $template->get());
+        $outerTemplate->setVariable('SEQUENCE', $this->model->getSequence());
+        return $outerTemplate;
+    }
 
 }

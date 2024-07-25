@@ -14,6 +14,6 @@ use RuntimeException;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class ValidationException extends RuntimeException {
-
+class ValidationException extends RuntimeException
+{
 }

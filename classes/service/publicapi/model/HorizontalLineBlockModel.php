@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -12,7 +13,7 @@ use SRAG\Lernplaces\persistence\mapping\HorizontalLineBlockDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class HorizontalLineBlockModel extends BlockModel {
-
-	use HorizontalLineBlockDtoMappingAware;
+final class HorizontalLineBlockModel extends BlockModel
+{
+    use HorizontalLineBlockDtoMappingAware;
 }

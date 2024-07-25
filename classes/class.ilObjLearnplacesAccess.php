@@ -32,7 +32,6 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess
         $this->accessControl = PluginContainer::resolve('ilAccess');
     }
 
-
     /**
      * Checks wether a user may invoke a command or not
      * (this method is called by ilAccessHandler::checkAccess)
@@ -65,13 +64,12 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess
         return true;
     }
 
-
     /**
      * @param int $objectId
      *
      * @return bool
      */
-    public static function checkOnline(int $objectId)
+    public static function checkOnline(int $objectId): bool
     {
         global $DIC;
 
@@ -85,6 +83,5 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess
         } catch (InvalidArgumentException $ex) {
             return true;
         }
-
     }
 }

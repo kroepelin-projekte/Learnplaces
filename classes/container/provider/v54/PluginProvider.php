@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container\provider\v54;
@@ -14,12 +15,13 @@ use Pimple\ServiceProviderInterface;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class PluginProvider implements ServiceProviderInterface {
-
-	/**
-	 * @inheritDoc
-	 */
-	public function register(Container $pimple) {
-		$pimple[ilLearnplacesPlugin::class] = function ($c) {return ilLearnplacesPlugin::getInstance(); };
-	}
+final class PluginProvider implements ServiceProviderInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function register(Container $pimple)
+    {
+        $pimple[ilLearnplacesPlugin::class] = function ($c) {return ilLearnplacesPlugin::getInstance(); };
+    }
 }

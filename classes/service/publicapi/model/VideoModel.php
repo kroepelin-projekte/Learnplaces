@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -10,54 +11,58 @@ namespace SRAG\Learnplaces\service\publicapi\model;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class VideoModel {
-
-	/**
-	 * @var string $videoPath
-	 */
-	private $videoPath = '';
-	/**
-	 * @var string $coverPath
-	 */
-	private $coverPath = '';
-
-
-	/**
-	 * @return string
-	 */
-	public function getVideoPath(): string {
-		return $this->videoPath;
-	}
+final class VideoModel
+{
+    /**
+     * @var string $videoPath
+     */
+    private $videoPath = '';
+    /**
+     * @var string $coverPath
+     */
+    private $coverPath = '';
 
 
-	/**
-	 * @param string $videoPath
-	 *
-	 * @return VideoModel
-	 */
-	public function setVideoPath(string $videoPath): VideoModel {
-		$this->videoPath = $videoPath;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getVideoPath(): string
+    {
+        return $this->videoPath;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getCoverPath(): string {
-		return $this->coverPath;
-	}
+    /**
+     * @param string $videoPath
+     *
+     * @return VideoModel
+     */
+    public function setVideoPath(string $videoPath): VideoModel
+    {
+        $this->videoPath = $videoPath;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $coverPath
-	 *
-	 * @return VideoModel
-	 */
-	public function setCoverPath(string $coverPath): VideoModel {
-		$this->coverPath = $coverPath;
+    /**
+     * @return string
+     */
+    public function getCoverPath(): string
+    {
+        return $this->coverPath;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param string $coverPath
+     *
+     * @return VideoModel
+     */
+    public function setCoverPath(string $coverPath): VideoModel
+    {
+        $this->coverPath = $coverPath;
+
+        return $this;
+    }
 }

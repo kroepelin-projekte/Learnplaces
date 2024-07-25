@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -12,33 +13,35 @@ use SRAG\Lernplaces\persistence\mapping\ExternalStreamBlockDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class ExternalStreamBlockModel extends BlockModel {
+final class ExternalStreamBlockModel extends BlockModel
+{
+    use ExternalStreamBlockDtoMappingAware;
 
-	use ExternalStreamBlockDtoMappingAware;
-
-	/**
-	 * @var string $url
-	 */
-	private $url = "";
-
-
-	/**
-	 * @return string
-	 */
-	public function getUrl(): string {
-		return $this->url;
-	}
+    /**
+     * @var string $url
+     */
+    private $url = "";
 
 
-	/**
-	 * @param string $url
-	 *
-	 * @return ExternalStreamBlockModel
-	 */
-	public function setUrl(string $url): ExternalStreamBlockModel {
-		$this->url = $url;
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param string $url
+     *
+     * @return ExternalStreamBlockModel
+     */
+    public function setUrl(string $url): ExternalStreamBlockModel
+    {
+        $this->url = $url;
+
+        return $this;
+    }
 
 }

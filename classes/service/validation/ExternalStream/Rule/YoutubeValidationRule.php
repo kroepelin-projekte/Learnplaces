@@ -12,21 +12,21 @@ use function Sabre\Uri\parse;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class YoutubeValidationRule implements ValidationRule {
-
-	/**
-	 * @inheritDoc
-	 */
-	public function isValid(string $url): bool
+class YoutubeValidationRule implements ValidationRule
+{
+    /**
+     * @inheritDoc
+     */
+    public function isValid(string $url): bool
     {
-		$normalizedUrl = normalize($url);
-		$matches = [];
-		$matchCount = preg_match('/(?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/|watch\%3Fv\%3D)([a-zA-Z0-9_-]{11})+/g', $normalizedUrl, $matches);
+        $normalizedUrl = normalize($url);
+        $matches = [];
+        $matchCount = preg_match('/(?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/|watch\%3Fv\%3D)([a-zA-Z0-9_-]{11})+/g', $normalizedUrl, $matches);
 
-		if($matchCount === 1) {
+        if($matchCount === 1) {
             return true;
-		}
+        }
 
         return false; // todo prüfen
-	}
+    }
 }

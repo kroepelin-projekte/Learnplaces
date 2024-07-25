@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container\provider\v54;
@@ -14,11 +15,12 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class HttpServiceProvider implements ServiceProviderInterface {
-
-	public function register(Container $pimple) {
-		$pimple[ServerRequestInterface::class] = function(Container $c): ServerRequestInterface {
-		    return $c['http']->request();
-		};
-	}
+final class HttpServiceProvider implements ServiceProviderInterface
+{
+    public function register(Container $pimple)
+    {
+        $pimple[ServerRequestInterface::class] = function (Container $c): ServerRequestInterface {
+            return $c['http']->request();
+        };
+    }
 }

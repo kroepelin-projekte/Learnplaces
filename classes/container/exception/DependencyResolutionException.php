@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container\exception;
@@ -17,6 +18,6 @@ use SRAG\Learnplaces\container\PluginContainer;
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  * @see PluginContainer
  */
-class DependencyResolutionException extends RuntimeException {
-
+class DependencyResolutionException extends RuntimeException
+{
 }

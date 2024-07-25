@@ -15,6 +15,6 @@ use SRAG\Learnplaces\service\publicapi\block\LearnplaceService;
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  * @internal
  */
-interface LearnplaceServiceDecorator extends LearnplaceService {
-
+interface LearnplaceServiceDecorator extends LearnplaceService
+{
 }

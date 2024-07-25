@@ -67,7 +67,7 @@ final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI
         return $commands;
     }
 
-    public function initType()
+    public function initType(): void
     {
         $this->setType(ilLearnplacesPlugin::PLUGIN_ID);
     }

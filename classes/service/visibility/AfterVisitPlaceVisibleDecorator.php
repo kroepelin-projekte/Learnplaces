@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\visibility;
@@ -19,98 +20,107 @@ use SRAG\Learnplaces\util\Visibility;
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  * @internal
  */
-final class AfterVisitPlaceVisibleDecorator implements LearnplaceService {
-
-	/**
-	 * @var ilObjUser $user
-	 */
-	private $user;
-	/**
-	 * @var LearnplaceService $learnplaceService
-	 */
-	private $learnplaceService;
-
-
-	/**
-	 * AfterVisitPlaceVisibleDecorator constructor.
-	 *
-	 * @param ilObjUser         $user
-	 * @param LearnplaceService $learnplaceService
-	 */
-	public function __construct(ilObjUser $user, LearnplaceService $learnplaceService) {
-		$this->user = $user;
-		$this->learnplaceService = $learnplaceService;
-	}
+final class AfterVisitPlaceVisibleDecorator implements LearnplaceService
+{
+    /**
+     * @var ilObjUser $user
+     */
+    private $user;
+    /**
+     * @var LearnplaceService $learnplaceService
+     */
+    private $learnplaceService;
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function delete(int $id) {
-		$this->learnplaceService->delete($id);
-	}
+    /**
+     * AfterVisitPlaceVisibleDecorator constructor.
+     *
+     * @param ilObjUser         $user
+     * @param LearnplaceService $learnplaceService
+     */
+    public function __construct(ilObjUser $user, LearnplaceService $learnplaceService)
+    {
+        $this->user = $user;
+        $this->learnplaceService = $learnplaceService;
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function findByObjectId(int $objectId): LearnplaceModel {
-		$learnplace = $this->learnplaceService->findByObjectId($objectId);
-		if (!$this->hasVisitedPlace($learnplace)) {
-			$blocks = $this->filterInvisibleBlocks($learnplace->getBlocks());
-			$learnplace->setBlocks(iterator_to_array($blocks));
-		}
-		return $learnplace;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function delete(int $id)
+    {
+        $this->learnplaceService->delete($id);
+    }
 
 
-	/**
-	 * Filters all blocks with the AFTER_VISIT_PLACE visibility.
-	 *
-	 * @param BlockModel[] $blocks The blocks which should be filtered.
-	 *
-	 * @return Generator The filtered block list.
-	 *
-	 * @see Visibility::AFTER_VISIT_PLACE
-	 */
-	private function filterInvisibleBlocks(array $blocks): Generator {
-		foreach ($blocks as $block) {
-
-			if($block instanceof AccordionBlockModel) {
-				$accordionBlocks = $this->filterInvisibleBlocks($block->getBlocks());
-				$block->setBlocks(iterator_to_array($accordionBlocks));
-			}
-
-			if(strcmp($block->getVisibility(), Visibility::AFTER_VISIT_PLACE) !== 0)
-				yield $block;
-		}
-		return;
-	}
-
-	private function hasVisitedPlace(LearnplaceModel $learnplace): bool {
-		foreach ($learnplace->getVisitJournals() as $visit) {
-
-			//the user id could also be string
-			if($visit->getUserId() === intval($this->user->getId()))
-				return true;
-		}
-		return false;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function findByObjectId(int $objectId): LearnplaceModel
+    {
+        $learnplace = $this->learnplaceService->findByObjectId($objectId);
+        if (!$this->hasVisitedPlace($learnplace)) {
+            $blocks = $this->filterInvisibleBlocks($learnplace->getBlocks());
+            $learnplace->setBlocks(iterator_to_array($blocks));
+        }
+        return $learnplace;
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function store(LearnplaceModel $learnplaceModel): LearnplaceModel {
-		// TODO: Implement store() method.
+    /**
+     * Filters all blocks with the AFTER_VISIT_PLACE visibility.
+     *
+     * @param BlockModel[] $blocks The blocks which should be filtered.
+     *
+     * @return Generator The filtered block list.
+     *
+     * @see Visibility::AFTER_VISIT_PLACE
+     */
+    private function filterInvisibleBlocks(array $blocks): Generator
+    {
+        foreach ($blocks as $block) {
+
+            if($block instanceof AccordionBlockModel) {
+                $accordionBlocks = $this->filterInvisibleBlocks($block->getBlocks());
+                $block->setBlocks(iterator_to_array($accordionBlocks));
+            }
+
+            if(strcmp($block->getVisibility(), Visibility::AFTER_VISIT_PLACE) !== 0) {
+                yield $block;
+            }
+        }
+        return;
+    }
+
+    private function hasVisitedPlace(LearnplaceModel $learnplace): bool
+    {
+        foreach ($learnplace->getVisitJournals() as $visit) {
+
+            //the user id could also be string
+            if($visit->getUserId() === intval($this->user->getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function store(LearnplaceModel $learnplaceModel): LearnplaceModel
+    {
+        // TODO: Implement store() method.
         return $learnplaceModel;
-	}
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function find(int $id): LearnplaceModel {
-		return $this->findByObjectId($id);
-	}
+    /**
+     * @inheritDoc
+     */
+    public function find(int $id): LearnplaceModel
+    {
+        return $this->findByObjectId($id);
+    }
 }

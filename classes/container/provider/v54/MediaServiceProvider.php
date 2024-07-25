@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container\provider\v54;
 
 use Intervention\Image\ImageManager;
-use const ILIAS_ABSOLUTE_PATH;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
@@ -19,6 +19,8 @@ use SRAG\Learnplaces\service\media\VideoServiceImpl;
 use SRAG\Learnplaces\service\media\wrapper\FileTypeDetector;
 use SRAG\Learnplaces\service\media\wrapper\WabmorganFileTypeDetector;
 
+use const ILIAS_ABSOLUTE_PATH;
+
 /**
  * Class MediaServiceProvider
  *
@@ -28,29 +30,31 @@ use SRAG\Learnplaces\service\media\wrapper\WabmorganFileTypeDetector;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class MediaServiceProvider implements ServiceProviderInterface {
-
-	/**
-	 * @inheritDoc
-	 */
-	public function register(Container $pimple) {
-		$pimple[FilesystemInterface::class] = function ($c) {return new Filesystem(new Local(ILIAS_ABSOLUTE_PATH)); };
-		$pimple[FileTypeDetector::class]    = function ($c) {return new WabmorganFileTypeDetector(); };
-		$pimple[ImageManager::class]        = function ($c) {return new ImageManager(); };
-		$pimple[PictureService::class]      = function ($c) {
-			return new PictureServiceImpl(
-				$c[ServerRequestInterface::class],
-				$c[PictureRepository::class],
-				$c[ImageManager::class],
-				$c[FileTypeDetector::class],
-				$c[FilesystemInterface::class]
-			);
-		};
-		$pimple[VideoService::class]        = function ($c) {return new VideoServiceImpl(
-				$c[ServerRequestInterface::class],
-				$c[FileTypeDetector::class],
-				$c[FilesystemInterface::class]
-			);
-		};
-	}
+final class MediaServiceProvider implements ServiceProviderInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function register(Container $pimple)
+    {
+        $pimple[FilesystemInterface::class] = function ($c) {return new Filesystem(new Local(ILIAS_ABSOLUTE_PATH)); };
+        $pimple[FileTypeDetector::class]    = function ($c) {return new WabmorganFileTypeDetector(); };
+        $pimple[ImageManager::class]        = function ($c) {return new ImageManager(); };
+        $pimple[PictureService::class]      = function ($c) {
+            return new PictureServiceImpl(
+                $c[ServerRequestInterface::class],
+                $c[PictureRepository::class],
+                $c[ImageManager::class],
+                $c[FileTypeDetector::class],
+                $c[FilesystemInterface::class]
+            );
+        };
+        $pimple[VideoService::class]        = function ($c) {
+            return new VideoServiceImpl(
+                $c[ServerRequestInterface::class],
+                $c[FileTypeDetector::class],
+                $c[FilesystemInterface::class]
+            );
+        };
+    }
 }

@@ -75,12 +75,10 @@ final class ilObjLearnplaces extends ilObjectPlugin
         */
     }
 
-
     protected function doRead(): void
     {
 
     }
-
 
     protected function doUpdate(): void
     {
@@ -97,7 +95,6 @@ final class ilObjLearnplaces extends ilObjectPlugin
         $news->update();
         */
     }
-
 
     protected function doDelete(): void
     {
@@ -213,6 +210,12 @@ final class ilObjLearnplaces extends ilObjectPlugin
         $learnplaceService->store($copyLearnplace);
     }
 
+    /**
+     * @param int $objectId
+     * @param string $filePath
+     * @return string
+     * @throws ilException
+     */
     private function copyFileToNewObject(int $objectId, string $filePath): string
     {
         if (strlen($filePath) === 0) {
@@ -239,6 +242,12 @@ final class ilObjLearnplaces extends ilObjectPlugin
         return $newFilePath;
     }
 
+    /**
+     * @param int $newObjectId
+     * @param PictureModel $picture
+     * @return PictureModel
+     * @throws ilException
+     */
     private function copyPictureModel(int $newObjectId, PictureModel $picture): PictureModel
     {
         /**

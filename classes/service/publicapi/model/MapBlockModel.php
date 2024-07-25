@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -12,6 +13,7 @@ use SRAG\Lernplaces\persistence\mapping\MapBlockDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class MapBlockModel extends BlockModel{
-	use MapBlockDtoMappingAware;
+final class MapBlockModel extends BlockModel
+{
+    use MapBlockDtoMappingAware;
 }

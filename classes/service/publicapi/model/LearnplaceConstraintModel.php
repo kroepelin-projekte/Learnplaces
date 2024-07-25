@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -12,57 +13,61 @@ use SRAG\Lernplaces\persistence\mapping\LearnplaceConstraintDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class LearnplaceConstraintModel implements BlockConstraint {
+final class LearnplaceConstraintModel implements BlockConstraint
+{
+    use LearnplaceConstraintDtoMappingAware;
 
-	use LearnplaceConstraintDtoMappingAware;
-
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
-	/**
-	 * @var LearnplaceModel $previousLearnplace
-	 */
-	private $previousLearnplace = 0;
-
-
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+    /**
+     * @var int $id
+     */
+    private $id = 0;
+    /**
+     * @var LearnplaceModel $previousLearnplace
+     */
+    private $previousLearnplace = 0;
 
 
-	/**
-	 * @param int $id
-	 *
-	 * @return BlockConstraint
-	 */
-	public function setId(int $id): BlockConstraint {
-		$this->id = $id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return LearnplaceModel
-	 */
-	public function getPreviousLearnplace(): LearnplaceModel {
-		return $this->previousLearnplace;
-	}
+    /**
+     * @param int $id
+     *
+     * @return BlockConstraint
+     */
+    public function setId(int $id): BlockConstraint
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param LearnplaceModel $previousLearnplace
-	 *
-	 * @return LearnplaceConstraintModel
-	 */
-	public function setPreviousLearnplace(LearnplaceModel $previousLearnplace): LearnplaceConstraintModel {
-		$this->previousLearnplace = $previousLearnplace;
+    /**
+     * @return LearnplaceModel
+     */
+    public function getPreviousLearnplace(): LearnplaceModel
+    {
+        return $this->previousLearnplace;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param LearnplaceModel $previousLearnplace
+     *
+     * @return LearnplaceConstraintModel
+     */
+    public function setPreviousLearnplace(LearnplaceModel $previousLearnplace): LearnplaceConstraintModel
+    {
+        $this->previousLearnplace = $previousLearnplace;
+
+        return $this;
+    }
 
 }

@@ -78,7 +78,6 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         $this->currentUser = PluginContainer::resolve('ilUser');
     }
 
-
     /**
      * @inheritDoc
      */
@@ -86,7 +85,6 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
     {
         return ilLearnplacesPlugin::PLUGIN_ID;
     }
-
 
     /**
      * Main Triage to following GUI-Classes
@@ -208,9 +206,10 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
     }
 
     /**
-     *
+     * @return void
+     * @throws ilCtrlException
      */
-    protected function setSubtabs()
+    protected function setSubtabs(): void
     {
         if ($this->accessGuard->hasWritePermission()) {
             $this->learnplaceTabs->addSubTab(xsrlContentGUI::TAB_ID, $this->lng->txt(xsrlContentGUI::TAB_ID), $this->ctrl->getLinkTarget($this));
@@ -235,7 +234,6 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         return self::DEFAULT_CMD;
     }
 
-
     /**
      * This command will be executed if no command was supplied.
      *
@@ -246,7 +244,6 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         return self::DEFAULT_CMD;
     }
 
-
     /**
      * @inheritdoc
      */
@@ -254,7 +251,6 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
     {
         return true;
     }
-
 
     /**
      * @inheritdoc
@@ -264,13 +260,20 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         return false;
     }
 
-
-    public function index()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    public function index(): void
     {
         $this->ctrl->redirectByClass(xsrlContentGUI::class, self::DEFAULT_CMD);
     }
 
-    private function renderTabs()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function renderTabs(): void
     {
         $this->learnplaceTabs->addTab(xsrlContentGUI::TAB_ID, $this->plugin->txt('tabs_content'), $this->ctrl->getLinkTargetByClass(xsrlContentGUI::class, self::DEFAULT_CMD));
         if($this->accessGuard->hasWritePermission()) {
@@ -282,6 +285,9 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         $this->learnplaceTabs->addTab('', '', '#');
     }
 
+    /**
+     * @return bool
+     */
     private function hasMap(): bool
     {
         if(is_null($this->ref_id)) {

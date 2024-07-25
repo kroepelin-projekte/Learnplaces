@@ -85,23 +85,23 @@ final class PictureServiceImpl implements PictureService
     public function storeUpload(int $objectId, string $resourceId): PictureModel
     {
 
-/*        if($this->hasUploadedFiles() === false) {
-            throw new LogicException('Unable to store image without upload.');
-        }
+        /*        if($this->hasUploadedFiles() === false) {
+                    throw new LogicException('Unable to store image without upload.');
+                }
 
-        $files = $this->request->getUploadedFiles();
+                $files = $this->request->getUploadedFiles();
 
-        $file = array_pop($files);
-        $this->validateUpload($file);
+                $file = array_pop($files);
+                $this->validateUpload($file);
 
-        $path = PathHelper::generatePath($objectId, $file->getClientFilename() ?? '');
-        $uploadedFile = $file->getStream()->detach();
-        $this->filesystem->putStream($path, $uploadedFile);
+                $path = PathHelper::generatePath($objectId, $file->getClientFilename() ?? '');
+                $uploadedFile = $file->getStream()->detach();
+                $this->filesystem->putStream($path, $uploadedFile);
 
-        //TODO: specify valid picture header !!!
-        //$this->validateImageContent($path);
+                //TODO: specify valid picture header !!!
+                //$this->validateImageContent($path);
 
-        $previewPath = $this->generatePreview($objectId, $path);*/
+                $previewPath = $this->generatePreview($objectId, $path);*/
 
 
 

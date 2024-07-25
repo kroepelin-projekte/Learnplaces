@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -13,179 +14,194 @@ use SRAG\Lernplaces\persistence\mapping\CommentDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class CommentModel {
+final class CommentModel
+{
+    use CommentDtoMappingAware;
 
-	use CommentDtoMappingAware;
+    /**
+     * @var int $id
+     */
+    private $id = 0;
+    /**
+     * @var DateTime $createDate
+     */
+    private $createDate;
+    /**
+     * @var string $title
+     */
+    private $title = "";
+    /**
+     * @var string $content
+     */
+    private $content = "";
+    /**
+     * @var int $userId
+     */
+    private $userId = 0;
+    /**
+     * @var AnswerModel[]
+     */
+    private $answers = [];
+    /**
+     * @var PictureModel|null $picture
+     */
+    private $picture = null;
 
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
-	/**
-	 * @var DateTime $createDate
-	 */
-	private $createDate;
-	/**
-	 * @var string $title
-	 */
-	private $title = "";
-	/**
-	 * @var string $content
-	 */
-	private $content = "";
-	/**
-	 * @var int $userId
-	 */
-	private $userId = 0;
-	/**
-	 * @var AnswerModel[]
-	 */
-	private $answers = [];
-	/**
-	 * @var PictureModel|null $picture
-	 */
-	private $picture = NULL;
+    public function __construct()
+    {
+        $this->createDate = new DateTime();
+    }
 
-	public function __construct() {
-		$this->createDate = new DateTime();
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
-
-
-	/**
-	 * @param int $id
-	 *
-	 * @return CommentModel
-	 */
-	public function setId(int $id): CommentModel {
-		$this->id = $id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return DateTime
-	 */
-	public function getCreateDate(): DateTime {
-		return $this->createDate;
-	}
+    /**
+     * @param int $id
+     *
+     * @return CommentModel
+     */
+    public function setId(int $id): CommentModel
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param DateTime $createDate
-	 *
-	 * @return CommentModel
-	 */
-	public function setCreateDate(DateTime $createDate): CommentModel {
-		$this->createDate = $createDate;
-
-		return $this;
-	}
+    /**
+     * @return DateTime
+     */
+    public function getCreateDate(): DateTime
+    {
+        return $this->createDate;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getTitle(): string {
-		return $this->title;
-	}
+    /**
+     * @param DateTime $createDate
+     *
+     * @return CommentModel
+     */
+    public function setCreateDate(DateTime $createDate): CommentModel
+    {
+        $this->createDate = $createDate;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $title
-	 *
-	 * @return CommentModel
-	 */
-	public function setTitle(string $title): CommentModel {
-		$this->title = $title;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getContent(): string {
-		return $this->content;
-	}
+    /**
+     * @param string $title
+     *
+     * @return CommentModel
+     */
+    public function setTitle(string $title): CommentModel
+    {
+        $this->title = $title;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $content
-	 *
-	 * @return CommentModel
-	 */
-	public function setContent(string $content): CommentModel {
-		$this->content = $content;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function getUserId(): int {
-		return $this->userId;
-	}
+    /**
+     * @param string $content
+     *
+     * @return CommentModel
+     */
+    public function setContent(string $content): CommentModel
+    {
+        $this->content = $content;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int $userId
-	 *
-	 * @return CommentModel
-	 */
-	public function setUserId(int $userId): CommentModel {
-		$this->userId = $userId;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
 
 
-	/**
-	 * @return AnswerModel[]
-	 */
-	public function getAnswers(): array {
-		return $this->answers;
-	}
+    /**
+     * @param int $userId
+     *
+     * @return CommentModel
+     */
+    public function setUserId(int $userId): CommentModel
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param AnswerModel[] $answers
-	 *
-	 * @return CommentModel
-	 */
-	public function setAnswers(array $answers): CommentModel {
-		$this->answers = $answers;
-
-		return $this;
-	}
+    /**
+     * @return AnswerModel[]
+     */
+    public function getAnswers(): array
+    {
+        return $this->answers;
+    }
 
 
-	/**
-	 * @return null|PictureModel
-	 */
-	public function getPicture() {
-		return $this->picture;
-	}
+    /**
+     * @param AnswerModel[] $answers
+     *
+     * @return CommentModel
+     */
+    public function setAnswers(array $answers): CommentModel
+    {
+        $this->answers = $answers;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param null|PictureModel $picture
-	 *
-	 * @return CommentModel
-	 */
-	public function setPicture($picture) {
-		$this->picture = $picture;
+    /**
+     * @return null|PictureModel
+     */
+    public function getPicture()
+    {
+        return $this->picture;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param null|PictureModel $picture
+     *
+     * @return CommentModel
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+
+        return $this;
+    }
 }

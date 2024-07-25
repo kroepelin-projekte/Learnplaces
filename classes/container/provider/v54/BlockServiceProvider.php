@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container\provider\v54;
@@ -61,46 +62,49 @@ use SRAG\Learnplaces\service\publicapi\block\VisitJournalServiceImpl;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class BlockServiceProvider implements ServiceProviderInterface {
-
-	/**
-	 * @inheritDoc
-	 */
-	public function register(Container $pimple) {
-		$pimple[VisitJournalService::class]             = function ($c) {return new VisitJournalServiceImpl($c[VisitJournalRepository::class]); };
-		$pimple[VideoBlockService::class]               = function ($c) {return new VideoBlockServiceImpl($c[VideoBlockRepository::class], $c[VideoService::class]); };
-		$pimple[RichTextBlockService::class]            = function ($c) {return new RichTextBlockServiceImpl($c[RichTextBlockRepository::class]); };
-		$pimple[PictureUploadBlockService::class]       = function ($c) {return new PictureUploadBlockServiceImpl($c[PictureUploadBlockRepository::class]); };
-		$pimple[PictureBlockService::class]             = function ($c) {return new PictureBlockServiceImpl($c[PictureBlockRepository::class], $c[PictureService::class]); };
-		$pimple[MapBlockService::class]                 = function ($c) {return new MapBlockServiceImpl($c[MapBlockRepository::class]); };
-		$pimple[LocationService::class]                 = function ($c) {return new LocationServiceImpl($c[LocationRepository::class]); };
-		$pimple[ILIASLinkBlockService::class]           = function ($c) {return new ILIASLinkBlockServiceImpl($c[ILIASLinkBlockRepository::class]); };
-		$pimple[ExternalStreamBlockService::class]      = function ($c) {return new ExternalStreamBlockServiceImpl($c[ExternalStreamBlockRepository::class]); };
-		$pimple[ConfigurationService::class]            = function ($c) {return new ConfigurationServiceImpl($c[ConfigurationRepository::class]); };
-		$pimple[CommentService::class]                  = function ($c) {return new CommentServiceImpl($c[ConfigurationRepository::class]); };
-		$pimple[AnswerService::class]                   = function ($c) {return new AnswerRepositoryImpl($c[AnswerRepository::class]); };
-		$pimple[AccordionBlockService::class]           = function ($c) {return new AccordionBlockServiceImpl($c[AccordionBlockRepository::class]); };
-		$pimple[BlockOperationDispatcher::class]        = function ($c) {$dispatcher =  new DefaultBlockOperationDispatcher(
-																					$c[AccordionBlockService::class],
-																					$c[ILIASLinkBlockService::class],
-																					$c[PictureBlockService::class],
-																					$c[PictureUploadBlockService::class],
-																					$c[MapBlockService::class],
-																					$c[RichTextBlockService::class],
-																					$c[VideoBlockService::class]
-																					);
-																				$accordion = $c[AccordionBlockService::class];
-																				$accordion->postConstruct($dispatcher);
-																				return $dispatcher;
-																				};
-		$pimple[LearnplaceService::class]               = function ($c) {return new LearnplaceServiceImpl(
-																					$c[ConfigurationService::class],
-																					$c[LocationService::class],
-																					$c[VisitJournalService::class],
-																					$c[LearnplaceRepository::class],
-																					$c[BlockOperationDispatcher::class],
-																					$c[PictureService::class]
-																					);
-																				};
-	}
+final class BlockServiceProvider implements ServiceProviderInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function register(Container $pimple)
+    {
+        $pimple[VisitJournalService::class]             = function ($c) {return new VisitJournalServiceImpl($c[VisitJournalRepository::class]); };
+        $pimple[VideoBlockService::class]               = function ($c) {return new VideoBlockServiceImpl($c[VideoBlockRepository::class], $c[VideoService::class]); };
+        $pimple[RichTextBlockService::class]            = function ($c) {return new RichTextBlockServiceImpl($c[RichTextBlockRepository::class]); };
+        $pimple[PictureUploadBlockService::class]       = function ($c) {return new PictureUploadBlockServiceImpl($c[PictureUploadBlockRepository::class]); };
+        $pimple[PictureBlockService::class]             = function ($c) {return new PictureBlockServiceImpl($c[PictureBlockRepository::class], $c[PictureService::class]); };
+        $pimple[MapBlockService::class]                 = function ($c) {return new MapBlockServiceImpl($c[MapBlockRepository::class]); };
+        $pimple[LocationService::class]                 = function ($c) {return new LocationServiceImpl($c[LocationRepository::class]); };
+        $pimple[ILIASLinkBlockService::class]           = function ($c) {return new ILIASLinkBlockServiceImpl($c[ILIASLinkBlockRepository::class]); };
+        $pimple[ExternalStreamBlockService::class]      = function ($c) {return new ExternalStreamBlockServiceImpl($c[ExternalStreamBlockRepository::class]); };
+        $pimple[ConfigurationService::class]            = function ($c) {return new ConfigurationServiceImpl($c[ConfigurationRepository::class]); };
+        $pimple[CommentService::class]                  = function ($c) {return new CommentServiceImpl($c[ConfigurationRepository::class]); };
+        $pimple[AnswerService::class]                   = function ($c) {return new AnswerRepositoryImpl($c[AnswerRepository::class]); };
+        $pimple[AccordionBlockService::class]           = function ($c) {return new AccordionBlockServiceImpl($c[AccordionBlockRepository::class]); };
+        $pimple[BlockOperationDispatcher::class]        = function ($c) {
+            $dispatcher =  new DefaultBlockOperationDispatcher(
+                $c[AccordionBlockService::class],
+                $c[ILIASLinkBlockService::class],
+                $c[PictureBlockService::class],
+                $c[PictureUploadBlockService::class],
+                $c[MapBlockService::class],
+                $c[RichTextBlockService::class],
+                $c[VideoBlockService::class]
+            );
+            $accordion = $c[AccordionBlockService::class];
+            $accordion->postConstruct($dispatcher);
+            return $dispatcher;
+        };
+        $pimple[LearnplaceService::class]               = function ($c) {
+            return new LearnplaceServiceImpl(
+                $c[ConfigurationService::class],
+                $c[LocationService::class],
+                $c[VisitJournalService::class],
+                $c[LearnplaceRepository::class],
+                $c[BlockOperationDispatcher::class],
+                $c[PictureService::class]
+            );
+        };
+    }
 }

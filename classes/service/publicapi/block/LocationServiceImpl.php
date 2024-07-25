@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\block;
@@ -15,54 +16,58 @@ use SRAG\Learnplaces\service\publicapi\model\LocationModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class LocationServiceImpl implements LocationService {
-
-	/**
-	 * @var LocationRepository $locationRepository
-	 */
-	private $locationRepository;
-
-
-	/**
-	 * LocationServiceImpl constructor.
-	 *
-	 * @param LocationRepository $locationRepository
-	 */
-	public function __construct(LocationRepository $locationRepository) { $this->locationRepository = $locationRepository; }
+final class LocationServiceImpl implements LocationService
+{
+    /**
+     * @var LocationRepository $locationRepository
+     */
+    private $locationRepository;
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function store(LocationModel $locationModel): LocationModel {
-		$dto = $this->locationRepository->store($locationModel->toDto());
-		return $dto->toModel();
-	}
+    /**
+     * LocationServiceImpl constructor.
+     *
+     * @param LocationRepository $locationRepository
+     */
+    public function __construct(LocationRepository $locationRepository)
+    {
+        $this->locationRepository = $locationRepository;
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function delete(int $id) {
-		try {
-			$this->locationRepository->delete($id);
-		}
-		catch (EntityNotFoundException $ex) {
-			throw new InvalidArgumentException('The location with the given id could not be deleted, because the it was not found.', 0, $ex);
-		}
-	}
+    /**
+     * @inheritDoc
+     */
+    public function store(LocationModel $locationModel): LocationModel
+    {
+        $dto = $this->locationRepository->store($locationModel->toDto());
+        return $dto->toModel();
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function find(int $id): LocationModel {
-		try {
-			$dto = $this->locationRepository->find($id);
-			return $dto->toModel();
-		}
-		catch (EntityNotFoundException $ex) {
-			throw new InvalidArgumentException('The location with the given id does not exist.', 0, $ex);
-		}
-	}
+    /**
+     * @inheritDoc
+     */
+    public function delete(int $id)
+    {
+        try {
+            $this->locationRepository->delete($id);
+        } catch (EntityNotFoundException $ex) {
+            throw new InvalidArgumentException('The location with the given id could not be deleted, because the it was not found.', 0, $ex);
+        }
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function find(int $id): LocationModel
+    {
+        try {
+            $dto = $this->locationRepository->find($id);
+            return $dto->toModel();
+        } catch (EntityNotFoundException $ex) {
+            throw new InvalidArgumentException('The location with the given id does not exist.', 0, $ex);
+        }
+    }
 }

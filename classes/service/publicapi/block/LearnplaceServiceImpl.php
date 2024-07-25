@@ -1,12 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\block;
 
-use function intval;
 use InvalidArgumentException;
 use LogicException;
-use const PHP_INT_MAX;
 use SRAG\Learnplaces\persistence\dto\Learnplace;
 use SRAG\Learnplaces\persistence\repository\exception\EntityNotFoundException;
 use SRAG\Learnplaces\persistence\repository\LearnplaceRepository;
@@ -17,6 +16,10 @@ use SRAG\Learnplaces\service\publicapi\model\BlockModel;
 use SRAG\Learnplaces\service\publicapi\model\LearnplaceModel;
 use SRAG\Learnplaces\service\publicapi\model\MapBlockModel;
 
+use function intval;
+
+use const PHP_INT_MAX;
+
 /**
  * Class LearnplaceServiceImpl
  *
@@ -24,193 +27,203 @@ use SRAG\Learnplaces\service\publicapi\model\MapBlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class LearnplaceServiceImpl  implements LearnplaceService {
+final class LearnplaceServiceImpl implements LearnplaceService
+{
+    public const SEQUENCE_SPACE = 10;
 
-	const SEQUENCE_SPACE = 10;
-
-	/**
-	 * @var ConfigurationService $configService
-	 */
-	private $configService;
-	/**
-	 * @var LocationService $locationService
-	 */
-	private $locationService;
-	/**
-	 * @var VisitJournalService $visitJournalService
-	 */
-	private $visitJournalService;
-	/**
-	 * @var LearnplaceRepository $learnplaceRepository
-	 */
-	private $learnplaceRepository;
-	/**
-	 * @var BlockOperationDispatcher $blockOperationDispatcher
-	 */
-	private $blockOperationDispatcher;
-	/**
-	 * @var PictureService $pictureService
-	 */
-	private $pictureService;
-
-
-	/**
-	 * LearnplaceServiceImpl constructor.
-	 *
-	 * @param ConfigurationService     $configService
-	 * @param LocationService          $locationService
-	 * @param VisitJournalService      $visitJournalService
-	 * @param LearnplaceRepository     $learnplaceRepository
-	 * @param BlockOperationDispatcher $blockOperationDispatcher
-	 * @param PictureService           $pictureService
-	 */
-	public function __construct(ConfigurationService $configService, LocationService $locationService, VisitJournalService $visitJournalService, LearnplaceRepository $learnplaceRepository, BlockOperationDispatcher $blockOperationDispatcher, PictureService $pictureService) {
-		$this->configService = $configService;
-		$this->locationService = $locationService;
-		$this->visitJournalService = $visitJournalService;
-		$this->learnplaceRepository = $learnplaceRepository;
-		$this->blockOperationDispatcher = $blockOperationDispatcher;
-		$this->pictureService = $pictureService;
-	}
+    /**
+     * @var ConfigurationService $configService
+     */
+    private $configService;
+    /**
+     * @var LocationService $locationService
+     */
+    private $locationService;
+    /**
+     * @var VisitJournalService $visitJournalService
+     */
+    private $visitJournalService;
+    /**
+     * @var LearnplaceRepository $learnplaceRepository
+     */
+    private $learnplaceRepository;
+    /**
+     * @var BlockOperationDispatcher $blockOperationDispatcher
+     */
+    private $blockOperationDispatcher;
+    /**
+     * @var PictureService $pictureService
+     */
+    private $pictureService;
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function delete(int $id) {
-		try {
-			$learnplace = $this->find($id);
-			$this->blockOperationDispatcher->deleteAll($learnplace->getBlocks());
-			$this->configService->delete($learnplace->getConfiguration()->getId());
-			$this->locationService->delete($learnplace->getId());
-			foreach ($learnplace->getVisitJournals() as $visit)
-				$this->visitJournalService->delete($visit->getId());
-			foreach ($learnplace->getPictures() as $picture)
-				$this->pictureService->delete($picture->getId());
-			$this->learnplaceRepository->delete($id);
-		}
-		catch (EntityNotFoundException $ex) {
-			throw new InvalidArgumentException('Learnplace could not been deleted because the leanplace or one of its children do not exists.', 0, $ex);
-		}
-	}
+    /**
+     * LearnplaceServiceImpl constructor.
+     *
+     * @param ConfigurationService     $configService
+     * @param LocationService          $locationService
+     * @param VisitJournalService      $visitJournalService
+     * @param LearnplaceRepository     $learnplaceRepository
+     * @param BlockOperationDispatcher $blockOperationDispatcher
+     * @param PictureService           $pictureService
+     */
+    public function __construct(ConfigurationService $configService, LocationService $locationService, VisitJournalService $visitJournalService, LearnplaceRepository $learnplaceRepository, BlockOperationDispatcher $blockOperationDispatcher, PictureService $pictureService)
+    {
+        $this->configService = $configService;
+        $this->locationService = $locationService;
+        $this->visitJournalService = $visitJournalService;
+        $this->learnplaceRepository = $learnplaceRepository;
+        $this->blockOperationDispatcher = $blockOperationDispatcher;
+        $this->pictureService = $pictureService;
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function findByObjectId(int $objectId): LearnplaceModel {
-		try {
-			$dto = $this->learnplaceRepository->findByObjectId($objectId);
-			$model = $this->filterBlocksWhichBelongToAccordions($dto->toModel());
-			$model->setBlocks($this->sortBySequence($model->getBlocks()));
-			$this->sortAccordionBlocks($model);
-			return $model;
-		}
-		catch (EntityNotFoundException $ex) {
-			throw new InvalidArgumentException("The leanplace could not been found, reason the given object id \"$objectId\" was not found.", 0, $ex);
-		}
-	}
+    /**
+     * @inheritDoc
+     */
+    public function delete(int $id)
+    {
+        try {
+            $learnplace = $this->find($id);
+            $this->blockOperationDispatcher->deleteAll($learnplace->getBlocks());
+            $this->configService->delete($learnplace->getConfiguration()->getId());
+            $this->locationService->delete($learnplace->getId());
+            foreach ($learnplace->getVisitJournals() as $visit) {
+                $this->visitJournalService->delete($visit->getId());
+            }
+            foreach ($learnplace->getPictures() as $picture) {
+                $this->pictureService->delete($picture->getId());
+            }
+            $this->learnplaceRepository->delete($id);
+        } catch (EntityNotFoundException $ex) {
+            throw new InvalidArgumentException('Learnplace could not been deleted because the leanplace or one of its children do not exists.', 0, $ex);
+        }
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function store(LearnplaceModel $learnplaceModel): LearnplaceModel {
-		try {
-			$learnplaceModel->setBlocks($this->regenerateSequence($learnplaceModel->getBlocks()));
-			$model = $this->learnplaceRepository->store($learnplaceModel->toDto());
-			return $model->toModel();
-		}
-		catch(EntityNotFoundException $ex) {
-			throw new LogicException('Could not store learnplace because at least one of the children is not persistent.', 0, $ex);
-		}
-	}
+    /**
+     * @inheritDoc
+     */
+    public function findByObjectId(int $objectId): LearnplaceModel
+    {
+        try {
+            $dto = $this->learnplaceRepository->findByObjectId($objectId);
+            $model = $this->filterBlocksWhichBelongToAccordions($dto->toModel());
+            $model->setBlocks($this->sortBySequence($model->getBlocks()));
+            $this->sortAccordionBlocks($model);
+            return $model;
+        } catch (EntityNotFoundException $ex) {
+            throw new InvalidArgumentException("The leanplace could not been found, reason the given object id \"$objectId\" was not found.", 0, $ex);
+        }
+    }
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function find(int $id): LearnplaceModel {
-		try {
-			$dto = $this->learnplaceRepository->find($id);
-			$model = $this->filterBlocksWhichBelongToAccordions($dto->toModel());
-			$model->setBlocks($this->sortBySequence($model->getBlocks()));
-			$this->sortAccordionBlocks($model);
-			return $model;
-		}
-		catch (EntityNotFoundException $ex) {
-			throw new InvalidArgumentException("The leanplace could not been found, reason the given id \"$id\" was not found.", 0, $ex);
-		}
-	}
-
-	private function sortAccordionBlocks(LearnplaceModel $learnplace) {
-		foreach ($learnplace->getBlocks() as $block) {
-			if($block instanceof AccordionBlockModel) {
-				$blocks = $block->getBlocks();
-				$block->setBlocks($this->sortBySequence($blocks));
-			}
-		}
-	}
+    /**
+     * @inheritDoc
+     */
+    public function store(LearnplaceModel $learnplaceModel): LearnplaceModel
+    {
+        try {
+            $learnplaceModel->setBlocks($this->regenerateSequence($learnplaceModel->getBlocks()));
+            $model = $this->learnplaceRepository->store($learnplaceModel->toDto());
+            return $model->toModel();
+        } catch(EntityNotFoundException $ex) {
+            throw new LogicException('Could not store learnplace because at least one of the children is not persistent.', 0, $ex);
+        }
+    }
 
 
-	private function filterBlocksWhichBelongToAccordions(LearnplaceModel $learnplace): LearnplaceModel {
-		$filteredBlocks = $learnplace->getBlocks();
-		foreach ($learnplace->getBlocks() as $block) {
-			if($block instanceof AccordionBlockModel) {
-				$excludedBlocks = $block->getBlocks();
-				$filteredBlocks = array_udiff(
-					$filteredBlocks,
-					$excludedBlocks,
-					function(BlockModel $block1, BlockModel $block2): int {
-						return $block1->getId() - $block2->getId();
-					});
-			}
-		}
-		$learnplace->setBlocks($filteredBlocks);
-		return $learnplace;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function find(int $id): LearnplaceModel
+    {
+        try {
+            $dto = $this->learnplaceRepository->find($id);
+            $model = $this->filterBlocksWhichBelongToAccordions($dto->toModel());
+            $model->setBlocks($this->sortBySequence($model->getBlocks()));
+            $this->sortAccordionBlocks($model);
+            return $model;
+        } catch (EntityNotFoundException $ex) {
+            throw new InvalidArgumentException("The leanplace could not been found, reason the given id \"$id\" was not found.", 0, $ex);
+        }
+    }
+
+    private function sortAccordionBlocks(LearnplaceModel $learnplace)
+    {
+        foreach ($learnplace->getBlocks() as $block) {
+            if($block instanceof AccordionBlockModel) {
+                $blocks = $block->getBlocks();
+                $block->setBlocks($this->sortBySequence($blocks));
+            }
+        }
+    }
 
 
-	/**
-	 * Sorts block models by sequence id.
-	 *
-	 * @param BlockModel[] $blocks  Unsorted block model list.
-	 *
-	 * @return BlockModel[]         Sorted block model list.
-	 */
-	private function sortBySequence(array $blocks): array {
-		$sorted = $blocks;
-		usort($sorted, function (BlockModel $i, BlockModel $y) {
-			return ($i->getSequence() > $y->getSequence()) ? 1 : -1;
-		});
+    private function filterBlocksWhichBelongToAccordions(LearnplaceModel $learnplace): LearnplaceModel
+    {
+        $filteredBlocks = $learnplace->getBlocks();
+        foreach ($learnplace->getBlocks() as $block) {
+            if($block instanceof AccordionBlockModel) {
+                $excludedBlocks = $block->getBlocks();
+                $filteredBlocks = array_udiff(
+                    $filteredBlocks,
+                    $excludedBlocks,
+                    function (BlockModel $block1, BlockModel $block2): int {
+                        return $block1->getId() - $block2->getId();
+                    }
+                );
+            }
+        }
+        $learnplace->setBlocks($filteredBlocks);
+        return $learnplace;
+    }
 
-		return $sorted;
-	}
+
+    /**
+     * Sorts block models by sequence id.
+     *
+     * @param BlockModel[] $blocks  Unsorted block model list.
+     *
+     * @return BlockModel[]         Sorted block model list.
+     */
+    private function sortBySequence(array $blocks): array
+    {
+        $sorted = $blocks;
+        usort($sorted, function (BlockModel $i, BlockModel $y) {
+            return ($i->getSequence() > $y->getSequence()) ? 1 : -1;
+        });
+
+        return $sorted;
+    }
 
 
-	/**
-	 * Regenerate the sequence numbers of the block in the current order.
-	 * Except the map block which will get the highest sequence.
-	 *
-	 * @param BlockModel[] $blocks  List of blocks with possible inconsistent sequence numbers.
-	 *
-	 * @return BlockModel[]         Blocks with regenerated sequence numbers.
-	 */
-	private function regenerateSequence(array $blocks): array {
-		$regenerated = [];
-		$accordions = [];
-		foreach ($blocks as $key => $block) {
-			$block->setSequence(($key+1) * self::SEQUENCE_SPACE);
-			if($block instanceof MapBlockModel)
-				$block->setSequence(PHP_INT_MAX);
-			if($block instanceof AccordionBlockModel)
-				$accordions[] = $block;
+    /**
+     * Regenerate the sequence numbers of the block in the current order.
+     * Except the map block which will get the highest sequence.
+     *
+     * @param BlockModel[] $blocks  List of blocks with possible inconsistent sequence numbers.
+     *
+     * @return BlockModel[]         Blocks with regenerated sequence numbers.
+     */
+    private function regenerateSequence(array $blocks): array
+    {
+        $regenerated = [];
+        $accordions = [];
+        foreach ($blocks as $key => $block) {
+            $block->setSequence(($key + 1) * self::SEQUENCE_SPACE);
+            if($block instanceof MapBlockModel) {
+                $block->setSequence(PHP_INT_MAX);
+            }
+            if($block instanceof AccordionBlockModel) {
+                $accordions[] = $block;
+            }
 
-			$regenerated[] = $block;
-		}
+            $regenerated[] = $block;
+        }
 
-		//store the accordions to regenerate the accordion child block sequences as well
-		$this->blockOperationDispatcher->storeAll($accordions);
-		return $regenerated;
-	}
+        //store the accordions to regenerate the accordion child block sequences as well
+        $this->blockOperationDispatcher->storeAll($accordions);
+        return $regenerated;
+    }
 }

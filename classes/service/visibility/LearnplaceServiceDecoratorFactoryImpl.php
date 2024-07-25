@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\visibility;
@@ -13,26 +14,30 @@ use SRAG\Learnplaces\service\publicapi\block\LearnplaceService;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class LearnplaceServiceDecoratorFactoryImpl implements LearnplaceServiceDecoratorFactory {
-
-	/**
-	 * @var ilObjUser $user
-	 */
-	private $user;
-
-
-	/**
-	 * LearnplaceServiceDecoratorFactoryImpl constructor.
-	 *
-	 * @param ilObjUser $user
-	 */
-	public function __construct(ilObjUser $user) { $this->user = $user; }
+final class LearnplaceServiceDecoratorFactoryImpl implements LearnplaceServiceDecoratorFactory
+{
+    /**
+     * @var ilObjUser $user
+     */
+    private $user;
 
 
-	/**
-	 * @inheritDoc
-	 */
-	public function decorate(LearnplaceService $learnplaceService): LearnplaceService {
-		return new NeverVisibleDecorator(new AfterVisitPlaceVisibleDecorator($this->user, $learnplaceService));
-	}
+    /**
+     * LearnplaceServiceDecoratorFactoryImpl constructor.
+     *
+     * @param ilObjUser $user
+     */
+    public function __construct(ilObjUser $user)
+    {
+        $this->user = $user;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function decorate(LearnplaceService $learnplaceService): LearnplaceService
+    {
+        return new NeverVisibleDecorator(new AfterVisitPlaceVisibleDecorator($this->user, $learnplaceService));
+    }
 }

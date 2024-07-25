@@ -15,52 +15,52 @@ use SRAG\Learnplaces\service\publicapi\model\ConfigurationModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-interface ConfigurationService {
-
-	/**
-	 * Updates an existing configuration of creates a new one if the id of the configuration was not found.
-	 *
-	 * @param ConfigurationModel $configurationModel    The configuration which should be updated or created.
-	 *
-	 * @return ConfigurationModel                       The newly updated or created configuration.
-	 */
-	public function store(ConfigurationModel $configurationModel): ConfigurationModel;
-
-
-	/**
-	 * Deletes the configuration by id.
-	 *
-	 * @param int $id   The of the configuration which should be deleted.
-	 *
-	 * @return void
-	 *
-	 * @throws InvalidArgumentException
-	 *                  Thrown if the configuration with the given id was not found.
-	 */
-	public function delete(int $id);
+interface ConfigurationService
+{
+    /**
+     * Updates an existing configuration of creates a new one if the id of the configuration was not found.
+     *
+     * @param ConfigurationModel $configurationModel    The configuration which should be updated or created.
+     *
+     * @return ConfigurationModel                       The newly updated or created configuration.
+     */
+    public function store(ConfigurationModel $configurationModel): ConfigurationModel;
 
 
-	/**
-	 * Searches a configuration by id.
-	 *
-	 * @param int $id               The if of the configuration which should be found.
-	 *
-	 * @return ConfigurationModel   The configuration with the given id.
-	 *
-	 * @throws InvalidArgumentException
-	 *                              Thrown if the configuration with the given id was not found.
-	 */
-	public function find(int $id): ConfigurationModel;
+    /**
+     * Deletes the configuration by id.
+     *
+     * @param int $id   The of the configuration which should be deleted.
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     *                  Thrown if the configuration with the given id was not found.
+     */
+    public function delete(int $id);
 
 
-	/**
-	 * Searches a configuration by the learnplace object id.
-	 *
-	 * @param int $objectId         The object id which should be used to to find the specific learnplace configuration.
-	 *
-	 * @return ConfigurationModel   The configuration which belongs to the learnplace with the given id.
-	 * @throws InvalidArgumentException
-	 *                              Thrown if the given object id was not found.
-	 */
-	public function findByObjectId(int $objectId): ConfigurationModel;
+    /**
+     * Searches a configuration by id.
+     *
+     * @param int $id               The if of the configuration which should be found.
+     *
+     * @return ConfigurationModel   The configuration with the given id.
+     *
+     * @throws InvalidArgumentException
+     *                              Thrown if the configuration with the given id was not found.
+     */
+    public function find(int $id): ConfigurationModel;
+
+
+    /**
+     * Searches a configuration by the learnplace object id.
+     *
+     * @param int $objectId         The object id which should be used to to find the specific learnplace configuration.
+     *
+     * @return ConfigurationModel   The configuration which belongs to the learnplace with the given id.
+     * @throws InvalidArgumentException
+     *                              Thrown if the given object id was not found.
+     */
+    public function findByObjectId(int $objectId): ConfigurationModel;
 }

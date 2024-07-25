@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,11 +22,10 @@ use SRAG\Learnplaces\service\security\AccessGuard;
  */
 final class xsrlSettingGUI
 {
-
     use ReferenceIdAware;
 
-    const TAB_ID = 'Settings';
-    const BLOCK_ID_QUERY_KEY = 'block';
+    public const TAB_ID = 'Settings';
+    public const BLOCK_ID_QUERY_KEY = 'block';
 
     /**
      * @var ilTabsGUI $tabs

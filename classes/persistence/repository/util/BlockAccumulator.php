@@ -16,17 +16,17 @@ use SRAG\Learnplaces\persistence\repository\exception\EntityNotFoundException;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-interface BlockAccumulator {
-
-	/**
-	 * Searches the specific block which belongs to the given id.
-	 *
-	 * @param int $id   The id of the block which should be used to fetch the specific block.
-	 *
-	 * @return Block    The found specific block with the given block id.
-	 *
-	 * @throws EntityNotFoundException
-	 *                  Thrown if no block with the given id exists.
-	 */
-	public function fetchSpecificBlocksById(int $id): Block;
+interface BlockAccumulator
+{
+    /**
+     * Searches the specific block which belongs to the given id.
+     *
+     * @param int $id   The id of the block which should be used to fetch the specific block.
+     *
+     * @return Block    The found specific block with the given block id.
+     *
+     * @throws EntityNotFoundException
+     *                  Thrown if no block with the given id exists.
+     */
+    public function fetchSpecificBlocksById(int $id): Block;
 }
