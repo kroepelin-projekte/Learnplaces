@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\model;
@@ -12,80 +13,81 @@ use SRAG\Lernplaces\persistence\mapping\PictureBlockDtoMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class PictureBlockModel extends BlockModel {
+final class PictureBlockModel extends BlockModel
+{
+    use PictureBlockDtoMappingAware;
 
-	use PictureBlockDtoMappingAware;
-
-	/**
-	 * @var string $title
-	 */
-	private $title = "";
-	/**
-	 * @var string $description
-	 */
-	private $description = "";
-	/**
-	 * @var PictureModel|null $picture
-	 */
-	private $picture = NULL;
-
-
-	/**
-	 * @return string
-	 */
-	public function getTitle(): string {
-		return $this->title;
-	}
+    /**
+     * @var string $title
+     */
+    private $title = "";
+    /**
+     * @var string $description
+     */
+    private $description = "";
+    /**
+     * @var PictureModel|null $picture
+     */
+    private $picture = null;
 
 
-	/**
-	 * @param string $title
-	 *
-	 * @return PictureBlockModel
-	 */
-	public function setTitle(string $title): PictureBlockModel {
-		$this->title = $title;
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
 
-		return $this;
-	}
+    /**
+     * @param string $title
+     *
+     * @return PictureBlockModel
+     */
+    public function setTitle(string $title): PictureBlockModel
+    {
+        $this->title = $title;
 
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDescription(): string {
-		return $this->description;
-	}
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
 
+    /**
+     * @param string $description
+     *
+     * @return PictureBlockModel
+     */
+    public function setDescription(string $description): PictureBlockModel
+    {
+        $this->description = $description;
 
-	/**
-	 * @param string $description
-	 *
-	 * @return PictureBlockModel
-	 */
-	public function setDescription(string $description): PictureBlockModel {
-		$this->description = $description;
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * @return null|PictureModel
+     */
+    public function getPicture()
+    {
+        return $this->picture;
+    }
 
+    /**
+     * @param null|PictureModel $picture
+     *
+     * @return PictureBlockModel
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
 
-	/**
-	 * @return null|PictureModel
-	 */
-	public function getPicture() {
-		return $this->picture;
-	}
-
-
-	/**
-	 * @param null|PictureModel $picture
-	 *
-	 * @return PictureBlockModel
-	 */
-	public function setPicture($picture) {
-		$this->picture = $picture;
-
-		return $this;
-	}
+        return $this;
+    }
 }

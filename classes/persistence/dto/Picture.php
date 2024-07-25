@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,81 +13,51 @@ use SRAG\Lernplaces\persistence\mapping\PictureModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class Picture {
+class Picture
+{
+    use PictureModelMappingAware;
 
-	use PictureModelMappingAware;
+    private int $id = 0;
 
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
+    private string $resourceId;
 
-	/**
-	 * @var string $originalPath
-	 */
-	private $originalPath;
-	/**
-	 * @var string $previewPath
-	 */
-	private $previewPath;
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
+    /**
+     * @param int $id
+     *
+     * @return Picture
+     */
+    public function setId(int $id): Picture
+    {
+        $this->id = $id;
 
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+        return $this;
+    }
 
+    /**
+     * @return string
+     */
+    public function getResourceId(): string
+    {
+        return $this->resourceId;
+    }
 
-	/**
-	 * @param int $id
-	 *
-	 * @return Picture
-	 */
-	public function setId(int $id): Picture {
-		$this->id = $id;
+    /**
+     * @param string $resourceId
+     *
+     * @return Picture
+     */
+    public function setResourceId(string $resourceId): Picture
+    {
+        $this->resourceId = $resourceId;
 
-		return $this;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getOriginalPath(): string {
-		return $this->originalPath;
-	}
-
-
-	/**
-	 * @param string $originalPath
-	 *
-	 * @return Picture
-	 */
-	public function setOriginalPath(string $originalPath): Picture {
-		$this->originalPath = $originalPath;
-
-		return $this;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getPreviewPath(): string {
-		return $this->previewPath;
-	}
-
-
-	/**
-	 * @param string $previewPath
-	 *
-	 * @return Picture
-	 */
-	public function setPreviewPath(string $previewPath): Picture {
-		$this->previewPath = $previewPath;
-
-		return $this;
-	}
+        return $this;
+    }
 }

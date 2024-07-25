@@ -13,6 +13,7 @@ use ilTextInputGUI;
 use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\AbstractBlockEditFormView;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
+use SRAG\Learnplaces\service\publicapi\model\BlockModel;
 use SRAG\Learnplaces\service\publicapi\model\PictureBlockModel;
 use SRAG\Learnplaces\service\publicapi\model\PictureUploadBlockModel;
 use xsrlPictureBlockGUI;
@@ -34,7 +35,7 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
     public const POST_DESCRIPTION = 'post_description';
     public const POST_IMAGE = 'post_image';
 
-    protected \SRAG\Learnplaces\service\publicapi\model\BlockModel $block;
+    protected BlockModel $block;
 
     /**
      * PictureBlockEditFormView constructor.

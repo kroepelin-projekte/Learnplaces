@@ -17,20 +17,9 @@ final class PictureModel
 {
     use PictureDtoMappingAware;
 
-    /**
-     * @var int $id
-     */
-    private $id = 0;
+    private int $id = 0;
 
-    /**
-     * @var string $originalPath
-     */
-    private $originalPath = "";
-    /**
-     * @var string $previewPath
-     */
-    private $previewPath = "";
-
+    private string $resourceId = "";
 
     /**
      * @return int
@@ -39,7 +28,6 @@ final class PictureModel
     {
         return $this->id;
     }
-
 
     /**
      * @param int $id
@@ -53,46 +41,22 @@ final class PictureModel
         return $this;
     }
 
-
     /**
      * @return string
      */
-    public function getOriginalPath(): string
+    public function getResourceId(): string
     {
-        return $this->originalPath;
+        return $this->resourceId;
     }
 
-
     /**
-     * @param string $originalPath
+     * @param string $resourceId
      *
      * @return PictureModel
      */
-    public function setOriginalPath(string $originalPath): PictureModel
+    public function setResourceId(string $resourceId): PictureModel
     {
-        $this->originalPath = $originalPath;
-
-        return $this;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getPreviewPath(): string
-    {
-        return $this->previewPath;
-    }
-
-
-    /**
-     * @param string $previewPath
-     *
-     * @return PictureModel
-     */
-    public function setPreviewPath(string $previewPath): PictureModel
-    {
-        $this->previewPath = $previewPath;
+        $this->resourceId = $resourceId;
 
         return $this;
     }

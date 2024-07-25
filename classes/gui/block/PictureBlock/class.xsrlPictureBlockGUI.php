@@ -116,7 +116,6 @@ final class xsrlPictureBlockGUI
         $this->blockAccessGuard = $blockAccessGuard;
     }
 
-
     public function executeCommand()
     {
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
@@ -177,11 +176,10 @@ final class xsrlPictureBlockGUI
                 $this->redirectInvalidRequests($accordionId);
             }
 
-/*            $picture = $this->pictureService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()));
+            $resourceId = current($form->getFormData()[PictureBlockEditFormView::POST_IMAGE]);
+            $picture = $this->pictureService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()), $resourceId);
             $block->setPicture($picture);
-            $block = $this->pictureBlockService->store($block);*/
-
-            $block->setPicture($form->getFormData()[PictureBlockEditFormView::POST_IMAGE]);
+            $block = $this->pictureBlockService->store($block);
 
             $anchor = xsrlContentGUI::ANCHOR_TEMPLATE;
             if ($accordionId > 0) {

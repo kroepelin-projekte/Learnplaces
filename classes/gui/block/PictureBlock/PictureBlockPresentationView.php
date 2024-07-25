@@ -70,13 +70,17 @@ final class PictureBlockPresentationView implements Renderable
     {
         $this->template->setVariable('TITLE', $this->model->getTitle());
 
-        /*        $resource = new ResourceIdentification($this->settings->get('test_file', ''));
-                if ($this->dic->resourceStorage()->manage()->find($resource)) {
-                    $src = $this->dic->resourceStorage()->consume()
-                        ->src($resource)
-                        ->getSrc();
-                    $this->template->setVariable('PICTURE_PATH', $src);
-                }*/
+        // todo DIC
+        global $DIC;
+
+        $resourceId = $this->model->getPicture()->getResourceId();
+        $resource = new ResourceIdentification($resourceId);
+        if ($DIC->resourceStorage()->manage()->find($resourceId)) {
+            $src = $DIC->resourceStorage()->consume()
+                ->src($resource)
+                ->getSrc();
+            $this->template->setVariable('PICTURE_PATH', $src);
+        }
 
         $this->template->setVariable('DESCRIPTION', $this->model->getDescription());
     }
