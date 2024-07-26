@@ -44,9 +44,7 @@ final class MediaServiceProvider implements ServiceProviderInterface
             return new PictureServiceImpl(
                 $c[ServerRequestInterface::class],
                 $c[PictureRepository::class],
-                $c[ImageManager::class],
                 $c[FileTypeDetector::class],
-                $c[FilesystemInterface::class]
             );
         };
         $pimple[VideoService::class]        = function ($c) {

@@ -18,6 +18,7 @@ use SRAG\Learnplaces\gui\block\Renderable;
 use SRAG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
 use SRAG\Learnplaces\service\publicapi\model\PictureBlockModel;
+use SRAG\Learnplaces\util\DeleteItemModal;
 use xsrlPictureBlockGUI;
 
 use function is_null;
@@ -32,8 +33,10 @@ use function is_null;
 final class PictureBlockPresentationView implements Renderable
 {
     use ReadOnlyViewAware;
+    use DeleteItemModal;
 
     public const SEQUENCE_ID_PREFIX = 'block_';
+    public const TYPE = 'picture';
 
     /**
      * @var ilLearnplacesPlugin $plugin
@@ -116,17 +119,23 @@ final class PictureBlockPresentationView implements Renderable
     {
         $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
-        //setup button
-        $splitButton = ilSplitButtonGUI::getInstance();
-        $deleteAction = ilLinkButton::getInstance();
-        $deleteAction->setCaption($this->plugin->txt('common_delete'), false);
-        $deleteAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlPictureBlockGUI::class, CommonControllerAction::CMD_CONFIRM) . '&' . xsrlPictureBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
+        global $DIC;
+        $factory = $DIC->ui()->factory();
+        $renderer = $DIC->ui()->renderer();
 
-        $editAction = ilLinkButton::getInstance();
-        $editAction->setCaption($this->plugin->txt('common_edit'), false);
-        $editAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlPictureBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlPictureBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
-        $splitButton->setDefaultButton($editAction);
-        $splitButton->addMenuItem(new ilButtonToSplitButtonMenuItemAdapter($deleteAction));
+        $editAction = $this->controlFlow->getLinkTargetByClass(xsrlPictureBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlPictureBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
+        $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
+        $htmlEditButton = $renderer->render($editButton);
+
+        $deleteButton = $this->deleteItemButtonWithModal(
+            $this->model->getId() . '-' . self::TYPE,
+            $this->model->getTitle(),
+            $this->plugin->txt('confirm_delete_header'),
+            $this->plugin->txt('common_delete'),
+            function ($id) {
+                exit($id);
+            },
+        );
 
         //setup sequence number
         $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
@@ -137,7 +146,7 @@ final class PictureBlockPresentationView implements Renderable
 
         //fill outer template
         if(!$this->isReadonly()) {
-            $outerTemplate->setVariable('ACTION_BUTTON', $splitButton->render());
+            $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
             $outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
         }
         $outerTemplate->setVariable('CONTENT', $blockTemplate->get());

@@ -22,6 +22,7 @@ use xsrlRichTextBlockGUI;
 final class RichTextBlockEditFormView extends AbstractBlockEditFormView
 {
     public const POST_CONTENT = 'post_content';
+    public const TYPE = 'richtext';
     /**
      * @var RichTextBlockModel $block
      */

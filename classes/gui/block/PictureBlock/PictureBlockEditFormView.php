@@ -102,20 +102,6 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
             self::POST_DESCRIPTION => $description,
             self::POST_IMAGE => $fileUpload,
         ], $this->plugin->txt('block_specific_settings'));
-
-        /*		$title = new ilTextInputGUI($this->plugin->txt('picture_block_enter_title'), self::POST_TITLE);
-                $title->setMaxLength(256);
-                $description = new ilTextAreaInputGUI($this->plugin->txt('picture_block_enter_description'), self::POST_DESCRIPTION);
-                if(version_compare(ILIAS_VERSION_NUMERIC, '5.3') >= 0)
-                    $description->setMaxNumOfChars(2000);
-
-                $fileUpload = new ilFileInputGUI($this->plugin->txt('picture_block_select_picture'), self::POST_IMAGE);
-                $fileUpload->setSuffixes(['jpg', 'png']);
-                $fileUpload->setRequired($this->block->getId() <= 0);
-
-                $this->addItem($title);
-                $this->addItem($description);
-                $this->addItem($fileUpload);*/
     }
 
     /**

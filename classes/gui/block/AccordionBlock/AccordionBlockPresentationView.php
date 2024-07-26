@@ -19,6 +19,7 @@ use SRAG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use SRAG\Learnplaces\gui\ContentPresentationView;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
 use SRAG\Learnplaces\service\publicapi\model\AccordionBlockModel;
+use SRAG\Learnplaces\util\DeleteItemModal;
 use xsrlAccordionBlockGUI;
 
 /**
@@ -31,8 +32,10 @@ use xsrlAccordionBlockGUI;
 final class AccordionBlockPresentationView implements Renderable
 {
     use ReadOnlyViewAware;
+    use DeleteItemModal;
 
     public const SEQUENCE_ID_PREFIX = 'block_';
+    public const TYPE = 'accordion';
 
     /**
      * @var ilLearnplacesPlugin $plugin
@@ -121,23 +124,15 @@ final class AccordionBlockPresentationView implements Renderable
         $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
         $htmlEditButton = $renderer->render($editButton);
 
-        $deleteAction = $this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_CONFIRM) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
-        $deleteButton = $factory->button()->standard($this->plugin->txt('common_delete'), $deleteAction);
-        $htmlDeleteButton = $renderer->render($deleteButton);
-
-        // todo delete modal
-
-/*        //setup button
-        $splitButton = ilSplitButtonGUI::getInstance();
-        $deleteAction = ilLinkButton::getInstance();
-        $deleteAction->setCaption($this->plugin->txt('common_delete'), false);
-        $deleteAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_CONFIRM) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
-
-        $editAction = ilLinkButton::getInstance();
-        $editAction->setCaption($this->plugin->txt('common_edit'), false);
-        $editAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
-        $splitButton->setDefaultButton($editAction);
-        $splitButton->addMenuItem(new ilButtonToSplitButtonMenuItemAdapter($deleteAction));*/
+        $deleteButton = $this->deleteItemButtonWithModal(
+            $this->model->getId() . '-' . self::TYPE,
+            $this->model->getTitle(),
+            $this->plugin->txt('confirm_delete_header'),
+            $this->plugin->txt('common_delete'),
+            function ($id) {
+                exit($id);
+            },
+        );
 
         //setup sequence number
         $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
@@ -148,12 +143,11 @@ final class AccordionBlockPresentationView implements Renderable
 
         //fill outer template
         if(!$this->isReadonly()) {
-            $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $htmlDeleteButton);
+            $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
             $outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
         }
         $outerTemplate->setVariable('CONTENT', $template->get());
         $outerTemplate->setVariable('SEQUENCE', $this->model->getSequence());
         return $outerTemplate;
     }
-
 }

@@ -34,6 +34,7 @@ final class IliasLinkBlockPresentationView implements Renderable
     use ReadOnlyViewAware;
 
     public const SEQUENCE_ID_PREFIX = 'block_';
+    public const TYPE = 'link';
 
     /**
      * @var ilLearnplacesPlugin $plugin

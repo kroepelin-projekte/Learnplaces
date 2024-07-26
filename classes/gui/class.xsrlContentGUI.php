@@ -3,13 +3,19 @@
 declare(strict_types=1);
 
 use ILIAS\DI\UIServices;
+use ILIAS\Refinery\Factory as Refinery;
 use Psr\Http\Message\ServerRequestInterface;
 use SRAG\Learnplaces\container\PluginContainer;
+use SRAG\Learnplaces\gui\block\AccordionBlock\AccordionBlockPresentationView;
 use SRAG\Learnplaces\gui\block\BlockAddFormGUI;
 use SRAG\Learnplaces\gui\block\BlockType;
+use SRAG\Learnplaces\gui\block\IliasLinkBlock\IliasLinkBlockPresentationView;
+use SRAG\Learnplaces\gui\block\PictureBlock\PictureBlockPresentationView;
 use SRAG\Learnplaces\gui\block\RenderableBlockViewFactory;
+use SRAG\Learnplaces\gui\block\RichTextBlock\RichTextBlockEditFormView;
 use SRAG\Learnplaces\gui\block\util\AccordionAware;
 use SRAG\Learnplaces\gui\block\util\ReferenceIdAware;
+use SRAG\Learnplaces\gui\block\VideoBlock\VideoBlockPresentationView;
 use SRAG\Learnplaces\gui\component\PlusView;
 use SRAG\Learnplaces\gui\ContentPresentationView;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
@@ -105,6 +111,8 @@ final class xsrlContentGUI
     private UIServices $ui;
     private ILIAS\HTTP\Services $http;
 
+    private $refinery;
+
     /**
      * xsrlContentGUI constructor.
      *
@@ -113,6 +121,7 @@ final class xsrlContentGUI
      * @param UIServices $ui
      * @param ilCtrl $controlFlow
      * @param ILIAS\HTTP\Services $http
+     * @param Refinery $refinery
      * @param ilLearnplacesPlugin $plugin
      * @param RenderableBlockViewFactory $renderableFactory
      * @param LearnplaceService $learnplaceService
@@ -128,6 +137,7 @@ final class xsrlContentGUI
         UIServices $ui,
         ilCtrl $controlFlow,
         ILIAS\HTTP\Services $http,
+        Refinery $refinery,
         ilLearnplacesPlugin $plugin,
         RenderableBlockViewFactory $renderableFactory,
         LearnplaceService $learnplaceService,
@@ -142,6 +152,7 @@ final class xsrlContentGUI
         $this->ui = $ui;
         $this->controlFlow = $controlFlow;
         $this->http = $http;
+        $this->refinery = $refinery;
         $this->plugin = $plugin;
         $this->renderableFactory = $renderableFactory;
         $this->learnplaceService = $learnplaceService;
@@ -340,5 +351,45 @@ final class xsrlContentGUI
     {
         usort($blocks, function (BlockModel $a, BlockModel $b) { return $a->getSequence() >= $b->getSequence() ? 1 : -1;});
         return $blocks;
+    }
+
+    /**
+     * Workaround because form action in modal is not working in ILIAS 8.
+     * The modal should redirect to the block gui.
+     *
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function delete(): void
+    {
+        global $DIC;
+        $superglobal = $DIC->http()->wrapper();
+        if ($superglobal->post()->has('interruptive_items')) {
+            $interruptive_items = $superglobal->post()->retrieve('interruptive_items', $this->refinery->kindlyTo()->listOf($DIC->refinery()->kindlyTo()->string()));
+            [$itemId, $blockType] = explode('-', $interruptive_items[0]);
+
+            switch ($blockType) {
+                case AccordionBlockPresentationView::TYPE:
+                    $this->controlFlow->setParameterByClass(xsrlAccordionBlockGUI::class, 'block', $itemId);
+                    $this->controlFlow->redirectByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_DELETE);
+                    break;
+                case PictureBlockPresentationView::TYPE:
+                    $this->controlFlow->setParameterByClass(xsrlPictureBlockGUI::class, 'block', $itemId);
+                    $this->controlFlow->redirectByClass(xsrlPictureBlockGUI::class, CommonControllerAction::CMD_DELETE);
+                    break;
+                case IliasLinkBlockPresentationView::TYPE:
+                    $this->controlFlow->setParameterByClass(xsrlIliasLinkBlockGUI::class, 'block', $itemId);
+                    $this->controlFlow->redirectByClass(xsrlIliasLinkBlockGUI::class, CommonControllerAction::CMD_DELETE);
+                    break;
+                case RichTextBlockEditFormView::TYPE:
+                    $this->controlFlow->setParameterByClass(xsrlRichTextBlockGUI::class, 'block', $itemId);
+                    $this->controlFlow->redirectByClass(xsrlRichTextBlockGUI::class, CommonControllerAction::CMD_DELETE);
+                    break;
+                case VideoBlockPresentationView::TYPE:
+                    $this->controlFlow->setParameterByClass(xsrlVideoBlockGUI::class, 'block', $itemId);
+                    $this->controlFlow->redirectByClass(xsrlVideoBlockGUI::class, CommonControllerAction::CMD_DELETE);
+                    break;
+            }
+        }
     }
 }

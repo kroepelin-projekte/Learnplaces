@@ -216,7 +216,7 @@ final class xsrlAccordionBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
-    private function confirm(): void
+/*    private function confirm(): void
     {
         $queries = $this->request->getQueryParams();
 
@@ -232,7 +232,7 @@ final class xsrlAccordionBlockGUI
         $confirm->setConfirm($this->plugin->txt('common_delete'), CommonControllerAction::CMD_DELETE);
         $confirm->setCancel($this->plugin->txt('common_cancel'), CommonControllerAction::CMD_CANCEL);
         $this->template->setContent($confirm->getHTML());
-    }
+    }*/
 
     private function cancel(): void
     {

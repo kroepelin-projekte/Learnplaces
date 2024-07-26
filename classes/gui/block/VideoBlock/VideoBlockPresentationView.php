@@ -31,6 +31,7 @@ final class VideoBlockPresentationView implements Renderable
     use ReadOnlyViewAware;
 
     public const SEQUENCE_ID_PREFIX = 'block_';
+    public const TYPE = 'video';
 
     /**
      * @var ilLearnplacesPlugin $plugin

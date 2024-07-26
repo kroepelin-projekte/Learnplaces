@@ -60,6 +60,7 @@ final class GUIProvider implements ServiceProviderInterface
                 $c->ui(),
                 $c->ctrl(),
                 $c->http(),
+                $c->refinery(),
                 $c[ilLearnplacesPlugin::class],
                 $c[RenderableBlockViewFactory::class],
                 $c[LearnplaceService::class],
