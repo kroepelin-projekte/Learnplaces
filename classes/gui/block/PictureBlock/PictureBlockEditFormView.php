@@ -90,6 +90,7 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
                     image_element.style.maxWidth = '1000px';
                     image_element.style.height = '1000px';
                     image_element.style.objectFit = 'contain';
+                    image_element.style.objectPosition = 'left top';
                     file_element.parentElement.append(image_element);
                     JS;
                 });

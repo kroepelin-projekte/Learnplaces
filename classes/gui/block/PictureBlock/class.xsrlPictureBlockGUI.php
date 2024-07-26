@@ -255,6 +255,7 @@ final class xsrlPictureBlockGUI
             if ($resourceId) {
                 //store new picture
                 $picture = $this->pictureService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()), $resourceId);
+                $block->setPicture($picture);
 
                 //delete old picture
                 $this->pictureService->delete($oldPicture->getId());

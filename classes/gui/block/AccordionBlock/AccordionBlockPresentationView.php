@@ -113,7 +113,21 @@ final class AccordionBlockPresentationView implements Renderable
     {
         $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
-        //setup button
+        global $DIC;
+        $factory = $DIC->ui()->factory();
+        $renderer = $DIC->ui()->renderer();
+
+        $editAction = $this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
+        $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
+        $htmlEditButton = $renderer->render($editButton);
+
+        $deleteAction = $this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_CONFIRM) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
+        $deleteButton = $factory->button()->standard($this->plugin->txt('common_delete'), $deleteAction);
+        $htmlDeleteButton = $renderer->render($deleteButton);
+
+        // todo delete modal
+
+/*        //setup button
         $splitButton = ilSplitButtonGUI::getInstance();
         $deleteAction = ilLinkButton::getInstance();
         $deleteAction->setCaption($this->plugin->txt('common_delete'), false);
@@ -123,7 +137,7 @@ final class AccordionBlockPresentationView implements Renderable
         $editAction->setCaption($this->plugin->txt('common_edit'), false);
         $editAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
         $splitButton->setDefaultButton($editAction);
-        $splitButton->addMenuItem(new ilButtonToSplitButtonMenuItemAdapter($deleteAction));
+        $splitButton->addMenuItem(new ilButtonToSplitButtonMenuItemAdapter($deleteAction));*/
 
         //setup sequence number
         $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
@@ -134,7 +148,7 @@ final class AccordionBlockPresentationView implements Renderable
 
         //fill outer template
         if(!$this->isReadonly()) {
-            $outerTemplate->setVariable('ACTION_BUTTON', $splitButton->render());
+            $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $htmlDeleteButton);
             $outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
         }
         $outerTemplate->setVariable('CONTENT', $template->get());
