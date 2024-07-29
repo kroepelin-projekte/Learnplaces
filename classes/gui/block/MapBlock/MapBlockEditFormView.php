@@ -33,23 +33,12 @@ final class MapBlockEditFormView extends AbstractBlockEditFormView
         return $this->ctrl->getFormActionByClass(xsrlMapBlockGUI::class);
     }
 
-
     /**
      * @inheritDoc
      */
     protected function initBlockSpecificForm()
     {
     }
-
-
-    /**
-     * @inheritDoc
-     */
-    protected function createValueArrayForSpecificFormParts(): array
-    {
-        return [];
-    }
-
 
     /**
      * @inheritDoc

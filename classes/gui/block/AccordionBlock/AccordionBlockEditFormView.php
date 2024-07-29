@@ -76,17 +76,6 @@ final class AccordionBlockEditFormView extends AbstractBlockEditFormView
     /**
      * @inheritDoc
      */
-    protected function createValueArrayForSpecificFormParts(): array
-    {
-        return [
-            self::POST_TITLE => $this->block->getTitle(),
-            self::POST_EXPAND => $this->block->isExpand(),
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
     protected function getFormActionUrl(): string
     {
         return $this->ctrl->getFormActionByClass(xsrlAccordionBlockGUI::class, $this->getFormCmd());

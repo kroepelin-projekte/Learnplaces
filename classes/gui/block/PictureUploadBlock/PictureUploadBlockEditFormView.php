@@ -33,23 +33,12 @@ final class PictureUploadBlockEditFormView extends AbstractBlockEditFormView
         return $this->ctrl->getFormActionByClass(xsrlPictureUploadBlockGUI::class);
     }
 
-
     /**
      * @inheritDoc
      */
     protected function initBlockSpecificForm()
     {
     }
-
-
-    /**
-     * @inheritDoc
-     */
-    protected function createValueArrayForSpecificFormParts(): array
-    {
-        return [];
-    }
-
 
     /**
      * @inheritDoc

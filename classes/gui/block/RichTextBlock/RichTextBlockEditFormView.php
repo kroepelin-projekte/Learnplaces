@@ -61,16 +61,6 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView
     /**
      * @inheritDoc
      */
-    protected function createValueArrayForSpecificFormParts(): array
-    {
-        return [
-            self::POST_CONTENT => $this->block->getContent(),
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
     protected function getFormActionUrl(): string
     {
         return $this->ctrl->getFormActionByClass(xsrlRichTextBlockGUI::class, $this->getFormCmd());

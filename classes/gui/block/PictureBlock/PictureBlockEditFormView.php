@@ -107,19 +107,6 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
     /**
      * @inheritDoc
      */
-    protected function createValueArrayForSpecificFormParts(): array
-    {
-        $values = [
-            self::POST_TITLE => $this->block->getTitle(),
-            self::POST_DESCRIPTION => $this->block->getDescription(),
-        ];
-
-        return $values;
-    }
-
-    /**
-     * @inheritDoc
-     */
     protected function getFormActionUrl(): string
     {
         return $this->ctrl->getFormActionByClass(xsrlPictureBlockGUI::class, $this->getFormCmd());

@@ -41,16 +41,6 @@ final class VideoBlockEditFormView extends AbstractBlockEditFormView
         $this->addItem($fileUpload);
     }
 
-
-    /**
-     * @inheritDoc
-     */
-    protected function createValueArrayForSpecificFormParts(): array
-    {
-        return [];
-    }
-
-
     /**
      * @inheritDoc
      */

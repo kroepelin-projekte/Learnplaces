@@ -163,19 +163,6 @@ abstract class AbstractBlockEditFormView
      */
     abstract protected function initBlockSpecificForm();
 
-
-    /**
-     * Creates an array for the block specific form parts.
-     *
-     * Example:
-     * [
-     *      'POST_TEXT_INPUT' => 'Some text for this field',
-     * ]
-     *
-     * @return array
-     */
-    abstract protected function createValueArrayForSpecificFormParts(): array;
-
     /**
      * Defines the form action url.
      *
