@@ -17,11 +17,10 @@ trait DeleteItemModal
      * @param string $item_title
      * @param string $message
      * @param string $button_label
-     * @param Closure $deleteById
      * @return string
      * @throws \ilCtrlException
      */
-    private function deleteItemButtonWithModal(string $item, string $item_title, string $message, string $button_label, Closure $deleteById): string
+    private function deleteItemButtonWithModal(string $item, string $item_title, string $message, string $button_label): string
     {
         global $DIC;
 

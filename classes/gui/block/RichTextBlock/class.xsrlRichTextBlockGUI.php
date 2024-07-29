@@ -76,7 +76,6 @@ final class xsrlRichTextBlockGUI
      */
     private $blockAccessGuard;
 
-
     /**
      * xsrlRichTextBlockGUI constructor.
      *
@@ -104,7 +103,6 @@ final class xsrlRichTextBlockGUI
         $this->request = $request;
         $this->blockAccessGuard = $blockAccessGuard;
     }
-
 
     public function executeCommand(): bool
     {
@@ -147,47 +145,9 @@ final class xsrlRichTextBlockGUI
         $block->setVisibility($config->getDefaultVisibility());
         $form = new RichTextBlockEditFormView($block);
 
+        $this->template->setContent($form->getHTML());
 
-        $tinymce_library_src = "./node_modules/tinymce/tinymce.min.js";
-        $this->template->addJavaScript($tinymce_library_src);
-
-        #$content = $this->richTextBlockService->find($this->getBlockId())->getContent();
-        $content = 'test';
-
-        $html_form = $form->getHTML();
-
-        $skin_css_path = ilUtil::getStyleSheetLocation();
-
-        $this->template->addOnLoadCode(
-            <<<JS
-            tinymce.init({
-                selector: '#textarea',
-                inline: false,
-                menubar: false,
-                branding: false,
-                statusbar: false,
-                paste_block_drop: false,
-                paste_data_images: false,
-                paste_as_text: true,
-                paste_word_valid_elements: 'b,strong,i,em,h1,h2,h3,h4,h5',
-                content_css: '$skin_css_path',
-                height : "40vh",
-                content_style: "html body#tinymce {overflow-y: scroll; background: transparent !important; padding: 10px;} body#tinymce::selection {background: transparent !important;} .tox .tox-edit-area .tox-edit-area__iframe {background: transparent !important;} html {overflow-y: scroll !important;} tox tox-tinymce {height: 100%; min-height: 500vh;}",
-                plugins: 'lists autolink link image paste',
-                toolbar: 'undo redo | blocks | bold italic | outdent indent | numlist bullist | link image ',
-                setup: function (editor) {
-                    editor.on("init", function () {
-                          this.setContent(`$content`);
-                        }
-                    );
-                }
-            });
-            JS
-        );
-
-
-
-        $this->template->setContent($html_form);
+        $this->addRichTextEdiorJs('');
     }
 
     private function create(): void
@@ -246,6 +206,8 @@ final class xsrlRichTextBlockGUI
         $block = $this->richTextBlockService->find($this->getBlockId());
         $form = new RichTextBlockEditFormView($block);
         $this->template->setContent($form->getHTML());
+
+        $this->addRichTextEdiorJs($block->getContent());
     }
 
     private function update(): void
@@ -284,24 +246,6 @@ final class xsrlRichTextBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
-    private function confirm(): void
-    {
-        $queries = $this->request->getQueryParams();
-
-        $confirm = new ilConfirmationGUI();
-        $confirm->setHeaderText($this->plugin->txt('confirm_delete_header'));
-        $confirm->setFormAction(
-            $this->controlFlow->getFormAction($this) .
-            '&' .
-            self::BLOCK_ID_QUERY_KEY .
-            '=' .
-            $queries[self::BLOCK_ID_QUERY_KEY]
-        );
-        $confirm->setConfirm($this->plugin->txt('common_delete'), CommonControllerAction::CMD_DELETE);
-        $confirm->setCancel($this->plugin->txt('common_cancel'), CommonControllerAction::CMD_CANCEL);
-        $this->template->setContent($confirm->getHTML());
-    }
-
     private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
@@ -319,4 +263,44 @@ final class xsrlRichTextBlockGUI
         $this->learnplaceService->store($learnplace);
     }
 
+    /**
+     * @param string $content
+     * @return void
+     */
+    private function addRichTextEdiorJs(string $content): void
+    {
+        $tinymce_library_src = "./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/tinymce/tinymce/tinymce.min.js";
+        $this->template->addJavaScript($tinymce_library_src);
+
+        $content = preg_replace('/(\r\n|\n|\r)/', '', $content);
+
+        $skin_css_path = ilUtil::getStyleSheetLocation();
+
+        $this->template->addOnLoadCode(
+            <<<JS
+            tinymce.init({
+                selector: '#textarea',
+                inline: false,
+                menubar: false,
+                branding: false,
+                statusbar: false,
+                paste_block_drop: false,
+                paste_data_images: false,
+                paste_as_text: true,
+                paste_word_valid_elements: 'p,br,strong,b,i,u,s,strike,em,span',
+                content_css: '$skin_css_path',
+                height : "40vh",
+                content_style: "html body#tinymce {overflow-y: scroll; background: transparent !important; padding: 10px;} body#tinymce::selection {background: transparent !important;} .tox .tox-edit-area .tox-edit-area__iframe {background: transparent !important;} html {overflow-y: scroll !important;} tox tox-tinymce {height: 100%; min-height: 500vh;}",
+                plugins: 'lists autolink link image paste',
+                toolbar: 'undo redo | bold italic underline strikethrough | numlist bullist | alignleft aligncenter alignright alignjustify',
+                setup: function (editor) {
+                    editor.on("init", function () {
+                          this.setContent(`$content`);
+                        }
+                    );
+                }
+            });
+            JS
+        );
+    }
 }

@@ -241,16 +241,6 @@ final class xsrlPictureBlockGUI
             $oldPicture = $oldPictureBlock->getPicture();
             $block->setPicture($oldPicture);
 
-/*            $uploadedFiles = $this->request->getUploadedFiles();
-            if (count($uploadedFiles) === 1 && array_pop($uploadedFiles)->getError() === UPLOAD_ERR_OK) {
-                //store new picture
-                $picture = $this->pictureService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()));
-                $block->setPicture($picture);
-
-                //delete old picture
-                $this->pictureService->delete($oldPicture->getId());
-            }*/
-
             $resourceId = current($form->getFormData()[PictureBlockEditFormView::POST_IMAGE]);
             if ($resourceId) {
                 //store new picture
@@ -288,24 +278,6 @@ final class xsrlPictureBlockGUI
         $this->regenerateSequence();
         $this->template->setOnScreenMessage('success', $this->plugin->txt('message_delete_success'), true);
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
-    }
-
-    private function confirm()
-    {
-        $queries = $this->request->getQueryParams();
-
-        $confirm = new ilConfirmationGUI();
-        $confirm->setHeaderText($this->plugin->txt('confirm_delete_header'));
-        $confirm->setFormAction(
-            $this->controlFlow->getFormAction($this) .
-            '&' .
-            self::BLOCK_ID_QUERY_KEY .
-            '=' .
-            $queries[self::BLOCK_ID_QUERY_KEY]
-        );
-        $confirm->setConfirm($this->plugin->txt('common_delete'), CommonControllerAction::CMD_DELETE);
-        $confirm->setCancel($this->plugin->txt('common_cancel'), CommonControllerAction::CMD_CANCEL);
-        $this->template->setContent($confirm->getHTML());
     }
 
     private function cancel()

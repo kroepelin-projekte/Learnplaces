@@ -128,10 +128,7 @@ final class AccordionBlockPresentationView implements Renderable
             $this->model->getId() . '-' . self::TYPE,
             $this->model->getTitle(),
             $this->plugin->txt('confirm_delete_header'),
-            $this->plugin->txt('common_delete'),
-            function ($id) {
-                exit($id);
-            },
+            $this->plugin->txt('common_delete')
         );
 
         //setup sequence number

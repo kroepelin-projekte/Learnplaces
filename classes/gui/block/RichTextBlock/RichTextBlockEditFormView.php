@@ -7,6 +7,7 @@ namespace SRAG\Learnplaces\gui\block\RichTextBlock;
 use ILIAS\UI\Implementation\Component\Input\Field\Section;
 use ilLearnplacesPlugin;
 use ilTextAreaInputGUI;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\AbstractBlockEditFormView;
 use SRAG\Learnplaces\service\publicapi\model\BlockModel;
 use SRAG\Learnplaces\service\publicapi\model\RichTextBlockModel;
@@ -48,59 +49,13 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView
         $field = $input->field();
 
         $textarea = $field->textarea($this->plugin->txt('rich_text_block_content'))
+            ->withValue($this->block->getContent())
             ->withAdditionalOnLoadCode(fn ($id) => "document.getElementById('$id')?.setAttribute('id', 'textarea');")
             ->withRequired(true);
 
         return $input->field()->section([
             self::POST_CONTENT => $textarea,
         ], $this->plugin->txt('block_specific_settings'));
-
-        /*        $textArea = new ilTextareaInputGUI($this->plugin->txt('rich_text_block_content'), self::POST_CONTENT);
-                $textArea->setRequired(true);
-                $textArea->setUseRte(true);
-                $textArea->setRteTags([
-                    'p',
-                    'br',
-                    'strong',
-                    'b',
-                    'i',
-                    'u',
-                    's',
-                    'strike',
-                    'em',
-                    'span',
-                ]);
-
-                $textArea->disableButtons([
-                    'charmap',
-                    'undo',
-                    'redo',
-                    'justifyleft',
-                    'justifycenter',
-                    'justifyright',
-                    'justifyfull',
-                    'anchor',
-                    'fullscreen',
-                    'cut',
-                    'copy',
-                    'paste',
-                    'pastetext',
-                    'formatselect',
-                    'bullist',
-                    'hr',
-                    'sub',
-                    'sup',
-                    'numlist',
-                    'cite',
-                    'removeformat',
-                    'indent',
-                    'outdent',
-                    'link',
-                    'unlink',
-                    'code',
-                    'pasteword',
-                ]);
-                $this->addItem($textArea);*/
     }
 
     /**
@@ -126,12 +81,16 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView
      */
     protected function getObject(): void
     {
-        $inputs = $this->getForm()->getInputs();
-        $bsp = $inputs[self::BLOCK_SPECIFIC_PARTS];
-        $bsp_inputs = $bsp->getInputs();
-        $post_content = $bsp_inputs[self::POST_CONTENT];
-        $value = $post_content->getValue();
+        $http = PluginContainer::resolve('http');
+        $form = $this->getForm()->withRequest($http->request());
+        $inputs = $form->getInputs();
+        $blockSpecificParts = $inputs[self::BLOCK_SPECIFIC_PARTS];
+        $blockSpecificPartsInputs = $blockSpecificParts->getInputs();
+        $contentInput = $blockSpecificPartsInputs[self::POST_CONTENT];
+        $content = $contentInput->getValue();
 
-        $this->block->setContent($value ?? '');
+        $content = str_replace('`', "'", $content);
+
+        $this->block->setContent($content ?? '');
     }
 }

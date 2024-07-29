@@ -18,11 +18,10 @@
         "intervention/image": "^2.4",
         "league/flysystem": "^1.0",
         "sabre/uri": "^2.1",
-        "wapmorgan/file-type-detector": "^1.1"
+        "wapmorgan/file-type-detector": "^1.1",
+        "tinymce/tinymce": "^7.2.1"
     },
     "config": {
-        "optimize-autoloader": true,
-        "classmap-authoritative": true,
         "sort-packages": true,
         "discard-changes": true,
         "htaccess-protect": true,
@@ -31,8 +30,6 @@
         "platform": {
             "php": "7.4.0"
         }
-    },
-    "require-dev": {
     },
     "scripts": {
         "test": "../../../../../../../libs/composer/vendor/bin/phpunit",
