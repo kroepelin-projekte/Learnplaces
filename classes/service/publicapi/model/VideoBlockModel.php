@@ -17,57 +17,17 @@ final class VideoBlockModel extends BlockModel
 {
     use VideoBlockDtoMappingAware;
 
-    /**
-     * @var string $path
-     */
-    private $path = "";
-    /**
-     * @var string $coverPath
-     */
-    private $coverPath = "";
+    private string $resourceId;
 
-
-    /**
-     * @return string
-     */
-    public function getPath(): string
+    public function getResourceId(): string
     {
-        return $this->path;
+        return $this->resourceId;
     }
 
-
-    /**
-     * @param string $path
-     *
-     * @return VideoBlockModel
-     */
-    public function setPath(string $path): VideoBlockModel
+    public function setResourceId(string $resourceId): VideoBlockModel
     {
-        $this->path = $path;
+        $this->resourceId = $resourceId;
 
         return $this;
     }
-
-
-    /**
-     * @return string
-     */
-    public function getCoverPath(): string
-    {
-        return $this->coverPath;
-    }
-
-
-    /**
-     * @param string $coverPath
-     *
-     * @return VideoBlockModel
-     */
-    public function setCoverPath(string $coverPath): VideoBlockModel
-    {
-        $this->coverPath = $coverPath;
-
-        return $this;
-    }
-
 }

@@ -13,55 +13,16 @@ namespace SRAG\Learnplaces\service\publicapi\model;
  */
 final class VideoModel
 {
-    /**
-     * @var string $videoPath
-     */
-    private $videoPath = '';
-    /**
-     * @var string $coverPath
-     */
-    private $coverPath = '';
+    private string $resourceId;
 
-
-    /**
-     * @return string
-     */
-    public function getVideoPath(): string
+    public function getResourceId(): string
     {
-        return $this->videoPath;
+        return $this->resourceId;
     }
 
-
-    /**
-     * @param string $videoPath
-     *
-     * @return VideoModel
-     */
-    public function setVideoPath(string $videoPath): VideoModel
+    public function setResourceId(string $resourceId): VideoModel
     {
-        $this->videoPath = $videoPath;
-
-        return $this;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getCoverPath(): string
-    {
-        return $this->coverPath;
-    }
-
-
-    /**
-     * @param string $coverPath
-     *
-     * @return VideoModel
-     */
-    public function setCoverPath(string $coverPath): VideoModel
-    {
-        $this->coverPath = $coverPath;
+        $this->resourceId = $resourceId;
 
         return $this;
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\media;
 
+use ILIAS\ResourceStorage\Identification\ResourceIdentification;
+use ilLearnplacesStakeholder;
 use League\Flysystem\FilesystemInterface;
 use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,19 +38,9 @@ final class VideoServiceImpl implements VideoService
     ];
 
     /**
-     * @var ServerRequestInterface $request
-     */
-    private $request;
-
-    /**
      * @var FileTypeDetector $fileTypeDetector
      */
     private $fileTypeDetector;
-    /**
-     * @var FilesystemInterface $filesystem
-     */
-    private $filesystem;
-
 
     /**
      * VideoServiceImpl constructor.
@@ -59,74 +51,35 @@ final class VideoServiceImpl implements VideoService
      */
     public function __construct(ServerRequestInterface $request, FileTypeDetector $fileTypeDetector, FilesystemInterface $filesystem)
     {
-        $this->request = $request;
         $this->fileTypeDetector = $fileTypeDetector;
-        $this->filesystem = $filesystem;
     }
-
 
     /**
      * @inheritDoc
      */
-    public function storeUpload(int $objectId): VideoModel
+    public function storeUpload(int $objectId, string $resourceId): VideoModel
     {
-        if(!$this->hasUploadedFiles()) {
-            throw new LogicException('Unable to store video without upload.');
-        }
-
-        $upFiles = $this->request->getUploadedFiles();
-        /**
-         * @var UploadedFileInterface $file
-         */
-        $file = array_pop($upFiles);
-        $this->validateUpload($file);
-
-        $videoPath = PathHelper::generatePath($objectId, $file->getClientFilename() ?? '');
-
-        $this->filesystem->putStream($videoPath, $file->getStream()->detach());
-
-        //TODO: specify valid video header !!!
-        //$this->validateVideoContent($videoPath);
-
         $videoModel = new VideoModel();
-        $videoModel->setVideoPath($videoPath);
+        $videoModel->setResourceId($resourceId);
 
         return $videoModel;
     }
-
 
     /**
      * @inheritdoc
      */
     public function delete(VideoModel $video)
     {
-        $this->deleteFile($video->getVideoPath());
-        $this->deleteFile($video->getCoverPath());
+        $this->deleteFile($video->getResourceId());
     }
 
-    private function deleteFile(string $path)
+    private function deleteFile(string $resourceId)
     {
-        if($this->filesystem->has($path)) {
-            $this->filesystem->delete($path);
-        }
-    }
+        global $DIC; // todo
 
-    private function hasUploadedFiles(): bool
-    {
-        $files =  $this->request->getUploadedFiles();
-        return count($files) > 0;
-    }
-
-    private function validateUpload(UploadedFileInterface $file)
-    {
-        if($file->getError() !== UPLOAD_ERR_OK) {
-            throw new FileUploadException('Unable to store video due to an upload error.', $file->getError());
-        }
-
-        $typeInfo = $this->fileTypeDetector->detectByFilename($file->getClientFilename() ?? '');
-
-        if(in_array($typeInfo[1], self::$allowedVideoTypes) === false) {
-            throw new FileUploadException('Video with invalid extension uploaded.');
+        $resource = new ResourceIdentification($resourceId);
+        if ($DIC->resourceStorage()->manage()->find($resourceId)) {
+            $DIC->resourceStorage()->manage()->remove($resource, new ilLearnplacesStakeholder());
         }
     }
 

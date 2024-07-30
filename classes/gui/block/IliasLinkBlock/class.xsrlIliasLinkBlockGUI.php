@@ -252,23 +252,6 @@ final class xsrlIliasLinkBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
-    private function confirm(): void
-    {
-        $queries = $this->request->getQueryParams();
-        $confirm = new ilConfirmationGUI();
-        $confirm->setHeaderText($this->plugin->txt('confirm_delete_header'));
-        $confirm->setFormAction(
-            $this->controlFlow->getFormAction($this) .
-            '&' .
-            self::BLOCK_ID_QUERY_KEY .
-            '=' .
-            $queries[self::BLOCK_ID_QUERY_KEY]
-        );
-        $confirm->setConfirm($this->plugin->txt('common_delete'), CommonControllerAction::CMD_DELETE);
-        $confirm->setCancel($this->plugin->txt('common_cancel'), CommonControllerAction::CMD_CANCEL);
-        $this->template->setContent($confirm->getHTML());
-    }
-
     private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);

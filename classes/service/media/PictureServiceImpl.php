@@ -43,17 +43,9 @@ final class PictureServiceImpl implements PictureService
     ];
 
     /**
-     * @var ServerRequestInterface $request
-     */
-    private $request;
-    /**
      * @var PictureRepository $pictureRepository
      */
     private $pictureRepository;
-    /**
-     * @var FileTypeDetector $fileTypeDetector
-     */
-    private $fileTypeDetector;
 
     /**
      * PictureServiceImpl constructor.
@@ -64,9 +56,7 @@ final class PictureServiceImpl implements PictureService
      */
     public function __construct(ServerRequestInterface $request, PictureRepository $pictureRepository, FileTypeDetector $fileTypeDetector)
     {
-        $this->request = $request;
         $this->pictureRepository = $pictureRepository;
-        $this->fileTypeDetector = $fileTypeDetector;
     }
 
     /**
@@ -111,7 +101,7 @@ final class PictureServiceImpl implements PictureService
         }
     }
 
-    private function hasUploadedFiles(): bool
+/*    private function hasUploadedFiles(): bool
     {
         $files =  $this->request->getUploadedFiles();
         return count($files) > 0;
@@ -128,5 +118,5 @@ final class PictureServiceImpl implements PictureService
         if(in_array($typeInfo[1], self::$allowedPictureTypes) === false) {
             throw new FileUploadException('Picture with invalid extension uploaded.');
         }
-    }
+    }*/
 }

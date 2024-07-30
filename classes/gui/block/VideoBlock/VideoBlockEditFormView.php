@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace SRAG\Learnplaces\gui\block\VideoBlock;
 
 use ilFileInputGUI;
+use ILIAS\FileUpload\MimeType;
+use ILIAS\UI\Component\Input\Field\Section;
+use ilLearnplacesUploadHandlerGUI;
 use SRAG\Learnplaces\gui\block\AbstractBlockEditFormView;
 use xsrlVideoBlockGUI;
 
@@ -27,18 +30,29 @@ final class VideoBlockEditFormView extends AbstractBlockEditFormView
         return true;
     }
 
-
     /**
      * @inheritDoc
      */
-    protected function initBlockSpecificForm()
+    protected function initBlockSpecificForm(): Section
     {
-
-        $fileUpload = new ilFileInputGUI($this->plugin->txt('video_block_select_video'), self::POST_VIDEO);
+/*        $fileUpload = new ilFileInputGUI($this->plugin->txt('video_block_select_video'), self::POST_VIDEO);
         $fileUpload->setSuffixes(['mp4']);
         $fileUpload->setRequired($this->block->getId() <= 0);
+        $this->addItem($fileUpload);*/
 
-        $this->addItem($fileUpload);
+        // todo $ui = PluginContainer::resolve('ui'); ?
+        global $DIC;
+        $ui = $DIC->ui();
+        $input = $ui->factory()->input();
+        $field = $input->field();
+
+        $fileUpload = $field->file(new ilLearnplacesUploadHandlerGUI(), $this->plugin->txt('video_block_select_video'))
+            ->withAcceptedMimeTypes([MimeType::VIDEO__MP4])
+            ->withRequired($this->block->getId() <= 0);
+
+        return $input->field()->section([
+            self::POST_VIDEO => $fileUpload,
+        ], $this->plugin->txt('block_specific_settings'));
     }
 
     /**
@@ -46,9 +60,8 @@ final class VideoBlockEditFormView extends AbstractBlockEditFormView
      */
     protected function getFormActionUrl(): string
     {
-        return $this->ctrl->getFormActionByClass(xsrlVideoBlockGUI::class);
+        return $this->ctrl->getFormActionByClass(xsrlVideoBlockGUI::class, $this->getFormCmd());
     }
-
 
     /**
      * @inheritDoc

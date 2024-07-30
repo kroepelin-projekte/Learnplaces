@@ -175,11 +175,14 @@ final class xsrlVideoBlockGUI
                 $this->redirectInvalidRequests($accordionId);
             }
 
-            $video = $this->videoService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()));
+/*            $video = $this->videoService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()));
             $block
                 ->setPath($video->getCoverPath())
-                ->setPath($video->getVideoPath());
+                ->setPath($video->getVideoPath());*/
 
+            $resourceId = current($form->getFormData()[VideoBlockEditFormView::POST_VIDEO]);
+            $video = $this->videoService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()), $resourceId);
+            $block->setResourceId($resourceId);
             $videoBlock = $this->videoBlockService->store($block);
 
             $anchor = xsrlContentGUI::ANCHOR_TEMPLATE;
@@ -238,26 +241,21 @@ final class xsrlVideoBlockGUI
             $block = $form->getBlockModel();
             $this->redirectInvalidRequests($block->getId());
             $oldVideoBlock = $this->videoBlockService->find($block->getId());
-            $block
-                ->setPath($oldVideoBlock->getPath())
-                ->setCoverPath($oldVideoBlock->getCoverPath());
+            $block->setResourceId($oldVideoBlock->getResourceId());
 
-            $uploadedFiles = $this->request->getUploadedFiles();
-            if (count($uploadedFiles) === 1 && array_pop($uploadedFiles)->getError() === UPLOAD_ERR_OK) {
+            $oldVideo = new VideoModel();
+            $oldVideo->setResourceId($oldVideoBlock->getResourceId());
 
+            $resourceId = current($form->getFormData()[VideoBlockEditFormView::POST_VIDEO]);
+            if ($resourceId) {
                 //store new video
-                $video = $this->videoService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()));
-                $block
-                    ->setPath($video->getVideoPath())
-                    ->setCoverPath($video->getCoverPath());
+                $video = $this->videoService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()), $resourceId);
+                $block->setResourceId($resourceId);
 
                 //delete old video
-                $oldVideo = new VideoModel();
-                $oldVideo
-                    ->setVideoPath($oldVideoBlock->getPath())
-                    ->setCoverPath($oldVideoBlock->getCoverPath());
                 $this->videoService->delete($oldVideo);
             }
+
             $block->setSequence($oldVideoBlock->getSequence());
             $this->videoBlockService->store($block);
 
@@ -286,24 +284,6 @@ final class xsrlVideoBlockGUI
         $this->regenerateSequence();
         $this->template->setOnScreenMessage('success', $this->plugin->txt('message_delete_success'), true);
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
-    }
-
-    private function confirm(): void
-    {
-        $queries = $this->request->getQueryParams();
-
-        $confirm = new ilConfirmationGUI();
-        $confirm->setHeaderText($this->plugin->txt('confirm_delete_header'));
-        $confirm->setFormAction(
-            $this->controlFlow->getFormAction($this) .
-            '&' .
-            self::BLOCK_ID_QUERY_KEY .
-            '=' .
-            $queries[self::BLOCK_ID_QUERY_KEY]
-        );
-        $confirm->setConfirm($this->plugin->txt('common_delete'), CommonControllerAction::CMD_DELETE);
-        $confirm->setCancel($this->plugin->txt('common_cancel'), CommonControllerAction::CMD_CANCEL);
-        $this->template->setContent($confirm->getHTML());
     }
 
     private function cancel(): void

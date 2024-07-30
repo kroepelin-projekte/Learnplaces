@@ -6,6 +6,7 @@ namespace SRAG\Learnplaces\gui\block\VideoBlock;
 
 use ilButtonToSplitButtonMenuItemAdapter;
 use ilCtrl;
+use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ilLearnplacesPlugin;
 use ilLinkButton;
 use ilSplitButtonException;
@@ -17,6 +18,7 @@ use SRAG\Learnplaces\gui\block\Renderable;
 use SRAG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
 use SRAG\Learnplaces\service\publicapi\model\VideoBlockModel;
+use SRAG\Learnplaces\util\DeleteItemModal;
 use xsrlVideoBlockGUI;
 
 /**
@@ -29,6 +31,7 @@ use xsrlVideoBlockGUI;
 final class VideoBlockPresentationView implements Renderable
 {
     use ReadOnlyViewAware;
+    use DeleteItemModal;
 
     public const SEQUENCE_ID_PREFIX = 'block_';
     public const TYPE = 'video';
@@ -67,7 +70,17 @@ final class VideoBlockPresentationView implements Renderable
 
     private function initView()
     {
-        $this->template->setVariable('VIDEO_PATH', $this->model->getPath());
+        // todo DIC
+        global $DIC;
+
+        $resourceId = $this->model->getResourceId();
+        $resource = new ResourceIdentification($resourceId);
+        if ($DIC->resourceStorage()->manage()->find($resourceId)) {
+            $src = $DIC->resourceStorage()->consume()
+                ->src($resource)
+                ->getSrc();
+            $this->template->setVariable('VIDEO_PATH', $src);
+        }
     }
 
     public function setModel(VideoBlockModel $model)
@@ -103,17 +116,21 @@ final class VideoBlockPresentationView implements Renderable
         $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
         //setup button
-        $splitButton = ilSplitButtonGUI::getInstance();
-        $deleteAction = ilLinkButton::getInstance();
-        $deleteAction->setCaption($this->plugin->txt('common_delete'), false);
-        $deleteAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlVideoBlockGUI::class, CommonControllerAction::CMD_CONFIRM) . '&' . xsrlVideoBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
-        $splitButton->setDefaultButton($deleteAction);
+        // todo
+        global $DIC;
+        $factory = $DIC->ui()->factory();
+        $renderer = $DIC->ui()->renderer();
 
-        $editAction = ilLinkButton::getInstance();
-        $editAction->setCaption($this->plugin->txt('common_edit'), false);
-        $editAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlVideoBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlVideoBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
-        $splitButton->setDefaultButton($editAction);
-        $splitButton->addMenuItem(new ilButtonToSplitButtonMenuItemAdapter($deleteAction));
+        $editAction = $this->controlFlow->getLinkTargetByClass(xsrlVideoBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlVideoBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
+        $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
+        $htmlEditButton = $renderer->render($editButton);
+
+        $deleteButton = $this->deleteItemButtonWithModal(
+            $this->model->getId() . '-' . self::TYPE,
+            'Video',
+            $this->plugin->txt('confirm_delete_header'),
+            $this->plugin->txt('common_delete')
+        );
 
         //setup sequence number
         $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
@@ -124,7 +141,7 @@ final class VideoBlockPresentationView implements Renderable
 
         //fill outer template
         if(!$this->isReadonly()) {
-            $outerTemplate->setVariable('ACTION_BUTTON', $splitButton->render());
+            $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
             $outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
         }
         $outerTemplate->setVariable('CONTENT', $blockTemplate->get());

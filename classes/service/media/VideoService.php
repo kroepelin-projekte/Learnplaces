@@ -24,6 +24,7 @@ interface VideoService
      * *.mp4
      *
      * @param int $objectId     The object id of the learnplace.
+     * @param string $resourceId The resource storage identifier for the image.
      *
      * @return VideoModel       The newly created video model.
      *
@@ -31,7 +32,7 @@ interface VideoService
      * @throws FileUploadException
      *                          Thrown if the upload failed or the uploaded file was invalid.
      */
-    public function storeUpload(int $objectId): VideoModel;
+    public function storeUpload(int $objectId, string $resourceId): VideoModel;
 
 
     /**

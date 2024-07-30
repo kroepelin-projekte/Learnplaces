@@ -85,9 +85,7 @@ final class VideoBlockServiceImpl implements VideoBlockService
     {
         $video = $this->videoBlockRepository->findByBlockId($id);
         $videoModel = new VideoModel();
-        $videoModel
-            ->setCoverPath($video->getCoverPath())
-            ->setVideoPath($video->getPath());
+        $videoModel->setResourceId($video->getResourceId());
         $this->videoService->delete($videoModel);
     }
 }

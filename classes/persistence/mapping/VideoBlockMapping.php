@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -16,21 +17,20 @@ use SRAG\Learnplaces\service\filesystem\PathHelper;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait VideoBlockDtoMappingAware {
+trait VideoBlockDtoMappingAware
+{
+    public function toDto(): VideoBlock
+    {
+        /**
+         * @var VideoBlockDtoMappingAware|VideoBlockModel $this
+         */
+        $dto = new VideoBlock();
+        $dto->setResourceId($this->getResourceId());
 
-	public function toDto(): VideoBlock {
-		/**
-		 * @var VideoBlockDtoMappingAware|VideoBlockModel $this
-		 */
-		$dto = new VideoBlock();
-		$dto
-			->setPath(PathHelper::generatePluginInternalPathFrom($this->getPath()))
-			->setCoverPath(PathHelper::generatePluginInternalPathFrom($this->getCoverPath()));
+        $this->fillBaseBlock($dto);
 
-		$this->fillBaseBlock($dto);
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -42,18 +42,17 @@ trait VideoBlockDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait VideoBlockModelMappingAware {
+trait VideoBlockModelMappingAware
+{
+    public function toModel(): VideoBlockModel
+    {
+        /**
+         * @var VideoBlockModelMappingAware|VideoBlock $this
+         */
+        $model = new VideoBlockModel();
+        $model->setResourceId($this->getResourceId());
+        $this->fillBaseBlock($model);
 
-	public function toModel(): VideoBlockModel {
-		/**
-		 * @var VideoBlockModelMappingAware|VideoBlock $this
-		 */
-		$model = new VideoBlockModel();
-		$model
-			->setPath(PathHelper::generateRelativePathFrom($this->getPath()))
-			->setCoverPath(PathHelper::generateRelativePathFrom($this->getCoverPath()));
-		$this->fillBaseBlock($model);
-
-		return $model;
-	}
+        return $model;
+    }
 }
