@@ -36,6 +36,7 @@ use SRAG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
  * Class xsrlContentGUI
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
+ *
  */
 final class xsrlContentGUI
 {

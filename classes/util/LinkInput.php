@@ -96,9 +96,16 @@ class LinkInput
             $do_async = false;
             $ref_id = ROOT_FOLDER_ID;
             $data = [$ilTree->getNodeData($ref_id)];
+            $data = $ilTree->getChildsByTypeFilter($ref_id, self::ALLOWED_TYPES);
+
+            // todo filter
+
         } else {
             $do_async = true;
             $data = $ilTree->getChildsByTypeFilter($ref_id, self::ALLOWED_TYPES);
+
+            // todo filtern
+
             if (count($data) === 0) {
                 return '';
             }

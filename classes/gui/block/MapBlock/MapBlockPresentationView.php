@@ -5,18 +5,22 @@ declare(strict_types=1);
 namespace SRAG\Learnplaces\gui\block\MapBlock;
 
 use ilCtrl;
+use ILIAS\HTTP\Services;
 use ilLearnplacesPlugin;
 use ilLinkButton;
 use ilMapUtil;
+use ilObject;
 use ilTemplate;
 use ilToolbarGUI;
 use LogicException;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
 use SRAG\Learnplaces\service\publicapi\model\ConfigurationModel;
 use SRAG\Learnplaces\service\publicapi\model\LocationModel;
 use SRAG\Learnplaces\service\publicapi\model\MapBlockModel;
 use SRAG\Learnplaces\service\publicapi\model\PictureBlockModel;
+use SRAG\Learnplaces\util\DeleteItemModal;
 use xsrlMapBlockGUI;
 
 /**
@@ -29,6 +33,9 @@ use xsrlMapBlockGUI;
 final class MapBlockPresentationView
 {
     use ReadOnlyViewAware;
+    use DeleteItemModal;
+
+    public const TYPE = 'map';
 
     /**
      * @var ilLearnplacesPlugin $plugin
@@ -54,6 +61,9 @@ final class MapBlockPresentationView
      * @var ConfigurationModel $configuration
      */
     private $configuration;
+    /** @var Services $http */
+    private object $http;
+    private object $refinery;
 
 
     /**
@@ -66,24 +76,35 @@ final class MapBlockPresentationView
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
+        $this->http = PluginContainer::resolve('http');
+        $this->refinery = PluginContainer::resolve('refinery');
         $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.map_tab.html', true, true);
     }
 
     private function initView()
     {
-
         //setup button
-        $deleteAction = ilLinkButton::getInstance();
-        $deleteAction->setCaption($this->plugin->txt('common_delete'), false);
-        $deleteAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_CONFIRM) . '&' . xsrlMapBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
+        global $DIC;
+        $factory = $DIC->ui()->factory();
+        $renderer = $DIC->ui()->renderer();
 
-        $editAction = ilLinkButton::getInstance();
-        $editAction->setCaption($this->plugin->txt('common_edit'), false);
-        $editAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlMapBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
+        $editAction = $this->controlFlow->getLinkTargetByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlMapBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
+        $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
 
-        $toolbar = new ilToolbarGUI();
-        $toolbar->addButtonInstance($editAction);
-        $toolbar->addButtonInstance($deleteAction);
+        $affected_item = $factory->modal()->interruptiveItem('deleteMap', 'Map');
+        $modal = $factory->modal()->interruptive(
+            $this->plugin->txt('common_delete'),
+            $this->plugin->txt('confirm_delete_header'),
+            $this->controlFlow->getLinkTargetByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_DELETE) . '&block=' . $this->model->getId()
+        )
+            ->withAffectedItems([$affected_item]);
+        $deleteButton = $factory->button()->standard($this->plugin->txt('common_delete'), '')
+            ->withOnClick($modal->getShowSignal());
+
+        $toolbar = $DIC->toolbar();
+        $toolbar->addComponent($editButton);
+        $toolbar->addComponent($deleteButton);
+        $toolbar->addComponent($modal);
 
         $map = ilMapUtil::getMapGUI();
         $map->setMapId($map_id = "map_" . hash('sha256', uniqid('map', true)))
@@ -97,9 +118,6 @@ final class MapBlockPresentationView
                 ->setWidth('100%')
                 ->setHeight('500px');
 
-        if(!$this->isReadonly()) {
-            $this->template->setVariable('TOOLBAR', $toolbar->getHTML());
-        }
         $this->template->setVariable('CONTENT', $map->getHtml());
     }
 

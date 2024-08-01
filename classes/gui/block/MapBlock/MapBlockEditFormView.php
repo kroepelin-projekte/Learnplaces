@@ -30,7 +30,7 @@ final class MapBlockEditFormView extends AbstractBlockEditFormView
      */
     protected function getFormActionUrl(): string
     {
-        return $this->ctrl->getFormActionByClass(xsrlMapBlockGUI::class);
+        return $this->ctrl->getFormActionByClass(xsrlMapBlockGUI::class, $this->getFormCmd());
     }
 
     /**
