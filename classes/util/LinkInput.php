@@ -59,6 +59,12 @@ class LinkInput
         return $field->numeric($label)
             ->withByline($this->linkPickerModal())
             ->withValue($default_value)
+            ->withAdditionalTransformation(
+                $this->refinery->custom()->constraint(
+                    fn ($value) => ilObject::_exists($value, true),
+                    'Object not found'
+                )
+            )
             ->withOnLoadCode(function ($id) use ($ref_id, $title, $description) {
                 return <<<JS
                 (function() {
