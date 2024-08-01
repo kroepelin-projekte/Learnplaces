@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,33 +13,35 @@ use SRAG\Lernplaces\persistence\mapping\AudioBlockModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class AudioBlock extends Block {
+class AudioBlock extends Block
+{
+    use AudioBlockModelMappingAware;
 
-	use AudioBlockModelMappingAware;
-
-	/**
-	 * @var string $path
-	 */
-	private $path = "";
-
-
-	/**
-	 * @return string
-	 */
-	public function getPath(): string {
-		return $this->path;
-	}
+    /**
+     * @var string $path
+     */
+    private $path = "";
 
 
-	/**
-	 * @param string $path
-	 *
-	 * @return AudioBlock
-	 */
-	public function setPath(string $path): AudioBlock {
-		$this->path = $path;
+    /**
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param string $path
+     *
+     * @return AudioBlock
+     */
+    public function setPath(string $path): AudioBlock
+    {
+        $this->path = $path;
+
+        return $this;
+    }
 
 }

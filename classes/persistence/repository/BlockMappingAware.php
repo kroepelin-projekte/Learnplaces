@@ -14,25 +14,26 @@ use SRAG\Learnplaces\persistence\entity\Visibility;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait BlockMappingAware {
+trait BlockMappingAware
+{
+    /**
+     * Maps a dto block to an entity block.
+     *
+     * @param Block             $block            The dto block which should be mapped to the entity block.
+     *
+     * @return \SRAG\Learnplaces\persistence\entity\Block   The mapped entity block.
+     */
+    private function mapToBlockEntity(Block $block): \SRAG\Learnplaces\persistence\entity\Block
+    {
+        $blockEntity = new \SRAG\Learnplaces\persistence\entity\Block($block->getId());
 
-	/**
-	 * Maps a dto block to an entity block.
-	 *
-	 * @param Block             $block            The dto block which should be mapped to the entity block.
-	 *
-	 * @return \SRAG\Learnplaces\persistence\entity\Block   The mapped entity block.
-	 */
-	private function mapToBlockEntity(Block $block) : \SRAG\Learnplaces\persistence\entity\Block {
-		$blockEntity = new \SRAG\Learnplaces\persistence\entity\Block($block->getId());
 
+        $visibility = Visibility::where(['name' => $block->getVisibility()])->first();
+        $blockEntity
+            ->setPkId($block->getId())
+            ->setSequence($block->getSequence())
+            ->setFkVisibility($visibility->getPkId());
 
-		$visibility = Visibility::where(['name' => $block->getVisibility()])->first();
-		$blockEntity
-			->setPkId($block->getId())
-			->setSequence($block->getSequence())
-			->setFkVisibility($visibility->getPkId());
-
-		return $blockEntity;
-	}
+        return $blockEntity;
+    }
 }

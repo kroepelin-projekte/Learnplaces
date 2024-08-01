@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,6 +13,7 @@ use SRAG\Lernplaces\persistence\mapping\HorizontalLineBlockModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class HorizontalLineBlock extends Block {
-	use HorizontalLineBlockModelMappingAware;
+class HorizontalLineBlock extends Block
+{
+    use HorizontalLineBlockModelMappingAware;
 }

@@ -17,34 +17,7 @@ class VideoBlock extends Block
 {
     use VideoBlockModelMappingAware;
 
-/*    private $path = "";
-    private $coverPath = "";*/
-
     private string $resourceId;
-
-/*    public function getPath(): string
-    {
-        return $this->path;
-    }
-
-    public function setPath(string $path): VideoBlock
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    public function getCoverPath(): string
-    {
-        return $this->coverPath;
-    }
-
-    public function setCoverPath(string $coverPath): VideoBlock
-    {
-        $this->coverPath = $coverPath;
-
-        return $this;
-    }*/
 
     public function getResourceId(): string
     {

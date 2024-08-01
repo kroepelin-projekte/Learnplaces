@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,18 +16,19 @@ use SRAG\Learnplaces\service\publicapi\model\RichTextBlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait RichTextBlockDtoMappingAware {
+trait RichTextBlockDtoMappingAware
+{
+    public function toDto(): RichTextBlock
+    {
+        /**
+         * @var RichTextBlockDtoMappingAware|RichTextBlockModel $this
+         */
+        $dto = new RichTextBlock();
+        $dto->setContent($this->getContent());
+        $this->fillBaseBlock($dto);
 
-	public function toDto(): RichTextBlock {
-		/**
-		 * @var RichTextBlockDtoMappingAware|RichTextBlockModel $this
-		 */
-		$dto = new RichTextBlock();
-		$dto->setContent($this->getContent());
-		$this->fillBaseBlock($dto);
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -38,16 +40,17 @@ trait RichTextBlockDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait RichTextBlockModelMappingAware {
+trait RichTextBlockModelMappingAware
+{
+    public function toModel(): RichTextBlockModel
+    {
+        /**
+         * @var RichTextBlockModelMappingAware|RichTextBlock $this
+         */
+        $model = new RichTextBlockModel();
+        $model->setContent($this->getContent());
+        $this->fillBaseBlock($model);
 
-	public function toModel(): RichTextBlockModel {
-		/**
-		 * @var RichTextBlockModelMappingAware|RichTextBlock $this
-		 */
-		$model = new RichTextBlockModel();
-		$model->setContent($this->getContent());
-		$this->fillBaseBlock($model);
-
-		return $model;
-	}
+        return $model;
+    }
 }

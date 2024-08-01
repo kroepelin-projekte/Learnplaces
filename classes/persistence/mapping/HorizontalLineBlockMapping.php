@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,17 +16,18 @@ use SRAG\Learnplaces\service\publicapi\model\HorizontalLineBlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait HorizontalLineBlockDtoMappingAware {
+trait HorizontalLineBlockDtoMappingAware
+{
+    public function toDto(): HorizontalLineBlock
+    {
+        /**
+         * @var HorizontalLineBlockDtoMappingAware|HorizontalLineBlockModel $this
+         */
+        $dto = new HorizontalLineBlock();
+        $this->fillBaseBlock($dto);
 
-	public function toDto(): HorizontalLineBlock {
-		/**
-		 * @var HorizontalLineBlockDtoMappingAware|HorizontalLineBlockModel $this
-		 */
-		$dto = new HorizontalLineBlock();
-		$this->fillBaseBlock($dto);
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -37,15 +39,16 @@ trait HorizontalLineBlockDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait HorizontalLineBlockModelMappingAware {
+trait HorizontalLineBlockModelMappingAware
+{
+    public function toModel(): HorizontalLineBlockModel
+    {
+        /**
+         * @var HorizontalLineBlockModelMappingAware|HorizontalLineBlock $this
+         */
+        $model = new HorizontalLineBlockModel();
+        $this->fillBaseBlock($model);
 
-	public function toModel(): HorizontalLineBlockModel {
-		/**
-		 * @var HorizontalLineBlockModelMappingAware|HorizontalLineBlock $this
-		 */
-		$model = new HorizontalLineBlockModel();
-		$this->fillBaseBlock($model);
-
-		return $model;
-	}
+        return $model;
+    }
 }

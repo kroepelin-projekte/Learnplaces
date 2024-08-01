@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,18 +16,19 @@ use SRAG\Learnplaces\service\publicapi\model\LearnplaceConstraintModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait LearnplaceConstraintDtoMappingAware {
+trait LearnplaceConstraintDtoMappingAware
+{
+    public function toDto(): LearnplaceConstraint
+    {
+        /**
+         * @var LearnplaceConstraintDtoMappingAware|LearnplaceConstraintModel $this
+         */
+        $dto = new LearnplaceConstraint();
+        $dto->setPreviousLearnplace($this->getPreviousLearnplace()->toDto())
+            ->setId($this->getId());
 
-	public function toDto(): LearnplaceConstraint {
-		/**
-		 * @var LearnplaceConstraintDtoMappingAware|LearnplaceConstraintModel $this
-		 */
-		$dto = new LearnplaceConstraint();
-		$dto->setPreviousLearnplace($this->getPreviousLearnplace()->toDto())
-			->setId($this->getId());
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -38,16 +40,17 @@ trait LearnplaceConstraintDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait LearnplaceConstraintModelMappingAware {
+trait LearnplaceConstraintModelMappingAware
+{
+    public function toModel(): LearnplaceConstraintModel
+    {
+        /**
+         * @var LearnplaceConstraintDtoMappingAware|LearnplaceConstraint $this
+         */
+        $model = new LearnplaceConstraintModel();
+        $model->setPreviousLearnplace($this->getPreviousLearnplace()->toModel())
+            ->setId($this->getId());
 
-	public function toModel(): LearnplaceConstraintModel {
-		/**
-		 * @var LearnplaceConstraintDtoMappingAware|LearnplaceConstraint $this
-		 */
-		$model = new LearnplaceConstraintModel();
-		$model->setPreviousLearnplace($this->getPreviousLearnplace()->toModel())
-			->setId($this->getId());
-
-		return $model;
-	}
+        return $model;
+    }
 }

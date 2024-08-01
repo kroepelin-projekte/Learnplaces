@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,104 +13,112 @@ use SRAG\Lernplaces\persistence\mapping\BlockModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-abstract class Block {
+abstract class Block
+{
+    use BlockModelMappingAware;
 
-	use BlockModelMappingAware;
-
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
-	/**
-	 * @var int $sequence
-	 */
-	private $sequence = 0;
-	/**
-	 * @var string $visibility
-	 */
-	private $visibility = "";
-	/**
-	 * @var BlockConstraint|null $constraint
-	 */
-	private $constraint = NULL;
-
-
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+    /**
+     * @var int $id
+     */
+    private $id = 0;
+    /**
+     * @var int $sequence
+     */
+    private $sequence = 0;
+    /**
+     * @var string $visibility
+     */
+    private $visibility = "";
+    /**
+     * @var BlockConstraint|null $constraint
+     */
+    private $constraint = null;
 
 
-	/**
-	 * @param int $id
-	 *
-	 * @return Block
-	 */
-	public function setId(int $id): Block {
-		$this->id = $id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function getSequence(): int {
-		return $this->sequence;
-	}
+    /**
+     * @param int $id
+     *
+     * @return Block
+     */
+    public function setId(int $id): Block
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int $sequence
-	 *
-	 * @return Block
-	 */
-	public function setSequence(int $sequence): Block {
-		$this->sequence = $sequence;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getSequence(): int
+    {
+        return $this->sequence;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getVisibility(): string {
-		return $this->visibility;
-	}
+    /**
+     * @param int $sequence
+     *
+     * @return Block
+     */
+    public function setSequence(int $sequence): Block
+    {
+        $this->sequence = $sequence;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $visibility
-	 *
-	 * @return Block
-	 */
-	public function setVisibility(string $visibility): Block {
-		$this->visibility = $visibility;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getVisibility(): string
+    {
+        return $this->visibility;
+    }
 
 
-	/**
-	 * @return null|BlockConstraint
-	 */
-	public function getConstraint() {
-		return $this->constraint;
-	}
+    /**
+     * @param string $visibility
+     *
+     * @return Block
+     */
+    public function setVisibility(string $visibility): Block
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param null|BlockConstraint $constraint
-	 *
-	 * @return Block
-	 */
-	public function setConstraint($constraint) {
-		$this->constraint = $constraint;
+    /**
+     * @return null|BlockConstraint
+     */
+    public function getConstraint()
+    {
+        return $this->constraint;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param null|BlockConstraint $constraint
+     *
+     * @return Block
+     */
+    public function setConstraint($constraint)
+    {
+        $this->constraint = $constraint;
+
+        return $this;
+    }
 }

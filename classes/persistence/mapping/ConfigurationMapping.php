@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,20 +16,21 @@ use SRAG\Learnplaces\service\publicapi\model\ConfigurationModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait ConfigurationDtoMappingAware {
+trait ConfigurationDtoMappingAware
+{
+    public function toDto(): Configuration
+    {
+        /**
+         * @var ConfigurationDtoMappingAware|ConfigurationModel $this
+         */
+        $dto = new Configuration();
+        $dto->setId($this->getId())
+            ->setOnline($this->isOnline())
+            ->setDefaultVisibility($this->getDefaultVisibility())
+            ->setMapZoomLevel($this->getMapZoomLevel());
 
-	public function toDto(): Configuration {
-		/**
-		 * @var ConfigurationDtoMappingAware|ConfigurationModel $this
-		 */
-		$dto = new Configuration();
-		$dto->setId($this->getId())
-			->setOnline($this->isOnline())
-			->setDefaultVisibility($this->getDefaultVisibility())
-			->setMapZoomLevel($this->getMapZoomLevel());
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -40,18 +42,19 @@ trait ConfigurationDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait ConfigurationModelMappingAware {
+trait ConfigurationModelMappingAware
+{
+    public function toModel(): ConfigurationModel
+    {
+        /**
+         * @var ConfigurationModelMappingAware|Configuration $this
+         */
+        $model = new ConfigurationModel();
+        $model->setId($this->getId())
+            ->setOnline($this->isOnline())
+            ->setDefaultVisibility($this->getDefaultVisibility())
+            ->setMapZoomLevel($this->getMapZoomLevel());
 
-	public function toModel(): ConfigurationModel {
-		/**
-		 * @var ConfigurationModelMappingAware|Configuration $this
-		 */
-		$model = new ConfigurationModel();
-		$model->setId($this->getId())
-			->setOnline($this->isOnline())
-			->setDefaultVisibility($this->getDefaultVisibility())
-			->setMapZoomLevel($this->getMapZoomLevel());
-
-		return $model;
-	}
+        return $model;
+    }
 }

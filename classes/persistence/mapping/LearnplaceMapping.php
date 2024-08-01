@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -16,47 +17,49 @@ use SRAG\Learnplaces\service\publicapi\model\LearnplaceModel;
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  *
  */
-trait LearnplaceDtoMappingAware {
+trait LearnplaceDtoMappingAware
+{
+    public function toDto(): Learnplace
+    {
+        /**
+         * @var LearnplaceModel|LearnplaceDtoMappingAware $this
+         */
 
-	public function toDto(): Learnplace {
-		/**
-		 * @var LearnplaceModel|LearnplaceDtoMappingAware $this
-		 */
-
-		$dto = new Learnplace();
-		$dto
-			->setId($this->getId())
-			->setBlocks($this->mapModelArrayToDtoArray($this->getBlocks()))
-			->setFeedback($this->mapModelArrayToDtoArray($this->getFeedback()))
-			->setLocation($this->getLocation()->toDto())
-			->setPictures($this->mapModelArrayToDtoArray($this->getPictures()))
-			->setObjectId($this->getObjectId())
-			->setVisitJournals($this->mapModelArrayToDtoArray($this->getVisitJournals()))
-			->setConfiguration($this->getConfiguration()->toDto());
-
-
-		return $dto;
-	}
+        $dto = new Learnplace();
+        $dto
+            ->setId($this->getId())
+            ->setBlocks($this->mapModelArrayToDtoArray($this->getBlocks()))
+            ->setFeedback($this->mapModelArrayToDtoArray($this->getFeedback()))
+            ->setLocation($this->getLocation()->toDto())
+            ->setPictures($this->mapModelArrayToDtoArray($this->getPictures()))
+            ->setObjectId($this->getObjectId())
+            ->setVisitJournals($this->mapModelArrayToDtoArray($this->getVisitJournals()))
+            ->setConfiguration($this->getConfiguration()->toDto());
 
 
-	/**
-	 * @internal only for trait internal use!
-	 *
-	 * This method assumes that all models implement their respective dto mapping aware trait.
-	 *
-	 * @param array $models An array of models which should be converted to dtos.
-	 *
-	 * @return array        An array of mapped dtos.
-	 */
-	private function mapModelArrayToDtoArray(array $models) : array {
+        return $dto;
+    }
 
-		$dtos = array_map(
-			function($model) {return $model->toDto();},
-			$models
-		);
 
-		return $dtos;
-	}
+    /**
+     * @internal only for trait internal use!
+     *
+     * This method assumes that all models implement their respective dto mapping aware trait.
+     *
+     * @param array $models An array of models which should be converted to dtos.
+     *
+     * @return array        An array of mapped dtos.
+     */
+    private function mapModelArrayToDtoArray(array $models): array
+    {
+
+        $dtos = array_map(
+            function ($model) {return $model->toDto();},
+            $models
+        );
+
+        return $dtos;
+    }
 
 }
 
@@ -69,43 +72,45 @@ trait LearnplaceDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait LearnplaceModelMappingAware {
+trait LearnplaceModelMappingAware
+{
+    public function toModel(): LearnplaceModel
+    {
+        /**
+         * @var Learnplace|LearnplaceModelMappingAware $this
+         */
 
-	public function toModel(): LearnplaceModel {
-		/**
-		 * @var Learnplace|LearnplaceModelMappingAware $this
-		 */
+        $model = new LearnplaceModel();
+        $model
+            ->setId($this->getId())
+            ->setBlocks($this->mapDtoArrayToModelArray($this->getBlocks()))
+            ->setFeedback($this->mapDtoArrayToModelArray($this->getFeedback()))
+            ->setLocation($this->getLocation()->toModel())
+            ->setPictures($this->mapDtoArrayToModelArray($this->getPictures()))
+            ->setObjectId($this->getObjectId())
+            ->setVisitJournals($this->mapDtoArrayToModelArray($this->getVisitJournals()))
+            ->setConfiguration($this->getConfiguration()->toModel());
 
-		$model = new LearnplaceModel();
-		$model
-			->setId($this->getId())
-			->setBlocks($this->mapDtoArrayToModelArray($this->getBlocks()))
-			->setFeedback($this->mapDtoArrayToModelArray($this->getFeedback()))
-			->setLocation($this->getLocation()->toModel())
-			->setPictures($this->mapDtoArrayToModelArray($this->getPictures()))
-			->setObjectId($this->getObjectId())
-			->setVisitJournals($this->mapDtoArrayToModelArray($this->getVisitJournals()))
-			->setConfiguration($this->getConfiguration()->toModel());
+        return $model;
+    }
 
-		return $model;
-	}
+    /**
+     * @internal only for trait internal use!
+     *
+     * This method assumes that all dtos implement their respective model mapping aware trait.
+     *
+     * @param array $dtos An array of dtos which should be converted to models.
+     *
+     * @return array        An array of mapped models.
+     */
+    private function mapDtoArrayToModelArray(array $dtos): array
+    {
 
-	/**
-	 * @internal only for trait internal use!
-	 *
-	 * This method assumes that all dtos implement their respective model mapping aware trait.
-	 *
-	 * @param array $dtos An array of dtos which should be converted to models.
-	 *
-	 * @return array        An array of mapped models.
-	 */
-	private function mapDtoArrayToModelArray(array $dtos) : array {
+        $models = array_map(
+            function ($model) {return $model->toModel();},
+            $dtos
+        );
 
-		$models = array_map(
-			function($model) {return $model->toModel();},
-			$dtos
-		);
-
-		return $models;
-	}
+        return $models;
+    }
 }

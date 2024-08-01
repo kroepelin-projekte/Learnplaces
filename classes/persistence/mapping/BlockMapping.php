@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,22 +16,23 @@ use SRAG\Learnplaces\service\publicapi\model\BlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait BlockDtoMappingAware {
+trait BlockDtoMappingAware
+{
+    protected function fillBaseBlock(Block $block): Block
+    {
+        /**
+         * @var BlockModel|BlockDtoMappingAware $this
+         */
+        $block
+            ->setId($this->getId())
+            ->setConstraint(is_null($this->getConstraint()) ? null : $this->getConstraint()->toDto())
+            ->setVisibility($this->getVisibility())
+            ->setSequence($this->getSequence());
 
-	protected function fillBaseBlock(Block $block): Block {
-		/**
-		 * @var BlockModel|BlockDtoMappingAware $this
-		 */
-		$block
-			->setId($this->getId())
-			->setConstraint(is_null($this->getConstraint()) ? NULL : $this->getConstraint()->toDto())
-			->setVisibility($this->getVisibility())
-			->setSequence($this->getSequence());
+        return $block;
+    }
 
-		return $block;
-	}
-
-	//public abstract function toDto(): Block;
+    //public abstract function toDto(): Block;
 
 }
 
@@ -43,20 +45,21 @@ trait BlockDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait BlockModelMappingAware {
+trait BlockModelMappingAware
+{
+    protected function fillBaseBlock(BlockModel $blockModel): BlockModel
+    {
+        /**
+         * @var Block|BlockModelMappingAware $this
+         */
+        $blockModel
+            ->setId($this->getId())
+            ->setConstraint(is_null($this->getConstraint()) ? null : $this->getConstraint()->toModel())
+            ->setVisibility($this->getVisibility())
+            ->setSequence($this->getSequence());
 
-	protected function fillBaseBlock(BlockModel $blockModel): BlockModel {
-		/**
-		 * @var Block|BlockModelMappingAware $this
-		 */
-		$blockModel
-			->setId($this->getId())
-			->setConstraint(is_null($this->getConstraint()) ? NULL : $this->getConstraint()->toModel())
-			->setVisibility($this->getVisibility())
-			->setSequence($this->getSequence());
+        return $blockModel;
+    }
 
-		return $blockModel;
-	}
-
-	//public abstract function toModel(): BlockModel;
+    //public abstract function toModel(): BlockModel;
 }

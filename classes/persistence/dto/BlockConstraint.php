@@ -7,26 +7,26 @@ namespace SRAG\Learnplaces\persistence\dto;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-interface BlockConstraint {
-
-	/**
-	 * @return int
-	 */
-	public function getId(): int;
-
-
-	/**
-	 * @param int $id
-	 *
-	 * @return BlockConstraint
-	 */
-	public function setId(int $id): BlockConstraint;
+interface BlockConstraint
+{
+    /**
+     * @return int
+     */
+    public function getId(): int;
 
 
-	/**
-	 * Maps the curreent block constraint into a block constraint model.
-	 *
-	 * @return \SRAG\Learnplaces\service\publicapi\model\BlockConstraint
-	 */
-	public function toModel();
+    /**
+     * @param int $id
+     *
+     * @return BlockConstraint
+     */
+    public function setId(int $id): BlockConstraint;
+
+
+    /**
+     * Maps the curreent block constraint into a block constraint model.
+     *
+     * @return \SRAG\Learnplaces\service\publicapi\model\BlockConstraint
+     */
+    public function toModel();
 }

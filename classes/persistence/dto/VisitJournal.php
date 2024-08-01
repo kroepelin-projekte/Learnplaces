@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -13,88 +14,95 @@ use SRAG\Lernplaces\persistence\mapping\VisitJournalModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class VisitJournal {
+class VisitJournal
+{
+    use VisitJournalModelMappingAware;
 
-	use VisitJournalModelMappingAware;
-
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
-	/**
-	 * @var int $userId
-	 */
-	private $userId = 0;
-	/**
-	 * @var DateTime $time
-	 */
-	private $time;
-
-
-	/**
-	 * VisitJournal constructor.
-	 */
-	public function __construct() {
-		$this->time = new DateTime();
-	}
+    /**
+     * @var int $id
+     */
+    private $id = 0;
+    /**
+     * @var int $userId
+     */
+    private $userId = 0;
+    /**
+     * @var DateTime $time
+     */
+    private $time;
 
 
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+    /**
+     * VisitJournal constructor.
+     */
+    public function __construct()
+    {
+        $this->time = new DateTime();
+    }
 
 
-	/**
-	 * @param int $id
-	 *
-	 * @return VisitJournal
-	 */
-	public function setId(int $id): VisitJournal {
-		$this->id = $id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function getUserId(): int {
-		return $this->userId;
-	}
+    /**
+     * @param int $id
+     *
+     * @return VisitJournal
+     */
+    public function setId(int $id): VisitJournal
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int $userId
-	 *
-	 * @return VisitJournal
-	 */
-	public function setUserId(int $userId): VisitJournal {
-		$this->userId = $userId;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
 
 
-	/**
-	 * @return DateTime
-	 */
-	public function getTime(): DateTime {
-		return $this->time;
-	}
+    /**
+     * @param int $userId
+     *
+     * @return VisitJournal
+     */
+    public function setUserId(int $userId): VisitJournal
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param DateTime $time
-	 *
-	 * @return VisitJournal
-	 */
-	public function setTime(DateTime $time): VisitJournal {
-		$this->time = $time;
+    /**
+     * @return DateTime
+     */
+    public function getTime(): DateTime
+    {
+        return $this->time;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param DateTime $time
+     *
+     * @return VisitJournal
+     */
+    public function setTime(DateTime $time): VisitJournal
+    {
+        $this->time = $time;
+
+        return $this;
+    }
 }

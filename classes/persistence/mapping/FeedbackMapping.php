@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,19 +16,20 @@ use SRAG\Learnplaces\service\publicapi\model\FeedbackModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait FeedbackDtoMappingAware {
+trait FeedbackDtoMappingAware
+{
+    public function toDto(): Feedback
+    {
+        /**
+         * @var FeedbackDtoMappingAware|FeedbackModel $this
+         */
+        $dto = new Feedback();
+        $dto->setId($this->getId())
+            ->setUserId($this->getUserId())
+            ->setContent($this->getContent());
 
-	public function toDto(): Feedback {
-		/**
-		 * @var FeedbackDtoMappingAware|FeedbackModel $this
-		 */
-		$dto = new Feedback();
-		$dto->setId($this->getId())
-			->setUserId($this->getUserId())
-			->setContent($this->getContent());
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -39,18 +41,19 @@ trait FeedbackDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait FeedbackModelMappingAware {
+trait FeedbackModelMappingAware
+{
+    public function toModel(): FeedbackModel
+    {
+        /**
+         * @var FeedbackModelMappingAware|Feedback $this
+         */
+        $model = new FeedbackModel();
+        $model
+            ->setId($this->getId())
+            ->setUserId($this->getUserId())
+            ->setContent($this->getContent());
 
-	public function toModel(): FeedbackModel {
-		/**
-		 * @var FeedbackModelMappingAware|Feedback $this
-		 */
-		$model = new FeedbackModel();
-		$model
-			->setId($this->getId())
-			->setUserId($this->getUserId())
-			->setContent($this->getContent());
-
-		return $model;
-	}
+        return $model;
+    }
 }

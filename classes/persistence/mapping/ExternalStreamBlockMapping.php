@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,18 +16,19 @@ use SRAG\Learnplaces\service\publicapi\model\ExternalStreamBlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait ExternalStreamBlockDtoMappingAware {
+trait ExternalStreamBlockDtoMappingAware
+{
+    public function toDto(): ExternalStreamBlock
+    {
+        /**
+         * @var ExternalStreamBlockDtoMappingAware|ExternalStreamBlockModel $this
+         */
+        $dto = new ExternalStreamBlock();
+        $dto->setUrl($this->getUrl());
+        $this->fillBaseBlock($dto);
 
-	public function toDto(): ExternalStreamBlock {
-		/**
-		 * @var ExternalStreamBlockDtoMappingAware|ExternalStreamBlockModel $this
-		 */
-		$dto = new ExternalStreamBlock();
-		$dto->setUrl($this->getUrl());
-		$this->fillBaseBlock($dto);
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -38,16 +40,17 @@ trait ExternalStreamBlockDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait ExternalStreamBlockModelMappingAware {
+trait ExternalStreamBlockModelMappingAware
+{
+    public function toModel(): ExternalStreamBlockModel
+    {
+        /**
+         * @var ExternalStreamBlockModelMappingAware|ExternalStreamBlock $this
+         */
+        $model = new ExternalStreamBlockModel();
+        $model->setUrl($this->getUrl());
+        $this->fillBaseBlock($model);
 
-	public function toModel(): ExternalStreamBlockModel {
-		/**
-		 * @var ExternalStreamBlockModelMappingAware|ExternalStreamBlock $this
-		 */
-		$model = new ExternalStreamBlockModel();
-		$model->setUrl($this->getUrl());
-		$this->fillBaseBlock($model);
-
-		return $model;
-	}
+        return $model;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,21 +16,22 @@ use SRAG\Learnplaces\service\publicapi\model\AnswerModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait AnswerDtoMappingAware {
-
-	public function toDto(): Answer {
-		/**
-		 * @var AnswerModel|AnswerDtoMappingAware $this
-		 */
-		$dto = new Answer();
-		$dto->setId($this->getId())
-			->setTitle($this->getTitle())
-			->setContent($this->getContent())
-			->setUserId($this->getUserId())
-			->setPicture(is_null($this->getPicture()) ? NULL : $this->getPicture()->toDto())
-			->setCreateDate($this->getCreateDate());
-		return $dto;
-	}
+trait AnswerDtoMappingAware
+{
+    public function toDto(): Answer
+    {
+        /**
+         * @var AnswerModel|AnswerDtoMappingAware $this
+         */
+        $dto = new Answer();
+        $dto->setId($this->getId())
+            ->setTitle($this->getTitle())
+            ->setContent($this->getContent())
+            ->setUserId($this->getUserId())
+            ->setPicture(is_null($this->getPicture()) ? null : $this->getPicture()->toDto())
+            ->setCreateDate($this->getCreateDate());
+        return $dto;
+    }
 
 }
 
@@ -42,20 +44,21 @@ trait AnswerDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait AnswerModelMappingAware {
+trait AnswerModelMappingAware
+{
+    public function toModel(): AnswerModel
+    {
 
-	public function toModel(): AnswerModel {
-
-		/**
-		 * @var Answer|AnswerDtoMappingAware $this
-		 */
-		$dto = new AnswerModel();
-		$dto->setId($this->getId())
-			->setTitle($this->getTitle())
-			->setContent($this->getContent())
-			->setUserId($this->getUserId())
-			->setPicture(is_null($this->getPicture()) ? NULL : $this->getPicture()->toModel())
-			->setCreateDate($this->getCreateDate());
-		return $dto;
-	}
+        /**
+         * @var Answer|AnswerDtoMappingAware $this
+         */
+        $dto = new AnswerModel();
+        $dto->setId($this->getId())
+            ->setTitle($this->getTitle())
+            ->setContent($this->getContent())
+            ->setUserId($this->getUserId())
+            ->setPicture(is_null($this->getPicture()) ? null : $this->getPicture()->toModel())
+            ->setCreateDate($this->getCreateDate());
+        return $dto;
+    }
 }

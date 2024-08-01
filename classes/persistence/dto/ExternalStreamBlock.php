@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,33 +13,35 @@ use SRAG\Lernplaces\persistence\mapping\ExternalStreamBlockModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class ExternalStreamBlock extends Block {
+class ExternalStreamBlock extends Block
+{
+    use ExternalStreamBlockModelMappingAware;
 
-	use ExternalStreamBlockModelMappingAware;
-
-	/**
-	 * @var string $url
-	 */
-	private $url = "";
-
-
-	/**
-	 * @return string
-	 */
-	public function getUrl(): string {
-		return $this->url;
-	}
+    /**
+     * @var string $url
+     */
+    private $url = "";
 
 
-	/**
-	 * @param string $url
-	 *
-	 * @return ExternalStreamBlock
-	 */
-	public function setUrl(string $url): ExternalStreamBlock {
-		$this->url = $url;
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param string $url
+     *
+     * @return ExternalStreamBlock
+     */
+    public function setUrl(string $url): ExternalStreamBlock
+    {
+        $this->url = $url;
+
+        return $this;
+    }
 
 }

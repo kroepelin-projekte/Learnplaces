@@ -11,53 +11,53 @@ use SRAG\Learnplaces\persistence\dto\VisitJournal;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-interface VisitJournalRepository {
-
-	/**
-	 * Updates an existing visit journal or creates a new entry.
-	 *
-	 * @param VisitJournal $visitJournal The visit journal which should be persisted.
-	 *
-	 * @return VisitJournal The newly persisted visit journal.
-	 */
-	public function store(VisitJournal $visitJournal): VisitJournal;
-
-
-	/**
-	 * Searches a visit journal by id.
-	 *
-	 * @param int $id The id which should be used to search the visit journal.
-	 *
-	 * @return VisitJournal The found visit journal.
-	 */
-	public function find(int $id): VisitJournal;
+interface VisitJournalRepository
+{
+    /**
+     * Updates an existing visit journal or creates a new entry.
+     *
+     * @param VisitJournal $visitJournal The visit journal which should be persisted.
+     *
+     * @return VisitJournal The newly persisted visit journal.
+     */
+    public function store(VisitJournal $visitJournal): VisitJournal;
 
 
-	/**
-	 * Deletes an existing visit journal.
-	 *
-	 * @param int $id The id which should be used to
-	 *
-	 * @return void
-	 */
-	public function delete(int $id);
-
-	/**
-	 * Searches all visit journals which belong to the given learnplace id.
-	 *
-	 * @param int $id The learnplace id which should be used to find the visit journals
-	 *
-	 * @return VisitJournal[] All visits found by the given learnplace id.
-	 */
-	public function findByLearnplaceId(int $id) : array;
+    /**
+     * Searches a visit journal by id.
+     *
+     * @param int $id The id which should be used to search the visit journal.
+     *
+     * @return VisitJournal The found visit journal.
+     */
+    public function find(int $id): VisitJournal;
 
 
-	/**
-	 * Searches all visit journals which belong to the given learnplace object id.
-	 *
-	 * @param int $id   The object of the learnplace which should be used to find all corresponding visit journals.
-	 *
-	 * @return VisitJournal[] All visit journals which belong to the given learnplace.
-	 */
-	public function findByObjectId(int $id): array;
+    /**
+     * Deletes an existing visit journal.
+     *
+     * @param int $id The id which should be used to
+     *
+     * @return void
+     */
+    public function delete(int $id);
+
+    /**
+     * Searches all visit journals which belong to the given learnplace id.
+     *
+     * @param int $id The learnplace id which should be used to find the visit journals
+     *
+     * @return VisitJournal[] All visits found by the given learnplace id.
+     */
+    public function findByLearnplaceId(int $id): array;
+
+
+    /**
+     * Searches all visit journals which belong to the given learnplace object id.
+     *
+     * @param int $id   The object of the learnplace which should be used to find all corresponding visit journals.
+     *
+     * @return VisitJournal[] All visit journals which belong to the given learnplace.
+     */
+    public function findByObjectId(int $id): array;
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,6 +13,7 @@ use SRAG\Lernplaces\persistence\mapping\FeedbackBlockModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class FeedbackBlock extends Block {
-	use FeedbackBlockModelMappingAware;
+class FeedbackBlock extends Block
+{
+    use FeedbackBlockModelMappingAware;
 }

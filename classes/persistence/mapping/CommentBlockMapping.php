@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -17,25 +18,27 @@ use SRAG\Learnplaces\service\publicapi\model\CommentModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait CommentBlockDtoMappingAware {
+trait CommentBlockDtoMappingAware
+{
+    public function toDto(): CommentBlock
+    {
+        /**
+         * @var CommentBlockDtoMappingAware|CommentBlockModel $this
+         */
+        $dto = new CommentBlock();
+        $dto->setComments($this->mapComments($this->getComments()));
+        $this->fillBaseBlock($dto);
 
-	public function toDto(): CommentBlock {
-		/**
-		 * @var CommentBlockDtoMappingAware|CommentBlockModel $this
-		 */
-		$dto = new CommentBlock();
-		$dto->setComments($this->mapComments($this->getComments()));
-		$this->fillBaseBlock($dto);
+        return $dto;
+    }
 
-		return $dto;
-	}
-
-	private function mapComments(array $commentModels) : array {
-		return array_map(
-			function(CommentModel $commentModel) {return $commentModel->toDto();},
-			$commentModels
-		);
-	}
+    private function mapComments(array $commentModels): array
+    {
+        return array_map(
+            function (CommentModel $commentModel) {return $commentModel->toDto();},
+            $commentModels
+        );
+    }
 }
 
 /**
@@ -47,23 +50,25 @@ trait CommentBlockDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait CommentBlockModelMappingAware {
+trait CommentBlockModelMappingAware
+{
+    public function toModel(): CommentBlockModel
+    {
+        /**
+         * @var CommentBlockModelMappingAware|CommentBlock $this
+         */
+        $model = new CommentBlockModel();
+        $model->setComments($this->mapComments($this->getComments()));
+        $this->fillBaseBlock($model);
 
-	public function toModel(): CommentBlockModel {
-		/**
-		 * @var CommentBlockModelMappingAware|CommentBlock $this
-		 */
-		$model = new CommentBlockModel();
-		$model->setComments($this->mapComments($this->getComments()));
-		$this->fillBaseBlock($model);
+        return $model;
+    }
 
-		return $model;
-	}
-
-	private function mapComments(array $commentDtos) : array {
-		return array_map(
-			function(Comment $commentDto) {return $commentDto->toModel();},
-			$commentDtos
-		);
-	}
+    private function mapComments(array $commentDtos): array
+    {
+        return array_map(
+            function (Comment $commentDto) {return $commentDto->toModel();},
+            $commentDtos
+        );
+    }
 }

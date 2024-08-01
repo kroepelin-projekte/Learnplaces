@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,105 +13,113 @@ use SRAG\Lernplaces\persistence\mapping\ConfigurationModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class Configuration {
+class Configuration
+{
+    use ConfigurationModelMappingAware;
 
-	use ConfigurationModelMappingAware;
-
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
-	/**
-	 * @var bool $online
-	 */
-	private $online = false;
-	/**
-	 * @var string $defaultVisibility
-	 */
-	private $defaultVisibility = "";
-	/**
-	 * @var int $mapZoomLevel
-	 */
-	private $mapZoomLevel = 0;
-
-
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+    /**
+     * @var int $id
+     */
+    private $id = 0;
+    /**
+     * @var bool $online
+     */
+    private $online = false;
+    /**
+     * @var string $defaultVisibility
+     */
+    private $defaultVisibility = "";
+    /**
+     * @var int $mapZoomLevel
+     */
+    private $mapZoomLevel = 0;
 
 
-	/**
-	 * @param int $id
-	 *
-	 * @return Configuration
-	 */
-	public function setId(int $id): Configuration {
-		$this->id = $id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isOnline(): bool {
-		return $this->online;
-	}
+    /**
+     * @param int $id
+     *
+     * @return Configuration
+     */
+    public function setId(int $id): Configuration
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param bool $online
-	 *
-	 * @return Configuration
-	 */
-	public function setOnline(bool $online): Configuration {
-		$this->online = $online;
-
-		return $this;
-	}
+    /**
+     * @return bool
+     */
+    public function isOnline(): bool
+    {
+        return $this->online;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDefaultVisibility(): string {
-		return $this->defaultVisibility;
-	}
+    /**
+     * @param bool $online
+     *
+     * @return Configuration
+     */
+    public function setOnline(bool $online): Configuration
+    {
+        $this->online = $online;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $defaultVisibility
-	 *
-	 * @return Configuration
-	 */
-	public function setDefaultVisibility(string $defaultVisibility): Configuration {
-		$this->defaultVisibility = $defaultVisibility;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getDefaultVisibility(): string
+    {
+        return $this->defaultVisibility;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function getMapZoomLevel(): int {
-		return $this->mapZoomLevel;
-	}
+    /**
+     * @param string $defaultVisibility
+     *
+     * @return Configuration
+     */
+    public function setDefaultVisibility(string $defaultVisibility): Configuration
+    {
+        $this->defaultVisibility = $defaultVisibility;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int $mapZoomLevel
-	 *
-	 * @return Configuration
-	 */
-	public function setMapZoomLevel(int $mapZoomLevel): Configuration {
-		$this->mapZoomLevel = $mapZoomLevel;
+    /**
+     * @return int
+     */
+    public function getMapZoomLevel(): int
+    {
+        return $this->mapZoomLevel;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param int $mapZoomLevel
+     *
+     * @return Configuration
+     */
+    public function setMapZoomLevel(int $mapZoomLevel): Configuration
+    {
+        $this->mapZoomLevel = $mapZoomLevel;
+
+        return $this;
+    }
 
 }

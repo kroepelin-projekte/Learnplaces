@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,81 +13,87 @@ use SRAG\Lernplaces\persistence\mapping\AccordionBlockModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class AccordionBlock extends Block {
+class AccordionBlock extends Block
+{
+    use AccordionBlockModelMappingAware;
 
-	use AccordionBlockModelMappingAware;
-
-	/**
-	 * @var string $title
-	 */
-	private $title = "";
-	/**
-	 * @var bool $expand
-	 */
-	private $expand = false;
-	/**
-	 * An already sorted collection of blocks.
-	 * @var Block[]
-	 */
-	private $blocks = [];
-
-
-	/**
-	 * @return string
-	 */
-	public function getTitle(): string {
-		return $this->title;
-	}
+    /**
+     * @var string $title
+     */
+    private $title = "";
+    /**
+     * @var bool $expand
+     */
+    private $expand = false;
+    /**
+     * An already sorted collection of blocks.
+     * @var Block[]
+     */
+    private $blocks = [];
 
 
-	/**
-	 * @param string $title
-	 *
-	 * @return AccordionBlock
-	 */
-	public function setTitle(string $title): AccordionBlock {
-		$this->title = $title;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isExpand(): bool {
-		return $this->expand;
-	}
+    /**
+     * @param string $title
+     *
+     * @return AccordionBlock
+     */
+    public function setTitle(string $title): AccordionBlock
+    {
+        $this->title = $title;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param bool $expand
-	 *
-	 * @return AccordionBlock
-	 */
-	public function setExpand(bool $expand): AccordionBlock {
-		$this->expand = $expand;
-
-		return $this;
-	}
+    /**
+     * @return bool
+     */
+    public function isExpand(): bool
+    {
+        return $this->expand;
+    }
 
 
-	/**
-	 * @return Block[]
-	 */
-	public function getBlocks(): array {
-		return $this->blocks;
-	}
+    /**
+     * @param bool $expand
+     *
+     * @return AccordionBlock
+     */
+    public function setExpand(bool $expand): AccordionBlock
+    {
+        $this->expand = $expand;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param Block[] $blocks
-	 *
-	 * @return AccordionBlock
-	 */
-	public function setBlocks(array $blocks): AccordionBlock {
-		$this->blocks = $blocks;
+    /**
+     * @return Block[]
+     */
+    public function getBlocks(): array
+    {
+        return $this->blocks;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param Block[] $blocks
+     *
+     * @return AccordionBlock
+     */
+    public function setBlocks(array $blocks): AccordionBlock
+    {
+        $this->blocks = $blocks;
+
+        return $this;
+    }
 }

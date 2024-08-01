@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\repository;
@@ -17,161 +18,173 @@ use SRAG\Learnplaces\persistence\repository\exception\EntityNotFoundException;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class MapBlockRepositoryImpl implements MapBlockRepository {
+class MapBlockRepositoryImpl implements MapBlockRepository
+{
+    use BlockMappingAware;
+    use BlockConstraintAware;
 
-	use BlockMappingAware, BlockConstraintAware;
+    /**
+     * @var LearnplaceConstraintRepository $learnplaceConstraintRepository
+     */
+    private $learnplaceConstraintRepository;
 
-	/**
-	 * @var LearnplaceConstraintRepository $learnplaceConstraintRepository
-	 */
-	private $learnplaceConstraintRepository;
+    /**
+     * Constructor.
+     *
+     * @param LearnplaceConstraintRepository $learnplaceConstraintRepository
+     */
+    public function __construct(LearnplaceConstraintRepository $learnplaceConstraintRepository)
+    {
+        $this->learnplaceConstraintRepository = $learnplaceConstraintRepository;
+    }
 
-	/**
-	 * Constructor.
-	 *
-	 * @param LearnplaceConstraintRepository $learnplaceConstraintRepository
-	 */
-	public function __construct(LearnplaceConstraintRepository $learnplaceConstraintRepository) { $this->learnplaceConstraintRepository = $learnplaceConstraintRepository; }
+    /**
+     * @inheritdoc
+     */
+    public function store(MapBlock $mapBlock): MapBlock
+    {
+        $storedBlock = ($mapBlock->getId() > 0) ? $this->update($mapBlock) : $this->create($mapBlock);
+        $this->storeBlockConstraint($storedBlock);
+        return $storedBlock;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function store(MapBlock $mapBlock) : MapBlock {
-		$storedBlock = ($mapBlock->getId() > 0) ? $this->update($mapBlock) : $this->create($mapBlock);
-		$this->storeBlockConstraint($storedBlock);
-		return $storedBlock;
-	}
+    private function create(MapBlock $mapBlock): MapBlock
+    {
+        /**
+         * @var Block $block
+         */
+        $block = $this->mapToBlockEntity($mapBlock);
+        $block->create();
+        $mapBlockEntity = $this->mapToEntity($mapBlock);
+        $mapBlockEntity->setFkBlockId($block->getPkId());
+        $mapBlockEntity->create();
+        return $this->mapToDTO($block);
+    }
 
-	private function create(MapBlock $mapBlock) : MapBlock {
-		/**
-		 * @var Block $block
-		 */
-		$block = $this->mapToBlockEntity($mapBlock);
-		$block->create();
-		$mapBlockEntity = $this->mapToEntity($mapBlock);
-		$mapBlockEntity->setFkBlockId($block->getPkId());
-		$mapBlockEntity->create();
-		return $this->mapToDTO($block);
-	}
+    private function update(MapBlock $mapBlock): MapBlock
+    {
+        $blockEntity = $this->mapToBlockEntity($mapBlock);
+        $blockEntity->update();
+        $mapBlockEntity = $this->mapToEntity($mapBlock);
+        $mapBlockEntity->update();
+        return $this->mapToDTO($blockEntity);
+    }
 
-	private function update(MapBlock $mapBlock) : MapBlock {
-		$blockEntity = $this->mapToBlockEntity($mapBlock);
-		$blockEntity->update();
-		$mapBlockEntity = $this->mapToEntity($mapBlock);
-		$mapBlockEntity->update();
-		return $this->mapToDTO($blockEntity);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function findByBlockId(int $id): MapBlock
+    {
+        try {
+            //check if the id belongs to a map block
+            $mapBlock = \SRAG\Learnplaces\persistence\entity\MapBlock::where(['fk_block_id' => $id])->first();
+            if(is_null($mapBlock)) {
+                throw new EntityNotFoundException("Map block with id \"$id\" was not found");
+            }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function findByBlockId(int $id) : MapBlock {
-		try {
-			//check if the id belongs to a map block
-			$mapBlock = \SRAG\Learnplaces\persistence\entity\MapBlock::where(['fk_block_id' => $id])->first();
-			if(is_null($mapBlock))
-				throw new EntityNotFoundException("Map block with id \"$id\" was not found");
-
-			$block = Block::findOrFail($id);
-			return $this->mapToDTO($block);
-		}
-		catch (arException $ex) {
-			throw new EntityNotFoundException("Map block with id \"$id\" was not found", $ex);
-		}
-	}
-
-
-	/**
-	 * @inheritdoc
-	 */
-	public function findByObjectId(int $objectId): MapBlock {
-		try {
-			//check if the id belongs to a map block
-			/**
-			 * @var \SRAG\Learnplaces\persistence\entity\MapBlock $mapBlock
-			 */
-			$mapBlock = \SRAG\Learnplaces\persistence\entity\MapBlock::innerjoinAR(new Block(), 'fk_block_id', 'pk_id', ['pk_id', 'fk_learnplace_id'])
-				->innerjoinAR(new \SRAG\Learnplaces\persistence\entity\Learnplace(), 'fk_learnplace_id', 'pk_id', ['pk_id', 'fk_object_id'], '=', true)
-				->where(['fk_object_id' => $objectId])->first();
-			if(is_null($mapBlock))
-				throw new EntityNotFoundException("No map block belongs to the object id \"$objectId\".");
-
-			$block = Block::findOrFail($mapBlock->getFkBlockId());
-			return $this->mapToDTO($block);
-		}
-		catch (arException $ex) {
-			throw new EntityNotFoundException("No map block belongs to the object id \"$objectId\".", $ex);
-		}
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function delete(int $id) {
-		try {
-			$uploadBlock = \SRAG\Learnplaces\persistence\entity\MapBlock::where(['fk_block_id' => $id])->first();
-			if(!is_null($uploadBlock)){
-				$uploadBlock->delete();
-			}
-
-			Block::findOrFail($id)->delete();
-		}
-		catch (arException $ex) {
-			throw new EntityNotFoundException("Map block with id \"$id\" not found", $ex);
-		}
-	}
+            $block = Block::findOrFail($id);
+            return $this->mapToDTO($block);
+        } catch (arException $ex) {
+            throw new EntityNotFoundException("Map block with id \"$id\" was not found", $ex);
+        }
+    }
 
 
-	/**
-	 * @inheritdoc
-	 */
-	public function findByLearnplace(Learnplace $learnplace) : array {
-		/**
-		 * @var Block[] $blocks
-		 */
-		$blocks = Block::innerjoinAR(new \SRAG\Learnplaces\persistence\entity\MapBlock(), 'pk_id', 'fk_block_id', ['fk_block_id'])
-			->where(['fk_learnplace_id' => $learnplace->getId()])->get();
+    /**
+     * @inheritdoc
+     */
+    public function findByObjectId(int $objectId): MapBlock
+    {
+        try {
+            //check if the id belongs to a map block
+            /**
+             * @var \SRAG\Learnplaces\persistence\entity\MapBlock $mapBlock
+             */
+            $mapBlock = \SRAG\Learnplaces\persistence\entity\MapBlock::innerjoinAR(new Block(), 'fk_block_id', 'pk_id', ['pk_id', 'fk_learnplace_id'])
+                ->innerjoinAR(new \SRAG\Learnplaces\persistence\entity\Learnplace(), 'fk_learnplace_id', 'pk_id', ['pk_id', 'fk_object_id'], '=', true)
+                ->where(['fk_object_id' => $objectId])->first();
+            if(is_null($mapBlock)) {
+                throw new EntityNotFoundException("No map block belongs to the object id \"$objectId\".");
+            }
 
-		$mappedBlocks = [];
+            $block = Block::findOrFail($mapBlock->getFkBlockId());
+            return $this->mapToDTO($block);
+        } catch (arException $ex) {
+            throw new EntityNotFoundException("No map block belongs to the object id \"$objectId\".", $ex);
+        }
+    }
 
-		//fetch all specific blocks and map them to DTOs
-		foreach ($blocks as $block) {
-			$mappedBlocks[] = $this->mapToDTO($block);
-		}
+    /**
+     * @inheritdoc
+     */
+    public function delete(int $id)
+    {
+        try {
+            $uploadBlock = \SRAG\Learnplaces\persistence\entity\MapBlock::where(['fk_block_id' => $id])->first();
+            if(!is_null($uploadBlock)) {
+                $uploadBlock->delete();
+            }
 
-		return $mappedBlocks;
-	}
+            Block::findOrFail($id)->delete();
+        } catch (arException $ex) {
+            throw new EntityNotFoundException("Map block with id \"$id\" not found", $ex);
+        }
+    }
 
-	private function mapToDTO(Block $block) : MapBlock {
 
-		$mapBlock = new MapBlock();
-		/**
-		 * @var Visibility $visibility
-		 */
-		$visibility = Visibility::findOrFail($block->getFkVisibility());
+    /**
+     * @inheritdoc
+     */
+    public function findByLearnplace(Learnplace $learnplace): array
+    {
+        /**
+         * @var Block[] $blocks
+         */
+        $blocks = Block::innerjoinAR(new \SRAG\Learnplaces\persistence\entity\MapBlock(), 'pk_id', 'fk_block_id', ['fk_block_id'])
+            ->where(['fk_learnplace_id' => $learnplace->getId()])->get();
 
-		$mapBlock
-			->setId($block->getPkId())
-			->setSequence($block->getSequence())
-			->setVisibility($visibility->getName());
+        $mappedBlocks = [];
 
-		return $mapBlock;
+        //fetch all specific blocks and map them to DTOs
+        foreach ($blocks as $block) {
+            $mappedBlocks[] = $this->mapToDTO($block);
+        }
 
-	}
+        return $mappedBlocks;
+    }
 
-	private function mapToEntity(MapBlock $mapBlock) : \SRAG\Learnplaces\persistence\entity\MapBlock {
+    private function mapToDTO(Block $block): MapBlock
+    {
 
-		/**
-		 * @var \SRAG\Learnplaces\persistence\entity\MapBlock $activeRecord
-		 */
-		$activeRecord = \SRAG\Learnplaces\persistence\entity\MapBlock::where(['fk_block_id' => $mapBlock->getId()])->first();
+        $mapBlock = new MapBlock();
+        /**
+         * @var Visibility $visibility
+         */
+        $visibility = Visibility::findOrFail($block->getFkVisibility());
 
-		if(is_null($activeRecord)) {
-			$activeRecord = new \SRAG\Learnplaces\persistence\entity\MapBlock();
-			$activeRecord->setFkBlockId($mapBlock->getId());
-		}
+        $mapBlock
+            ->setId($block->getPkId())
+            ->setSequence($block->getSequence())
+            ->setVisibility($visibility->getName());
 
-		return $activeRecord;
-	}
+        return $mapBlock;
+
+    }
+
+    private function mapToEntity(MapBlock $mapBlock): \SRAG\Learnplaces\persistence\entity\MapBlock
+    {
+
+        /**
+         * @var \SRAG\Learnplaces\persistence\entity\MapBlock $activeRecord
+         */
+        $activeRecord = \SRAG\Learnplaces\persistence\entity\MapBlock::where(['fk_block_id' => $mapBlock->getId()])->first();
+
+        if(is_null($activeRecord)) {
+            $activeRecord = new \SRAG\Learnplaces\persistence\entity\MapBlock();
+            $activeRecord->setFkBlockId($mapBlock->getId());
+        }
+
+        return $activeRecord;
+    }
 
 }

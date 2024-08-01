@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -13,160 +14,173 @@ use SRAG\Lernplaces\persistence\mapping\AnswerModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class Answer {
+class Answer
+{
+    use AnswerModelMappingAware;
 
-	use AnswerModelMappingAware;
-
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
-	/**
-	 * @var DateTime $createDate
-	 */
-	private $createDate;
-	/**
-	 * @var string $title
-	 */
-	private $title = "";
-	/**
-	 * @var string $content
-	 */
-	private $content = "";
-	/**
-	 * @var int $userId
-	 */
-	private $userId = 0;
-	/**
-	 * @var Picture|null $picture
-	 */
-	private $picture = NULL;
-
-
-	/**
-	 * Answer constructor.
-	 */
-	public function __construct() {
-		$this->createDate = new DateTime();
-	}
+    /**
+     * @var int $id
+     */
+    private $id = 0;
+    /**
+     * @var DateTime $createDate
+     */
+    private $createDate;
+    /**
+     * @var string $title
+     */
+    private $title = "";
+    /**
+     * @var string $content
+     */
+    private $content = "";
+    /**
+     * @var int $userId
+     */
+    private $userId = 0;
+    /**
+     * @var Picture|null $picture
+     */
+    private $picture = null;
 
 
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+    /**
+     * Answer constructor.
+     */
+    public function __construct()
+    {
+        $this->createDate = new DateTime();
+    }
 
 
-	/**
-	 * @param int $id
-	 *
-	 * @return Answer
-	 */
-	public function setId(int $id): Answer {
-		$this->id = $id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return DateTime
-	 */
-	public function getCreateDate(): DateTime {
-		return $this->createDate;
-	}
+    /**
+     * @param int $id
+     *
+     * @return Answer
+     */
+    public function setId(int $id): Answer
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param DateTime $createDate
-	 *
-	 * @return Answer
-	 */
-	public function setCreateDate(DateTime $createDate): Answer {
-		$this->createDate = $createDate;
-
-		return $this;
-	}
+    /**
+     * @return DateTime
+     */
+    public function getCreateDate(): DateTime
+    {
+        return $this->createDate;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getTitle(): string {
-		return $this->title;
-	}
+    /**
+     * @param DateTime $createDate
+     *
+     * @return Answer
+     */
+    public function setCreateDate(DateTime $createDate): Answer
+    {
+        $this->createDate = $createDate;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $title
-	 *
-	 * @return Answer
-	 */
-	public function setTitle(string $title): Answer {
-		$this->title = $title;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getContent(): string {
-		return $this->content;
-	}
+    /**
+     * @param string $title
+     *
+     * @return Answer
+     */
+    public function setTitle(string $title): Answer
+    {
+        $this->title = $title;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $content
-	 *
-	 * @return Answer
-	 */
-	public function setContent(string $content): Answer {
-		$this->content = $content;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function getUserId(): int {
-		return $this->userId;
-	}
+    /**
+     * @param string $content
+     *
+     * @return Answer
+     */
+    public function setContent(string $content): Answer
+    {
+        $this->content = $content;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int $userId
-	 *
-	 * @return Answer
-	 */
-	public function setUserId(int $userId): Answer {
-		$this->userId = $userId;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
 
 
-	/**
-	 * @return null|Picture
-	 */
-	public function getPicture() {
-		return $this->picture;
-	}
+    /**
+     * @param int $userId
+     *
+     * @return Answer
+     */
+    public function setUserId(int $userId): Answer
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param null|Picture $picture
-	 *
-	 * @return Answer
-	 */
-	public function setPicture($picture) {
-		$this->picture = $picture;
+    /**
+     * @return null|Picture
+     */
+    public function getPicture()
+    {
+        return $this->picture;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param null|Picture $picture
+     *
+     * @return Answer
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+
+        return $this;
+    }
 }

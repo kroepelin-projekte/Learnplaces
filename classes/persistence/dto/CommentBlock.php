@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,33 +13,35 @@ use SRAG\Lernplaces\persistence\mapping\CommentBlockModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class CommentBlock extends Block {
+class CommentBlock extends Block
+{
+    use CommentBlockModelMappingAware;
 
-	use CommentBlockModelMappingAware;
-
-	/**
-	 * @var Comment[]
-	 */
-	private $comments = [];
-
-
-	/**
-	 * @return Comment[]
-	 */
-	public function getComments(): array {
-		return $this->comments;
-	}
+    /**
+     * @var Comment[]
+     */
+    private $comments = [];
 
 
-	/**
-	 * @param Comment[] $comments
-	 *
-	 * @return CommentBlock
-	 */
-	public function setComments(array $comments): CommentBlock {
-		$this->comments = $comments;
+    /**
+     * @return Comment[]
+     */
+    public function getComments(): array
+    {
+        return $this->comments;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param Comment[] $comments
+     *
+     * @return CommentBlock
+     */
+    public function setComments(array $comments): CommentBlock
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
 
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,200 +13,216 @@ use SRAG\Lernplaces\persistence\mapping\LearnplaceModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class Learnplace {
+class Learnplace
+{
+    use LearnplaceModelMappingAware;
 
-	use LearnplaceModelMappingAware;
-
-	/**
-	 * @var int $id
-	 */
-	private $id = 0;
-	/**
-	 * @var int $objectId
-	 */
-	private $objectId = 0;
-	/**
-	 * @var Configuration $configuration
-	 */
-	private $configuration;
-	/**
-	 * @var VisitJournal[] $visitJournals
-	 */
-	private $visitJournals = [];
-	/**
-	 * @var Picture[]
-	 */
-	private $pictures = [];
-	/**
-	 * @var Feedback[]
-	 */
-	private $feedback = [];
-	/**
-	 * @var Location $location
-	 */
-	private $location;
-	/**
-	 * @var Block[] $blocks
-	 */
-	private $blocks = [];
-
-
-	/**
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+    /**
+     * @var int $id
+     */
+    private $id = 0;
+    /**
+     * @var int $objectId
+     */
+    private $objectId = 0;
+    /**
+     * @var Configuration $configuration
+     */
+    private $configuration;
+    /**
+     * @var VisitJournal[] $visitJournals
+     */
+    private $visitJournals = [];
+    /**
+     * @var Picture[]
+     */
+    private $pictures = [];
+    /**
+     * @var Feedback[]
+     */
+    private $feedback = [];
+    /**
+     * @var Location $location
+     */
+    private $location;
+    /**
+     * @var Block[] $blocks
+     */
+    private $blocks = [];
 
 
-	/**
-	 * @param int $id
-	 *
-	 * @return Learnplace
-	 */
-	public function setId(int $id): Learnplace {
-		$this->id = $id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function getObjectId(): int {
-		return $this->objectId;
-	}
+    /**
+     * @param int $id
+     *
+     * @return Learnplace
+     */
+    public function setId(int $id): Learnplace
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int $objectId
-	 *
-	 * @return Learnplace
-	 */
-	public function setObjectId(int $objectId): Learnplace {
-		$this->objectId = $objectId;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getObjectId(): int
+    {
+        return $this->objectId;
+    }
 
 
-	/**
-	 * @return Configuration
-	 */
-	public function getConfiguration(): Configuration {
-		return $this->configuration;
-	}
+    /**
+     * @param int $objectId
+     *
+     * @return Learnplace
+     */
+    public function setObjectId(int $objectId): Learnplace
+    {
+        $this->objectId = $objectId;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param Configuration $configuration
-	 *
-	 * @return Learnplace
-	 */
-	public function setConfiguration(Configuration $configuration): Learnplace {
-		$this->configuration = $configuration;
-
-		return $this;
-	}
+    /**
+     * @return Configuration
+     */
+    public function getConfiguration(): Configuration
+    {
+        return $this->configuration;
+    }
 
 
-	/**
-	 * @return VisitJournal[]
-	 */
-	public function getVisitJournals(): array {
-		return $this->visitJournals;
-	}
+    /**
+     * @param Configuration $configuration
+     *
+     * @return Learnplace
+     */
+    public function setConfiguration(Configuration $configuration): Learnplace
+    {
+        $this->configuration = $configuration;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param VisitJournal[] $visitJournals
-	 *
-	 * @return Learnplace
-	 */
-	public function setVisitJournals(array $visitJournals): Learnplace {
-		$this->visitJournals = $visitJournals;
-
-		return $this;
-	}
+    /**
+     * @return VisitJournal[]
+     */
+    public function getVisitJournals(): array
+    {
+        return $this->visitJournals;
+    }
 
 
-	/**
-	 * @return Picture[]
-	 */
-	public function getPictures(): array {
-		return $this->pictures;
-	}
+    /**
+     * @param VisitJournal[] $visitJournals
+     *
+     * @return Learnplace
+     */
+    public function setVisitJournals(array $visitJournals): Learnplace
+    {
+        $this->visitJournals = $visitJournals;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param Picture[] $pictures
-	 *
-	 * @return Learnplace
-	 */
-	public function setPictures(array $pictures): Learnplace {
-		$this->pictures = $pictures;
-
-		return $this;
-	}
+    /**
+     * @return Picture[]
+     */
+    public function getPictures(): array
+    {
+        return $this->pictures;
+    }
 
 
-	/**
-	 * @return Feedback[]
-	 */
-	public function getFeedback(): array {
-		return $this->feedback;
-	}
+    /**
+     * @param Picture[] $pictures
+     *
+     * @return Learnplace
+     */
+    public function setPictures(array $pictures): Learnplace
+    {
+        $this->pictures = $pictures;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param Feedback[] $feedback
-	 *
-	 * @return Learnplace
-	 */
-	public function setFeedback(array $feedback): Learnplace {
-		$this->feedback = $feedback;
-
-		return $this;
-	}
+    /**
+     * @return Feedback[]
+     */
+    public function getFeedback(): array
+    {
+        return $this->feedback;
+    }
 
 
-	/**
-	 * @return Block[]
-	 */
-	public function getBlocks(): array {
-		return $this->blocks;
-	}
+    /**
+     * @param Feedback[] $feedback
+     *
+     * @return Learnplace
+     */
+    public function setFeedback(array $feedback): Learnplace
+    {
+        $this->feedback = $feedback;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param Block[] $blocks
-	 *
-	 * @return Learnplace
-	 */
-	public function setBlocks(array $blocks): Learnplace {
-		$this->blocks = $blocks;
-
-		return $this;
-	}
+    /**
+     * @return Block[]
+     */
+    public function getBlocks(): array
+    {
+        return $this->blocks;
+    }
 
 
-	/**
-	 * @return Location
-	 */
-	public function getLocation(): Location {
-		return $this->location;
-	}
+    /**
+     * @param Block[] $blocks
+     *
+     * @return Learnplace
+     */
+    public function setBlocks(array $blocks): Learnplace
+    {
+        $this->blocks = $blocks;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param Location $location
-	 *
-	 * @return Learnplace
-	 */
-	public function setLocation(Location $location): Learnplace {
-		$this->location = $location;
+    /**
+     * @return Location
+     */
+    public function getLocation(): Location
+    {
+        return $this->location;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param Location $location
+     *
+     * @return Learnplace
+     */
+    public function setLocation(Location $location): Learnplace
+    {
+        $this->location = $location;
+
+        return $this;
+    }
 }

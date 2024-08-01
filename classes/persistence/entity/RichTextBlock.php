@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\entity;
@@ -12,104 +13,111 @@ use ActiveRecord;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class RichTextBlock extends ActiveRecord {
+class RichTextBlock extends ActiveRecord
+{
+    /**
+     * @return string
+     */
+    public static function returnDbTableName(): string
+    {
+        return 'xsrl_rich_text_block';
+    }
 
-	/**
-	 * @return string
-	 */
-	static function returnDbTableName() : string {
-		return 'xsrl_rich_text_block';
-	}
-
-	/**
-	 * @var int
-	 *
-	 * @con_is_primary true
-	 * @con_sequence   true
-	 * @con_is_unique  true
-	 * @con_has_field  true
-	 * @con_is_notnull true
-	 * @con_fieldtype  integer
-	 * @con_length     8
-	 */
-	protected $pk_id = 0;
-	/**
-	 * @var string
-	 *
-	 * @con_is_notnull true
-	 * @con_has_field  true
-	 * @con_fieldtype  clob
-	 */
-	protected $content = "";
-	/**
-	 * @var int|null
-	 *
-	 * @con_has_field  true
-	 * @con_is_unique  true
-	 * @con_is_notnull false
-	 * @con_fieldtype  integer
-	 * @con_length     8
-	 */
-	protected $fk_block_id = NULL;
-
-
-	/**
-	 * @return int
-	 */
-	public function getPkId(): int {
-		return intval($this->pk_id);
-	}
+    /**
+     * @var int
+     *
+     * @con_is_primary true
+     * @con_sequence   true
+     * @con_is_unique  true
+     * @con_has_field  true
+     * @con_is_notnull true
+     * @con_fieldtype  integer
+     * @con_length     8
+     */
+    protected $pk_id = 0;
+    /**
+     * @var string
+     *
+     * @con_is_notnull true
+     * @con_has_field  true
+     * @con_fieldtype  clob
+     */
+    protected $content = "";
+    /**
+     * @var int|null
+     *
+     * @con_has_field  true
+     * @con_is_unique  true
+     * @con_is_notnull false
+     * @con_fieldtype  integer
+     * @con_length     8
+     */
+    protected $fk_block_id = null;
 
 
-	/**
-	 * @param int $pk_id
-	 *
-	 * @return RichTextBlock
-	 */
-	public function setPkId(int $pk_id): RichTextBlock {
-		$this->pk_id = $pk_id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getPkId(): int
+    {
+        return intval($this->pk_id);
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getContent(): string {
-		return $this->content;
-	}
+    /**
+     * @param int $pk_id
+     *
+     * @return RichTextBlock
+     */
+    public function setPkId(int $pk_id): RichTextBlock
+    {
+        $this->pk_id = $pk_id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $content
-	 *
-	 * @return RichTextBlock
-	 */
-	public function setContent(string $content): RichTextBlock {
-		$this->content = $content;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
 
 
-	/**
-	 * @return int|null
-	 */
-	public function getFkBlockId() {
-		return is_null($this->fk_block_id) ? NULL : intval($this->fk_block_id);
-	}
+    /**
+     * @param string $content
+     *
+     * @return RichTextBlock
+     */
+    public function setContent(string $content): RichTextBlock
+    {
+        $this->content = $content;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int|null $fk_block_id
-	 *
-	 * @return RichTextBlock
-	 */
-	public function setFkBlockId($fk_block_id) {
-		$this->fk_block_id = $fk_block_id;
+    /**
+     * @return int|null
+     */
+    public function getFkBlockId()
+    {
+        return is_null($this->fk_block_id) ? null : intval($this->fk_block_id);
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param int|null $fk_block_id
+     *
+     * @return RichTextBlock
+     */
+    public function setFkBlockId($fk_block_id)
+    {
+        $this->fk_block_id = $fk_block_id;
+
+        return $this;
+    }
 
 }

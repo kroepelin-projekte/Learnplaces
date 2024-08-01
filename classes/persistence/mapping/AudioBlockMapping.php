@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,18 +16,19 @@ use SRAG\Learnplaces\service\publicapi\model\AudioBlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait AudioBlockDtoMappingAware {
+trait AudioBlockDtoMappingAware
+{
+    public function toDto(): AudioBlock
+    {
+        /**
+         * @var AudioBlockDtoMappingAware|AudioBlockModel $this
+         */
+        $dto = new AudioBlock();
+        $dto->setPath($this->getPath());
+        $this->fillBaseBlock($dto);
 
-	public function toDto(): AudioBlock {
-		/**
-		 * @var AudioBlockDtoMappingAware|AudioBlockModel $this
-		 */
-		$dto = new AudioBlock();
-		$dto->setPath($this->getPath());
-		$this->fillBaseBlock($dto);
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -38,16 +40,17 @@ trait AudioBlockDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait AudioBlockModelMappingAware {
+trait AudioBlockModelMappingAware
+{
+    public function toModel(): AudioBlockModel
+    {
+        /**
+         * @var AudioBlockModelMappingAware|AudioBlock $this
+         */
+        $model = new AudioBlockModel();
+        $model->setPath($this->getPath());
+        $this->fillBaseBlock($model);
 
-	public function toModel(): AudioBlockModel {
-		/**
-		 * @var AudioBlockModelMappingAware|AudioBlock $this
-		 */
-		$model = new AudioBlockModel();
-		$model->setPath($this->getPath());
-		$this->fillBaseBlock($model);
-
-		return $model;
-	}
+        return $model;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,18 +16,19 @@ use SRAG\Learnplaces\service\publicapi\model\ILIASLinkBlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait ILIASLinkBlockDtoMappingAware {
+trait ILIASLinkBlockDtoMappingAware
+{
+    public function toDto(): ILIASLinkBlock
+    {
+        /**
+         * @var ILIASLinkBlockDtoMappingAware|ILIASLinkBlockModel $this
+         */
+        $dto = new ILIASLinkBlock();
+        $dto->setRefId($this->getRefId());
+        $this->fillBaseBlock($dto);
 
-	public function toDto(): ILIASLinkBlock {
-		/**
-		 * @var ILIASLinkBlockDtoMappingAware|ILIASLinkBlockModel $this
-		 */
-		$dto = new ILIASLinkBlock();
-		$dto->setRefId($this->getRefId());
-		$this->fillBaseBlock($dto);
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -38,16 +40,17 @@ trait ILIASLinkBlockDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait ILIASLinkBlockModelMappingAware {
+trait ILIASLinkBlockModelMappingAware
+{
+    public function toModel(): ILIASLinkBlockModel
+    {
+        /**
+         * @var ILIASLinkBlockModelMappingAware|ILIASLinkBlock $this
+         */
+        $model = new ILIASLinkBlockModel();
+        $model->setRefId($this->getRefId());
+        $this->fillBaseBlock($model);
 
-	public function toModel(): ILIASLinkBlockModel {
-		/**
-		 * @var ILIASLinkBlockModelMappingAware|ILIASLinkBlock $this
-		 */
-		$model = new ILIASLinkBlockModel();
-		$model->setRefId($this->getRefId());
-		$this->fillBaseBlock($model);
-
-		return $model;
-	}
+        return $model;
+    }
 }

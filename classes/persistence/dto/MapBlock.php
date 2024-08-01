@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\dto;
@@ -12,6 +13,7 @@ use SRAG\Lernplaces\persistence\mapping\MapBlockModelMappingAware;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class MapBlock extends Block{
-	use MapBlockModelMappingAware;
+class MapBlock extends Block
+{
+    use MapBlockModelMappingAware;
 }

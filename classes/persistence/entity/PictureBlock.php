@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\entity;
@@ -12,162 +13,173 @@ use ActiveRecord;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class PictureBlock extends ActiveRecord {
+class PictureBlock extends ActiveRecord
+{
+    /**
+     * @return string
+     */
+    public static function returnDbTableName(): string
+    {
+        return 'xsrl_picture_block';
+    }
 
-	/**
-	 * @return string
-	 */
-	static function returnDbTableName() : string {
-		return 'xsrl_picture_block';
-	}
-
-	/**
-	 * @var int
-	 *
-	 * @con_is_primary true
-	 * @con_sequence   true
-	 * @con_is_unique  true
-	 * @con_has_field  true
-	 * @con_is_notnull true
-	 * @con_fieldtype  integer
-	 * @con_length     8
-	 */
-	protected $pk_id = 0;
-	/**
-	 * @var string
-	 *
-	 * @con_is_notnull true
-	 * @con_has_field  true
-	 * @con_fieldtype  text
-	 * @con_length     256
-	 */
-	protected $title = "";
-	/**
-	 * @var string
-	 *
-	 * @con_is_notnull true
-	 * @con_has_field  true
-	 * @con_fieldtype  text
-	 * @con_length     2000
-	 */
-	protected $description = "";
-	/**
-	 * @var int|null
-	 *
-	 * @con_has_field  true
-	 * @con_is_notnull false
-	 * @con_fieldtype  integer
-	 * @con_length     8
-	 */
-	protected $fk_picture = NULL;
-	/**
-	 * @var int|null
-	 *
-	 * @con_has_field  true
-	 * @con_is_unique  true
-	 * @con_is_notnull false
-	 * @con_fieldtype  integer
-	 * @con_length     8
-	 */
-	protected $fk_block_id = NULL;
-
-
-	/**
-	 * @return int
-	 */
-	public function getPkId(): int {
-		return intval($this->pk_id);
-	}
+    /**
+     * @var int
+     *
+     * @con_is_primary true
+     * @con_sequence   true
+     * @con_is_unique  true
+     * @con_has_field  true
+     * @con_is_notnull true
+     * @con_fieldtype  integer
+     * @con_length     8
+     */
+    protected $pk_id = 0;
+    /**
+     * @var string
+     *
+     * @con_is_notnull true
+     * @con_has_field  true
+     * @con_fieldtype  text
+     * @con_length     256
+     */
+    protected $title = "";
+    /**
+     * @var string
+     *
+     * @con_is_notnull true
+     * @con_has_field  true
+     * @con_fieldtype  text
+     * @con_length     2000
+     */
+    protected $description = "";
+    /**
+     * @var int|null
+     *
+     * @con_has_field  true
+     * @con_is_notnull false
+     * @con_fieldtype  integer
+     * @con_length     8
+     */
+    protected $fk_picture = null;
+    /**
+     * @var int|null
+     *
+     * @con_has_field  true
+     * @con_is_unique  true
+     * @con_is_notnull false
+     * @con_fieldtype  integer
+     * @con_length     8
+     */
+    protected $fk_block_id = null;
 
 
-	/**
-	 * @param int $pk_id
-	 *
-	 * @return PictureBlock
-	 */
-	public function setPkId(int $pk_id): PictureBlock {
-		$this->pk_id = $pk_id;
-
-		return $this;
-	}
+    /**
+     * @return int
+     */
+    public function getPkId(): int
+    {
+        return intval($this->pk_id);
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getTitle(): string {
-		return $this->title;
-	}
+    /**
+     * @param int $pk_id
+     *
+     * @return PictureBlock
+     */
+    public function setPkId(int $pk_id): PictureBlock
+    {
+        $this->pk_id = $pk_id;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $title
-	 *
-	 * @return PictureBlock
-	 */
-	public function setTitle(string $title): PictureBlock {
-		$this->title = $title;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription(): string {
-		return $this->description;
-	}
+    /**
+     * @param string $title
+     *
+     * @return PictureBlock
+     */
+    public function setTitle(string $title): PictureBlock
+    {
+        $this->title = $title;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $description
-	 *
-	 * @return PictureBlock
-	 */
-	public function setDescription(string $description): PictureBlock {
-		$this->description = $description;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
 
 
-	/**
-	 * @return int|null
-	 */
-	public function getFkPicture() {
-		return is_null($this->fk_picture) ? NULL : intval($this->fk_picture);
-	}
+    /**
+     * @param string $description
+     *
+     * @return PictureBlock
+     */
+    public function setDescription(string $description): PictureBlock
+    {
+        $this->description = $description;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int|null $fk_picture
-	 *
-	 * @return PictureBlock
-	 */
-	public function setFkPicture($fk_picture) {
-		$this->fk_picture = $fk_picture;
-
-		return $this;
-	}
+    /**
+     * @return int|null
+     */
+    public function getFkPicture()
+    {
+        return is_null($this->fk_picture) ? null : intval($this->fk_picture);
+    }
 
 
-	/**
-	 * @return int|null
-	 */
-	public function getFkBlockId() {
-		return is_null($this->fk_block_id) ? NULL : intval($this->fk_block_id);
-	}
+    /**
+     * @param int|null $fk_picture
+     *
+     * @return PictureBlock
+     */
+    public function setFkPicture($fk_picture)
+    {
+        $this->fk_picture = $fk_picture;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param int|null $fk_block_id
-	 *
-	 * @return PictureBlock
-	 */
-	public function setFkBlockId($fk_block_id) {
-		$this->fk_block_id = $fk_block_id;
+    /**
+     * @return int|null
+     */
+    public function getFkBlockId()
+    {
+        return is_null($this->fk_block_id) ? null : intval($this->fk_block_id);
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param int|null $fk_block_id
+     *
+     * @return PictureBlock
+     */
+    public function setFkBlockId($fk_block_id)
+    {
+        $this->fk_block_id = $fk_block_id;
+
+        return $this;
+    }
 }

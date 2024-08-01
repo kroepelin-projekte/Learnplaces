@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,19 +16,20 @@ use SRAG\Learnplaces\service\publicapi\model\MapBlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait MapBlockDtoMappingAware {
+trait MapBlockDtoMappingAware
+{
+    use BlockDtoMappingAware;
 
-	use BlockDtoMappingAware;
+    public function toDto(): MapBlock
+    {
+        /**
+         * @var MapBlockDtoMappingAware|MapBlockModel $this
+         */
+        $dto = new MapBlock();
+        $this->fillBaseBlock($dto);
 
-	public function toDto(): MapBlock {
-		/**
-		 * @var MapBlockDtoMappingAware|MapBlockModel $this
-		 */
-		$dto = new MapBlock();
-		$this->fillBaseBlock($dto);
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -39,17 +41,18 @@ trait MapBlockDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait MapBlockModelMappingAware {
+trait MapBlockModelMappingAware
+{
+    use BlockModelMappingAware;
 
-	use BlockModelMappingAware;
+    public function toModel(): MapBlockModel
+    {
+        /**
+         * @var MapBlockModelMappingAware|MapBlock $this
+         */
+        $model = new MapBlockModel();
+        $this->fillBaseBlock($model);
 
-	public function toModel(): MapBlockModel {
-		/**
-		 * @var MapBlockModelMappingAware|MapBlock $this
-		 */
-		$model = new MapBlockModel();
-		$this->fillBaseBlock($model);
-
-		return $model;
-	}
+        return $model;
+    }
 }

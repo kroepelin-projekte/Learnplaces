@@ -1,15 +1,17 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\persistence\repository;
 
 use arException;
-use function is_null;
 use SRAG\Learnplaces\persistence\dto\ILIASLinkBlock;
 use SRAG\Learnplaces\persistence\dto\Learnplace;
 use SRAG\Learnplaces\persistence\entity\Block;
 use SRAG\Learnplaces\persistence\entity\Visibility;
 use SRAG\Learnplaces\persistence\repository\exception\EntityNotFoundException;
+
+use function is_null;
 
 /**
  * Class ILIASLinkBlock
@@ -18,139 +20,150 @@ use SRAG\Learnplaces\persistence\repository\exception\EntityNotFoundException;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class ILIASLinkBlockRepositoryImpl implements ILIASLinkBlockRepository {
+class ILIASLinkBlockRepositoryImpl implements ILIASLinkBlockRepository
+{
+    use BlockMappingAware;
+    use BlockConstraintAware;
 
-	use BlockMappingAware, BlockConstraintAware;
+    /**
+     * @var LearnplaceConstraintRepository $learnplaceConstraintRepository
+     */
+    private $learnplaceConstraintRepository;
 
-	/**
-	 * @var LearnplaceConstraintRepository $learnplaceConstraintRepository
-	 */
-	private $learnplaceConstraintRepository;
+    /**
+     * Constructor.
+     *
+     * @param LearnplaceConstraintRepository $learnplaceConstraintRepository
+     */
+    public function __construct(LearnplaceConstraintRepository $learnplaceConstraintRepository)
+    {
+        $this->learnplaceConstraintRepository = $learnplaceConstraintRepository;
+    }
 
-	/**
-	 * Constructor.
-	 *
-	 * @param LearnplaceConstraintRepository $learnplaceConstraintRepository
-	 */
-	public function __construct(LearnplaceConstraintRepository $learnplaceConstraintRepository) { $this->learnplaceConstraintRepository = $learnplaceConstraintRepository; }
+    /**
+     * @inheritdoc
+     */
+    public function store(ILIASLinkBlock $linkBlock): ILIASLinkBlock
+    {
+        $storedBlock = ($linkBlock->getId() > 0) ? $this->update($linkBlock) : $this->create($linkBlock);
+        $this->storeBlockConstraint($storedBlock);
+        return $storedBlock;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function store(ILIASLinkBlock $linkBlock) : ILIASLinkBlock {
-		$storedBlock = ($linkBlock->getId() > 0) ? $this->update($linkBlock) : $this->create($linkBlock);
-		$this->storeBlockConstraint($storedBlock);
-		return $storedBlock;
-	}
+    private function create(ILIASLinkBlock $linkBlock): ILIASLinkBlock
+    {
+        /**
+         * @var Block $block
+         */
+        $block = $this->mapToBlockEntity($linkBlock);
+        $block->create();
+        $linkBlockEntity = $this->mapToEntity($linkBlock);
+        $linkBlockEntity->setFkBlockId($block->getPkId());
+        $linkBlockEntity->create();
+        return $this->mapToDTO($block, $linkBlockEntity);
+    }
 
-	private function create(ILIASLinkBlock $linkBlock) : ILIASLinkBlock {
-		/**
-		 * @var Block $block
-		 */
-		$block = $this->mapToBlockEntity($linkBlock);
-		$block->create();
-		$linkBlockEntity = $this->mapToEntity($linkBlock);
-		$linkBlockEntity->setFkBlockId($block->getPkId());
-		$linkBlockEntity->create();
-		return $this->mapToDTO($block, $linkBlockEntity);
-	}
+    private function update(ILIASLinkBlock $linkBlock): ILIASLinkBlock
+    {
+        $blockEntity = $this->mapToBlockEntity($linkBlock);
+        $blockEntity->update();
+        $linkBlockEntity = $this->mapToEntity($linkBlock);
+        $linkBlockEntity->update();
+        return $this->mapToDTO($blockEntity, $linkBlockEntity);
+    }
 
-	private function update(ILIASLinkBlock $linkBlock) : ILIASLinkBlock {
-		$blockEntity = $this->mapToBlockEntity($linkBlock);
-		$blockEntity->update();
-		$linkBlockEntity = $this->mapToEntity($linkBlock);
-		$linkBlockEntity->update();
-		return $this->mapToDTO($blockEntity, $linkBlockEntity);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function findByBlockId(int $id): ILIASLinkBlock
+    {
+        try {
+            $block = Block::findOrFail($id);
+            $linkBlock = \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock::where(['fk_block_id' => $id])->first();
+            if(is_null($linkBlock)) {
+                throw new EntityNotFoundException("PictureUploadBlock with id \"$id\" was not found");
+            }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function findByBlockId(int $id) : ILIASLinkBlock {
-		try {
-			$block = Block::findOrFail($id);
-			$linkBlock = \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock::where(['fk_block_id' => $id])->first();
-			if(is_null($linkBlock))
-				throw new EntityNotFoundException("PictureUploadBlock with id \"$id\" was not found");
+            return $this->mapToDTO($block, $linkBlock);
+        } catch (arException $ex) {
+            throw new EntityNotFoundException("PictureUploadBlock with id \"$id\" was not found", $ex);
+        }
+    }
 
-			return $this->mapToDTO($block, $linkBlock);
-		}
-		catch (arException $ex) {
-			throw new EntityNotFoundException("PictureUploadBlock with id \"$id\" was not found", $ex);
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function delete(int $id)
+    {
+        try {
+            $uploadBlock = \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock::where(['fk_block_id' => $id])->first();
+            if(!is_null($uploadBlock)) {
+                $uploadBlock->delete();
+            }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function delete(int $id) {
-		try {
-			$uploadBlock = \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock::where(['fk_block_id' => $id])->first();
-			if(!is_null($uploadBlock)){
-				$uploadBlock->delete();
-			}
-
-			Block::findOrFail($id)->delete();
-		}
-		catch (arException $ex) {
-			throw new EntityNotFoundException("ILIAS link block with id \"$id\" not found", $ex);
-		}
-	}
+            Block::findOrFail($id)->delete();
+        } catch (arException $ex) {
+            throw new EntityNotFoundException("ILIAS link block with id \"$id\" not found", $ex);
+        }
+    }
 
 
-	/**
-	 * @inheritdoc
-	 */
-	public function findByLearnplace(Learnplace $learnplace) : array {
-		/**
-		 * @var Block[] $blocks
-		 */
-		$blocks = Block::innerjoinAR(new \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock(), 'pk_id', 'fk_block_id')
-			->where(['fk_learnplace_id' => $learnplace->getId()])->get();
+    /**
+     * @inheritdoc
+     */
+    public function findByLearnplace(Learnplace $learnplace): array
+    {
+        /**
+         * @var Block[] $blocks
+         */
+        $blocks = Block::innerjoinAR(new \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock(), 'pk_id', 'fk_block_id')
+            ->where(['fk_learnplace_id' => $learnplace->getId()])->get();
 
-		$mappedBlocks = [];
+        $mappedBlocks = [];
 
-		//fetch all specific link blocks and map them DTOs
-		foreach ($blocks as $block) {
-			$linkBlockEntity = \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock::where(['fk_block_id' => $block->getPkId()])->first();
-			$mappedBlocks[] = $this->mapToDTO($block, $linkBlockEntity);
-		}
+        //fetch all specific link blocks and map them DTOs
+        foreach ($blocks as $block) {
+            $linkBlockEntity = \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock::where(['fk_block_id' => $block->getPkId()])->first();
+            $mappedBlocks[] = $this->mapToDTO($block, $linkBlockEntity);
+        }
 
-		return $mappedBlocks;
-	}
+        return $mappedBlocks;
+    }
 
-	private function mapToDTO(Block $block, \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock $linkBlockEntity) : ILIASLinkBlock {
+    private function mapToDTO(Block $block, \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock $linkBlockEntity): ILIASLinkBlock
+    {
 
-		$linkBlock = new ILIASLinkBlock();
-		/**
-		 * @var Visibility $visibility
-		 */
-		$visibility = Visibility::findOrFail($block->getFkVisibility());
+        $linkBlock = new ILIASLinkBlock();
+        /**
+         * @var Visibility $visibility
+         */
+        $visibility = Visibility::findOrFail($block->getFkVisibility());
 
-		$linkBlock
-			->setRefId($linkBlockEntity->getRefId())
-			->setId($block->getPkId())
-			->setSequence($block->getSequence())
-			->setVisibility($visibility->getName());
+        $linkBlock
+            ->setRefId($linkBlockEntity->getRefId())
+            ->setId($block->getPkId())
+            ->setSequence($block->getSequence())
+            ->setVisibility($visibility->getName());
 
-		return $linkBlock;
+        return $linkBlock;
 
-	}
+    }
 
-	private function mapToEntity(ILIASLinkBlock $linkBlock) : \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock {
+    private function mapToEntity(ILIASLinkBlock $linkBlock): \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock
+    {
 
-		/**
-		 * @var \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock $activeRecord
-		 */
-		$activeRecord = \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock::where(['fk_block_id' => $linkBlock->getId()])->first();
+        /**
+         * @var \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock $activeRecord
+         */
+        $activeRecord = \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock::where(['fk_block_id' => $linkBlock->getId()])->first();
 
-		if(is_null($activeRecord)) {
-			$activeRecord = new \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock();
-			$activeRecord->setFkBlockId($linkBlock->getId());
-		}
+        if(is_null($activeRecord)) {
+            $activeRecord = new \SRAG\Learnplaces\persistence\entity\ILIASLinkBlock();
+            $activeRecord->setFkBlockId($linkBlock->getId());
+        }
 
-		$activeRecord->setRefId($linkBlock->getRefId());
-		return $activeRecord;
-	}
+        $activeRecord->setRefId($linkBlock->getRefId());
+        return $activeRecord;
+    }
 
 }

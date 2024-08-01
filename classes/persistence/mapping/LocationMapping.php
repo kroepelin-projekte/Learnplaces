@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,21 +16,22 @@ use SRAG\Learnplaces\service\publicapi\model\LocationModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait LocationDtoMappingAware {
+trait LocationDtoMappingAware
+{
+    public function toDto(): Location
+    {
+        /**
+         * @var LocationDtoMappingAware|LocationModel $this
+         */
+        $dto = new Location();
+        $dto->setId($this->getId())
+            ->setElevation($this->getElevation())
+            ->setLatitude($this->getLatitude())
+            ->setLongitude($this->getLongitude())
+            ->setRadius($this->getRadius());
 
-	public function toDto(): Location {
-		/**
-		 * @var LocationDtoMappingAware|LocationModel $this
-		 */
-		$dto = new Location();
-		$dto->setId($this->getId())
-			->setElevation($this->getElevation())
-			->setLatitude($this->getLatitude())
-			->setLongitude($this->getLongitude())
-			->setRadius($this->getRadius());
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -41,20 +43,21 @@ trait LocationDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait LocationModelMappingAware {
+trait LocationModelMappingAware
+{
+    public function toModel(): LocationModel
+    {
+        /**
+         * @var LocationModelMappingAware|Location $this
+         */
+        $model = new LocationModel();
+        $model
+            ->setId($this->getId())
+            ->setElevation($this->getElevation())
+            ->setLatitude($this->getLatitude())
+            ->setLongitude($this->getLongitude())
+            ->setRadius($this->getRadius());
 
-	public function toModel(): LocationModel {
-		/**
-		 * @var LocationModelMappingAware|Location $this
-		 */
-		$model = new LocationModel();
-		$model
-			->setId($this->getId())
-			->setElevation($this->getElevation())
-			->setLatitude($this->getLatitude())
-			->setLongitude($this->getLongitude())
-			->setRadius($this->getRadius());
-
-		return $model;
-	}
+        return $model;
+    }
 }

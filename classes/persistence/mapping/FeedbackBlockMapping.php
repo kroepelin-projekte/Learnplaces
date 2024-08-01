@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Lernplaces\persistence\mapping;
@@ -15,17 +16,18 @@ use SRAG\Learnplaces\service\publicapi\model\FeedbackBlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait FeedbackBlockDtoMappingAware {
+trait FeedbackBlockDtoMappingAware
+{
+    public function toDto(): FeedbackBlock
+    {
+        /**
+         * @var FeedbackBlockDtoMappingAware|FeedbackBlockModel $this
+         */
+        $dto = new FeedbackBlock();
+        $this->fillBaseBlock($dto);
 
-	public function toDto(): FeedbackBlock {
-		/**
-		 * @var FeedbackBlockDtoMappingAware|FeedbackBlockModel $this
-		 */
-		$dto = new FeedbackBlock();
-		$this->fillBaseBlock($dto);
-
-		return $dto;
-	}
+        return $dto;
+    }
 }
 
 /**
@@ -37,15 +39,16 @@ trait FeedbackBlockDtoMappingAware {
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-trait FeedbackBlockModelMappingAware {
+trait FeedbackBlockModelMappingAware
+{
+    public function toModel(): FeedbackBlockModel
+    {
+        /**
+         * @var FeedbackBlockModelMappingAware|FeedbackBlock $this
+         */
+        $model = new FeedbackBlockModel();
+        $this->fillBaseBlock($model);
 
-	public function toModel(): FeedbackBlockModel {
-		/**
-		 * @var FeedbackBlockModelMappingAware|FeedbackBlock $this
-		 */
-		$model = new FeedbackBlockModel();
-		$this->fillBaseBlock($model);
-
-		return $model;
-	}
+        return $model;
+    }
 }
