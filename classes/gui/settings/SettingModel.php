@@ -50,7 +50,6 @@ final class SettingModel
      */
     private $mapZoom = 0;
 
-
     /**
      * @return string
      */
@@ -58,7 +57,6 @@ final class SettingModel
     {
         return $this->title;
     }
-
 
     /**
      * @param string $title
@@ -72,7 +70,6 @@ final class SettingModel
         return $this;
     }
 
-
     /**
      * @return string
      */
@@ -80,7 +77,6 @@ final class SettingModel
     {
         return $this->description;
     }
-
 
     /**
      * @param string $description
@@ -94,9 +90,6 @@ final class SettingModel
         return $this;
     }
 
-
-
-
     /**
      * @return bool
      */
@@ -104,7 +97,6 @@ final class SettingModel
     {
         return $this->online;
     }
-
 
     /**
      * @param bool $online
@@ -118,7 +110,6 @@ final class SettingModel
         return $this;
     }
 
-
     /**
      * @return string
      */
@@ -126,7 +117,6 @@ final class SettingModel
     {
         return $this->defaultVisibility;
     }
-
 
     /**
      * @param string $defaultVisibility
@@ -140,7 +130,6 @@ final class SettingModel
         return $this;
     }
 
-
     /**
      * @return float
      */
@@ -148,7 +137,6 @@ final class SettingModel
     {
         return $this->latitude;
     }
-
 
     /**
      * @param float $latitude
@@ -162,7 +150,6 @@ final class SettingModel
         return $this;
     }
 
-
     /**
      * @return float
      */
@@ -170,7 +157,6 @@ final class SettingModel
     {
         return $this->longitude;
     }
-
 
     /**
      * @param float $longitude
@@ -184,7 +170,6 @@ final class SettingModel
         return $this;
     }
 
-
     /**
      * @return float
      */
@@ -192,7 +177,6 @@ final class SettingModel
     {
         return $this->elevation;
     }
-
 
     /**
      * @param float $elevation
@@ -206,7 +190,6 @@ final class SettingModel
         return $this;
     }
 
-
     /**
      * @return int
      */
@@ -214,7 +197,6 @@ final class SettingModel
     {
         return $this->radius;
     }
-
 
     /**
      * @param int $radius
@@ -228,7 +210,6 @@ final class SettingModel
         return $this;
     }
 
-
     /**
      * @return int
      */
@@ -236,7 +217,6 @@ final class SettingModel
     {
         return $this->mapZoom;
     }
-
 
     /**
      * @param int $mapZoom

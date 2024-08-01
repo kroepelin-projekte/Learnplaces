@@ -44,5 +44,4 @@ interface AccessGuard
      * @return bool True if the user has write access for the current ref id, otherwise false.
      */
     public function hasWritePermission(): bool;
-
 }

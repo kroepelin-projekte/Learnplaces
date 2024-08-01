@@ -21,5 +21,4 @@ interface ValidationRule
      * @return bool         True if the given url is valid for usage, otherwise false.
      */
     public function isValid(string $url): bool;
-
 }

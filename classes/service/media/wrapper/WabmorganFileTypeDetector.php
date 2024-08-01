@@ -29,7 +29,6 @@ final class WabmorganFileTypeDetector implements FileTypeDetector
         return $result;
     }
 
-
     /**
      * @inheritDoc
      */

@@ -13,6 +13,7 @@ use ilSplitButtonGUI;
 use ilTemplate;
 use ilTextInputGUI;
 use LogicException;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\Renderable;
 use SRAG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
@@ -54,7 +55,6 @@ final class RichTextBlockPresentationView implements Renderable
      */
     private $model;
 
-
     /**
      * PictureUploadBlockPresentationView constructor.
      *
@@ -68,12 +68,19 @@ final class RichTextBlockPresentationView implements Renderable
         $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.rich_text.html', true, true);
     }
 
-    private function initView()
+    /**
+     * @return void
+     */
+    private function initView(): void
     {
         $this->template->setVariable('CONTENT', $this->model->getContent());
     }
 
-    public function setModel(RichTextBlockModel $model)
+    /**
+     * @param RichTextBlockModel $model
+     * @return void
+     */
+    public function setModel(RichTextBlockModel $model): void
     {
         $this->model = $model;
         $this->initView();
@@ -104,11 +111,8 @@ final class RichTextBlockPresentationView implements Renderable
     {
         $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
-        //setup button
-        // todo
-        global $DIC;
-        $factory = $DIC->ui()->factory();
-        $renderer = $DIC->ui()->renderer();
+        $factory = PluginContainer::resolve('factory');
+        $renderer = PluginContainer::resolve('renderer');
 
         //setup button
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlRichTextBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlRichTextBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();

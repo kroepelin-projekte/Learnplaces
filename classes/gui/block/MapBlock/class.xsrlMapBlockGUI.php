@@ -70,7 +70,6 @@ final class xsrlMapBlockGUI
      */
     private $blockAccessGuard;
 
-
     /**
      * xsrlMapBlockGUI constructor.
      *
@@ -97,7 +96,11 @@ final class xsrlMapBlockGUI
         $this->blockAccessGuard = $blockAccessGuard;
     }
 
-
+    /**
+     * @return bool
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
     public function executeCommand(): bool
     {
 
@@ -139,6 +142,10 @@ final class xsrlMapBlockGUI
         return false;
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function index(): void
     {
 
@@ -160,6 +167,10 @@ final class xsrlMapBlockGUI
         }
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function add(): void
     {
         $this->controlFlow->saveParameter($this, PlusView::POSITION_QUERY_PARAM);
@@ -172,6 +183,10 @@ final class xsrlMapBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function create(): void
     {
         $form = new MapBlockEditFormView(new MapBlockModel());
@@ -203,6 +218,9 @@ final class xsrlMapBlockGUI
         }
     }
 
+    /**
+     * @return void
+     */
     private function edit(): void
     {
         $blockId = $this->getBlockId();
@@ -211,6 +229,10 @@ final class xsrlMapBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function update(): void
     {
 
@@ -234,6 +256,10 @@ final class xsrlMapBlockGUI
         }
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function delete(): void
     {
         $blockId = $this->getBlockId();
@@ -243,6 +269,10 @@ final class xsrlMapBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function confirm(): void
     {
         $queries = $this->request->getQueryParams();
@@ -260,17 +290,28 @@ final class xsrlMapBlockGUI
         $this->template->setContent($confirm->getHTML());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return int
+     */
     private function getBlockId(): int
     {
         $queries = $this->request->getQueryParams();
         return intval($queries[self::BLOCK_ID_QUERY_KEY]);
     }
 
+    /**
+     * @param LearnplaceModel $learnplace
+     * @return MapBlockModel
+     */
     private function fetchMapModelFromLearnplace(LearnplaceModel $learnplace): MapBlockModel
     {
         foreach ($learnplace->getBlocks() as $block) {

@@ -24,6 +24,9 @@ trait ReferenceIdAware
      */
     private $request;
 
+    /**
+     * @return int
+     */
     private function getCurrentRefId(): int
     {
         $queries = $this->request->getQueryParams();

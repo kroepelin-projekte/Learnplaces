@@ -49,7 +49,7 @@ final class GUIProvider implements ServiceProviderInterface
     /**
      * @inheritDoc
      */
-    public function register(Container $pimple)
+    public function register(Container $pimple): void
     {
         $pimple[RenderableBlockViewFactory::class] = function ($c) {return new RenderableBlockViewFactoryImpl(); };
 
@@ -189,6 +189,54 @@ final class GUIProvider implements ServiceProviderInterface
                 $c[ServerRequestInterface::class],
                 $c[AccessGuard::class]
             );
+        };
+
+        $pimple['factory'] = function ($c) {
+            return $c->ui()->factory();
+        };
+
+        $pimple['field'] = function ($c) {
+            return $c->ui()->factory()->input()->field();
+        };
+
+        $pimple['renderer'] = function ($c) {
+            return $c->ui()->renderer();
+        };
+
+        $pimple['repositoryTree'] = function ($c) {
+            return $c->repositoryTree();
+        };
+
+        $pimple['query'] = function ($c) {
+            return $c->http()->wrapper()->query();
+        };
+
+        $pimple['post'] = function ($c) {
+            return $c->http()->wrapper()->post();
+        };
+
+        $pimple['user'] = function ($c) {
+            return $c->user();
+        };
+
+        $pimple['rbac'] = function ($c) {
+            return $c->rbac();
+        };
+
+        $pimple['ctrl'] = function ($c) {
+            return $c->ctrl();
+        };
+
+        $pimple['resourceStorage'] = function ($c) {
+            return $c->resourceStorage();
+        };
+
+        $pimple['database'] = function ($c) {
+            return $c->database();
+        };
+
+        $pimple['componentRepository'] = function ($c) {
+            return $c["component.repository"];
         };
     }
 }

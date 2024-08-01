@@ -166,6 +166,11 @@ final class xsrlContentGUI
         $this->accessGuard = $accessGuard;
     }
 
+    /**
+     * @return bool
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
     public function executeCommand(): bool
     {
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
@@ -209,14 +214,19 @@ final class xsrlContentGUI
         return false;
     }
 
-    //actions
+    /**
+     * actions
+     *
+     * @return void
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
     private function index(): void
     {
         $toolbar = new ilToolbarGUI();
-        /*        $saveSequenceButton = $this->ui->factory()->button()->standard(
-                    $this->plugin->txt('content_save_sequence'),
-                    $this->controlFlow->getLinkTargetByClass(self::class, self::CMD_SEQUENCE)
-                );*/
+
+        // todo sequence
+
         $saveSequenceButton = ilSubmitButton::getInstance();
         $saveSequenceButton->setCommand(self::CMD_SEQUENCE);
         $saveSequenceButton->setCaption($this->plugin->txt('content_save_sequence'), false);
@@ -247,6 +257,10 @@ final class xsrlContentGUI
         $this->template->setContent($template->get());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function add(): void
     {
         $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
@@ -288,11 +302,19 @@ final class xsrlContentGUI
         $this->controlFlow->redirectByClass($controller, CommonControllerAction::CMD_ADD);
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function cancel(): void
     {
         $this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function sequence(): void
     {
         $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
@@ -320,9 +342,7 @@ final class xsrlContentGUI
             return;
         };
 
-
         $mappedBlocks = $mappedBlockGenerator($iterator);
-
 
         //set the new sequence numbers
         foreach ($mappedBlocks as $id => $sequence) {
@@ -349,6 +369,10 @@ final class xsrlContentGUI
         $this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @param array $blocks
+     * @return array
+     */
     private function sortBlocksBySequence(array $blocks): array
     {
         usort($blocks, function (BlockModel $a, BlockModel $b) { return $a->getSequence() >= $b->getSequence() ? 1 : -1;});

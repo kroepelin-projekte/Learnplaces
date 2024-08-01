@@ -18,7 +18,6 @@ trait ReadOnlyViewAware
      */
     private $readonly = true;
 
-
     /**
      * @return bool
      */
@@ -26,7 +25,6 @@ trait ReadOnlyViewAware
     {
         return $this->readonly;
     }
-
 
     /**
      * @param bool $readonly

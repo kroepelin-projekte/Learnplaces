@@ -64,7 +64,6 @@ final class xsrlSettingGUI
      */
     private $accessGuard;
 
-
     /**
      * xsrlSettingGUI constructor.
      *
@@ -91,8 +90,12 @@ final class xsrlSettingGUI
         $this->accessGuard = $accessGuard;
     }
 
-
-    public function executeCommand()
+    /**
+     * @return bool
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
+    public function executeCommand(): bool
     {
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
         $this->tabs->activateTab(self::TAB_ID);
@@ -119,7 +122,10 @@ final class xsrlSettingGUI
         return false;
     }
 
-    private function edit()
+    /**
+     * @return void
+     */
+    private function edit(): void
     {
         $learnplce = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
         $config = $learnplce->getConfiguration();
@@ -142,7 +148,11 @@ final class xsrlSettingGUI
         $this->template->setContent($view->getHTML());
     }
 
-    private function update()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function update(): void
     {
 
         $view = new SettingEditFormView(new SettingModel(), $this->plugin, $this->controlFlow);
@@ -179,7 +189,11 @@ final class xsrlSettingGUI
         }
     }
 
-    private function cancel()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }

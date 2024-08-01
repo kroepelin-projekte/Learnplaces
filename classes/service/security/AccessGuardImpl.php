@@ -52,7 +52,6 @@ final class AccessGuardImpl implements AccessGuard
      */
     private $learnplace;
 
-
     /**
      * AccessGuardImpl constructor.
      *
@@ -70,7 +69,6 @@ final class AccessGuardImpl implements AccessGuard
         $this->objectId = ilObject::_lookupObjectId($refId);
         $this->learnplaceService = $this->hasWritePermission() ? $learnplaceService : $decorator->decorate($learnplaceService);
     }
-
 
     /**
      * @inheritdoc
@@ -93,7 +91,6 @@ final class AccessGuardImpl implements AccessGuard
 
     }
 
-
     /**
      * @inheritdoc
      */
@@ -101,7 +98,6 @@ final class AccessGuardImpl implements AccessGuard
     {
         return $this->access->checkAccess(AccessGuard::PERMISSION_READ, '', $this->refId);
     }
-
 
     /**
      * @inheritdoc
@@ -126,7 +122,10 @@ final class AccessGuardImpl implements AccessGuard
         }
     }
 
-    private function getLearnplace()
+    /**
+     * @return LearnplaceModel
+     */
+    private function getLearnplace(): LearnplaceModel
     {
         if(is_null($this->learnplace)) {
             $this->learnplace = $this->learnplaceService->findByObjectId($this->objectId);

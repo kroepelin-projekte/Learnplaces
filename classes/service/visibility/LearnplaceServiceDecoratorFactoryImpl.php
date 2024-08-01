@@ -21,7 +21,6 @@ final class LearnplaceServiceDecoratorFactoryImpl implements LearnplaceServiceDe
      */
     private $user;
 
-
     /**
      * LearnplaceServiceDecoratorFactoryImpl constructor.
      *
@@ -31,7 +30,6 @@ final class LearnplaceServiceDecoratorFactoryImpl implements LearnplaceServiceDe
     {
         $this->user = $user;
     }
-
 
     /**
      * @inheritDoc

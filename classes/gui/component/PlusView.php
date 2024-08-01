@@ -26,7 +26,6 @@ final class PlusView
      */
     private $link;
 
-
     /**
      * PlusView constructor.
      *
@@ -39,7 +38,10 @@ final class PlusView
         $this->link = "$link&" . self::POSITION_QUERY_PARAM . "=$sequence&" . self::ACCORDION_QUERY_PARAM . "=$accordionId";
     }
 
-
+    /**
+     * @return string
+     * @throws \ilTemplateException
+     */
     public function getHTML(): string
     {
         $template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/component/tpl.plus.html', true, true);

@@ -76,7 +76,7 @@ final class PluginContainer
      *
      * @return void
      */
-    public static function bootstrap()
+    public static function bootstrap(): void
     {
         static::$container = $GLOBALS['DIC'];
 
@@ -97,7 +97,7 @@ final class PluginContainer
      * @param string $class
      * @return object
      */
-    public static function resolve(string $class)
+    public static function resolve(string $class): object
     {
         if(!static::$container->offsetExists($class)) {
             throw new DependencyResolutionException("The class \"$class\" was not found.");

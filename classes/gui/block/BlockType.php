@@ -20,5 +20,4 @@ interface BlockType
     public const ACCORDION = 5;
     public const RICH_TEXT = 6;
     public const VIDEO = 7;
-
 }

@@ -104,6 +104,11 @@ final class xsrlRichTextBlockGUI
         $this->blockAccessGuard = $blockAccessGuard;
     }
 
+    /**
+     * @return bool
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
     public function executeCommand(): bool
     {
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
@@ -134,6 +139,10 @@ final class xsrlRichTextBlockGUI
         return false;
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function add(): void
     {
         $this->controlFlow->saveParameter($this, PlusView::POSITION_QUERY_PARAM);
@@ -150,9 +159,12 @@ final class xsrlRichTextBlockGUI
         $this->addRichTextEdiorJs('');
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function create(): void
     {
-
         $form = new RichTextBlockEditFormView(new RichTextBlockModel());
         try {
             $queries = $this->request->getQueryParams();
@@ -201,6 +213,9 @@ final class xsrlRichTextBlockGUI
         }
     }
 
+    /**
+     * @return void
+     */
     private function edit(): void
     {
         $block = $this->richTextBlockService->find($this->getBlockId());
@@ -210,6 +225,10 @@ final class xsrlRichTextBlockGUI
         $this->addRichTextEdiorJs($block->getContent());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function update(): void
     {
 
@@ -234,7 +253,10 @@ final class xsrlRichTextBlockGUI
         }
     }
 
-
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function delete(): void
     {
         $queries = $this->request->getQueryParams();
@@ -246,17 +268,27 @@ final class xsrlRichTextBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return int
+     */
     private function getBlockId(): int
     {
         $queries = $this->request->getQueryParams();
         return intval($queries[self::BLOCK_ID_QUERY_KEY]);
     }
 
+    /**
+     * @return void
+     */
     private function regenerateSequence(): void
     {
         $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));

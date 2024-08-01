@@ -15,6 +15,7 @@ use ilSplitButtonGUI;
 use ilTemplate;
 use ilTextInputGUI;
 use LogicException;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\Renderable;
 use SRAG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
@@ -56,7 +57,6 @@ final class IliasLinkBlockPresentationView implements Renderable
      */
     private $model;
 
-
     /**
      * PictureUploadBlockPresentationView constructor.
      *
@@ -70,27 +70,34 @@ final class IliasLinkBlockPresentationView implements Renderable
         $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.ilias_link.html', true, true);
     }
 
+    /**
+     * @return void
+     */
     private function initView(): void
     {
         $objectId = ilObject::_lookupObjectId($this->model->getRefId());
         $title = ilObject::_lookupTitle($objectId);
 
-        //todo ui
-        global $DIC;
-        $iliasLink = $DIC->ui()->renderer()->render(
-            $DIC->ui()->factory()->link()->standard($title, ilLink::_getStaticLink($this->model->getRefId()))
+        $factory = PluginContainer::resolve('factory');
+        $renderer = PluginContainer::resolve('renderer');
+
+        $iliasLink = $renderer->render(
+            $factory->link()->standard($title, ilLink::_getStaticLink($this->model->getRefId()))
         );
 
         $this->template->setVariable('CONTENT', $iliasLink);
         $this->template->setVariable('DESCRIPTION', ilObject::_lookupDescription($objectId));
     }
 
+    /**
+     * @param ILIASLinkBlockModel $model
+     * @return void
+     */
     public function setModel(ILIASLinkBlockModel $model): void
     {
         $this->model = $model;
         $this->initView();
     }
-
 
     /**
      * @inheritDoc
@@ -116,10 +123,9 @@ final class IliasLinkBlockPresentationView implements Renderable
     {
         $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
-        // todo
-        global $DIC;
-        $factory = $DIC->ui()->factory();
-        $renderer = $DIC->ui()->renderer();
+        $factory = PluginContainer::resolve('factory');
+        $renderer = PluginContainer::resolve('renderer');
+        $field = $factory->input()->field();
 
         //setup button
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlIliasLinkBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlIliasLinkBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
@@ -133,6 +139,7 @@ final class IliasLinkBlockPresentationView implements Renderable
             $this->plugin->txt('common_delete')
         );
 
+        // todo
         //setup sequence number
         $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
         $input->setRequired(true);

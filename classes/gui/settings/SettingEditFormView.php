@@ -58,7 +58,6 @@ final class SettingEditFormView extends ilPropertyFormGUI
      */
     private $controlFlow;
 
-
     /**
      * SettingEditFormView constructor.
      *
@@ -75,13 +74,15 @@ final class SettingEditFormView extends ilPropertyFormGUI
         $this->initForm();
     }
 
-    private function initForm()
+    /**
+     * @return void
+     * @throws \ilCtrlException
+     */
+    private function initForm(): void
     {
-
         $this->setFormAction($this->controlFlow->getFormActionByClass(xsrlSettingGUI::class, CommonControllerAction::CMD_EDIT));
         $this->setPreventDoubleSubmission(true);
         $this->setShowTopButtons(false);
-
 
         //create general
         $generalSectionHeader = new ilFormSectionHeaderGUI();
@@ -134,12 +135,18 @@ final class SettingEditFormView extends ilPropertyFormGUI
         $this->initButtons();
     }
 
-    private function initButtons()
+    /**
+     * @return void
+     */
+    private function initButtons(): void
     {
         $this->addCommandButton(CommonControllerAction::CMD_UPDATE, $this->plugin->txt('common_save'));
         $this->addCommandButton(CommonControllerAction::CMD_CANCEL, $this->plugin->txt('common_cancel'));
     }
 
+    /**
+     * @return SettingModel
+     */
     public function getSettings(): SettingModel
     {
         if(!$this->checkInput()) {
@@ -163,13 +170,12 @@ final class SettingEditFormView extends ilPropertyFormGUI
         return $this->configuration;
     }
 
-
     /**
      * Fills the form with the data of the block model.
      *
      * @return void
      */
-    public function fillForm()
+    public function fillForm(): void
     {
         $values = [
             self::POST_DEFAULT_VISIBILITY   => $this->configuration->getDefaultVisibility(),

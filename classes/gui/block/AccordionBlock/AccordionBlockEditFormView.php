@@ -7,6 +7,7 @@ namespace SRAG\Learnplaces\gui\block\AccordionBlock;
 use ilCheckboxInputGUI;
 use ILIAS\UI\Implementation\Component\Input\Field\Section;
 use ilTextInputGUI;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\AbstractBlockEditFormView;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
 use SRAG\Learnplaces\service\publicapi\model\BlockModel;
@@ -44,33 +45,17 @@ final class AccordionBlockEditFormView extends AbstractBlockEditFormView
      */
     protected function initBlockSpecificForm(): Section
     {
-        // todo $ui = PluginContainer::resolve('ui'); ?
-        global $DIC;
-        $ui = $DIC->ui();
-        $input = $ui->factory()->input();
-        $field = $input->field();
-
-        $title = $field->text($this->plugin->txt('accordion_block_title'))
+        $title = $this->field->text($this->plugin->txt('accordion_block_title'))
             ->withValue($this->block->getTitle())
             ->withMaxLength(256)
             ->withRequired(true);
-        $expand = $field->checkbox($this->plugin->txt('accordion_block_expand'))
+        $expand = $this->field->checkbox($this->plugin->txt('accordion_block_expand'))
             ->withValue($this->block->isExpand());
 
-        return $input->field()->section([
+        return $this->field->section([
             self::POST_TITLE => $title,
             self::POST_EXPAND => $expand,
         ], $this->plugin->txt('block_specific_settings'));
-
-        /*        $title = new ilTextInputGUI($this->plugin->txt('accordion_block_title'), self::POST_TITLE);
-                $title->setMaxLength(256);
-                $title->setRequired(true);
-
-                $expand = new ilCheckboxInputGUI($this->plugin->txt('accordion_block_expand'), self::POST_EXPAND);
-                $expand->setChecked(true);
-
-                $this->addItem($title);
-                $this->addItem($expand);*/
     }
 
     /**
@@ -84,7 +69,7 @@ final class AccordionBlockEditFormView extends AbstractBlockEditFormView
     /**
      * @inheritDoc
      */
-    protected function getObject()
+    protected function getObject(): void
     {
         $this->block->setTitle($this->getFormData()[self::POST_TITLE]);
         $this->block->setExpand(boolval($this->getFormData()[self::POST_EXPAND]));

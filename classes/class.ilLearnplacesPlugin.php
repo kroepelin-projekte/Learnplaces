@@ -22,8 +22,9 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
      */
     public function __construct()
     {
-        global $DIC; //todo
-        parent::__construct($DIC->database(), $DIC["component.repository"], 'xsrl');
+        $database = PluginContainer::resolve('database');
+        $componentRepository = PluginContainer::resolve('componentRepository');
+        parent::__construct($database, $componentRepository, 'xsrl');
 
         self::$instance = $this;
     }
@@ -60,8 +61,8 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
      */
     protected function uninstallCustom(): void
     {
-        $this->dropDatabase();
         $this->deleteFiles();
+        $this->dropDatabase();
     }
 
     /**
@@ -97,20 +98,25 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
         $database->dropTable(\SRAG\Learnplaces\persistence\entity\VisitJournal::returnDbTableName(), false);
     }
 
-    // todo IRSS
+    /**
+     * @return void
+     */
     private function deleteFiles(): void
     {
-        /**
-         * @var FilesystemInterface $filesystem
-         */
-        $filesystem = PluginContainer::resolve(FilesystemInterface::class);
-        /*		$directories = $filesystem->listContents(ilUtil::getWebspaceDir());
+        $resourceStorage = PluginContainer::resolve('resourceStorage');
 
-                $regex = '/\/' . ilLearnplacesPlugin::PLUGIN_ID . '_\d{1,}$/'; // matches for example /xsrl_254
-                foreach ($directories as $directory) {
-                    $path = $directory['path'];
-                    if(preg_match($regex, $path) === 1)
-                        $filesystem->deleteDir($path);
-                }*/
+        $pictures = \SRAG\Learnplaces\persistence\entity\Picture::get();
+        foreach ($pictures as $picture) {
+            $resourceId = $picture->getResourceId();
+            $identification = new \ILIAS\ResourceStorage\Identification\ResourceIdentification($resourceId);
+            $resourceStorage->manage()->remove($identification, new ilLearnplacesStakeholder());
+        }
+
+        $videoBlocks = \SRAG\Learnplaces\persistence\entity\VideoBlock::get();
+        foreach ($videoBlocks as $videoBlock) {
+            $resourceId = $videoBlock->getResourceId();
+            $identification = new \ILIAS\ResourceStorage\Identification\ResourceIdentification($resourceId);
+            $resourceStorage->manage()->remove($identification, new ilLearnplacesStakeholder());
+        }
     }
 }

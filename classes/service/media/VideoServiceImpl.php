@@ -11,6 +11,7 @@ use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\service\filesystem\PathHelper;
 use SRAG\Learnplaces\service\media\exception\FileUploadException;
 use SRAG\Learnplaces\service\media\wrapper\FileTypeDetector;
@@ -68,22 +69,30 @@ final class VideoServiceImpl implements VideoService
     /**
      * @inheritdoc
      */
-    public function delete(VideoModel $video)
+    public function delete(VideoModel $video): void
     {
         $this->deleteFile($video->getResourceId());
     }
 
-    private function deleteFile(string $resourceId)
+    /**
+     * @param string $resourceId
+     * @return void
+     */
+    private function deleteFile(string $resourceId): void
     {
-        global $DIC; // todo
+        $resourceStorage = PluginContainer::resolve('resourceStorage');
 
         $resource = new ResourceIdentification($resourceId);
-        if ($DIC->resourceStorage()->manage()->find($resourceId)) {
-            $DIC->resourceStorage()->manage()->remove($resource, new ilLearnplacesStakeholder());
+        if ($resourceStorage->manage()->find($resourceId)) {
+            $resourceStorage->manage()->remove($resource, new ilLearnplacesStakeholder());
         }
     }
 
-    private function validateVideoContent(string $pathToVideo)
+    /**
+     * @param string $pathToVideo
+     * @return void
+     */
+    private function validateVideoContent(string $pathToVideo): void
     {
         try {
             /*
@@ -108,7 +117,5 @@ final class VideoServiceImpl implements VideoService
             $this->deleteFile($pathToVideo);
             throw new FileUploadException('Video with unknown header uploaded.');
         }
-
     }
-
 }

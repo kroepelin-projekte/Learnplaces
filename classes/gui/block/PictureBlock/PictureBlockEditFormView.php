@@ -61,24 +61,18 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
      */
     protected function initBlockSpecificForm(): Section
     {
-        // todo $ui = PluginContainer::resolve('ui'); ?
-        global $DIC;
-        $ui = $DIC->ui();
-        $input = $ui->factory()->input();
-        $field = $input->field();
+        $title = $this->field->text($this->plugin->txt('picture_block_enter_title'))->withMaxLength(256);
+        $description = $this->field->textarea($this->plugin->txt('picture_block_enter_description'))->withMaxLimit(2000);
 
-        $title = $field->text($this->plugin->txt('picture_block_enter_title'))->withMaxLength(256);
-        $description = $field->textarea($this->plugin->txt('picture_block_enter_description'))->withMaxLimit(2000);
-
-        $fileUpload = $field->file(new ilLearnplacesUploadHandlerGUI(), $this->plugin->txt('picture_block_select_picture'))
+        $fileUpload = $this->field->file(new ilLearnplacesUploadHandlerGUI(), $this->plugin->txt('picture_block_select_picture'))
             ->withAcceptedMimeTypes([MimeType::IMAGE__JPEG, MimeType::IMAGE__PNG])
             ->withRequired($this->block->getId() <= 0);
 
         if ($picture = $this->block->getPicture()) {
             $resourceId = $picture->getResourceId();
             $resource = new ResourceIdentification($resourceId);
-            if ($DIC->resourceStorage()->manage()->find($resourceId)) {
-                $src = $DIC->resourceStorage()->consume()->src($resource)->getSrc();
+            if ($this->resourceStorage->manage()->find($resourceId)) {
+                $src = $this->resourceStorage->consume()->src($resource)->getSrc();
                 $fileUpload = $fileUpload->withAdditionalOnLoadCode(function ($id) use ($src) {
                     return <<<JS
                     const file_element = document.getElementById('$id');
@@ -97,7 +91,7 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
             }
         }
 
-        return $input->field()->section([
+        return $this->field->section([
             self::POST_TITLE => $title,
             self::POST_DESCRIPTION => $description,
             self::POST_IMAGE => $fileUpload,

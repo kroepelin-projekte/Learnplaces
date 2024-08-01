@@ -50,7 +50,6 @@ final class PictureUploadBlockPresentationView implements Renderable
      */
     private $model;
 
-
     /**
      * PictureUploadBlockPresentationView constructor.
      *
@@ -65,17 +64,22 @@ final class PictureUploadBlockPresentationView implements Renderable
         $this->initView();
     }
 
-
+    /**
+     * @return void
+     */
     private function initView(): void
     {
         $this->template->setVariable('CONTENT', $this->plugin->txt('picture_upload_block_content'));
     }
 
+    /**
+     * @param PictureUploadBlockModel $model
+     * @return void
+     */
     public function setModel(PictureUploadBlockModel $model): void
     {
         $this->model = $model;
     }
-
 
     /**
      * @inheritDoc
@@ -88,7 +92,6 @@ final class PictureUploadBlockPresentationView implements Renderable
 
         return $this->wrapWithBlockTemplate($this->template)->get();
     }
-
 
     /**
      * Wraps the given template with the tpl.block.html template.

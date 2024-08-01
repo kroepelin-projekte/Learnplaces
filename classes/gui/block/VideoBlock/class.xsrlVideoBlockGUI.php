@@ -83,7 +83,6 @@ final class xsrlVideoBlockGUI
      */
     private $blockAccessGuard;
 
-
     /**
      * xsrlVideoBlockGUI constructor.
      *
@@ -114,8 +113,12 @@ final class xsrlVideoBlockGUI
         $this->blockAccessGuard = $blockAccessGuard;
     }
 
-
-    public function executeCommand()
+    /**
+     * @return bool
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
+    public function executeCommand(): bool
     {
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
         $this->tabs->activateTab(self::TAB_ID);
@@ -145,6 +148,10 @@ final class xsrlVideoBlockGUI
         return false;
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function add(): void
     {
         $this->controlFlow->saveParameter($this, PlusView::POSITION_QUERY_PARAM);
@@ -158,6 +165,10 @@ final class xsrlVideoBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function create(): void
     {
         $form = new VideoBlockEditFormView(new VideoBlockModel());
@@ -174,11 +185,6 @@ final class xsrlVideoBlockGUI
             if ($accordionId > 0) {
                 $this->redirectInvalidRequests($accordionId);
             }
-
-/*            $video = $this->videoService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()));
-            $block
-                ->setPath($video->getCoverPath())
-                ->setPath($video->getVideoPath());*/
 
             $resourceId = current($form->getFormData()[VideoBlockEditFormView::POST_VIDEO]);
             $video = $this->videoService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()), $resourceId);
@@ -220,6 +226,9 @@ final class xsrlVideoBlockGUI
         }
     }
 
+    /**
+     * @return void
+     */
     private function edit(): void
     {
         $blockId = $this->getBlockId();
@@ -228,6 +237,10 @@ final class xsrlVideoBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function update(): void
     {
         $tempBlock = new VideoBlockModel();
@@ -275,6 +288,10 @@ final class xsrlVideoBlockGUI
         }
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function delete(): void
     {
         $queries = $this->request->getQueryParams();
@@ -286,17 +303,27 @@ final class xsrlVideoBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return int
+     */
     private function getBlockId(): int
     {
         $queries = $this->request->getQueryParams();
         return intval($queries[self::BLOCK_ID_QUERY_KEY]);
     }
 
+    /**
+     * @return void
+     */
     private function regenerateSequence(): void
     {
         $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));

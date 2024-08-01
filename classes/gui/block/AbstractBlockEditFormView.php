@@ -8,6 +8,8 @@ use ilCtrl;
 use ilFormSectionHeaderGUI;
 use ilHiddenInputGUI;
 use ILIAS\HTTP\Services;
+use ILIAS\UI\Factory;
+use ILIAS\UI\Renderer;
 use ilLearnplacesPlugin;
 use ilLinkButton;
 use ilPropertyFormGUI;
@@ -47,15 +49,21 @@ abstract class AbstractBlockEditFormView
 
     protected BlockModel $block;
     protected ilLearnplacesPlugin $plugin;
-    /** @var $ctrl ilCtrl */
-    protected $ctrl;
+    /** @var ilCtrl $ctrl */
+    protected object $ctrl;
     /** @var Services $http */
-    private object $http;
+    protected object $http;
     protected \ILIAS\UI\Component\Input\Container\Form\Standard $form;
-    /**
-     * @var mixed|null
-     */
-    private $form_data;
+    /** @var mixed|null */
+    protected $form_data;
+    /** @var object \ILIAS\ResourceStorage\Services  */
+    protected object $resourceStorage;
+    /** @var Factory $factory */
+    protected object $factory;
+    /** @var Renderer $renderer */
+    protected object $renderer;
+    /** @var object|\ILIAS\UI\Component\Input\Field\Factory $field */
+    protected object $field;
 
     /**
      * AbstractBlockFormView constructor.
@@ -68,23 +76,25 @@ abstract class AbstractBlockEditFormView
         $this->ctrl = PluginContainer::resolve('ilCtrl');
         $this->http = $http = PluginContainer::resolve('http');
         $this->plugin = ilLearnplacesPlugin::getInstance();
+        $this->resourceStorage = PluginContainer::resolve('resourceStorage');
+        $this->factory = PluginContainer::resolve('factory');
+        $this->renderer = PluginContainer::resolve('renderer');
+        $this->field = $this->factory->input()->field();
+
         $this->initForm();
     }
 
+    /**
+     * @return void
+     */
     private function initForm(): void
     {
-        // todo entfernen
-        global $DIC;
-        $this->ui = $DIC->ui();
-        $input = $DIC->ui()->factory()->input();
-        $field = $input->field();
-
-        $post_id = $field->hidden()
+        $post_id = $this->field->hidden()
             ->withValue($this->block->getId())
             ->withRequired(true);
 
         //create visibility
-        $radioGroup = $field->radio($this->plugin->txt('visibility_title'))
+        $radioGroup = $this->field->radio($this->plugin->txt('visibility_title'))
             ->withOption(Visibility::ALWAYS, $this->plugin->txt('visibility_always'))
             ->withOption(Visibility::AFTER_VISIT_PLACE, $this->plugin->txt('visibility_after_visit_place'))
             ->withOption(Visibility::ONLY_AT_PLACE, $this->plugin->txt('visibility_only_at_place'))
@@ -92,61 +102,22 @@ abstract class AbstractBlockEditFormView
             ->withValue($this->block->getVisibility())
             ->withRequired(true);
 
-        $visibilitySectionHeader = $input->field()->section([
+        $visibilitySectionHeader = $this->field->section([
             self::POST_ID => $post_id,
             self::POST_VISIBILITY => $radioGroup
         ], $this->plugin->txt('common_visibility'));
-
-        /*		$this->setFormAction($this->getFormActionUrl());
-                $this->setPreventDoubleSubmission(true);
-                $this->setShowTopButtons(false);
-
-                $id = new ilHiddenInputGUI(self::POST_ID);
-                $id->setRequired(true);
-                $this->addItem($id);
-
-                //create visibility
-                $visibilitySectionHeader = new ilFormSectionHeaderGUI();
-                $visibilitySectionHeader->setTitle($this->plugin->txt('common_visibility'));
-                $this->addItem($visibilitySectionHeader);
-
-                $radioGroup = new ilRadioGroupInputGUI($this->plugin->txt('visibility_title'), self::POST_VISIBILITY);
-                $radioGroup->addOption(new ilRadioOption($this->plugin->txt('visibility_always'), Visibility::ALWAYS));
-                $radioGroup->addOption(new ilRadioOption($this->plugin->txt('visibility_after_visit_place'), Visibility::AFTER_VISIT_PLACE));
-                $radioGroup->addOption(new ilRadioOption($this->plugin->txt('visibility_only_at_place'), Visibility::ONLY_AT_PLACE));
-                $radioGroup->addOption(new ilRadioOption($this->plugin->txt('visibility_never'), Visibility::NEVER));
-                $radioGroup->setRequired(true);
-                $this->addItem($radioGroup);*/
 
         $formParts[self::POST_ID] = $post_id;
         $formParts[self::VISIBILITY_SECTION] = $visibilitySectionHeader;
 
         if($this->hasBlockSpecificParts()) {
             //create block specific settings header
-            /*			$visibilitySectionHeader = new ilFormSectionHeaderGUI();
-                        $visibilitySectionHeader->setTitle($this->plugin->txt('block_specific_settings'));
-                        $this->addItem($visibilitySectionHeader);*/
             $blockSpecificParts = $this->initBlockSpecificForm();
             $formParts[self::BLOCK_SPECIFIC_PARTS] = $blockSpecificParts;
         }
 
-        $this->form = $input->container()->form()->standard($this->getFormActionUrl(), $formParts);
-
-
-        #$this->initButtons();
+        $this->form = $this->factory->input()->container()->form()->standard($this->getFormActionUrl(), $formParts);
     }
-
-    /*	private function initButtons() {
-            if($this->block->getId() > 0) {
-                $this->addCommandButton(CommonControllerAction::CMD_UPDATE, $this->plugin->txt('common_save'));
-                $this->addCommandButton(CommonControllerAction::CMD_CANCEL, $this->plugin->txt('common_cancel'));
-                return;
-            }
-
-            $this->addCommandButton(CommonControllerAction::CMD_CREATE, $this->plugin->txt('common_create'));
-            $this->addCommandButton(CommonControllerAction::CMD_CANCEL, $this->plugin->txt('common_cancel'));
-        }*/
-
 
     /**
      * If this method returns true a block specific config section is rendered.
@@ -177,6 +148,9 @@ abstract class AbstractBlockEditFormView
      */
     abstract protected function getObject();
 
+    /**
+     * @return BlockModel
+     */
     public function getBlockModel(): BlockModel
     {
         $form = $this->form;
@@ -203,7 +177,7 @@ abstract class AbstractBlockEditFormView
      */
     public function getHTML(): string
     {
-        return $this->ui->renderer()->render($this->form);
+        return $this->renderer->render($this->form);
     }
 
     /**
@@ -222,6 +196,9 @@ abstract class AbstractBlockEditFormView
         return $this->form_data[self::BLOCK_SPECIFIC_PARTS];
     }
 
+    /**
+     * @return void
+     */
     public function setValuesByPost(): void
     {
         $this->form = $this->form->withRequest($this->http->request());

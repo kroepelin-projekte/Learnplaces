@@ -34,7 +34,6 @@ final class NeverVisibleDecorator implements LearnplaceServiceDecorator
      */
     private $learnplaceService;
 
-
     /**
      * NeverVisibleDecorator constructor.
      *
@@ -45,15 +44,13 @@ final class NeverVisibleDecorator implements LearnplaceServiceDecorator
         $this->learnplaceService = $learnplaceService;
     }
 
-
     /**
      * @inheritDoc
      */
-    public function delete(int $id)
+    public function delete(int $id): void
     {
         $this->learnplaceService->delete($id);
     }
-
 
     /**
      * @inheritDoc
@@ -65,7 +62,6 @@ final class NeverVisibleDecorator implements LearnplaceServiceDecorator
         $learnplace->setBlocks(iterator_to_array($blocks));
         return $learnplace;
     }
-
 
     /**
      * Filters all blocks which contain the NEVER or ONLY_AT_PLACE visibility.
@@ -93,13 +89,16 @@ final class NeverVisibleDecorator implements LearnplaceServiceDecorator
         return;
     }
 
+    /**
+     * @param BlockModel $block
+     * @return bool
+     */
     private function isVisible(BlockModel $block): bool
     {
         return  strcmp($block->getVisibility(), Visibility::NEVER) !== 0
                 &&
                 strcmp($block->getVisibility(), Visibility::ONLY_AT_PLACE) !== 0;
     }
-
 
     /**
      * @inheritDoc
@@ -111,7 +110,6 @@ final class NeverVisibleDecorator implements LearnplaceServiceDecorator
         $learnplace->setBlocks(iterator_to_array($blocks));
         return $learnplace;
     }
-
 
     /**
      * @inheritDoc

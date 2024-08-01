@@ -46,7 +46,6 @@ final class ContentPresentationView
      */
     private $accordionId = 0;
 
-
     /**
      * ContentPresentationView constructor.
      *
@@ -61,26 +60,36 @@ final class ContentPresentationView
         $this->renderableFactory = $renderableFactory;
     }
 
-
     /**
-     * @param BlockModel[] $blocks
+     * @param array $blocks
+     * @return void
      */
-    public function setBlocks(array $blocks)
+    public function setBlocks(array $blocks): void
     {
         $this->blocks = $blocks;
     }
 
-
-    public function setAccordionId(int $id)
+    /**
+     * @param int $id
+     * @return void
+     */
+    public function setAccordionId(int $id): void
     {
         $this->accordionId = $id;
     }
 
+    /**
+     * @return string
+     */
     public function getHTML(): string
     {
         return $this->renderView();
     }
 
+    /**
+     * @return string
+     * @throws \ilTemplateException
+     */
     private function renderView(): string
     {
 
@@ -104,6 +113,11 @@ final class ContentPresentationView
         return $blockHtml;
     }
 
+    /**
+     * @param int $position
+     * @return PlusView
+     * @throws \ilCtrlException
+     */
     private function getPlusView(int $position): PlusView
     {
         return new PlusView($position, $this->controlFlow->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_ADD), $this->accordionId);

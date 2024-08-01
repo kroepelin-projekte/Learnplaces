@@ -68,7 +68,6 @@ final class xsrlAccordionBlockGUI
      */
     private $blockAccessGuard;
 
-
     /**
      * xsrlAccordionBlockGUI constructor.
      *
@@ -95,6 +94,11 @@ final class xsrlAccordionBlockGUI
         $this->blockAccessGuard = $blockAccessGuard;
     }
 
+    /**
+     * @return bool
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
     public function executeCommand(): bool
     {
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
@@ -126,6 +130,10 @@ final class xsrlAccordionBlockGUI
         return false;
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function add(): void
     {
         $this->controlFlow->saveParameter($this, PlusView::POSITION_QUERY_PARAM);
@@ -138,6 +146,10 @@ final class xsrlAccordionBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function create(): void
     {
         $form = new AccordionBlockEditFormView(new AccordionBlockModel());
@@ -173,6 +185,9 @@ final class xsrlAccordionBlockGUI
         }
     }
 
+    /**
+     * @return void
+     */
     private function edit(): void
     {
         $block = $this->accordionService->find($this->getBlockId());
@@ -180,6 +195,10 @@ final class xsrlAccordionBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function update(): void
     {
         $form = new AccordionBlockEditFormView(new AccordionBlockModel());
@@ -205,6 +224,10 @@ final class xsrlAccordionBlockGUI
         }
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function delete(): void
     {
         $queries = $this->request->getQueryParams();
@@ -216,17 +239,27 @@ final class xsrlAccordionBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return int
+     */
     private function getBlockId(): int
     {
         $queries = $this->request->getQueryParams();
         return intval($queries[self::BLOCK_ID_QUERY_KEY]);
     }
 
+    /**
+     * @return void
+     */
     private function regenerateSequence(): void
     {
         $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));

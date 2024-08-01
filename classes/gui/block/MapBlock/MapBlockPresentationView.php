@@ -65,7 +65,6 @@ final class MapBlockPresentationView
     private object $http;
     private object $refinery;
 
-
     /**
      * PictureUploadBlockPresentationView constructor.
      *
@@ -81,7 +80,11 @@ final class MapBlockPresentationView
         $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.map_tab.html', true, true);
     }
 
-    private function initView()
+    /**
+     * @return void
+     * @throws \ilCtrlException
+     */
+    private function initView(): void
     {
         //setup button
         global $DIC;
@@ -121,13 +124,18 @@ final class MapBlockPresentationView
         $this->template->setVariable('CONTENT', $map->getHtml());
     }
 
-    public function setModels(MapBlockModel $model, LocationModel $location, ConfigurationModel $configuration)
+    /**
+     * @param MapBlockModel $model
+     * @param LocationModel $location
+     * @param ConfigurationModel $configuration
+     * @return void
+     */
+    public function setModels(MapBlockModel $model, LocationModel $location, ConfigurationModel $configuration): void
     {
         $this->model = $model;
         $this->location = $location;
         $this->configuration = $configuration;
     }
-
 
     /**
      * @inheritDoc
@@ -141,5 +149,4 @@ final class MapBlockPresentationView
         $this->initView();
         return $this->template->get();
     }
-
 }

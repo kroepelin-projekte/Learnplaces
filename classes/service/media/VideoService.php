@@ -44,5 +44,4 @@ interface VideoService
      * @return void
      */
     public function delete(VideoModel $video);
-
 }

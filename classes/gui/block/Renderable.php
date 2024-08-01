@@ -18,7 +18,6 @@ interface Renderable
      */
     public function getHtml(): string;
 
-
     /**
      * Sets if the view should only contain the read permission part or everything.
      *

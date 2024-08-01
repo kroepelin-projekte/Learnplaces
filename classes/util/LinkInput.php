@@ -4,26 +4,47 @@ declare(strict_types=1);
 
 namespace SRAG\Learnplaces\util;
 
+use ilCtrl;
+use ILIAS\HTTP\Services;
 use ILIAS\UI\Component\Tree\TreeRecursion;
+use ILIAS\UI\Factory;
 use ILIAS\UI\Implementation\Component\Input\Field\Numeric;
+use ILIAS\UI\Renderer;
 use ilObject;
+use ilObjUser;
 use ilTree;
+use SRAG\Learnplaces\container\PluginContainer;
 
 class LinkInput
 {
-    private \ILIAS\UI\Factory $factory;
-    private \ILIAS\UI\Renderer $renderer;
-    private \ILIAS\Refinery\Factory $refinery;
-    private ilTree $tree;
-    private \ILIAS\HTTP\Services $http;
-    private \ILIAS\HTTP\Wrapper\ArrayBasedRequestWrapper $query;
-    private \ilObjUser $user;
-    private \ILIAS\DI\RBACServices $rbac;
-
+    /** @var ilTree $tree */
+    private object $tree;
+    /** @var \ILIAS\HTTP\Wrapper\ArrayBasedRequestWrapper $query */
+    private object $query;
+    /** @var ilObjUser $user */
+    private object $user;
+    /** @var \ILIAS\DI\RBACServices $rbac */
+    private object $rbac;
+    /** @var ilCtrl $ctrl */
+    protected object $ctrl;
+    /** @var Services $http */
+    protected object $http;
+    /** @var \ILIAS\ResourceStorage\Services $resourceStorage */
+    protected object $resourceStorage;
+    /** @var Factory $factory */
+    protected object $factory;
+    private object $refinery;
+    /** @var Renderer $renderer */
+    protected object $renderer;
+    /** @var \ILIAS\UI\Component\Input\Field\Factory $field */
+    protected object $field;
+    protected \ILIAS\UI\Component\Input\Container\Form\Standard $form;
+    /** @var mixed|null */
+    protected $form_data;
 
     private const ALLOWED_TYPES = [
         'cat', // category
-        'catr', // category copy
+        'catr', // category link
         'crs', // course
         'wiki', // wiki
         'frm', // forum
@@ -44,16 +65,14 @@ class LinkInput
 
     public function __construct()
     {
-        // todo container
-        global $DIC;
-        $this->factory = $DIC->ui()->factory();
-        $this->renderer = $DIC->ui()->renderer();
-        $this->refinery = $DIC->refinery();
-        $this->tree = $DIC->repositoryTree();
-        $this->http = $DIC->http();
-        $this->query = $DIC->http()->wrapper()->query();
-        $this->user = $DIC->user();
-        $this->rbac = $DIC->rbac();
+        $this->factory = PluginContainer::resolve('factory');
+        $this->renderer = PluginContainer::resolve('renderer');
+        $this->refinery = PluginContainer::resolve('refinery');
+        $this->http = PluginContainer::resolve('http');
+        $this->user = PluginContainer::resolve('user');
+        $this->rbac = PluginContainer::resolve('rbac');
+        $this->tree = PluginContainer::resolve('repositoryTree');
+        $this->query = PluginContainer::resolve('query');
 
         $this->asyncEndpoint();
     }
@@ -130,7 +149,6 @@ class LinkInput
      */
     private function expandableTree($ref_id = null): string
     {
-        /** @var ilTree $ilTree */
         $ilTree = $this->tree;
 
         if (is_null($ref_id)) {
@@ -158,6 +176,12 @@ class LinkInput
                 return [];
             }
 
+            /**
+             * @param $factory
+             * @param $record
+             * @param $environment
+             * @return \ILIAS\UI\Component\Tree\Node\Node
+             */
             public function build($factory, $record, $environment = null): \ILIAS\UI\Component\Tree\Node\Node
             {
                 $ref_id = $record['ref_id'];

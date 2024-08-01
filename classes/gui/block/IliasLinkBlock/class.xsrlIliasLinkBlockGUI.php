@@ -80,7 +80,6 @@ final class xsrlIliasLinkBlockGUI
      */
     private $blockAccessGuard;
 
-
     /**
      * xsrlIliasLinkBlockGUI constructor.
      *
@@ -109,7 +108,11 @@ final class xsrlIliasLinkBlockGUI
         $this->blockAccessGuard = $blockAccessGuard;
     }
 
-
+    /**
+     * @return bool
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
     public function executeCommand(): bool
     {
         $next_class = $this->controlFlow->getNextClass();
@@ -146,6 +149,10 @@ final class xsrlIliasLinkBlockGUI
         return false;
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function add(): void
     {
         $this->controlFlow->saveParameter($this, PlusView::POSITION_QUERY_PARAM);
@@ -160,6 +167,10 @@ final class xsrlIliasLinkBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function create(): void
     {
         $form = new xsrlIliasLinkBlockEditFormViewGUI(new ILIASLinkBlockModel());
@@ -178,7 +189,6 @@ final class xsrlIliasLinkBlockGUI
             }
 
             $block = $this->iliasLinkService->store($block);
-
 
             $anchor = xsrlContentGUI::ANCHOR_TEMPLATE;
             if ($accordionId > 0) {
@@ -208,6 +218,9 @@ final class xsrlIliasLinkBlockGUI
         }
     }
 
+    /**
+     * @return void
+     */
     private function edit(): void
     {
         $blockId = $this->getBlockId();
@@ -216,6 +229,10 @@ final class xsrlIliasLinkBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function update(): void
     {
         $form = new xsrlIliasLinkBlockEditFormViewGUI(new ILIASLinkBlockModel());
@@ -240,6 +257,10 @@ final class xsrlIliasLinkBlockGUI
         }
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function delete(): void
     {
         $queries = $this->request->getQueryParams();
@@ -252,17 +273,27 @@ final class xsrlIliasLinkBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return int
+     */
     private function getBlockId(): int
     {
         $queries = $this->request->getQueryParams();
         return intval($queries[self::BLOCK_ID_QUERY_KEY]);
     }
 
+    /**
+     * @return void
+     */
     private function regenerateSequence(): void
     {
         $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));

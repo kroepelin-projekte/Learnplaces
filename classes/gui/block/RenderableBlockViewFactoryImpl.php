@@ -61,6 +61,10 @@ final class RenderableBlockViewFactoryImpl implements RenderableBlockViewFactory
         }
     }
 
+    /**
+     * @param PictureUploadBlockModel $model
+     * @return PictureUploadBlockPresentationView
+     */
     private function getPictureUploadPresentationView(PictureUploadBlockModel $model): PictureUploadBlockPresentationView
     {
         /**
@@ -71,6 +75,10 @@ final class RenderableBlockViewFactoryImpl implements RenderableBlockViewFactory
         return $view;
     }
 
+    /**
+     * @param PictureBlockModel $model
+     * @return PictureBlockPresentationView
+     */
     private function getPicturePresentationView(PictureBlockModel $model): PictureBlockPresentationView
     {
         /**
@@ -81,9 +89,12 @@ final class RenderableBlockViewFactoryImpl implements RenderableBlockViewFactory
         return $view;
     }
 
+    /**
+     * @param RichTextBlockModel $model
+     * @return RichTextBlockPresentationView
+     */
     private function getRichTextView(RichTextBlockModel $model): RichTextBlockPresentationView
     {
-
         /**
          * @var RichTextBlockPresentationView $view
          */
@@ -92,9 +103,12 @@ final class RenderableBlockViewFactoryImpl implements RenderableBlockViewFactory
         return $view;
     }
 
+    /**
+     * @param ILIASLinkBlockModel $model
+     * @return IliasLinkBlockPresentationView
+     */
     private function getIliasLinkView(ILIASLinkBlockModel $model): IliasLinkBlockPresentationView
     {
-
         /**
          * @var IliasLinkBlockPresentationView $view
          */
@@ -103,9 +117,12 @@ final class RenderableBlockViewFactoryImpl implements RenderableBlockViewFactory
         return $view;
     }
 
+    /**
+     * @param VideoBlockModel $model
+     * @return VideoBlockPresentationView
+     */
     private function getVideoView(VideoBlockModel $model): VideoBlockPresentationView
     {
-
         /**
          * @var VideoBlockPresentationView $view
          */
@@ -114,9 +131,12 @@ final class RenderableBlockViewFactoryImpl implements RenderableBlockViewFactory
         return $view;
     }
 
+    /**
+     * @param AccordionBlockModel $model
+     * @return AccordionBlockPresentationView
+     */
     private function getAccordionView(AccordionBlockModel $model): AccordionBlockPresentationView
     {
-
         /**
          * @var AccordionBlockPresentationView $view
          */

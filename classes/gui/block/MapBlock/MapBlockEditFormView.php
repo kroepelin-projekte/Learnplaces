@@ -24,7 +24,6 @@ final class MapBlockEditFormView extends AbstractBlockEditFormView
         return false;
     }
 
-
     /**
      * @inheritDoc
      */

@@ -33,7 +33,12 @@ trait BlockIdReferenceValidationAware
      */
     private $controlFlow;
 
-    private function redirectInvalidRequests(int $blockId)
+    /**
+     * @param int $blockId
+     * @return void
+     * @throws \ilCtrlException
+     */
+    private function redirectInvalidRequests(int $blockId): void
     {
         if(!$this->blockAccessGuard->isValidBlockReference($blockId)) {
             $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);

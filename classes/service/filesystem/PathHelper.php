@@ -21,6 +21,8 @@ use function strtolower;
  * @package SRAG\Learnplaces\service\filesystem
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
+ *
+ * @depracated athHelper is deprecated because files are now handled via the Resource Storage system.
  */
 final class PathHelper
 {

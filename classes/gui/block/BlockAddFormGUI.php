@@ -7,10 +7,13 @@ namespace SRAG\Learnplaces\gui\block;
 use ilCtrl;
 use ilFormSectionHeaderGUI;
 use ILIAS\UI\Component\Input\Container\Form\Standard;
+use ILIAS\UI\Factory;
+use ILIAS\UI\Renderer;
 use ilLearnplacesPlugin;
 use ilPropertyFormGUI;
 use ilRadioGroupInputGUI;
 use ilRadioOption;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\component\PlusView;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
 use xsrlContentGUI;
@@ -32,10 +35,15 @@ final class BlockAddFormGUI
 
     private ilLearnplacesPlugin $plugin;
     private ilCtrl $controlFlow;
-    private $mapEnabled = true;
+    private bool $mapEnabled = true;
     private $accordionEnabled = true;
-    private \ILIAS\DI\UIServices $ui; // todo austauschen container
     private \ILIAS\UI\Component\Input\Container\Form\Standard $form;
+    /** @var Factory $factory */
+    protected object $factory;
+    /** @var object|\ILIAS\UI\Component\Input\Field\Factory $field */
+    protected object $field;
+    /** @var Renderer $factory */
+    private $renderer;
 
     /**
      * @param ilLearnplacesPlugin $plugin
@@ -45,6 +53,9 @@ final class BlockAddFormGUI
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
+        $this->field = PluginContainer::resolve('field');
+        $this->factory = PluginContainer::resolve('factory');
+        $this->renderer = PluginContainer::resolve('renderer');
     }
 
     /**
@@ -56,14 +67,8 @@ final class BlockAddFormGUI
         $this->controlFlow->saveParameterByClass(xsrlContentGUI::class, PlusView::POSITION_QUERY_PARAM);
         $this->controlFlow->saveParameterByClass(xsrlContentGUI::class, PlusView::ACCORDION_QUERY_PARAM);
 
-        // todo entfernen
-        global $DIC;
-        $this->ui = $DIC->ui();
-        $input = $DIC->ui()->factory()->input();
-        $field = $input->field();
-
         //create visibility
-        $radioGroup = $field->radio($this->plugin->txt('block_type_title'), '')
+        $radioGroup = $this->field->radio($this->plugin->txt('block_type_title'), '')
             ->withOption((string) BlockType::PICTURE, $this->plugin->txt('block_picture'));
 
         if ($this->accordionEnabled) {
@@ -77,11 +82,11 @@ final class BlockAddFormGUI
             ->withOption((string) BlockType::VIDEO, $this->plugin->txt('block_video'))
             ->withRequired(true);
 
-        $visibilitySectionHeader = $input->field()->section([
+        $visibilitySectionHeader = $this->field->section([
             self::POST_BLOCK_TYPES => $radioGroup
         ], $this->plugin->txt('block_add_header'));
 
-        $this->form = $input->container()->form()->standard(
+        $this->form = $this->factory->input()->container()->form()->standard(
             $this->controlFlow->getFormActionByClass(xsrlContentGUI::class, CommonControllerAction::CMD_CREATE),
             [
                 self::POST_VISIBILITY_SECTION => $visibilitySectionHeader
@@ -118,7 +123,7 @@ final class BlockAddFormGUI
     public function getHTML(): string
     {
         $this->initForm();
-        return $this->ui->renderer()->render($this->form);
+        return $this->renderer->render($this->form);
     }
 
     /**

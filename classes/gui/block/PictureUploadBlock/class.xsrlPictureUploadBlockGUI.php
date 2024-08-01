@@ -76,7 +76,6 @@ final class xsrlPictureUploadBlockGUI
      */
     private $blockAccessGuard;
 
-
     /**
      * xsrlPictureUploadBlockGUI constructor.
      *
@@ -105,8 +104,12 @@ final class xsrlPictureUploadBlockGUI
         $this->blockAccessGuard = $blockAccessGuard;
     }
 
-
-    public function executeCommand()
+    /**
+     * @return bool
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
+    public function executeCommand(): bool
     {
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
         $this->tabs->activateTab(self::TAB_ID);
@@ -136,7 +139,11 @@ final class xsrlPictureUploadBlockGUI
         return false;
     }
 
-    private function add()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function add(): void
     {
         $this->controlFlow->saveParameter($this, PlusView::POSITION_QUERY_PARAM);
         $this->controlFlow->saveParameter($this, PlusView::ACCORDION_QUERY_PARAM);
@@ -149,7 +156,11 @@ final class xsrlPictureUploadBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
-    private function create()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function create(): void
     {
         $form = new PictureUploadBlockEditFormView(new PictureUploadBlockModel());
         try {
@@ -196,7 +207,11 @@ final class xsrlPictureUploadBlockGUI
         }
     }
 
-    private function delete()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function delete(): void
     {
         $queries = $this->request->getQueryParams();
         $blockId = intval($queries[self::BLOCK_ID_QUERY_KEY]);
@@ -207,7 +222,11 @@ final class xsrlPictureUploadBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
-    private function confirm()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function confirm(): void
     {
         $queries = $this->request->getQueryParams();
 
@@ -225,12 +244,19 @@ final class xsrlPictureUploadBlockGUI
         $this->template->setContent($confirm->getHTML());
     }
 
-    private function cancel()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
-    private function regenerateSequence()
+    /**
+     * @return void
+     */
+    private function regenerateSequence(): void
     {
         $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
         $this->learnplaceService->store($learnplace);

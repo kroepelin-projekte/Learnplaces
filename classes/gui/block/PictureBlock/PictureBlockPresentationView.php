@@ -14,6 +14,7 @@ use ilSplitButtonGUI;
 use ilTemplate;
 use ilTextInputGUI;
 use LogicException;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\Renderable;
 use SRAG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
@@ -55,7 +56,6 @@ final class PictureBlockPresentationView implements Renderable
      */
     private $model;
 
-
     /**
      * PictureUploadBlockPresentationView constructor.
      *
@@ -69,23 +69,25 @@ final class PictureBlockPresentationView implements Renderable
         $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.picture.html', true, true);
     }
 
+    /**
+     * @return void
+     */
     private function initView(): void
     {
         $this->template->setVariable('TITLE', $this->model->getTitle());
 
-        // todo DIC
-        global $DIC;
-        $factory = $DIC->ui()->factory();
-        $renderer = $DIC->ui()->renderer();
+        $resourceStorage = PluginContainer::resolve('resourceStorage');
+        $factory = PluginContainer::resolve('factory');
+        $renderer = PluginContainer::resolve('renderer');
 
         $resourceId = $this->model->getPicture()->getResourceId();
         $resource = new ResourceIdentification($resourceId);
-        if ($DIC->resourceStorage()->manage()->find($resourceId)) {
-            $src = $DIC->resourceStorage()->consume()
+        if ($resourceStorage->manage()->find($resourceId)) {
+            $src = $resourceStorage->consume()
                 ->src($resource)
                 ->getSrc();
-            $pictureHTML = $DIC->ui()->renderer()->render(
-                $DIC->ui()->factory()->image()->standard($src, 'Block picture')
+            $pictureHTML = $renderer->render(
+                $factory->image()->standard($src, 'Block picture')
             );
             $this->template->setVariable('CONTENT', $pictureHTML);
         }
@@ -93,12 +95,15 @@ final class PictureBlockPresentationView implements Renderable
         $this->template->setVariable('DESCRIPTION', $this->model->getDescription());
     }
 
+    /**
+     * @param PictureBlockModel $model
+     * @return void
+     */
     public function setModel(PictureBlockModel $model): void
     {
         $this->model = $model;
         $this->initView();
     }
-
 
     /**
      * @inheritDoc

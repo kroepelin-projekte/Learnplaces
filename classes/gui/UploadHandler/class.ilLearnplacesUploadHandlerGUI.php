@@ -28,6 +28,10 @@ class ilLearnplacesUploadHandlerGUI extends AbstractCtrlAwareUploadHandler
         $this->stakeholder = new ilLearnplacesStakeholder();
     }
 
+    /**
+     * @return string
+     * @throws ilCtrlException
+     */
     public function getUploadURL(): string
     {
         return $this->ctrl->getLinkTargetByClass([ilobjplugindispatchgui::class, self::class], self::CMD_UPLOAD);

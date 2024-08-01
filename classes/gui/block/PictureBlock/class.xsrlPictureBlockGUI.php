@@ -83,7 +83,6 @@ final class xsrlPictureBlockGUI
     private UIServices $ui;
     private \ILIAS\HTTP\Services $http;
 
-
     /**
      * xsrlPictureBlockGUI constructor.
      *
@@ -116,7 +115,12 @@ final class xsrlPictureBlockGUI
         $this->blockAccessGuard = $blockAccessGuard;
     }
 
-    public function executeCommand()
+    /**
+     * @return bool
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
+    public function executeCommand(): bool
     {
         $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
         $this->tabs->activateTab(self::TAB_ID);
@@ -146,7 +150,11 @@ final class xsrlPictureBlockGUI
         return false;
     }
 
-    private function add()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function add(): void
     {
         $this->controlFlow->saveParameter($this, PlusView::POSITION_QUERY_PARAM);
         $this->controlFlow->saveParameter($this, PlusView::ACCORDION_QUERY_PARAM);
@@ -159,6 +167,10 @@ final class xsrlPictureBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
     private function create(): void
     {
         $form = new PictureBlockEditFormView(new PictureBlockModel());
@@ -216,7 +228,10 @@ final class xsrlPictureBlockGUI
         }
     }
 
-    private function edit()
+    /**
+     * @return void
+     */
+    private function edit(): void
     {
         $blockId = $this->getBlockId();
         $block = $this->pictureBlockService->find($blockId);
@@ -224,7 +239,11 @@ final class xsrlPictureBlockGUI
         $this->template->setContent($form->getHTML());
     }
 
-    private function update()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function update(): void
     {
         $tempBlock = new PictureBlockModel();
         $tempBlock->setId(PHP_INT_MAX);
@@ -270,7 +289,11 @@ final class xsrlPictureBlockGUI
         }
     }
 
-    private function delete()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function delete(): void
     {
         $blockId = $this->getBlockId();
         $this->redirectInvalidRequests($blockId);
@@ -280,18 +303,28 @@ final class xsrlPictureBlockGUI
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
-    private function cancel()
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
     }
 
+    /**
+     * @return int
+     */
     private function getBlockId(): int
     {
         $queries = $this->request->getQueryParams();
         return intval($queries[self::BLOCK_ID_QUERY_KEY]);
     }
 
-    private function regenerateSequence()
+    /**
+     * @return void
+     */
+    private function regenerateSequence(): void
     {
         $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
         $this->learnplaceService->store($learnplace);

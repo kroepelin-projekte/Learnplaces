@@ -31,7 +31,6 @@ final class AfterVisitPlaceVisibleDecorator implements LearnplaceService
      */
     private $learnplaceService;
 
-
     /**
      * AfterVisitPlaceVisibleDecorator constructor.
      *
@@ -44,7 +43,6 @@ final class AfterVisitPlaceVisibleDecorator implements LearnplaceService
         $this->learnplaceService = $learnplaceService;
     }
 
-
     /**
      * @inheritDoc
      */
@@ -52,7 +50,6 @@ final class AfterVisitPlaceVisibleDecorator implements LearnplaceService
     {
         $this->learnplaceService->delete($id);
     }
-
 
     /**
      * @inheritDoc
@@ -66,7 +63,6 @@ final class AfterVisitPlaceVisibleDecorator implements LearnplaceService
         }
         return $learnplace;
     }
-
 
     /**
      * Filters all blocks with the AFTER_VISIT_PLACE visibility.
@@ -93,6 +89,10 @@ final class AfterVisitPlaceVisibleDecorator implements LearnplaceService
         return;
     }
 
+    /**
+     * @param LearnplaceModel $learnplace
+     * @return bool
+     */
     private function hasVisitedPlace(LearnplaceModel $learnplace): bool
     {
         foreach ($learnplace->getVisitJournals() as $visit) {
@@ -105,7 +105,6 @@ final class AfterVisitPlaceVisibleDecorator implements LearnplaceService
         return false;
     }
 
-
     /**
      * @inheritDoc
      */
@@ -114,7 +113,6 @@ final class AfterVisitPlaceVisibleDecorator implements LearnplaceService
         // TODO: Implement store() method.
         return $learnplaceModel;
     }
-
 
     /**
      * @inheritDoc

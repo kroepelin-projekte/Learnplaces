@@ -14,6 +14,7 @@ use ilSplitButtonGUI;
 use ilTemplate;
 use ilTextInputGUI;
 use LogicException;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\Renderable;
 use SRAG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
@@ -53,7 +54,6 @@ final class VideoBlockPresentationView implements Renderable
      */
     private $model;
 
-
     /**
      * Video constructor.
      *
@@ -67,34 +67,38 @@ final class VideoBlockPresentationView implements Renderable
         $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.video.html', true, true);
     }
 
-
-    private function initView()
+    /**
+     * @return void
+     */
+    private function initView(): void
     {
-        // todo DIC
-        global $DIC;
-        $factory = $DIC->ui()->factory();
-        $renderer = $DIC->ui()->renderer();
+        $factory = PluginContainer::resolve('factory');
+        $renderer = PluginContainer::resolve('renderer');
+        $resourceStorage = PluginContainer::resolve('resourceStorage');
 
         $resourceId = $this->model->getResourceId();
         $resource = new ResourceIdentification($resourceId);
-        if ($DIC->resourceStorage()->manage()->find($resourceId)) {
-            $src = $DIC->resourceStorage()->consume()
+        if ($resourceStorage->manage()->find($resourceId)) {
+            $src = $resourceStorage->consume()
                 ->src($resource)
                 ->getSrc();
 
-            $videoHTML = $DIC->ui()->renderer()->render(
-                $DIC->ui()->factory()->player()->video($src)
+            $videoHTML = $renderer->render(
+                $factory->player()->video($src)
             );
 
             $this->template->setVariable('CONTENT', $videoHTML);
         }
     }
 
-    public function setModel(VideoBlockModel $model)
+    /**
+     * @param VideoBlockModel $model
+     * @return void
+     */
+    public function setModel(VideoBlockModel $model): void
     {
         $this->model = $model;
     }
-
 
     /**
      * @inheritDoc
@@ -109,7 +113,6 @@ final class VideoBlockPresentationView implements Renderable
         return $this->wrapWithBlockTemplate($this->template)->get();
     }
 
-
     /**
      * Wraps the given template with the tpl.block.html template.
      *
@@ -123,10 +126,8 @@ final class VideoBlockPresentationView implements Renderable
         $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
         //setup button
-        // todo
-        global $DIC;
-        $factory = $DIC->ui()->factory();
-        $renderer = $DIC->ui()->renderer();
+        $factory = PluginContainer::resolve('factory');
+        $renderer = PluginContainer::resolve('renderer');
 
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlVideoBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlVideoBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
         $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);

@@ -73,6 +73,9 @@ final class AccordionBlockPresentationView implements Renderable
         $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.accordion.html', true, true);
     }
 
+    /**
+     * @return void
+     */
     private function initView(): void
     {
         $this->contentView->setBlocks($this->model->getBlocks());
@@ -85,6 +88,10 @@ final class AccordionBlockPresentationView implements Renderable
         $this->template->setVariable('EXPANDED', $this->model->isExpand() ? 'in' : '');
     }
 
+    /**
+     * @param AccordionBlockModel $model
+     * @return void
+     */
     public function setModel(AccordionBlockModel $model): void
     {
         $this->model = $model;

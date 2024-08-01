@@ -48,5 +48,4 @@ interface FileTypeDetector
      * @throws RuntimeException     Thrown if the detection failed.
      */
     public function detectByContent(string $pathToFile): array;
-
 }

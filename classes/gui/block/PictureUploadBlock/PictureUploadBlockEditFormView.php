@@ -24,7 +24,6 @@ final class PictureUploadBlockEditFormView extends AbstractBlockEditFormView
         return false;
     }
 
-
     /**
      * @inheritDoc
      */
@@ -36,14 +35,14 @@ final class PictureUploadBlockEditFormView extends AbstractBlockEditFormView
     /**
      * @inheritDoc
      */
-    protected function initBlockSpecificForm()
+    protected function initBlockSpecificForm(): void
     {
     }
 
     /**
      * @inheritDoc
      */
-    protected function getObject()
+    protected function getObject(): void
     {
     }
 }

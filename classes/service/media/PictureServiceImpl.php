@@ -13,6 +13,7 @@ use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\persistence\repository\exception\EntityNotFoundException;
 use SRAG\Learnplaces\persistence\repository\PictureRepository;
 use SRAG\Learnplaces\service\filesystem\PathHelper;
@@ -74,8 +75,9 @@ final class PictureServiceImpl implements PictureService
 
     /**
      * @inheritDoc
+     * @return void
      */
-    public function delete(int $pictureId)
+    public function delete(int $pictureId): void
     {
         try {
             $picture = $this->pictureRepository->find($pictureId);
@@ -93,30 +95,11 @@ final class PictureServiceImpl implements PictureService
      */
     private function deleteFile(string $resourceId): void
     {
-        global $DIC; // todo
+        $resourceStorage = PluginContainer::resolve('resourceStorage');
 
         $resource = new ResourceIdentification($resourceId);
-        if ($DIC->resourceStorage()->manage()->find($resourceId)) {
-            $DIC->resourceStorage()->manage()->remove($resource, new ilLearnplacesStakeholder());
+        if ($resourceStorage->manage()->find($resourceId)) {
+            $resourceStorage->manage()->remove($resource, new ilLearnplacesStakeholder());
         }
     }
-
-/*    private function hasUploadedFiles(): bool
-    {
-        $files =  $this->request->getUploadedFiles();
-        return count($files) > 0;
-    }
-
-    private function validateUpload(UploadedFileInterface $file)
-    {
-        if($file->getError() !== UPLOAD_ERR_OK) {
-            throw new FileUploadException('Unable to store picture due to an upload error.', $file->getError());
-        }
-
-        $typeInfo = $this->fileTypeDetector->detectByFilename($file->getClientFilename() ?? '');
-
-        if(in_array($typeInfo[1], self::$allowedPictureTypes) === false) {
-            throw new FileUploadException('Picture with invalid extension uploaded.');
-        }
-    }*/
 }
