@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use ILIAS\DI\UIServices;
+use ILIAS\Filesystem\Stream\Stream;
 use ILIAS\Refinery\Factory as Refinery;
+use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use Psr\Http\Message\ServerRequestInterface;
 use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\AccordionBlock\AccordionBlockPresentationView;
@@ -163,7 +165,6 @@ final class xsrlContentGUI
         $this->request = $request;
         $this->accessGuard = $accessGuard;
     }
-
 
     public function executeCommand(): bool
     {

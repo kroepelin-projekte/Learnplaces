@@ -1,6 +1,6 @@
 <?php
 $id = "xsrl";
-$version = "4.0.2";
+$version = "5.0.0";
 $ilias_min_version = "8.0";
 $ilias_max_version = "8.99";
 $responsible = "fluxlabs AG";

@@ -62,7 +62,8 @@ require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/
 <?php
 require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
 
-function lowercaseFileExtension($filename) {
+function lowercaseFileExtension($filename)
+{
     if ($filename === null || strlen($filename) === 0) {
         return $filename;
     }
@@ -116,4 +117,10 @@ foreach ($videos as $video) {
     $video->setCoverPath($coverInternalPath);
     $video->store();
 }
+?>
+<#4>
+<?php
+// update from ILIAS 7 to 8. Moves pictures and videos to ILIAS resource storage.
+\SRAG\Learnplaces\persistence\entity\Picture::updateDB4();
+\SRAG\Learnplaces\persistence\entity\VideoBlock::updateDB4();
 ?>

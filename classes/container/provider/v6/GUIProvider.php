@@ -84,8 +84,6 @@ final class GUIProvider implements ServiceProviderInterface
                 $c[LearnplaceService::class],
                 $c[ConfigurationService::class],
                 $c[AccordionBlockService::class],
-                $c[ServerRequestInterface::class],
-                $c[AccessGuard::class]
             );
         };
 
