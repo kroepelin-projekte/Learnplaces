@@ -15,13 +15,31 @@ class LinkInput
     private \ILIAS\UI\Renderer $renderer;
     private \ILIAS\Refinery\Factory $refinery;
     private ilTree $tree;
-
     private \ILIAS\HTTP\Services $http;
     private \ILIAS\HTTP\Wrapper\ArrayBasedRequestWrapper $query;
+    private \ilObjUser $user;
+    private \ILIAS\DI\RBACServices $rbac;
+
+
     private const ALLOWED_TYPES = [
-        'cat',
-        'crs',
-        'grp',
+        'cat', // category
+        'catr', // category copy
+        'crs', // course
+        'wiki', // wiki
+        'frm', // forum
+        'chtr', // chatroom
+        'exc', // exercise
+        'file', // files
+        'grp', // group
+        'tst', // test
+        'wbdv', // web Dav
+        'cmix', // cmi5
+        'fold', // folder
+        'glo', // glossary
+        'feed', // external feed
+        'book', // booking manager
+        'blog', // blog object
+        'prg', // study programme
     ];
 
     public function __construct()
@@ -34,10 +52,15 @@ class LinkInput
         $this->tree = $DIC->repositoryTree();
         $this->http = $DIC->http();
         $this->query = $DIC->http()->wrapper()->query();
+        $this->user = $DIC->user();
+        $this->rbac = $DIC->rbac();
 
         $this->asyncEndpoint();
     }
 
+    /**
+     * @return void
+     */
     private function asyncEndpoint(): void
     {
         if ($this->query->has('async_ref')) {
@@ -47,6 +70,11 @@ class LinkInput
         }
     }
 
+    /**
+     * @param string $label
+     * @param int $default_value
+     * @return Numeric
+     */
     public function getLinkButton(string $label, int $default_value): Numeric
     {
         $field = $this->factory->input()->field();
@@ -82,6 +110,9 @@ class LinkInput
             ->withRequired(true);
     }
 
+    /**
+     * @return string
+     */
     private function linkPickerModal(): string
     {
         $content = $this->expandableTree() . "<div id='ilias_link_info' style='margin-top: 20px;'></div>";
@@ -93,6 +124,10 @@ class LinkInput
         return $this->renderer->render([$button1, $modal]);
     }
 
+    /**
+     * @param $ref_id
+     * @return string
+     */
     private function expandableTree($ref_id = null): string
     {
         /** @var ilTree $ilTree */
@@ -100,17 +135,17 @@ class LinkInput
 
         if (is_null($ref_id)) {
             $do_async = false;
-            $ref_id = ROOT_FOLDER_ID;
+            $ref_id = $this->user->getTimeLimitOwner();
+            $ref_id = $ref_id === 7 ? ROOT_FOLDER_ID : $ref_id;
             $data = [$ilTree->getNodeData($ref_id)];
-            $data = $ilTree->getChildsByTypeFilter($ref_id, self::ALLOWED_TYPES);
 
-            // todo filter
+            $data = array_filter($data, fn ($item) => $this->rbac->system()->checkAccess('visible', (int) $item['ref_id']));
 
         } else {
             $do_async = true;
             $data = $ilTree->getChildsByTypeFilter($ref_id, self::ALLOWED_TYPES);
 
-            // todo filtern
+            $data = array_filter($data, fn ($item) => $this->rbac->system()->checkAccess('visible', (int) $item['ref_id']));
 
             if (count($data) === 0) {
                 return '';
@@ -156,6 +191,11 @@ class LinkInput
                 return $node;
             }
 
+            /**
+             * @param $environment
+             * @param string $ref_id
+             * @return string
+             */
             protected function getAsyncURL($environment, string $ref_id): string
             {
                 $url = $environment['url'];

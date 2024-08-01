@@ -27,6 +27,7 @@ class FileMigration
                     ->serialize();
                 $picture->setResourceId($resourceId);
                 $picture->setOriginalPath('');
+                $picture->setPreviewPath('');
                 $picture->update();
                 $DIC->filesystem()->web()->delete($path);
             }
