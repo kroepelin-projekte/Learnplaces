@@ -72,6 +72,8 @@ final class VideoBlockPresentationView implements Renderable
     {
         // todo DIC
         global $DIC;
+        $factory = $DIC->ui()->factory();
+        $renderer = $DIC->ui()->renderer();
 
         $resourceId = $this->model->getResourceId();
         $resource = new ResourceIdentification($resourceId);
@@ -79,7 +81,12 @@ final class VideoBlockPresentationView implements Renderable
             $src = $DIC->resourceStorage()->consume()
                 ->src($resource)
                 ->getSrc();
-            $this->template->setVariable('VIDEO_PATH', $src);
+
+            $videoHTML = $DIC->ui()->renderer()->render(
+                $DIC->ui()->factory()->player()->video($src)
+            );
+
+            $this->template->setVariable('CONTENT', $videoHTML);
         }
     }
 

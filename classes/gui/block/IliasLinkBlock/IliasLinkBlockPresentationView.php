@@ -72,11 +72,16 @@ final class IliasLinkBlockPresentationView implements Renderable
 
     private function initView(): void
     {
-
         $objectId = ilObject::_lookupObjectId($this->model->getRefId());
+        $title = ilObject::_lookupTitle($objectId);
 
-        $this->template->setVariable('CONTENT', ilLink::_getStaticLink($this->model->getRefId()));
-        $this->template->setVariable('TITLE', ilObject::_lookupTitle($objectId));
+        //todo ui
+        global $DIC;
+        $iliasLink = $DIC->ui()->renderer()->render(
+            $DIC->ui()->factory()->link()->standard($title, ilLink::_getStaticLink($this->model->getRefId()))
+        );
+
+        $this->template->setVariable('CONTENT', $iliasLink);
         $this->template->setVariable('DESCRIPTION', ilObject::_lookupDescription($objectId));
     }
 

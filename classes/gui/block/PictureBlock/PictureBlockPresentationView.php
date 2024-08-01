@@ -75,6 +75,8 @@ final class PictureBlockPresentationView implements Renderable
 
         // todo DIC
         global $DIC;
+        $factory = $DIC->ui()->factory();
+        $renderer = $DIC->ui()->renderer();
 
         $resourceId = $this->model->getPicture()->getResourceId();
         $resource = new ResourceIdentification($resourceId);
@@ -82,7 +84,10 @@ final class PictureBlockPresentationView implements Renderable
             $src = $DIC->resourceStorage()->consume()
                 ->src($resource)
                 ->getSrc();
-            $this->template->setVariable('PICTURE_PATH', $src);
+            $pictureHTML = $DIC->ui()->renderer()->render(
+                $DIC->ui()->factory()->image()->standard($src, 'Block picture')
+            );
+            $this->template->setVariable('CONTENT', $pictureHTML);
         }
 
         $this->template->setVariable('DESCRIPTION', $this->model->getDescription());
