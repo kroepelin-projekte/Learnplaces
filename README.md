@@ -7,12 +7,13 @@ the old learnplaces plugin.
 * PHP 7.2 - 7.4
 
 ### Compatibility Table
-|Plugin Version   | ILIAS Versions | PHP Versions  |
-|---|---|---|
-| v1.X  | 5.2 - 5.3 | 7.0 |
-| v2.X | 5.3 - 5.4 | 7.0 - 7.2 |
-| v3.X | 5.4 - 6 | 7.0 - 7.4 |
-| v4.X | 6 - 7 | 7.2 - 7.4 |
+| Plugin Version | ILIAS Versions | PHP Versions |
+|----------------|----------------|--------------|
+| v1.X           | 5.2 - 5.3      | 7.0          |
+| v2.X           | 5.3 - 5.4      | 7.0 - 7.2    |
+| v3.X           | 5.4 - 6        | 7.0 - 7.4    |
+| v4.X           | 6 - 7          | 7.2 - 7.4    |
+| v5.X           | 8 - 9          | 7.4 - 8.2    |
 
 ## Installation
 

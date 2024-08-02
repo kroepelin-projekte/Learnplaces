@@ -92,7 +92,6 @@ final class ContentPresentationView
      */
     private function renderView(): string
     {
-
         $writePermission = !$this->isReadonly();
 
         $blockHtml = ($writePermission) ? $this->getPlusView(0)->getHTML() : '';
@@ -122,5 +121,4 @@ final class ContentPresentationView
     {
         return new PlusView($position, $this->controlFlow->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_ADD), $this->accordionId);
     }
-
 }

@@ -1,4 +1,7 @@
-.accordion-arrow {
+#accordion_container {
+    position: relative;
+}
+#accordion-arrow {
     font-size: 40px;
     position: absolute;
     top: 10px;
@@ -13,7 +16,7 @@
     transition: transform 0.3s ease;
     transform-origin: center 60%;
 }
-#accordion_container:has(.panel-collapse.collapse.in) .accordion-arrow {
+#accordion_container:has(.panel-collapse.collapse.in) #accordion-arrow {
     transform: rotate(90deg);
 }
 .accordion-head:hover .panel-body {
@@ -23,4 +26,7 @@
     .accordion-head .panel-body h2 {
         padding-left: 20px;
     }
+}
+#accordion_container a {
+    text-decoration: none !important;
 }

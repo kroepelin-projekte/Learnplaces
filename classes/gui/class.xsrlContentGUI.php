@@ -14,6 +14,7 @@ use SRAG\Learnplaces\gui\block\BlockType;
 use SRAG\Learnplaces\gui\block\IliasLinkBlock\IliasLinkBlockPresentationView;
 use SRAG\Learnplaces\gui\block\PictureBlock\PictureBlockPresentationView;
 use SRAG\Learnplaces\gui\block\RenderableBlockViewFactory;
+use SRAG\Learnplaces\gui\block\RenderableBlockViewFactoryImpl;
 use SRAG\Learnplaces\gui\block\RichTextBlock\RichTextBlockEditFormView;
 use SRAG\Learnplaces\gui\block\util\AccordionAware;
 use SRAG\Learnplaces\gui\block\util\ReferenceIdAware;
@@ -50,6 +51,8 @@ final class xsrlContentGUI
      * Command to store the sequence numbers
      */
     public const CMD_SEQUENCE = 'sequence';
+    private const CMD_SEQUENCE_FORM = 'sequenceForm';
+    private const CMD_SEQUENCE_VIEW = 'sequenceView';
     /**
      * The anchor start which is used to
      * jump to the edited block after leaving the edit / creation view.
@@ -196,6 +199,8 @@ final class xsrlContentGUI
             case CommonControllerAction::CMD_EDIT:
             case CommonControllerAction::CMD_UPDATE:
             case self::CMD_SEQUENCE:
+            case self::CMD_SEQUENCE_VIEW:
+            case self::CMD_SEQUENCE_FORM:
                 if ($this->accessGuard->hasWritePermission()) {
                     $this->{$cmd}();
                     if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
@@ -223,14 +228,14 @@ final class xsrlContentGUI
      */
     private function index(): void
     {
+        $factory = PluginContainer::resolve('factory');
         $toolbar = new ilToolbarGUI();
 
-        // todo sequence
-
-        $saveSequenceButton = ilSubmitButton::getInstance();
-        $saveSequenceButton->setCommand(self::CMD_SEQUENCE);
-        $saveSequenceButton->setCaption($this->plugin->txt('content_save_sequence'), false);
-        $toolbar->addStickyItem($saveSequenceButton);
+        $saveSequenceButton = $factory->button()->standard(
+            $this->plugin->txt('content_change_sequence'),
+            $this->controlFlow->getLinkTargetByClass(self::class, self::CMD_SEQUENCE_VIEW),
+        );
+        $toolbar->addComponent($saveSequenceButton);
 
         $writePermission = $this->accessGuard->hasWritePermission();
         $template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block_list.html', true, true);
@@ -329,6 +334,14 @@ final class xsrlContentGUI
         $blockIterator->append(new ArrayIterator($learnplace->getBlocks()));
 
         $post = $this->request->getParsedBody();
+        $form = $this->sequenceForm()->withRequest($this->http->request());
+        $formData = $form->getData();
+        if ($form->getError()) {
+            $this->template->setOnScreenMessage('failure', $this->plugin->txt('content_sequence_changed_error'));
+            $this->sequenceView();
+            return;
+        }
+        $post = current($formData);
 
         //yield ['block_12' => '5']
         $iterator = new RegexIterator(new ArrayIterator($post), '/^(?:block\_\d+)$/', RegexIterator::MATCH, RegexIterator::USE_KEY);
@@ -366,6 +379,7 @@ final class xsrlContentGUI
         //store new sequence
         $this->learnplaceService->store($learnplace);
 
+        $this->template->setOnScreenMessage('success', $this->plugin->txt('content_sequence_changed_successfully'), true);
         $this->controlFlow->redirect($this, CommonControllerAction::CMD_INDEX);
     }
 
@@ -417,5 +431,50 @@ final class xsrlContentGUI
                     break;
             }
         }
+    }
+
+    /**
+     * @return void
+     */
+    private function sequenceView(): void
+    {
+        $renderer = PluginContainer::resolve('renderer');
+
+        $this->template->addCss(ilLearnplacesPlugin::getInstance()->getStyleSheetLocation('style.css'));
+
+        $this->template->setContent(
+            $renderer->render($this->sequenceForm())
+        );
+    }
+
+    /**
+     * @return \ILIAS\UI\Component\Input\Container\Form\Standard
+     * @throws ilCtrlException
+     */
+    private function sequenceForm(): \ILIAS\UI\Component\Input\Container\Form\Standard
+    {
+        /** @var \ILIAS\UI\Factory $factory */
+        $factory = PluginContainer::resolve('factory');
+        $field = $factory->input()->field();
+
+        $renderableBlockViewFactory = new RenderableBlockViewFactoryImpl();
+        $writePermission = $this->accessGuard->hasWritePermission();
+        $learnplaceService = ($writePermission) ? $this->learnplaceService : $this->learnplaceServiceDecorationFactory->decorate($this->learnplaceService);
+        $learnplace = $learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
+        $blocks = $learnplace->getBlocks();
+
+        foreach ($blocks as $block) {
+            $view = $renderableBlockViewFactory->getInstance($block);
+
+            $fields['block_' . $block->getId()] = $field->numeric('Position', $view->getHtml())
+                ->withValue($block->getSequence())
+                ->withRequired(true);
+        }
+
+        $section = $field->section($fields, $this->plugin->txt('content_change_sequence'));
+
+        $action = $this->controlFlow->getFormAction($this, self::CMD_SEQUENCE);
+
+        return $factory->input()->container()->form()->standard($action, [$section]);
     }
 }
