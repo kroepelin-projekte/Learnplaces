@@ -14,6 +14,7 @@ use ilObject;
 use ilObjUser;
 use ilTree;
 use SRAG\Learnplaces\container\PluginContainer;
+use function RectorPrefix20220501\Symfony\Component\String\b;
 
 class LinkInput
 {
@@ -90,6 +91,28 @@ class LinkInput
     }
 
     /**
+     * @param int|null $ref_id
+     * @return int
+     */
+    private function getRefId(?int $ref_id = null): int
+    {
+        $time_limit_owner = $this->user->getTimeLimitOwner();
+        if ($time_limit_owner === USER_FOLDER_ID) {
+            $time_limit_owner = ROOT_FOLDER_ID;
+        }
+
+        if (is_null($ref_id)) {
+            return $time_limit_owner;
+        }
+
+        if ($ref_id === 0) {
+            return $time_limit_owner;
+        } else {
+            return $ref_id;
+        }
+    }
+
+    /**
      * @param string $label
      * @param int $default_value
      * @return Numeric
@@ -98,13 +121,12 @@ class LinkInput
     {
         $field = $this->factory->input()->field();
 
-        $ref_id = $default_value;
+        $ref_id = $this->getRefId($default_value);
         $obj_id = ilObject::_lookupObjId($ref_id);
         $title = ilObject::_lookupTitle($obj_id);
-        $description = ilObject::_lookupDescription($obj_id);
 
         return $field->numeric($label)
-            ->withByline($this->linkPickerModal())
+            ->withByline($this->expandableTree())
             ->withValue($default_value)
             ->withAdditionalTransformation(
                 $this->refinery->custom()->constraint(
@@ -112,7 +134,7 @@ class LinkInput
                     'Object not found'
                 )
             )
-            ->withOnLoadCode(function ($id) use ($ref_id, $title, $description) {
+            ->withOnLoadCode(function ($id) use ($ref_id, $title) {
                 return <<<JS
                 (function() {
                     const el = document.getElementById('$id');
@@ -121,26 +143,12 @@ class LinkInput
                     const info = document.createElement('div');
                     info.style.marginTop = '20px';
                     info.id = 'ilias_link_info';
-                    el.parentElement.appendChild(info);
-                    info.innerHTML = '<b>$title</b><br>Ref ID: $ref_id<br><br>$description';
+                    el.parentElement.prepend(info);
+                    info.innerHTML = '<b>ILIAS</b><br>Ref ID: $ref_id<br>';
                 })();
                 JS;
             })
             ->withRequired(true);
-    }
-
-    /**
-     * @return string
-     */
-    private function linkPickerModal(): string
-    {
-        $content = $this->expandableTree() . "<div id='ilias_link_info' style='margin-top: 20px;'></div>";
-
-        $modal = $this->factory->modal()->roundtrip('ILIAS Link', $this->factory->legacy($content))->withCancelButtonLabel('ok');
-        $button1 = $this->factory->button()->standard('ILIAS Link', '#')
-            ->withOnClick($modal->getShowSignal());
-
-        return $this->renderer->render([$button1, $modal]);
     }
 
     /**
@@ -153,8 +161,7 @@ class LinkInput
 
         if (is_null($ref_id)) {
             $do_async = false;
-            $ref_id = $this->user->getTimeLimitOwner();
-            $ref_id = $ref_id === 7 ? ROOT_FOLDER_ID : $ref_id;
+            $ref_id = $this->getRefId();
             $data = [$ilTree->getNodeData($ref_id)];
 
             $data = array_filter($data, fn ($item) => $this->rbac->system()->checkAccess('visible', (int) $item['ref_id']));
@@ -171,6 +178,39 @@ class LinkInput
         }
 
         $recursion = new class () implements TreeRecursion {
+            private const ALLOWED_TYPES = [
+                'cat', // category
+                'catr', // category link
+                'crs', // course
+                'wiki', // wiki
+                'frm', // forum
+                'chtr', // chatroom
+                'exc', // exercise
+                'file', // files
+                'grp', // group
+                'tst', // test
+                'wbdv', // web Dav
+                'cmix', // cmi5
+                'fold', // folder
+                'glo', // glossary
+                'feed', // external feed
+                'book', // booking manager
+                'blog', // blog object
+                'prg', // study programme
+            ];
+
+            private ilTree $tree;
+
+            public function __construct()
+            {
+                $this->tree = PluginContainer::resolve('repositoryTree');
+            }
+
+            /**
+             * @param $record
+             * @param $environment
+             * @return array
+             */
             public function getChildren($record, $environment = null): array
             {
                 return [];
@@ -191,26 +231,27 @@ class LinkInput
 
                 $obj_id = ilObject::_lookupObjId((int) $ref_id);
                 $title = ilObject::_lookupTitle($obj_id);
-                $description = ilObject::_lookupDescription($obj_id);
 
                 $node = $factory->simple($label, $icon)
-                    ->withOnLoadCode(function ($id) use ($ref_id, $title, $description) {
+                    ->withOnLoadCode(function ($id) use ($ref_id, $title) {
                         return <<<JS
                         (function() {
                             const node = document.getElementById('$id');
                             const node_label = node.querySelector('.node-label');
                             node_label.addEventListener('click', () => {
-                                const ilias_link_info_elements = Array.from(document.querySelectorAll('#ilias_link_info'));
-                                ilias_link_info_elements.forEach(ilias_link_info => {
-                                    ilias_link_info.innerHTML = '<b>$title</b><br>Ref ID: $ref_id<br><br>$description';
-                                });
+                                const ilias_link_info_element = document.getElementById('ilias_link_info');
+                                ilias_link_info_element.innerHTML = '<b>$title</b><br>Ref ID: $ref_id<br>';
                                 const link_input_element = document.getElementById('link_input_element');
                                 link_input_element.value = $ref_id;
                             });
                         })();
                         JS;
-                    })
-                    ->withAsyncURL($url);
+                    });
+
+                $has_children = count($this->tree->getChildsByTypeFilter((int) $ref_id, self::ALLOWED_TYPES)) > 0;
+                if ($has_children) {
+                    $node = $node->withAsyncURL($url);
+                }
 
                 return $node;
             }
