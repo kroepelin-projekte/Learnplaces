@@ -6,6 +6,7 @@ namespace SRAG\Learnplaces\gui\block\AccordionBlock;
 
 use ilButtonToSplitButtonMenuItemAdapter;
 use ilCtrl;
+use ILIAS\UI\Implementation\Component\Input\Field\Section;
 use ilLearnplacesPlugin;
 use ilLinkButton;
 use ilSplitButtonException;
@@ -144,6 +145,7 @@ final class AccordionBlockPresentationView implements Renderable
         $input->setValidationRegexp('/^\d+$/');
         $input->setValue($this->model->getSequence());
         $input->setRequired(true);*/
+
 
         //fill outer template
         if(!$this->isReadonly()) {

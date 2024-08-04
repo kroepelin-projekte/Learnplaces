@@ -85,7 +85,7 @@ setting_visibility_default#:#Default visibility
 
 content_change_sequence#:#Change sequence
 content_save_sequence#:#Save sequence
-content_sequence_changed_successfully#:#sequence successfully changed
+content_sequence_changed_successfully#:#Sequence successfully changed
 content_sequence_changed_error#:#Please fill out all fields
 
 news_created#:#Learnplace created.

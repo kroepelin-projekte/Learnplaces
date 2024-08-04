@@ -26,7 +26,11 @@ use SRAG\Learnplaces\service\publicapi\block\AccordionBlockService;
 use SRAG\Learnplaces\service\publicapi\block\LearnplaceService;
 use SRAG\Learnplaces\service\publicapi\model\AccordionBlockModel;
 use SRAG\Learnplaces\service\publicapi\model\BlockModel;
+use SRAG\Learnplaces\service\publicapi\model\ILIASLinkBlockModel;
 use SRAG\Learnplaces\service\publicapi\model\MapBlockModel;
+use SRAG\Learnplaces\service\publicapi\model\PictureBlockModel;
+use SRAG\Learnplaces\service\publicapi\model\RichTextBlockModel;
+use SRAG\Learnplaces\service\publicapi\model\VideoBlockModel;
 use SRAG\Learnplaces\service\security\AccessGuard;
 use SRAG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
 
@@ -333,7 +337,7 @@ final class xsrlContentGUI
 
         $blockIterator->append(new ArrayIterator($learnplace->getBlocks()));
 
-        $post = $this->request->getParsedBody();
+        #$post = $this->request->getParsedBody();
         $form = $this->sequenceForm()->withRequest($this->http->request());
         $formData = $form->getData();
         if ($form->getError()) {
@@ -342,6 +346,7 @@ final class xsrlContentGUI
             return;
         }
         $post = current($formData);
+        krsort($post);
 
         //yield ['block_12' => '5']
         $iterator = new RegexIterator(new ArrayIterator($post), '/^(?:block\_\d+)$/', RegexIterator::MATCH, RegexIterator::USE_KEY);
@@ -466,9 +471,36 @@ final class xsrlContentGUI
         foreach ($blocks as $block) {
             $view = $renderableBlockViewFactory->getInstance($block);
 
-            $fields['block_' . $block->getId()] = $field->numeric('Position', $view->getHtml())
+            $type = $this->getType($block);
+
+            if ($type === 'accordion') {
+                $block->setExpand(false);
+            }
+            $fields['block_' . $block->getId()] = $field->numeric($type, $view->getHtml())
                 ->withValue($block->getSequence())
                 ->withRequired(true);
+
+            if ($block instanceof AccordionBlockModel) {
+                foreach ($block->getBlocks() as $accordionBlock) {
+                    $view = $renderableBlockViewFactory->getInstance($accordionBlock);
+
+                    // todo accordion field
+                    //   language var
+                    $fields['block_' . $accordionBlock->getId()] = $field->numeric($this->getType($accordionBlock), $view->getHtml())
+                        ->withValue($accordionBlock->getSequence())
+                        ->withOnLoadCode(function ($id) {
+                            return <<<JS
+                            (function()  {
+                                const input = document.getElementById('$id');
+                                const el = input.parentElement;
+                                el.style.width = '60%';
+                                el.style.float = 'right';
+                            })();
+                            JS;
+                        })
+                        ->withRequired(true);
+                }
+            }
         }
 
         $section = $field->section($fields, $this->plugin->txt('content_change_sequence'));
@@ -476,5 +508,30 @@ final class xsrlContentGUI
         $action = $this->controlFlow->getFormAction($this, self::CMD_SEQUENCE);
 
         return $factory->input()->container()->form()->standard($action, [$section]);
+    }
+
+    private function getType($block): string
+    {
+        $type = '';
+        switch ($block) {
+            case $block instanceof AccordionBlockModel:
+                $type = 'Accordion';
+                break;
+            case $block instanceof IliasLinkBlockModel:
+                $type = 'Link';
+                break;
+            case $block instanceof RichTextBlockModel:
+                $type = 'Text';
+                break;
+            case $block instanceof VideoBlockModel:
+                $type = 'Video';
+                break;
+            case $block instanceof PictureBlockModel:
+                $type = 'Picture';
+                break;
+        }
+
+        // todo  lang
+        return $type . ' position';
     }
 }
