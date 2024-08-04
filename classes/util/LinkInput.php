@@ -9,6 +9,7 @@ use ILIAS\HTTP\Services;
 use ILIAS\UI\Component\Tree\TreeRecursion;
 use ILIAS\UI\Factory;
 use ILIAS\UI\Implementation\Component\Input\Field\Numeric;
+use ILIAS\UI\Implementation\Component\Tree\Node\Node;
 use ILIAS\UI\Renderer;
 use ilObject;
 use ilObjUser;
@@ -162,7 +163,8 @@ class LinkInput
         if (is_null($ref_id)) {
             $do_async = false;
             $ref_id = $this->getRefId();
-            $data = [$ilTree->getNodeData($ref_id)];
+            #$data = [$ilTree->getNodeData($ref_id)]; // starts tree from root
+            $data = $ilTree->getChildsByTypeFilter($ref_id, self::ALLOWED_TYPES);
 
             $data = array_filter($data, fn ($item) => $this->rbac->system()->checkAccess('visible', (int) $item['ref_id']));
 
@@ -232,6 +234,7 @@ class LinkInput
                 $obj_id = ilObject::_lookupObjId((int) $ref_id);
                 $title = ilObject::_lookupTitle($obj_id);
 
+                /** @var Node $node */
                 $node = $factory->simple($label, $icon)
                     ->withOnLoadCode(function ($id) use ($ref_id, $title) {
                         return <<<JS
