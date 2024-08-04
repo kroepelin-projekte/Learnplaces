@@ -471,22 +471,38 @@ final class xsrlContentGUI
         foreach ($blocks as $block) {
             $view = $renderableBlockViewFactory->getInstance($block);
 
-            $type = $this->getType($block);
+            $label = $this->getLabel($block);
 
-            if ($type === 'accordion') {
+            if ($block instanceof AccordionBlockModel) {
                 $block->setExpand(false);
+                $blocksOfAccordion = $block->getBlocks();
+                $block->setBlocks([]);
             }
-            $fields['block_' . $block->getId()] = $field->numeric($type, $view->getHtml())
+
+            $inputField = $field->numeric($label, $view->getHtml())
                 ->withValue($block->getSequence())
                 ->withRequired(true);
 
             if ($block instanceof AccordionBlockModel) {
-                foreach ($block->getBlocks() as $accordionBlock) {
+                $inputField = $inputField->withOnLoadCode(function ($id) {
+                    return <<<JS
+                    (function() {
+                        const el = document.getElementById('$id');
+                        el.parentElement.querySelector('.help-block').style.pointerEvents = 'none';
+                        el.parentElement.querySelector('#accordion-arrow').style.transform = 'rotate(90deg)';
+                    })();
+                    JS;
+                });
+            }
+
+            $fields['block_' . $block->getId()] = $inputField;
+
+            if ($block instanceof AccordionBlockModel) {
+                foreach ($blocksOfAccordion as $accordionBlock) {
                     $view = $renderableBlockViewFactory->getInstance($accordionBlock);
 
-                    // todo accordion field
                     //   language var
-                    $fields['block_' . $accordionBlock->getId()] = $field->numeric($this->getType($accordionBlock), $view->getHtml())
+                    $fields['block_' . $accordionBlock->getId()] = $field->numeric($this->getLabel($accordionBlock), $view->getHtml())
                         ->withValue($accordionBlock->getSequence())
                         ->withOnLoadCode(function ($id) {
                             return <<<JS
@@ -510,28 +526,28 @@ final class xsrlContentGUI
         return $factory->input()->container()->form()->standard($action, [$section]);
     }
 
-    private function getType($block): string
+    private function getLabel($block): string
     {
-        $type = '';
+        $label = '';
         switch ($block) {
             case $block instanceof AccordionBlockModel:
-                $type = 'Accordion';
+                $label = 'Accordion';
                 break;
             case $block instanceof IliasLinkBlockModel:
-                $type = 'Link';
+                $label = 'Link';
                 break;
             case $block instanceof RichTextBlockModel:
-                $type = 'Text';
+                $label = 'Text';
                 break;
             case $block instanceof VideoBlockModel:
-                $type = 'Video';
+                $label = 'Video';
                 break;
             case $block instanceof PictureBlockModel:
-                $type = 'Picture';
+                $label = 'Picture';
                 break;
         }
 
         // todo  lang
-        return $type . ' position';
+        return $label . ' position';
     }
 }
