@@ -1,6 +1,5 @@
 <?php
 
-use League\Flysystem\FilesystemInterface;
 use SRAG\Learnplaces\container\PluginContainer;
 
 require_once __DIR__ . '/bootstrap.php';
@@ -70,7 +69,7 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
      */
     private function dropDatabase(): void
     {
-        $database = PluginContainer::resolve(ilDB::class);
+        $database = PluginContainer::resolve('ilDB');
         $database->dropTable(\SRAG\Learnplaces\persistence\entity\AccordionBlock::returnDbTableName(), false);
         $database->dropTable(\SRAG\Learnplaces\persistence\entity\AccordionBlockMember::returnDbTableName(), false);
         $database->dropTable(\SRAG\Learnplaces\persistence\entity\Answer::returnDbTableName(), false);

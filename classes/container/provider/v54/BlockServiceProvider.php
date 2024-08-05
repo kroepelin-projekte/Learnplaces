@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SRAG\Learnplaces\container\provider\v54;
 
-use League\Flysystem\FilesystemInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use SRAG\Learnplaces\persistence\repository\AccordionBlockRepository;

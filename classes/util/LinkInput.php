@@ -15,7 +15,6 @@ use ilObject;
 use ilObjUser;
 use ilTree;
 use SRAG\Learnplaces\container\PluginContainer;
-use function RectorPrefix20220501\Symfony\Component\String\b;
 
 class LinkInput
 {
@@ -163,8 +162,7 @@ class LinkInput
         if (is_null($ref_id)) {
             $do_async = false;
             $ref_id = $this->getRefId();
-            #$data = [$ilTree->getNodeData($ref_id)]; // starts tree from root
-            $data = $ilTree->getChildsByTypeFilter($ref_id, self::ALLOWED_TYPES);
+            $data = [$ilTree->getNodeData($ref_id)]; // starts tree from root
 
             $data = array_filter($data, fn ($item) => $this->rbac->system()->checkAccess('visible', (int) $item['ref_id']));
 
@@ -229,18 +227,18 @@ class LinkInput
                 $ref_id = $record['ref_id'];
                 $label = $record['title'] . ' (' . $record['type'] . ', ' . $ref_id . ')';
                 $icon = $environment['icon_factory']->standard($record["type"], '');
-                $url = $this->getAsyncURL($environment, $ref_id);
+                $url = $this->getAsyncURL($environment, (string)$ref_id);
 
                 $obj_id = ilObject::_lookupObjId((int) $ref_id);
                 $title = ilObject::_lookupTitle($obj_id);
 
                 /** @var Node $node */
                 $node = $factory->simple($label, $icon)
-                    ->withOnLoadCode(function ($id) use ($ref_id, $title) {
+                    ->withAdditionalOnLoadCode(function ($id) use ($ref_id, $title) {
                         return <<<JS
                         (function() {
                             const node = document.getElementById('$id');
-                            const node_label = node.querySelector('.node-label');
+                            const node_label = node.firstElementChild.firstElementChild;
                             node_label.addEventListener('click', () => {
                                 const ilias_link_info_element = document.getElementById('ilias_link_info');
                                 ilias_link_info_element.innerHTML = '<b>$title</b><br>Ref ID: $ref_id<br>';

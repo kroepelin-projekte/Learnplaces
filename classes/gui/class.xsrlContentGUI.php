@@ -468,6 +468,7 @@ final class xsrlContentGUI
         $learnplace = $learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
         $blocks = $learnplace->getBlocks();
 
+        $fields = [];
         foreach ($blocks as $block) {
             $view = $renderableBlockViewFactory->getInstance($block);
 

@@ -16,9 +16,6 @@ use SRAG\Learnplaces\service\publicapi\model\PictureModel;
 use SRAG\Learnplaces\persistence\repository\PictureRepository;
 use SRAG\Learnplaces\service\publicapi\model\VideoBlockModel;
 use SRAG\Learnplaces\service\publicapi\model\PictureBlockModel;
-use League\Flysystem\FilesystemInterface;
-use League\Flysystem\FileExistsException;
-use League\Flysystem\FileNotFoundException;
 
 /**
  * Class ilObjLearnplaces

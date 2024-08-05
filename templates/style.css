@@ -30,3 +30,7 @@
 #accordion_container a {
     text-decoration: none !important;
 }
+
+.well {
+    margin-block: 30px;
+}

@@ -83,9 +83,16 @@ final class VideoBlockPresentationView implements Renderable
                 ->src($resource)
                 ->getSrc();
 
+            // todo not working in ilias 9
+
             $videoHTML = $renderer->render(
                 $factory->player()->video($src)
             );
+
+/*            $videoHTML = '<video width="320" height="240" controls>
+                          <source src="$src" type="video/mp4">
+                          Your browser does not support the video tag.
+                        </video>';*/
 
             $this->template->setVariable('CONTENT', $videoHTML);
         }

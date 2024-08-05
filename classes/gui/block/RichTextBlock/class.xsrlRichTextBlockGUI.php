@@ -324,7 +324,7 @@ final class xsrlRichTextBlockGUI
                 height : "40vh",
                 content_style: "html body#tinymce {overflow-y: scroll; background: transparent !important; padding: 10px;} body#tinymce::selection {background: transparent !important;} .tox .tox-edit-area .tox-edit-area__iframe {background: transparent !important;} html {overflow-y: scroll !important;} tox tox-tinymce {height: 100%; min-height: 500vh;}",
                 plugins: 'lists autolink link image paste',
-                toolbar: 'undo redo | bold italic underline strikethrough | numlist bullist | alignleft aligncenter alignright alignjustify',
+                toolbar: 'undo redo | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify',
                 setup: function (editor) {
                     editor.on("init", function () {
                           this.setContent(`$content`);

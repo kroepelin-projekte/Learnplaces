@@ -48,9 +48,8 @@ final class VideoServiceImpl implements VideoService
      *
      * @param ServerRequestInterface $request
      * @param FileTypeDetector       $fileTypeDetector
-     * @param FilesystemInterface    $filesystem
      */
-    public function __construct(ServerRequestInterface $request, FileTypeDetector $fileTypeDetector, FilesystemInterface $filesystem)
+    public function __construct(ServerRequestInterface $request, FileTypeDetector $fileTypeDetector)
     {
         $this->fileTypeDetector = $fileTypeDetector;
     }

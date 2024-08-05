@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SRAG\Learnplaces\gui\block\RichTextBlock;
 
+use HTMLPurifier;
+use HTMLPurifier_Config;
 use ILIAS\UI\Implementation\Component\Input\Field\Section;
 use ilLearnplacesPlugin;
 use ilTextAreaInputGUI;
@@ -73,8 +75,25 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView
         $contentInput = $blockSpecificPartsInputs[self::POST_CONTENT];
         $content = $contentInput->getValue();
 
+        $content = $this->sanitizeHTML($content);
+
         $content = str_replace('`', "'", $content);
 
         $this->block->setContent($content ?? '');
+    }
+
+    /**
+     * @param string $content
+     * @return string
+     */
+    protected function sanitizeHTML(string $content): string
+    {
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('Cache.DefinitionImpl', null);
+        $config->set('HTML.AllowedElements', 'p,br,strong,b,i,u,s,strike,em,span');
+        $config->set('HTML.AllowedAttributes', ['style']);
+        $purifier = new HTMLPurifier($config);
+
+        return $purifier->purify($content);
     }
 }

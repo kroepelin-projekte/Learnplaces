@@ -6,6 +6,10 @@ use ILIAS\ResourceStorage\Stakeholder\AbstractResourceStakeholder;
 
 class ilLearnplacesStakeholder extends AbstractResourceStakeholder
 {
+    public function __construct()
+    {
+    }
+
     /**
      * @return string
      */

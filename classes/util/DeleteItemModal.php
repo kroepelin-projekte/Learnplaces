@@ -32,7 +32,13 @@ trait DeleteItemModal
         // receive GET variable and open modal
         if ($query->has('item') && $query->retrieve('item', $refinery->kindlyTo()->string()) === $item) {
             $item = $query->retrieve('item', $refinery->kindlyTo()->string());
-            $affected_item = $factory->modal()->interruptiveItem($item, $item_title);
+
+            if (version_compare(ILIAS_VERSION_NUMERIC, '9.0', '>=')) {
+                $affected_item = $factory->modal()->interruptiveItem($item, $item_title)
+                    ->standard($item, $item_title);
+            } else {
+                $affected_item = $factory->modal()->interruptiveItem($item, $item_title);
+            }
 
             $modal = $factory->modal()
                 ->interruptive($button_label, $message, '#')

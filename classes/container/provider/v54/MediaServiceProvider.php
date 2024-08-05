@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace SRAG\Learnplaces\container\provider\v54;
 
 use Intervention\Image\ImageManager;
-use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemInterface;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,7 +35,6 @@ final class MediaServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple[FilesystemInterface::class] = function ($c) {return new Filesystem(new Local(ILIAS_ABSOLUTE_PATH)); };
         $pimple[FileTypeDetector::class]    = function ($c) {return new WabmorganFileTypeDetector(); };
         $pimple[ImageManager::class]        = function ($c) {return new ImageManager(); };
         $pimple[PictureService::class]      = function ($c) {
@@ -51,7 +48,6 @@ final class MediaServiceProvider implements ServiceProviderInterface
             return new VideoServiceImpl(
                 $c[ServerRequestInterface::class],
                 $c[FileTypeDetector::class],
-                $c[FilesystemInterface::class]
             );
         };
     }
