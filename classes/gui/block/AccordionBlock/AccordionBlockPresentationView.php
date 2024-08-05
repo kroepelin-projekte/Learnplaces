@@ -129,7 +129,7 @@ final class AccordionBlockPresentationView implements Renderable
         $lng = PluginContainer::resolve('lng');
 
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
-        $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
+        $editButton = $factory->button()->shy($this->plugin->txt('common_edit'), $editAction);
 
         $deleteButton = $this->deleteItemButtonWithModal(
             $this->model->getId() . '-' . self::TYPE,

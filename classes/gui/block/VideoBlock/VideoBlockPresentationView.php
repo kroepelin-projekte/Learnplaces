@@ -140,7 +140,7 @@ final class VideoBlockPresentationView implements Renderable
         $lng = PluginContainer::resolve('lng');
 
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlVideoBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlVideoBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
-        $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
+        $editButton = $factory->button()->shy($this->plugin->txt('common_edit'), $editAction);
 
         $deleteButton = $this->deleteItemButtonWithModal(
             $this->model->getId() . '-' . self::TYPE,

@@ -129,7 +129,7 @@ final class IliasLinkBlockPresentationView implements Renderable
 
         //setup button
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlIliasLinkBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlIliasLinkBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
-        $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
+        $editButton = $factory->button()->shy($this->plugin->txt('common_edit'), $editAction);
 
         $deleteButton = $this->deleteItemButtonWithModal(
             $this->model->getId() . '-' . self::TYPE,

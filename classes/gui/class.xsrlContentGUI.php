@@ -499,6 +499,7 @@ final class xsrlContentGUI
                                 const input = document.getElementById('$id');
                                 const el = input.parentElement;
                                 el.style.width = '60%';
+                                el.style.marginLeft = 'auto';
                                 el.style.float = 'right';
                             })();
                             JS;
