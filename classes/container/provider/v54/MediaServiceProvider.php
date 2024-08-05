@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SRAG\Learnplaces\container\provider\v54;
 
 use Intervention\Image\ImageManager;
-use League\Flysystem\Filesystem;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Psr\Http\Message\ServerRequestInterface;

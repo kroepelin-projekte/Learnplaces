@@ -12,6 +12,7 @@ use ilSplitButtonGUI;
 use ilTemplate;
 use ilTextInputGUI;
 use LogicException;
+use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\gui\block\Renderable;
 use SRAG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
@@ -105,24 +106,20 @@ final class PictureUploadBlockPresentationView implements Renderable
     {
         $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
-        //setup button
-        $splitButton = ilSplitButtonGUI::getInstance();
-        $deleteAction = ilLinkButton::getInstance();
-        $deleteAction->setCaption($this->plugin->txt('common_delete'), false);
-        $deleteAction->setUrl($this->controlFlow->getLinkTargetByClass(xsrlPictureUploadBlockGUI::class, CommonControllerAction::CMD_CONFIRM) . '&' . xsrlPictureUploadBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId());
-        $splitButton->setDefaultButton($deleteAction);
+        /** @var \ILIAS\UI\Factory $factory */
+        $factory = PluginContainer::resolve('factory');
+        $renderer = PluginContainer::resolve('renderer');
 
-/*        //setup sequence number
-        $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
-        $input->setRequired(true);
-        $input->setValidationRegexp('/^\d+$/');
-        $input->setValue($this->model->getSequence());
-        $input->setRequired(true);*/
+        $editAction = $this->controlFlow->getLinkTargetByClass(xsrlPictureUploadBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlPictureUploadBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
+        $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
+
+        $actionMenu = $renderer->render($factory->dropdown()->standard([
+            $editButton,
+        ])->withLabel('Actions'));
 
         //fill outer template
         if(!$this->isReadonly()) {
-            $outerTemplate->setVariable('ACTION_BUTTON', $splitButton->render());
-            #$outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
+            $outerTemplate->setVariable('ACTION_BUTTON', $actionMenu);
         }
         $outerTemplate->setVariable('CONTENT', $blockTemplate->get());
         $outerTemplate->setVariable('SEQUENCE', $this->model->getSequence());

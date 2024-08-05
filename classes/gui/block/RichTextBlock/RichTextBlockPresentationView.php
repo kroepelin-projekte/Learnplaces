@@ -19,6 +19,7 @@ use SRAG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use SRAG\Learnplaces\gui\helper\CommonControllerAction;
 use SRAG\Learnplaces\service\publicapi\model\RichTextBlockModel;
 use SRAG\Learnplaces\util\DeleteItemModal;
+use xsrlContentGUI;
 use xsrlPictureBlockGUI;
 use xsrlRichTextBlockGUI;
 
@@ -111,31 +112,30 @@ final class RichTextBlockPresentationView implements Renderable
     {
         $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
+        /** @var \ILIAS\UI\Factory $factory */
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
+        $lng = PluginContainer::resolve('lng');
 
         //setup button
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlRichTextBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlRichTextBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
-        $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
-        $htmlEditButton = $renderer->render($editButton);
+        $editButton = $factory->button()->shy($this->plugin->txt('common_edit'), $editAction);
 
         $deleteButton = $this->deleteItemButtonWithModal(
             $this->model->getId() . '-' . self::TYPE,
-            '',
+            'Text',
             $this->plugin->txt('confirm_delete_header'),
             $this->plugin->txt('common_delete')
         );
 
-/*        //setup sequence number
-        $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
-        $input->setRequired(true);
-        $input->setValidationRegexp('/^\d+$/');
-        $input->setValue($this->model->getSequence());
-        $input->setRequired(true);*/
+        $actionMenu = $renderer->render($factory->dropdown()->standard([
+            $editButton,
+            $deleteButton['button']
+        ])->withLabel($lng->txt('actions')));
 
         //fill outer template
         if(!$this->isReadonly()) {
-            $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
+            $outerTemplate->setVariable('ACTION_BUTTON', $actionMenu . $deleteButton['modal']);
         }
         $outerTemplate->setVariable('CONTENT', $template->get());
         return $outerTemplate;

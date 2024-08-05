@@ -6,7 +6,6 @@ namespace SRAG\Learnplaces\service\media;
 
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ilLearnplacesStakeholder;
-use League\Flysystem\FilesystemInterface;
 use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;

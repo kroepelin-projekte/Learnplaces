@@ -125,23 +125,27 @@ final class IliasLinkBlockPresentationView implements Renderable
 
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
-        $field = $factory->input()->field();
+        $lng = PluginContainer::resolve('lng');
 
         //setup button
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlIliasLinkBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlIliasLinkBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
         $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
-        $htmlEditButton = $renderer->render($editButton);
 
         $deleteButton = $this->deleteItemButtonWithModal(
             $this->model->getId() . '-' . self::TYPE,
-            ilObject::_lookupTitle(ilObject::_lookupObjId($this->model->getRefId())),
+            'Link',
             $this->plugin->txt('confirm_delete_header'),
             $this->plugin->txt('common_delete')
         );
 
+        $actionMenu = $renderer->render($factory->dropdown()->standard([
+            $editButton,
+            $deleteButton['button']
+        ])->withLabel($lng->txt('actions')));
+
         //fill outer template
         if(!$this->isReadonly()) {
-            $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
+            $outerTemplate->setVariable('ACTION_BUTTON', $actionMenu . $deleteButton['modal']);
         }
         $outerTemplate->setVariable('CONTENT', $blockTemplate->get());
         return $outerTemplate;

@@ -8,7 +8,6 @@ use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ilLearnplacesStakeholder;
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
-use League\Flysystem\FilesystemInterface;
 use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;

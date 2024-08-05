@@ -97,8 +97,6 @@ This project is licensed under the GNU GPLv3 License - see the LICENSE.md file f
 
 [sabre/uri](https://github.com/sabre-io/uri)
 
-[league/flysystem](https://github.com/thephpleague/flysystem)
-
 [intervention/image](https://github.com/Intervention/image)
 
 [phpunit/phpunit](https://github.com/sebastianbergmann/phpunit)

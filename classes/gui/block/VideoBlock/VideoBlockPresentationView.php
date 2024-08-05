@@ -137,10 +137,10 @@ final class VideoBlockPresentationView implements Renderable
         //setup button
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
+        $lng = PluginContainer::resolve('lng');
 
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlVideoBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlVideoBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
         $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
-        $htmlEditButton = $renderer->render($editButton);
 
         $deleteButton = $this->deleteItemButtonWithModal(
             $this->model->getId() . '-' . self::TYPE,
@@ -149,16 +149,14 @@ final class VideoBlockPresentationView implements Renderable
             $this->plugin->txt('common_delete')
         );
 
-        //setup sequence number
-        $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
-        $input->setRequired(true);
-        $input->setValidationRegexp('/^\d+$/');
-        $input->setValue($this->model->getSequence());
-        $input->setRequired(true);
+        $actionMenu = $renderer->render($factory->dropdown()->standard([
+            $editButton,
+            $deleteButton['button']
+        ])->withLabel($lng->txt('actions')));
 
         //fill outer template
         if(!$this->isReadonly()) {
-            $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
+            $outerTemplate->setVariable('ACTION_BUTTON', $actionMenu . $deleteButton['modal']);
         }
         $outerTemplate->setVariable('CONTENT', $blockTemplate->get());
         return $outerTemplate;

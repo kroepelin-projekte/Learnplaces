@@ -124,13 +124,12 @@ final class AccordionBlockPresentationView implements Renderable
     {
         $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
-        global $DIC;
-        $factory = $DIC->ui()->factory();
-        $renderer = $DIC->ui()->renderer();
+        $factory = PluginContainer::resolve('factory');
+        $renderer = PluginContainer::resolve('renderer');
+        $lng = PluginContainer::resolve('lng');
 
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlAccordionBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlAccordionBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
         $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
-        $htmlEditButton = $renderer->render($editButton);
 
         $deleteButton = $this->deleteItemButtonWithModal(
             $this->model->getId() . '-' . self::TYPE,
@@ -139,18 +138,14 @@ final class AccordionBlockPresentationView implements Renderable
             $this->plugin->txt('common_delete')
         );
 
-/*        //setup sequence number
-        $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
-        $input->setRequired(true);
-        $input->setValidationRegexp('/^\d+$/');
-        $input->setValue($this->model->getSequence());
-        $input->setRequired(true);*/
-
+        $actionMenu = $renderer->render($factory->dropdown()->standard([
+            $editButton,
+            $deleteButton['button']
+        ])->withLabel($lng->txt('actions')));
 
         //fill outer template
         if(!$this->isReadonly()) {
-            $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
-            #$outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
+            $outerTemplate->setVariable('ACTION_BUTTON', $actionMenu . $deleteButton['modal']);
         }
         $outerTemplate->setVariable('CONTENT', $template->get());
         $outerTemplate->setVariable('SEQUENCE', $this->model->getSequence());

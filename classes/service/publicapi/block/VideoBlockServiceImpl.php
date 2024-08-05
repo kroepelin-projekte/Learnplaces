@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SRAG\Learnplaces\service\publicapi\block;
 
 use InvalidArgumentException;
-use League\Flysystem\FilesystemInterface;
 use SRAG\Learnplaces\persistence\dto\VideoBlock;
 use SRAG\Learnplaces\persistence\repository\exception\EntityNotFoundException;
 use SRAG\Learnplaces\persistence\repository\VideoBlockRepository;

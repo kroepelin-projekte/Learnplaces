@@ -129,13 +129,13 @@ final class PictureBlockPresentationView implements Renderable
     {
         $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
-        global $DIC;
-        $factory = $DIC->ui()->factory();
-        $renderer = $DIC->ui()->renderer();
+        /** @var \ILIAS\UI\Factory $factory */
+        $factory = PluginContainer::resolve('factory');
+        $renderer = PluginContainer::resolve('renderer');
+        $lng = PluginContainer::resolve('lng');
 
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlPictureBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlPictureBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
         $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
-        $htmlEditButton = $renderer->render($editButton);
 
         $deleteButton = $this->deleteItemButtonWithModal(
             $this->model->getId() . '-' . self::TYPE,
@@ -144,9 +144,14 @@ final class PictureBlockPresentationView implements Renderable
             $this->plugin->txt('common_delete')
         );
 
+        $actionMenu = $renderer->render($factory->dropdown()->standard([
+            $editButton,
+            $deleteButton['button']
+        ])->withLabel($lng->txt('actions')));
+
         //fill outer template
         if(!$this->isReadonly()) {
-            $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
+            $outerTemplate->setVariable('ACTION_BUTTON', $actionMenu . $deleteButton['modal']);
         }
         $outerTemplate->setVariable('CONTENT', $blockTemplate->get());
         return $outerTemplate;

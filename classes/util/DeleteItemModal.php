@@ -18,41 +18,16 @@ trait DeleteItemModal
      * @param string $item_title
      * @param string $message
      * @param string $button_label
-     * @return string
+     * @return array
      * @throws \ilCtrlException
      */
-    private function deleteItemButtonWithModal(string $item, string $item_title, string $message, string $button_label): string
+    private function deleteItemButtonWithModal(string $item, string $item_title, string $message, string $button_label): array
     {
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
         $query = PluginContainer::resolve('query');
         $refinery = PluginContainer::resolve('refinery');
         $ctrl = PluginContainer::resolve('ctrl');
-
-        // receive GET variable and open modal
-/*        if ($query->has('item') && $query->retrieve('item', $refinery->kindlyTo()->string()) === $item) {
-            $item = $query->retrieve('item', $refinery->kindlyTo()->string());
-
-            if (version_compare(ILIAS_VERSION_NUMERIC, '9.0', '>=')) {
-                $affected_item = $factory->modal()->interruptiveItem()
-                    ->standard($item, $item_title);
-            } else {
-                $affected_item = $factory->modal()->interruptiveItem($item, $item_title);
-            }
-
-            $modal = $factory->modal()
-                ->interruptive(
-                    $button_label,
-                    $message,
-                    $this->controlFlow->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_DELETE) . '&item=' . $item
-                )
-                ->withAffectedItems([$affected_item])
-                ->withFormAction($this->controlFlow->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_DELETE) . '&item=' . $item);
-
-            exit($renderer->render($modal));
-        }*/
-
-        #$ajax_url = $ctrl->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX) . '&item=' . $item;
 
         if (version_compare(ILIAS_VERSION_NUMERIC, '9.0', '>=')) {
             $affected_item = $factory->modal()->interruptiveItem()
@@ -68,14 +43,13 @@ trait DeleteItemModal
                 $this->controlFlow->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_DELETE) . '&item=' . $item
             )
             ->withAffectedItems([$affected_item]);
-            #->withAsyncRenderUrl($ajax_url);
 
-        $button = $factory->button()->standard($button_label, '#')
+        $button = $factory->button()->shy($button_label, '#')
             ->withOnClick($modal->getShowSignal());
 
-        return $renderer->render([
-            $modal,
-            $button
-        ]);
+        return [
+            'modal' => $renderer->render($modal),
+            'button' => $button,
+        ];
     }
 }

@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SRAG\Learnplaces\service\publicapi\block;
 
 use InvalidArgumentException;
-use League\Flysystem\FilesystemInterface;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\MockInterface;
@@ -22,144 +22,148 @@ use SRAG\Learnplaces\service\publicapi\model\VideoModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-class VideoBlockServiceImplTest extends TestCase {
+class VideoBlockServiceImplTest extends TestCase
+{
+    use MockeryPHPUnitIntegration;
 
-	use MockeryPHPUnitIntegration;
+    /**
+     * @var VideoBlockRepository|MockInterface $videoBlockRepositoryMock
+     */
+    private $videoBlockRepositoryMock;
+    /**
+     * @var VideoService|MockInterface $videoServiceMock
+     */
+    private $videoServiceMock;
+    /**
+     * @var VideoBlockServiceImpl $subject
+     */
+    private $subject;
 
-	/**
-	 * @var VideoBlockRepository|MockInterface $videoBlockRepositoryMock
-	 */
-	private $videoBlockRepositoryMock;
-	/**
-	 * @var VideoService|MockInterface $videoServiceMock
-	 */
-	private $videoServiceMock;
-	/**
-	 * @var VideoBlockServiceImpl $subject
-	 */
-	private $subject;
+    /**
+     * @inheritDoc
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-	/**
-	 * @inheritDoc
-	 */
-	protected function setUp(): void {
-		parent::setUp();
+        $this->videoServiceMock = Mockery::mock(VideoService::class);
+        $this->videoBlockRepositoryMock = Mockery::mock(VideoBlockRepository::class);
+        $this->subject = new VideoBlockServiceImpl($this->videoBlockRepositoryMock, $this->videoServiceMock);
+    }
 
-		$this->videoServiceMock = Mockery::mock(VideoService::class);
-		$this->videoBlockRepositoryMock = Mockery::mock(VideoBlockRepository::class);
-		$this->subject = new VideoBlockServiceImpl($this->videoBlockRepositoryMock, $this->videoServiceMock);
-	}
+    /**
+     * @Test
+     * @small
+     */
+    public function testStoreWhichShouldSucceed(): void
+    {
+        $model = new VideoBlockModel();
+        $model->setId(6)
+            ->setSequence(15)
+            ->setVisibility("ALWAYS");
 
-	/**
-	 * @Test
-	 * @small
-	 */
-	public function testStoreWhichShouldSucceed(): void {
-		$model = new VideoBlockModel();
-		$model->setId(6)
-			->setSequence(15)
-			->setVisibility("ALWAYS");
+        $this->videoBlockRepositoryMock
+            ->shouldReceive('store')
+            ->once()
+            ->with(Mockery::any())
+            ->andReturn($model->toDto());
 
-		$this->videoBlockRepositoryMock
-			->shouldReceive('store')
-			->once()
-			->with(Mockery::any())
-			->andReturn($model->toDto());
+        $this->subject->store($model);
+    }
 
-		$this->subject->store($model);
-	}
+    /**
+     * @Test
+     * @small
+     */
+    public function testDeleteWhichShouldSucceed(): void
+    {
+        $model = new VideoBlockModel();
+        $model
+            ->setResourceId("Hello")
+            ->setId(6)
+            ->setSequence(15)
+            ->setVisibility("ALWAYS");
 
-	/**
-	 * @Test
-	 * @small
-	 */
-	public function testDeleteWhichShouldSucceed(): void {
-		$model = new VideoBlockModel();
-		$model
-			->setPath("Hello")
-			->setCoverPath("World")
-			->setId(6)
-			->setSequence(15)
-			->setVisibility("ALWAYS");
+        $this->videoBlockRepositoryMock
+            ->shouldReceive('findByBlockId')
+            ->once()
+            ->with($model->getId())
+            ->andReturn($model->toDto())
+            ->getMock()
+            ->shouldReceive('delete')
+            ->once()
+            ->with($model->getId());
 
-		$this->videoBlockRepositoryMock
-			->shouldReceive('findByBlockId')
-			->once()
-			->with($model->getId())
-			->andReturn($model->toDto())
-			->getMock()
-			->shouldReceive('delete')
-			->once()
-			->with($model->getId());
+        $this->videoServiceMock
+            ->shouldReceive('delete')
+            ->once()
+            ->with(Mockery::type(VideoModel::class));
 
-		$this->videoServiceMock
-			->shouldReceive('delete')
-			->once()
-			->with(Mockery::type(VideoModel::class));
+        $this->subject->delete($model->getId());
+    }
 
-		$this->subject->delete($model->getId());
-	}
+    /**
+     * @Test
+     * @small
+     */
+    public function testDeleteWithInvalidIdWhichShouldFail(): void
+    {
+        $blockId = 6;
 
-	/**
-	 * @Test
-	 * @small
-	 */
-	public function testDeleteWithInvalidIdWhichShouldFail(): void {
-		$blockId = 6;
+        $this->videoBlockRepositoryMock
+            ->shouldReceive('findByBlockId')
+            ->once()
+            ->with($blockId)
+            ->andThrow(new EntityNotFoundException('Entity not found'));
 
-		$this->videoBlockRepositoryMock
-			->shouldReceive('findByBlockId')
-			->once()
-			->with($blockId)
-			->andThrow(new EntityNotFoundException('Entity not found'));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The video block with the given id could not be deleted, because the block was not found.');
 
-		$this->expectException(InvalidArgumentException::class);
-		$this->expectExceptionMessage('The video block with the given id could not be deleted, because the block was not found.');
+        $this->subject->delete($blockId);
 
-		$this->subject->delete($blockId);
-
-	}
+    }
 
 
-	/**
-	 * @Test
-	 * @small
-	 */
-	public function testFindWhichShouldSucceed(): void {
-		$model = new VideoBlockModel();
-		$model
-			->setPath("Hello")
-			->setCoverPath("World")
-			->setId(6)
-			->setSequence(15)
-			->setVisibility("ALWAYS");
+    /**
+     * @Test
+     * @small
+     */
+    public function testFindWhichShouldSucceed(): void
+    {
+        $model = new VideoBlockModel();
+        $model
+            ->setResourceId("Hello")
+            ->setId(6)
+            ->setSequence(15)
+            ->setVisibility("ALWAYS");
 
-		$this->videoBlockRepositoryMock
-			->shouldReceive('findByBlockId')
-			->once()
-			->with($model->getId())
-			->andReturn($model->toDto());
+        $this->videoBlockRepositoryMock
+            ->shouldReceive('findByBlockId')
+            ->once()
+            ->with($model->getId())
+            ->andReturn($model->toDto());
 
-		$this->subject->find($model->getId());
-	}
+        $this->subject->find($model->getId());
+    }
 
-	/**
-	 * @Test
-	 * @small
-	 */
-	public function testFindWithInvalidIdWhichShouldFail(): void {
-		$blockId = 6;
+    /**
+     * @Test
+     * @small
+     */
+    public function testFindWithInvalidIdWhichShouldFail(): void
+    {
+        $blockId = 6;
 
-		$this->videoBlockRepositoryMock
-			->shouldReceive('findByBlockId')
-			->once()
-			->with($blockId)
-			->andThrow(new EntityNotFoundException('Entity not found'));
+        $this->videoBlockRepositoryMock
+            ->shouldReceive('findByBlockId')
+            ->once()
+            ->with($blockId)
+            ->andThrow(new EntityNotFoundException('Entity not found'));
 
-		$this->expectException(InvalidArgumentException::class);
-		$this->expectExceptionMessage('The video block with the given id does not exist.');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The video block with the given id does not exist.');
 
-		$this->subject->find($blockId);
+        $this->subject->find($blockId);
 
-	}
+    }
 }
