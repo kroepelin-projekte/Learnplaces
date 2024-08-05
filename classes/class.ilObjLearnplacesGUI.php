@@ -213,14 +213,13 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
     {
         if ($this->accessGuard->hasWritePermission()) {
             $this->learnplaceTabs->addSubTab(xsrlContentGUI::TAB_ID, $this->lng->txt(xsrlContentGUI::TAB_ID), $this->ctrl->getLinkTarget($this));
+            $this->learnplaceTabs->addSubTab('sequence', $this->plugin->txt('content_change_sequence'), $this->ctrl->getLinkTargetByClass(xsrlContentGUI::class, xsrlContentGUI::CMD_SEQUENCE_VIEW));
 
             if($this->accessGuard->hasWritePermission() && !$this->hasMap()) {
                 $this->learnplaceTabs->addSubTab(xsrlMapBlockGUI::TAB_ID, $this->plugin->txt('tabs_map'), $this->ctrl->getLinkTargetByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_ADD));
             } elseif ($this->hasMap()) {
                 $this->learnplaceTabs->addSubTab(xsrlMapBlockGUI::TAB_ID, $this->plugin->txt('tabs_map'), $this->ctrl->getLinkTargetByClass(xsrlMapBlockGUI::class, self::DEFAULT_CMD));
             }
-
-            //            $this->learnplaceTabs->activateSubTab(self::SUBTAB_CONTENT);
         }
     }
 

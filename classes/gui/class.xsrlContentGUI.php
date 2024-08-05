@@ -56,7 +56,7 @@ final class xsrlContentGUI
      */
     public const CMD_SEQUENCE = 'sequence';
     private const CMD_SEQUENCE_FORM = 'sequenceForm';
-    private const CMD_SEQUENCE_VIEW = 'sequenceView';
+    public const CMD_SEQUENCE_VIEW = 'sequenceView';
     /**
      * The anchor start which is used to
      * jump to the edited block after leaving the edit / creation view.
@@ -232,15 +232,6 @@ final class xsrlContentGUI
      */
     private function index(): void
     {
-        $factory = PluginContainer::resolve('factory');
-        $toolbar = new ilToolbarGUI();
-
-        $saveSequenceButton = $factory->button()->standard(
-            $this->plugin->txt('content_change_sequence'),
-            $this->controlFlow->getLinkTargetByClass(self::class, self::CMD_SEQUENCE_VIEW),
-        );
-        $toolbar->addComponent($saveSequenceButton);
-
         $writePermission = $this->accessGuard->hasWritePermission();
         $template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block_list.html', true, true);
 
@@ -254,11 +245,6 @@ final class xsrlContentGUI
         $view = PluginContainer::resolve(ContentPresentationView::class);
         $view->setBlocks($learnplace->getBlocks());
         $view->setReadonly(!$writePermission);
-
-        if($writePermission) {
-            $template->setVariable('FORM_ACTION', $this->controlFlow->getFormAction($this, self::CMD_SEQUENCE));
-            $template->setVariable('TOOLBAR', $toolbar->getHTML());
-        }
 
         $template->setVariable('CONTENT', $view->getHTML());
 
@@ -443,6 +429,7 @@ final class xsrlContentGUI
      */
     private function sequenceView(): void
     {
+        $this->tabs->activateSubTab('sequence');
         $renderer = PluginContainer::resolve('renderer');
 
         $this->template->addCss(ilLearnplacesPlugin::getInstance()->getStyleSheetLocation('style.css'));
@@ -470,9 +457,10 @@ final class xsrlContentGUI
 
         $fields = [];
         foreach ($blocks as $block) {
+            if ($block instanceof MapBlockModel) {
+                continue;
+            }
             $view = $renderableBlockViewFactory->getInstance($block);
-
-            $label = $this->getLabel($block);
 
             if ($block instanceof AccordionBlockModel) {
                 $block->setExpand(false);
@@ -480,7 +468,7 @@ final class xsrlContentGUI
                 $block->setBlocks([]);
             }
 
-            $inputField = $field->numeric($label, $view->getHtml())
+            $inputField = $field->numeric('Position', $view->getHtml())
                 ->withValue($block->getSequence())
                 ->withRequired(true);
 
@@ -503,7 +491,7 @@ final class xsrlContentGUI
                     $view = $renderableBlockViewFactory->getInstance($accordionBlock);
 
                     //   language var
-                    $fields['block_' . $accordionBlock->getId()] = $field->numeric($this->getLabel($accordionBlock), $view->getHtml())
+                    $fields['block_' . $accordionBlock->getId()] = $field->numeric('Position', $view->getHtml())
                         ->withValue($accordionBlock->getSequence())
                         ->withOnLoadCode(function ($id) {
                             return <<<JS
@@ -525,30 +513,5 @@ final class xsrlContentGUI
         $action = $this->controlFlow->getFormAction($this, self::CMD_SEQUENCE);
 
         return $factory->input()->container()->form()->standard($action, [$section]);
-    }
-
-    private function getLabel($block): string
-    {
-        $label = '';
-        switch ($block) {
-            case $block instanceof AccordionBlockModel:
-                $label = 'Accordion';
-                break;
-            case $block instanceof IliasLinkBlockModel:
-                $label = 'Link';
-                break;
-            case $block instanceof RichTextBlockModel:
-                $label = 'Text';
-                break;
-            case $block instanceof VideoBlockModel:
-                $label = 'Video';
-                break;
-            case $block instanceof PictureBlockModel:
-                $label = 'Picture';
-                break;
-        }
-
-        // todo  lang
-        return $label . ' position';
     }
 }

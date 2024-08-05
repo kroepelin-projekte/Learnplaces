@@ -72,8 +72,10 @@ final class VideoBlockPresentationView implements Renderable
      */
     private function initView(): void
     {
+        /** @var \ILIAS\UI\Factory $factory */
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
+        /** @var \ILIAS\ResourceStorage\Services $resourceStorage */
         $resourceStorage = PluginContainer::resolve('resourceStorage');
 
         $resourceId = $this->model->getResourceId();
@@ -90,7 +92,7 @@ final class VideoBlockPresentationView implements Renderable
             );
 
 /*            $videoHTML = '<video width="320" height="240" controls>
-                          <source src="$src" type="video/mp4">
+                          <source src="' . $src . '" type="video/mp4">
                           Your browser does not support the video tag.
                         </video>';*/
 
@@ -157,10 +159,8 @@ final class VideoBlockPresentationView implements Renderable
         //fill outer template
         if(!$this->isReadonly()) {
             $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
-            $outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
         }
         $outerTemplate->setVariable('CONTENT', $blockTemplate->get());
-        $outerTemplate->setVariable('SEQUENCE', $this->model->getSequence());
         return $outerTemplate;
     }
 }

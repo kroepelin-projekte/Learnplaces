@@ -30,27 +30,45 @@ trait DeleteItemModal
         $ctrl = PluginContainer::resolve('ctrl');
 
         // receive GET variable and open modal
-        if ($query->has('item') && $query->retrieve('item', $refinery->kindlyTo()->string()) === $item) {
+/*        if ($query->has('item') && $query->retrieve('item', $refinery->kindlyTo()->string()) === $item) {
             $item = $query->retrieve('item', $refinery->kindlyTo()->string());
 
             if (version_compare(ILIAS_VERSION_NUMERIC, '9.0', '>=')) {
-                $affected_item = $factory->modal()->interruptiveItem($item, $item_title)
+                $affected_item = $factory->modal()->interruptiveItem()
                     ->standard($item, $item_title);
             } else {
                 $affected_item = $factory->modal()->interruptiveItem($item, $item_title);
             }
 
             $modal = $factory->modal()
-                ->interruptive($button_label, $message, '#')
-                ->withAffectedItems([$affected_item]);
+                ->interruptive(
+                    $button_label,
+                    $message,
+                    $this->controlFlow->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_DELETE) . '&item=' . $item
+                )
+                ->withAffectedItems([$affected_item])
+                ->withFormAction($this->controlFlow->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_DELETE) . '&item=' . $item);
 
             exit($renderer->render($modal));
+        }*/
+
+        #$ajax_url = $ctrl->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX) . '&item=' . $item;
+
+        if (version_compare(ILIAS_VERSION_NUMERIC, '9.0', '>=')) {
+            $affected_item = $factory->modal()->interruptiveItem()
+                ->standard($item, $item_title);
+        } else {
+            $affected_item = $factory->modal()->interruptiveItem($item, $item_title);
         }
 
-        $ajax_url = $ctrl->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX) . '&item=' . $item;
-
-        $modal = $factory->modal()->interruptive('', '', '')
-            ->withAsyncRenderUrl($ajax_url);
+        $modal = $factory->modal()
+            ->interruptive(
+                $button_label,
+                $message,
+                $this->controlFlow->getLinkTargetByClass(xsrlContentGUI::class, CommonControllerAction::CMD_DELETE) . '&item=' . $item
+            )
+            ->withAffectedItems([$affected_item]);
+            #->withAsyncRenderUrl($ajax_url);
 
         $button = $factory->button()->standard($button_label, '#')
             ->withOnClick($modal->getShowSignal());

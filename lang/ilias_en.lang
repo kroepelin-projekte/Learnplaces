@@ -83,7 +83,7 @@ setting_radius_info#:#The radius is measured in meter and describes the size of 
 setting_validation_failure_radius#:#The radius must be between 1 and 40'000 meter.
 setting_visibility_default#:#Default visibility
 
-content_change_sequence#:#Change sequence
+content_change_sequence#:#Sortation
 content_save_sequence#:#Save sequence
 content_sequence_changed_successfully#:#Sequence successfully changed
 content_sequence_changed_error#:#Please fill out all fields

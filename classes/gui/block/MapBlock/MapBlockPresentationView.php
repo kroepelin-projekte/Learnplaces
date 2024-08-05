@@ -94,7 +94,12 @@ final class MapBlockPresentationView
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlMapBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
         $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
 
-        $affected_item = $factory->modal()->interruptiveItem('deleteMap', 'Map');
+        if (version_compare(ILIAS_VERSION_NUMERIC, '9.0', '>=')) {
+            $affected_item = $factory->modal()->interruptiveItem()
+                ->standard('deleteMap', 'Map');
+        } else {
+            $affected_item = $factory->modal()->interruptiveItem('deleteMap', 'Map');
+        }
         $modal = $factory->modal()->interruptive(
             $this->plugin->txt('common_delete'),
             $this->plugin->txt('confirm_delete_header'),

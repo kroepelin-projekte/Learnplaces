@@ -139,21 +139,11 @@ final class IliasLinkBlockPresentationView implements Renderable
             $this->plugin->txt('common_delete')
         );
 
-/*        // todo
-        //setup sequence number
-        $input = new ilTextInputGUI('', self::SEQUENCE_ID_PREFIX . $this->model->getId());
-        $input->setRequired(true);
-        $input->setValidationRegexp('/^\d+$/');
-        $input->setValue($this->model->getSequence());
-        $input->setRequired(true);*/
-
         //fill outer template
         if(!$this->isReadonly()) {
             $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
-            #$outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
         }
         $outerTemplate->setVariable('CONTENT', $blockTemplate->get());
-        $outerTemplate->setVariable('SEQUENCE', $this->model->getSequence());
         return $outerTemplate;
     }
 }

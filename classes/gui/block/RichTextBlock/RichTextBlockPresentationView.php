@@ -136,10 +136,8 @@ final class RichTextBlockPresentationView implements Renderable
         //fill outer template
         if(!$this->isReadonly()) {
             $outerTemplate->setVariable('ACTION_BUTTON', $htmlEditButton . $deleteButton);
-            #$outerTemplate->setVariable('SEQUENCE_INPUT', $input->render());
         }
         $outerTemplate->setVariable('CONTENT', $template->get());
-        $outerTemplate->setVariable('SEQUENCE', $this->model->getSequence());
         return $outerTemplate;
     }
 }
