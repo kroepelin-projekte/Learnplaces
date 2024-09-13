@@ -81,20 +81,19 @@ final class VideoBlockPresentationView implements Renderable
         $resourceId = $this->model->getResourceId();
         $resource = new ResourceIdentification($resourceId);
         if ($resourceStorage->manage()->find($resourceId)) {
-            $src = $resourceStorage->consume()
-                ->src($resource)
-                ->getSrc();
 
-            // todo not working in ilias 9
+            $videoHTML = '';
+            if (version_compare(ILIAS_VERSION_NUMERIC, "9.0", "<")) {
+                $src = $resourceStorage->consume()
+                    ->src($resource)
+                    ->getSrc();
 
-            $videoHTML = $renderer->render(
-                $factory->player()->video($src)
-            );
+                $videoHTML = $renderer->render(
+                    $factory->player()->video($src)
+                );
+            } else {
 
-/*            $videoHTML = '<video width="320" height="240" controls>
-                          <source src="' . $src . '" type="video/mp4">
-                          Your browser does not support the video tag.
-                        </video>';*/
+            }
 
             $this->template->setVariable('CONTENT', $videoHTML);
         }

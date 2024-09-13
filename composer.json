@@ -14,7 +14,7 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.4",
+        "php": ">=7.4 <=8.2",
         "ezyang/htmlpurifier": "^4.17",
         "intervention/image": "^2.4",
         "sabre/uri": "^2.1",
