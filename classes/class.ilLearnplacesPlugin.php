@@ -17,24 +17,14 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
     private static ?ilLearnplacesPlugin $instance = null;
 
     /**
-     * ilLearnplacesPlugin constructor.
-     */
-    public function __construct()
-    {
-        $database = PluginContainer::resolve('database');
-        $componentRepository = PluginContainer::resolve('componentRepository');
-        parent::__construct($database, $componentRepository, 'xsrl');
-
-        self::$instance = $this;
-    }
-
-    /**
      * @return ilLearnplacesPlugin
      */
     public static function getInstance(): ilLearnplacesPlugin
     {
-        if(is_null(self::$instance)) {
-            self::$instance = new self();
+        if (is_null(self::$instance)) {
+            $database = PluginContainer::resolve('database');
+            $componentRepository = PluginContainer::resolve('componentRepository');
+            self::$instance = new self($database, $componentRepository, 'xsrl');
         }
         return self::$instance;
     }
@@ -69,7 +59,7 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
      */
     private function dropDatabase(): void
     {
-        $database = PluginContainer::resolve('ilDB');
+        $database = PluginContainer::resolve('database');
         $database->dropTable(\SRAG\Learnplaces\persistence\entity\AccordionBlock::returnDbTableName(), false);
         $database->dropTable(\SRAG\Learnplaces\persistence\entity\AccordionBlockMember::returnDbTableName(), false);
         $database->dropTable(\SRAG\Learnplaces\persistence\entity\Answer::returnDbTableName(), false);
