@@ -59,7 +59,7 @@ class VideoBlock extends ActiveRecord
     /**
      * @var string
      *
-     * @con_is_notnull true
+     * @con_is_notnull false
      * @con_has_field  true
      * @con_fieldtype  text
      * @con_length     2000
@@ -198,7 +198,14 @@ class VideoBlock extends ActiveRecord
                 'notnull' => false,
                 'default' => ''
             ]);
-            FileMigration::moveVideosToResourceStorage();
         }
+    }
+
+    /**
+     * @return void
+     */
+    public static function updateDB5(): void
+    {
+        FileMigration::moveVideosToResourceStorage();
     }
 }

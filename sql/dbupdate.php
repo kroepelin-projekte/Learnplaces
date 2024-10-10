@@ -120,7 +120,12 @@ foreach ($videos as $video) {
 ?>
 <#4>
 <?php
-// update from ILIAS 7 to 8. Moves pictures and videos to ILIAS resource storage.
 \SRAG\Learnplaces\persistence\entity\Picture::updateDB4();
 \SRAG\Learnplaces\persistence\entity\VideoBlock::updateDB4();
+?>
+<#5>
+<?php
+// update from ILIAS 7 to 8. Moves pictures and videos to ILIAS resource storage.
+\SRAG\Learnplaces\persistence\entity\Picture::updateDB5();
+\SRAG\Learnplaces\persistence\entity\VideoBlock::updateDB5();
 ?>
