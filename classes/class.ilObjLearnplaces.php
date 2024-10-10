@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use ILIAS\Filesystem\Exception\FileNotFoundException;
+use League\Flysystem\FileExistsException;
+use League\Flysystem\FilesystemInterface;
 use SRAG\Learnplaces\container\PluginContainer;
 use SRAG\Learnplaces\service\publicapi\block\ConfigurationService;
 use SRAG\Learnplaces\service\publicapi\block\LearnplaceService;
