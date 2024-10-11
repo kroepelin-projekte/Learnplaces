@@ -25,6 +25,11 @@ class FileMigration
         $pictures = \SRAG\Learnplaces\persistence\entity\Picture::get();
         $logger->info('Found ' . count($pictures) . ' pictures');
 
+        if (! $DIC->offsetExists('filesystem')) {
+            \ilInitialisation::bootstrapFilesystems();
+            $logger->info('Filesystems initialized');
+        }
+
         foreach ($pictures as $picture) {
             $logger->info("_____________________\n");
             $logger->info('Move picture ' . $picture->getId());

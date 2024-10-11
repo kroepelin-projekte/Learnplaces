@@ -173,6 +173,6 @@ class Picture extends ActiveRecord
      */
     public static function updateDB5(): void
     {
-        FileMigration::movePicturesToResourceStorage();
+        //FileMigration::movePicturesToResourceStorage();
     }
 }
