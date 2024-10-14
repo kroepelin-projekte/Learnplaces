@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "05efcb9b89082820b568060af252508a",
+    "content-hash": "a29d61f36481a0574fea135a1e6e9cc5",
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
@@ -323,59 +323,6 @@
             "time": "2024-04-15T12:06:14+00:00"
         },
         {
-            "name": "psr/http-message",
-            "version": "2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/http-message.git",
-                "reference": "402d35bcb92c70c026d1a6a9883f06b2ead23d71"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-message/zipball/402d35bcb92c70c026d1a6a9883f06b2ead23d71",
-                "reference": "402d35bcb92c70c026d1a6a9883f06b2ead23d71",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.2 || ^8.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Psr\\Http\\Message\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "https://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for HTTP messages",
-            "homepage": "https://github.com/php-fig/http-message",
-            "keywords": [
-                "http",
-                "http-message",
-                "psr",
-                "psr-7",
-                "request",
-                "response"
-            ],
-            "support": {
-                "source": "https://github.com/php-fig/http-message/tree/2.0"
-            },
-            "time": "2023-04-04T09:54:51+00:00"
-        },
-        {
             "name": "ralouphie/getallheaders",
             "version": "3.0.3",
             "source": {
@@ -481,16 +428,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "7.3.0",
+            "version": "7.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "e92ab7adaa3db1752639361ded41a7abb2d28996"
+                "reference": "e4d46be06c8d0d99f542e7199d1283850fb9192c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/e92ab7adaa3db1752639361ded41a7abb2d28996",
-                "reference": "e92ab7adaa3db1752639361ded41a7abb2d28996",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/e4d46be06c8d0d99f542e7199d1283850fb9192c",
+                "reference": "e4d46be06c8d0d99f542e7199d1283850fb9192c",
                 "shasum": ""
             },
             "type": "component",
@@ -534,9 +481,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/7.3.0"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/7.4.1"
             },
-            "time": "2024-08-07T06:30:33+00:00"
+            "time": "2024-10-10T05:50:45+00:00"
         },
         {
             "name": "wapmorgan/file-type-detector",

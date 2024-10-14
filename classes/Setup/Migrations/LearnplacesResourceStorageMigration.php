@@ -1,13 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace classes\Setup\Migrations;
 
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 use _PHPStan_01e5828ef\Nette\Neon\Exception;
+use ILIAS\DI\Container;
+use ILIAS\Filesystem\Stream\Stream;
 use ILIAS\Setup\Environment;
 use ILIAS\Setup\Migration;
 use ILIAS\Setup\Objective;
 use ilLearnplacesStakeholder;
 use ilResourceStorageMigrationHelper;
+use InitResourceStorage;
 
 class LearnplacesResourceStorageMigration implements Migration
 {
@@ -16,7 +24,7 @@ class LearnplacesResourceStorageMigration implements Migration
     /**
      * @return string
      */
-    public function getLabel() : string
+    public function getLabel(): string
     {
         return "Learnplaces ResourceStorage Migration";
     }
@@ -25,9 +33,9 @@ class LearnplacesResourceStorageMigration implements Migration
      * Tell the default amount of steps to be executed for one run of the migration.
      * Return Migration::INFINITE if all units should be migrated at once.
      */
-    public function getDefaultAmountOfStepsPerRun() : int
+    public function getDefaultAmountOfStepsPerRun(): int
     {
-        return Migration::INFINITE;
+        return 10000;
     }
 
     /**
@@ -36,7 +44,7 @@ class LearnplacesResourceStorageMigration implements Migration
      * @throw UnachievableException if the objective is not achievable
      * @return Objective[]
      */
-    public function getPreconditions(Environment $environment) : array
+    public function getPreconditions(Environment $environment): array
     {
         return ilResourceStorageMigrationHelper::getPreconditions();
     }
@@ -58,7 +66,7 @@ class LearnplacesResourceStorageMigration implements Migration
     /**
      *  Run one step of the migration.
      */
-    public function step(Environment $environment) : void
+    public function step(Environment $environment): void
     {
         $pictures = \SRAG\Learnplaces\persistence\entity\Picture::get();
 
@@ -95,7 +103,7 @@ class LearnplacesResourceStorageMigration implements Migration
      * Count up how many "things" need to be migrated. This helps the admin to
      * decide how big he can create the steps and also how long a migration takes
      */
-    public function getRemainingAmountOfSteps() : int
+    public function getRemainingAmountOfSteps(): int
     {
         $db = $this->helper->getDatabase();
         $rec = $db->query("SELECT COUNT(*) AS amount FROM xsrl_picture WHERE resource_id IS NULL");

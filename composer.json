@@ -21,6 +21,9 @@
         "tinymce/tinymce": "^7.2.1",
         "wapmorgan/file-type-detector": "^1.1"
     },
+    "replace": {
+        "psr/http-message": "*"
+    },
     "config": {
         "sort-packages": true,
         "discard-changes": true,
