@@ -200,12 +200,4 @@ class VideoBlock extends ActiveRecord
             ]);
         }
     }
-
-    /**
-     * @return void
-     */
-    public static function updateDB5(): void
-    {
-        //FileMigration::moveVideosToResourceStorage();
-    }
 }

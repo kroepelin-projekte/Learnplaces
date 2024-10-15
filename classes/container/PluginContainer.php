@@ -78,6 +78,10 @@ final class PluginContainer
      */
     public static function bootstrap(): void
     {
+        if (!isset($GLOBALS['DIC'])) {
+            return;
+        }
+
         static::$container = $GLOBALS['DIC'];
 
         if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {

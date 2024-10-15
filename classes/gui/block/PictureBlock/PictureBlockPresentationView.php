@@ -87,7 +87,7 @@ final class PictureBlockPresentationView implements Renderable
                 ->src($resource)
                 ->getSrc();
             $pictureHTML = $renderer->render(
-                $factory->image()->standard($src, 'Block picture')
+                $factory->image()->responsive($src, 'Block picture')
             );
             $this->template->setVariable('CONTENT', $pictureHTML);
         }

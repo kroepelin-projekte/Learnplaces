@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use ILIAS\Filesystem\Exception\FileNotFoundException;
+use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FilesystemInterface;
 use SRAG\Learnplaces\container\PluginContainer;
@@ -170,14 +171,11 @@ final class ilObjLearnplaces extends ilObjectPlugin
                     $accBlock->setId(0);
 
                     if ($accBlock instanceof VideoBlockModel) {
-                        $path = $accBlock->getPath();
-                        $coverPath = $accBlock->getCoverPath();
+                        $resourceId = $accBlock->getResourceId();
 
-                        $newPath = $this->copyFileToNewObject($newObjectId, $path);
-                        $newCoverPath = $this->copyFileToNewObject($newObjectId, $coverPath);
+                        $newResourceId = $this->copyFileToNewObject($newObjectId, $resourceId);
 
-                        $accBlock->setPath($newPath);
-                        $accBlock->setCoverPath($newCoverPath);
+                        $accBlock->setResourceId($newResourceId);
                     }
 
                     if ($accBlock instanceof PictureBlockModel) {
@@ -190,14 +188,11 @@ final class ilObjLearnplaces extends ilObjectPlugin
             }
 
             if ($block instanceof VideoBlockModel) {
-                $path = $block->getPath();
-                $coverPath = $block->getCoverPath();
+                $resourceId = $block->getResourceId();
 
-                $newPath = $this->copyFileToNewObject($newObjectId, $path);
-                $newCoverPath = $this->copyFileToNewObject($newObjectId, $coverPath);
+                $newResourceId = $this->copyFileToNewObject($newObjectId, $resourceId);
 
-                $block->setPath($newPath);
-                $block->setCoverPath($newCoverPath);
+                $block->setResourceId($newResourceId);
             }
 
             if ($block instanceof PictureBlockModel) {
@@ -212,34 +207,30 @@ final class ilObjLearnplaces extends ilObjectPlugin
 
     /**
      * @param int $objectId
-     * @param string $filePath
+     * @param string $resourceId
      * @return string
      * @throws ilException
      */
-    private function copyFileToNewObject(int $objectId, string $filePath): string
+    private function copyFileToNewObject(int $objectId, string $resourceId): string
     {
-        if (strlen($filePath) === 0) {
+        if (strlen($resourceId) === 0) {
             return '';
         }
 
-        /**
-         * @var FilesystemInterface $filesystem
-         */
-        $filesystem = PluginContainer::resolve(FilesystemInterface::class);
+        /** @var \ILIAS\ResourceStorage\Services $resourceStorage  */
+        $resourceStorage = PluginContainer::resolve('resourceStorage');
 
-        $newFilePath = PathHelper::generatePath($objectId, $filePath);
-
-        try {
-            if (!$filesystem->copy($filePath, $newFilePath)) {
-                throw new \ilException("Copy process of learnplace failed unable to copy: '$filePath' to '$newFilePath'");
-            }
-        } catch (FileExistsException $ex) {
-            // noop file is already there
-        } catch (FileNotFoundException $ex) {
-            throw new \ilException("Copy process of learnplace failed unable to copy: '$filePath' reason: file not found");
+        if (! $resourceStorage->manage()->find($resourceId)) {
+            return '';
         }
 
-        return $newFilePath;
+        $stream = $resourceStorage->consume()->stream(new ResourceIdentification($resourceId))
+            ->getStream();
+
+        $newResourceId = $resourceStorage->manage()->stream($stream, new ilLearnplacesStakeholder())
+            ->serialize();
+
+        return $newResourceId;
     }
 
     /**
@@ -256,11 +247,9 @@ final class ilObjLearnplaces extends ilObjectPlugin
         $pictureRepository = PluginContainer::resolve(PictureRepository::class);
 
         $copyPicture = new PictureModel();
-        $newOriginalPath = $this->copyFileToNewObject($newObjectId, $picture->getOriginalPath());
-        $newPreviewPath = $this->copyFileToNewObject($newObjectId, $picture->getPreviewPath());
+        $newResourceId = $this->copyFileToNewObject($newObjectId, $picture->getResourceId());
 
-        $copyPicture->setOriginalPath($newOriginalPath);
-        $copyPicture->setPreviewPath($newPreviewPath);
+        $copyPicture->setResourceId($newResourceId);
         return ($pictureRepository->store($copyPicture->toDto()))->toModel();
     }
 }

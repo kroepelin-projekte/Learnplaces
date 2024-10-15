@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace classes\Setup\Migrations;
+namespace SRAG\Learnplaces\Setup\Migrations;
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
