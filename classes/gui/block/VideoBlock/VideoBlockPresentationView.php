@@ -88,9 +88,11 @@ final class VideoBlockPresentationView implements Renderable
                     ->src($resource)
                     ->getSrc();
 
-                $videoHTML = $renderer->render(
+                // UI-Component video is not responsive
+                /*$videoHTML = $renderer->render(
                     $factory->player()->video($src)
-                );
+                );*/
+                $videoHTML = "<video style='width: 100%;' controls><source src=\"$src\" type=\"video/mp4\">Your browser does not support the video tag.</video>";
             } else {
 
             }
