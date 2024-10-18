@@ -8,15 +8,17 @@ use ILIAS\Setup\Metrics;
 use ilDatabaseUpdateStepsExecutedObjective;
 use ilDatabaseUpdateStepsMetricsCollectedObjective;
 use ILIAS\Refinery\Factory as Refinery;
-use SRAG\Learnplaces\Setup\Migrations\LearnplacesResourceStorageMigration;
 use ILIAS\Setup\Agent\NullAgent;
+use SRAG\Learnplaces\Setup\Migrations\LearnplacesResourceStorageMigrationPictures;
+use SRAG\Learnplaces\Setup\Migrations\LearnplacesResourceStorageMigrationVideos;
 
 class LearnplacesSetupAgent extends NullAgent
 {
     public function getMigrations(): array
     {
         return [
-            "ResourceStorageMigration" => new LearnplacesResourceStorageMigration(),
+            "ResourceStorageMigrationPictures" => new LearnplacesResourceStorageMigrationPictures(),
+            "ResourceStorageMigrationVideos" => new LearnplacesResourceStorageMigrationVideos(),
         ];
     }
 

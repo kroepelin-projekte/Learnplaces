@@ -17,7 +17,7 @@ use ilLearnplacesStakeholder;
 use ilResourceStorageMigrationHelper;
 use InitResourceStorage;
 
-class LearnplacesResourceStorageMigration implements Migration
+class LearnplacesResourceStorageMigrationPictures implements Migration
 {
     private ilResourceStorageMigrationHelper $helper;
 
@@ -26,7 +26,7 @@ class LearnplacesResourceStorageMigration implements Migration
      */
     public function getLabel(): string
     {
-        return "Learnplaces ResourceStorage Migration";
+        return "Learnplaces Pictures ResourceStorage Migration";
     }
 
     /**
@@ -35,7 +35,7 @@ class LearnplacesResourceStorageMigration implements Migration
      */
     public function getDefaultAmountOfStepsPerRun(): int
     {
-        return 10000;
+        return 5000;
     }
 
     /**
