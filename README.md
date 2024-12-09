@@ -6,7 +6,6 @@
 - [Compatibility](#compatibility)
 - [Installation](#installation)
 - [Activation](#activation)
-- [License](#license)
 
 ## Introduction
 
@@ -57,7 +56,3 @@ composer install --no-dev
 1. Sign in to ILIAS with Administrator privileges.
 2. Proceed to `Administration » Extending ILIAS » Plugins`
 3. Locate the desired plugin, then select `Actions » Install`, and subsequently, `Actions » Activate`.
-
-## License
-
-This commercial Plugin was developed by Kröpelin Projekt GmbH (https://www.kroepelin-projekte.de)
