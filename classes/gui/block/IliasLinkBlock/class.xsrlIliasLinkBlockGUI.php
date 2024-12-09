@@ -1,0 +1,302 @@
+<?php
+
+declare(strict_types=1);
+
+use ILIAS\UI\Component\Tree\TreeRecursion;
+use Psr\Http\Message\ServerRequestInterface;
+use KPG\Learnplaces\gui\block\util\AccordionAware;
+use KPG\Learnplaces\gui\block\util\BlockIdReferenceValidationAware;
+use KPG\Learnplaces\gui\block\util\InsertPositionAware;
+use KPG\Learnplaces\gui\block\util\ReferenceIdAware;
+use KPG\Learnplaces\gui\component\PlusView;
+use KPG\Learnplaces\gui\exception\ValidationException;
+use KPG\Learnplaces\gui\helper\CommonControllerAction;
+use KPG\Learnplaces\service\publicapi\block\AccordionBlockService;
+use KPG\Learnplaces\service\publicapi\block\ConfigurationService;
+use KPG\Learnplaces\service\publicapi\block\ILIASLinkBlockService;
+use KPG\Learnplaces\service\publicapi\block\LearnplaceService;
+use KPG\Learnplaces\service\publicapi\model\ILIASLinkBlockModel;
+use KPG\Learnplaces\service\security\AccessGuard;
+
+/**
+ * Class xsrlIliasLinkBlock
+ *
+ * @package KPG\Learnplaces\gui\block\IliasLinkBlock
+ *
+ * @author  Nicolas Schäfli <ns@studer-raimann.ch>
+ *
+ * @ilCtrl_Calls           xsrlIliasLinkBlockGUI: xsrlIliasLinkBlockEditFormViewGUI
+ * @ilCtrl_isCalledBy      xsrlIliasLinkBlockGUI: ilInternalLinkGUI
+ */
+final class xsrlIliasLinkBlockGUI
+{
+    use InsertPositionAware;
+    use AccordionAware;
+    use BlockIdReferenceValidationAware;
+    use ReferenceIdAware;
+
+    public const TAB_ID = 'content';
+    public const BLOCK_ID_QUERY_KEY = 'block';
+    public const ANCHOR_TEMPLATE = 'sequence-';
+
+    /**
+     * @var ilTabsGUI $tabs
+     */
+    private $tabs;
+    /**
+     * @var ilGlobalPageTemplate | ilTemplate $template
+     */
+    private $template;
+    /**
+     * @var ilCtrl $controlFlow
+     */
+    private $controlFlow;
+    /**
+     * @var ilLearnplacesPlugin $plugin
+     */
+    private $plugin;
+    /**
+     * @var ILIASLinkBlockService $iliasLinkService
+     */
+    private $iliasLinkService;
+    /**
+     * @var LearnplaceService $learnplaceService
+     */
+    private $learnplaceService;
+    /**
+     * @var ConfigurationService $configService
+     */
+    private $configService;
+    /**
+     * @var AccordionBlockService $accprdionService
+     */
+    private $accprdionService;
+    /**
+     * @var ServerRequestInterface $request
+     */
+    private $request;
+    /**
+     * @var AccessGuard $blockAccessGuard
+     */
+    private $blockAccessGuard;
+
+    /**
+     * xsrlIliasLinkBlockGUI constructor.
+     *
+     * @param ilTabsGUI $tabs
+     * @param ilGlobalPageTemplate | ilTemplate $template
+     * @param ilCtrl $controlFlow
+     * @param ilLearnplacesPlugin $plugin
+     * @param ILIASLinkBlockService $iliasLinkService
+     * @param LearnplaceService $learnplaceService
+     * @param ConfigurationService $configService
+     * @param AccordionBlockService $accprdionService
+     * @param ServerRequestInterface $request
+     * @param AccessGuard $blockAccessGuard
+     */
+    public function __construct(ilTabsGUI $tabs, $template, ilCtrl $controlFlow, ilLearnplacesPlugin $plugin, ILIASLinkBlockService $iliasLinkService, LearnplaceService $learnplaceService, ConfigurationService $configService, AccordionBlockService $accprdionService, ServerRequestInterface $request, AccessGuard $blockAccessGuard)
+    {
+        $this->tabs = $tabs;
+        $this->template = $template;
+        $this->controlFlow = $controlFlow;
+        $this->plugin = $plugin;
+        $this->iliasLinkService = $iliasLinkService;
+        $this->learnplaceService = $learnplaceService;
+        $this->configService = $configService;
+        $this->accprdionService = $accprdionService;
+        $this->request = $request;
+        $this->blockAccessGuard = $blockAccessGuard;
+    }
+
+    /**
+     * @return bool
+     * @throws ilCtrlException
+     * @throws ilTemplateException
+     */
+    public function executeCommand(): bool
+    {
+        $next_class = $this->controlFlow->getNextClass();
+        $cmd = $this->controlFlow->getCmd(CommonControllerAction::CMD_INDEX);
+        $this->tabs->activateTab(self::TAB_ID);
+
+        if ($next_class === strtolower(xsrlIliasLinkBlockEditFormViewGUI::class)) {
+            $this->controlFlow->forwardCommand(new xsrlIliasLinkBlockEditFormViewGUI(new ILIASLinkBlockModel()));
+        }
+
+        switch ($cmd) {
+            case CommonControllerAction::CMD_ADD:
+            case CommonControllerAction::CMD_CANCEL:
+            case CommonControllerAction::CMD_CONFIRM:
+            case CommonControllerAction::CMD_CREATE:
+            case CommonControllerAction::CMD_DELETE:
+            case CommonControllerAction::CMD_EDIT:
+            case CommonControllerAction::CMD_UPDATE:
+                if ($this->blockAccessGuard->hasWritePermission()) {
+                    $this->{$cmd}();
+                    if ($this->template instanceof ilGlobalPageTemplate) {
+                        $this->template->printToStdout();
+                    } else {
+                        $this->template->show();
+                    }
+                    return true;
+                }
+                break;
+        }
+
+        $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);
+        $this->controlFlow->redirectByClass(ilRepositoryGUI::class);
+
+        return false;
+    }
+
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function add(): void
+    {
+        $this->controlFlow->saveParameter($this, PlusView::POSITION_QUERY_PARAM);
+        $this->controlFlow->saveParameter($this, PlusView::ACCORDION_QUERY_PARAM);
+
+        $config = $this->configService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
+        $block = new ILIASLinkBlockModel();
+
+        $block->setVisibility($config->getDefaultVisibility());
+        $form = new xsrlIliasLinkBlockEditFormViewGUI($block);
+
+        $this->template->setContent($form->getHTML());
+    }
+
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function create(): void
+    {
+        $form = new xsrlIliasLinkBlockEditFormViewGUI(new ILIASLinkBlockModel());
+        try {
+            $queries = $this->request->getQueryParams();
+
+            //store block
+            /**
+             * @var ILIASLinkBlockModel $block
+             */
+            $block = $form->getBlockModel();
+            $block->setId(0); //mitigate block id injection
+            $accordionId = $this->getCurrentAccordionId($queries);
+            if ($accordionId > 0) {
+                $this->redirectInvalidRequests($accordionId);
+            }
+
+            $block = $this->iliasLinkService->store($block);
+
+            $anchor = xsrlContentGUI::ANCHOR_TEMPLATE;
+            if ($accordionId > 0) {
+                $accordion = $this->accprdionService->find($accordionId);
+                $blocks = $accordion->getBlocks();
+                array_splice($blocks, $this->getInsertPosition($queries), 0, [$block]);
+                $accordion->setBlocks($blocks);
+                $this->accprdionService->store($accordion);
+                $anchor .= $accordion->getSequence();
+            } else {
+                //fetch learnplace
+                $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
+
+                //store relation learnplace <-> block
+                $blocks = $learnplace->getBlocks();
+                array_splice($blocks, $this->getInsertPosition($queries), 0, [$block]);
+                $learnplace->setBlocks($blocks);
+                $this->learnplaceService->store($learnplace);
+                $anchor .= $block->getSequence();
+            }
+
+            $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
+            $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
+        } catch (ValidationException $ex) {
+            $form->setValuesByPost();
+            $this->template->setContent($form->getHTML());
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function edit(): void
+    {
+        $blockId = $this->getBlockId();
+        $block = $this->iliasLinkService->find($blockId);
+        $form = new xsrlIliasLinkBlockEditFormViewGUI($block);
+        $this->template->setContent($form->getHTML());
+    }
+
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function update(): void
+    {
+        $form = new xsrlIliasLinkBlockEditFormViewGUI(new ILIASLinkBlockModel());
+        try {
+            //store block
+            /**
+             * @var ILIASLinkBlockModel $block
+             */
+            $block = $form->getBlockModel();
+            $this->redirectInvalidRequests($block->getId());
+            $linkBlock = $this->iliasLinkService->find($block->getId());
+            $linkBlock->setRefId($block->getRefId());
+            $linkBlock->setVisibility($block->getVisibility());
+            $this->iliasLinkService->store($linkBlock);
+
+            $anchor = xsrlContentGUI::ANCHOR_TEMPLATE . $block->getSequence();
+            $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
+            $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
+        } catch (ValidationException $ex) {
+            $form->setValuesByPost();
+            $this->template->setContent($form->getHTML());
+        }
+    }
+
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function delete(): void
+    {
+        $queries = $this->request->getQueryParams();
+        $blockId = intval($queries[self::BLOCK_ID_QUERY_KEY]);
+        $this->redirectInvalidRequests($blockId);
+
+        $this->iliasLinkService->delete($blockId);
+        $this->regenerateSequence();
+        $this->template->setOnScreenMessage('success', $this->plugin->txt('message_delete_success'), true);
+        $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
+    }
+
+    /**
+     * @return void
+     * @throws ilCtrlException
+     */
+    private function cancel(): void
+    {
+        $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
+    }
+
+    /**
+     * @return int
+     */
+    private function getBlockId(): int
+    {
+        $queries = $this->request->getQueryParams();
+        return intval($queries[self::BLOCK_ID_QUERY_KEY]);
+    }
+
+    /**
+     * @return void
+     */
+    private function regenerateSequence(): void
+    {
+        $learnplace = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
+        $this->learnplaceService->store($learnplace);
+    }
+}

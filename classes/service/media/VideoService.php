@@ -1,0 +1,47 @@
+<?php
+
+namespace KPG\Learnplaces\service\media;
+
+use LogicException;
+use KPG\Learnplaces\service\media\exception\FileUploadException;
+use KPG\Learnplaces\service\publicapi\model\VideoModel;
+
+/**
+ * Interface VideoService
+ *
+ * The video service creates new video models from uploaded videos.
+ *
+ * @package KPG\Learnplaces\service\media
+ *
+ * @author  Nicolas Schäfli <ns@studer-raimann.ch>
+ */
+interface VideoService
+{
+    /**
+     * Stores an uploaded video.
+     *
+     * Allowed file formats:
+     * *.mp4
+     *
+     * @param int $objectId     The object id of the learnplace.
+     * @param string $resourceId The resource storage identifier for the image.
+     *
+     * @return VideoModel       The newly created video model.
+     *
+     * @throws LogicException   Thrown if the storeUpload method was called without actual upload.
+     * @throws FileUploadException
+     *                          Thrown if the upload failed or the uploaded file was invalid.
+     */
+    public function storeUpload(int $objectId, string $resourceId): VideoModel;
+
+
+    /**
+     * Deletes a files by video model.
+     * This method will simply ignore missing files.
+     *
+     * @param VideoModel $video The video model which should be used to delete all related files.
+     *
+     * @return void
+     */
+    public function delete(VideoModel $video);
+}

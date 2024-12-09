@@ -1,0 +1,94 @@
+root_create_xsrl#:#Lernort anlegen
+cat_create_xsrl#:#Lernort anlegen
+crs_create_xsrl#:#Lernort anlegen
+grp_create_xsrl#:#Lernort anlegen
+fold_create_xsrl#:#Lernort anlegen
+xsrl_visible#:#Anzeigen: Lernort ist sichtbar
+xsrl_read#:#Lesezugriff: Lernort lesen
+xsrl_write#:#Einstellungen bearbeiten: Lernort bearbeiten
+xsrl_delete#:#L&ouml;schen: Lernort l&ouml;schen
+xsrl_edit_permission#:#Rechteeinstellungen &auml;ndern: Rechteeinstellungen &auml;ndern
+xsrl_copy#:#Kopieren: Lernort kopieren
+
+objs_xsrl#:#Lernorte
+objs_xsrl_duplicate#:#Kopiere bestehenden Lernort
+obj_xsrl#:#Lernort
+xsrl_new#:#Neuen Lernort erstellen
+
+xsrl_add#:#Erstellen
+
+common_create#:#Erstellen
+common_status#:#Status
+common_cancel#:#Abbrechen
+common_offline#:#Offline
+common_online#:#Online
+common_add#:#Hinzuf&uuml;gen
+common_edit#:#Bearbeiten
+common_save#:#Speichern
+common_delete#:#L&ouml;schen
+common_visibility#:#Sichtbarkeit
+common_access_denied#:#Sie verf&uuml;gen nicht die erforderlichen Berechtigungen.
+common_title#:#Titel
+common_description#:#Beschreibung
+
+message_changes_save_success#:#&Auml;nderungen erfolgreich gespeichert.
+message_delete_success#:#Block erfolgreich gel&ouml;scht.
+message_create_failure#:#Fehler beim Erstellen des Blocks.
+error_message_no_map_found#:#F&uuml;r den aktuellen Lernort ist keine Karte vorhanden.
+
+tabs_content#:#Inhalt
+tabs_edit#:#Block bearbeiten
+tabs_settings#:#Einstellungen
+tabs_map#:#Karte
+
+block_specific_settings#:#Block-spezifische Einstellungen
+picture_upload_block_content#:#Bild-Upload
+
+confirm_delete_header#:#Achtung, der Block wird unwiderruflich gel&ouml;scht!
+
+block_rich_text#:#Text
+block_map#:#Karte
+block_ilias_link#:#Link zu einem ILIAS-Objekt im Magazin
+block_accordion#:#Akkordeon
+block_picture#:#Bild
+block_picture_upload#:#Bild-Upload
+block_video#:#Video
+block_type_title#:#Verf&uuml;gbare Bl&ouml;cke:
+block_add_header#:#Block hinzuf&uuml;gen
+
+picture_block_enter_title#:#Titel
+picture_block_enter_description#:#Beschreibung
+picture_block_select_picture#:#Bild
+picture_block_upload_error#:#Bild-Upload unvollst&auml;ndig oder das Format wird nicht unterst&uuml;tzt.
+
+video_block_select_video#:#Video
+video_block_upload_error#:#Video-Upload unvollst&auml;ndig oder das Format wird nicht unterst&uuml;tzt.
+
+rich_text_block_content#:#Inhalt
+
+ilias_link_block_select_target#:#ILIAS-Link
+
+accordion_block_title#:#Titel
+accordion_block_expand#:#Akkordeon ge&ouml;ffnet
+
+visibility_title#:#Verfügbare Sichtbarkeiten:
+visibility_always#:#Immer sichtbar
+visibility_after_visit_place#:#Nur sichtbar vor Ort und nach Besuch des Lernorts
+visibility_only_at_place#:#Nur sichtbar vor Ort
+visibility_never#:#Nie sichtbar
+
+setting_location#:#Position
+setting_general#:#Allgemein
+setting_radius#:#Radius
+setting_radius_info#:#Der Radius wird in Metern angegeben und bestimmt wie gro&szlig; das Umfeld des Lernortes ist. Es wird generell empfohlen den Wert von 50 Metern nicht zu unterschreiten. Der minimale Radius beträgt 1 Meter und der maximale 40.000 Meter.
+setting_validation_failure_radius#:#Ein g&uuml;ltiger Radius liegt zwischen 1 und 40.000 Metern.
+setting_visibility_default#:#Standard-Sichtbarkeit
+
+content_change_sequence#:#Sortieren
+content_save_sequence#:#Reihenfolge speichern
+content_sequence_changed_successfully#:#Reihenfolge erfolgreich geändert
+content_sequence_changed_error#:#Bitte füllen Sie alle Felder aus
+
+news_created#:#Lernort wurde erstellt.
+news_updated#:#Lernort-Einstellungen wurden aktualisiert.
+news_deleted#:#Lernort wurde gel&ouml;scht.

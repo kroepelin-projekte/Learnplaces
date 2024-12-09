@@ -1,0 +1,64 @@
+<?php
+
+declare(strict_types=1);
+
+namespace KPG\Lernplaces\persistence\mapping;
+
+use KPG\Learnplaces\persistence\dto\Answer;
+use KPG\Learnplaces\service\publicapi\model\AnswerModel;
+
+/**
+ * Trait AnswerDtoMappingAware
+ *
+ * Provides the functionality to map an answer model to an answer dto.
+ *
+ * @package KPG\Lernplaces\persistence\mapping
+ *
+ * @author  Nicolas Schäfli <ns@studer-raimann.ch>
+ */
+trait AnswerDtoMappingAware
+{
+    public function toDto(): Answer
+    {
+        /**
+         * @var AnswerModel|AnswerDtoMappingAware $this
+         */
+        $dto = new Answer();
+        $dto->setId($this->getId())
+            ->setTitle($this->getTitle())
+            ->setContent($this->getContent())
+            ->setUserId($this->getUserId())
+            ->setPicture(is_null($this->getPicture()) ? null : $this->getPicture()->toDto())
+            ->setCreateDate($this->getCreateDate());
+        return $dto;
+    }
+
+}
+
+/**
+ * Trait AnswerModelMappingAware
+ *
+ * Provides the functionality to map an answer dto to an answer model.
+ *
+ * @package KPG\Lernplaces\persistence\mapping
+ *
+ * @author  Nicolas Schäfli <ns@studer-raimann.ch>
+ */
+trait AnswerModelMappingAware
+{
+    public function toModel(): AnswerModel
+    {
+
+        /**
+         * @var Answer|AnswerDtoMappingAware $this
+         */
+        $dto = new AnswerModel();
+        $dto->setId($this->getId())
+            ->setTitle($this->getTitle())
+            ->setContent($this->getContent())
+            ->setUserId($this->getUserId())
+            ->setPicture(is_null($this->getPicture()) ? null : $this->getPicture()->toModel())
+            ->setCreateDate($this->getCreateDate());
+        return $dto;
+    }
+}

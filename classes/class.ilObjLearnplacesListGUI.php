@@ -1,0 +1,89 @@
+<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/bootstrap.php';
+
+use KPG\Learnplaces\gui\helper\CommonControllerAction;
+
+/**
+ * Class ilObjLearnplacesListGUI
+ *
+ * @author  Nicolas Schäfli <ns@studer-raimann.ch>
+ */
+final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI
+{
+    /**
+     * ilObjLearnplacesListGUI constructor.
+     *
+     * @param int $context
+     */
+    public function __construct($context = self::CONTEXT_REPOSITORY)
+    {
+        parent::__construct($context);
+    }
+
+    /**
+     * @return string
+     */
+    public function getGuiClass(): string
+    {
+        return ilObjLearnplacesGUI::class;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCommands(): array
+    {
+        return parent::getCommands();
+    }
+
+    /**
+     * @return array
+     */
+    public function initCommands(): array
+    {
+        // Always set
+        $this->timings_enabled = false;
+        $this->subscribe_enabled = false;
+        $this->payment_enabled = false;
+        $this->info_screen_enabled = true;
+        $this->delete_enabled = true;
+
+        // Should be overwritten according to status
+        $this->cut_enabled = true;
+        $this->copy_enabled = true;
+        $this->link_enabled = true;
+
+        $commands = array(
+            array(
+                'permission' => 'read',
+                'cmd'        => CommonControllerAction::CMD_INDEX,
+                'default'    => true,
+            ),
+        );
+
+        return $commands;
+    }
+
+    public function initType(): void
+    {
+        $this->setType(ilLearnplacesPlugin::PLUGIN_ID);
+    }
+
+    public function getProperties(): array
+    {
+        $properties = parent::getProperties();
+
+        if(!ilObjLearnplacesAccess::checkOnline(intval($this->obj_id))) {
+            $properties[] = [
+                'alert' => true,
+                'property' => $this->txt('common_status'),
+                'value' => $this->txt('common_offline'),
+            ];
+        }
+
+        return $properties;
+    }
+}

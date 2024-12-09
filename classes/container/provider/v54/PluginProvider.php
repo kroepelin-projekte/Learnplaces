@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace KPG\Learnplaces\container\provider\v54;
+
+use ilLearnplacesPlugin;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+
+/**
+ * Class PluginProvider
+ *
+ * @package KPG\Learnplaces\container\provider
+ *
+ * @author  Nicolas Schäfli <ns@studer-raimann.ch>
+ */
+final class PluginProvider implements ServiceProviderInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function register(Container $pimple)
+    {
+        $pimple[ilLearnplacesPlugin::class] = function ($c) {return ilLearnplacesPlugin::getInstance(); };
+    }
+}

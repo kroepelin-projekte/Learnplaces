@@ -1,0 +1,242 @@
+<?php
+
+declare(strict_types=1);
+
+namespace KPG\Learnplaces\container\provider\v6;
+
+use ilLearnplacesPlugin;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use KPG\Learnplaces\gui\block\BlockAddFormGUI;
+use KPG\Learnplaces\gui\block\RenderableBlockViewFactory;
+use KPG\Learnplaces\gui\block\RenderableBlockViewFactoryImpl;
+use KPG\Learnplaces\service\media\PictureService;
+use KPG\Learnplaces\service\media\VideoService;
+use KPG\Learnplaces\service\publicapi\block\AccordionBlockService;
+use KPG\Learnplaces\service\publicapi\block\ConfigurationService;
+use KPG\Learnplaces\service\publicapi\block\ILIASLinkBlockService;
+use KPG\Learnplaces\service\publicapi\block\LearnplaceService;
+use KPG\Learnplaces\service\publicapi\block\LocationService;
+use KPG\Learnplaces\service\publicapi\block\MapBlockService;
+use KPG\Learnplaces\service\publicapi\block\PictureBlockService;
+use KPG\Learnplaces\service\publicapi\block\PictureUploadBlockService;
+use KPG\Learnplaces\service\publicapi\block\RichTextBlockService;
+use KPG\Learnplaces\service\publicapi\block\VideoBlockService;
+use KPG\Learnplaces\service\security\AccessGuard;
+use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
+use xsrlAccordionBlockGUI;
+use xsrlContentGUI;
+use xsrlIliasLinkBlockGUI;
+use xsrlMapBlockGUI;
+use xsrlPictureBlockGUI;
+use xsrlPictureUploadBlockGUI;
+use xsrlRichTextBlockGUI;
+use xsrlSettingGUI;
+use xsrlVideoBlockGUI;
+
+use function ILIAS\UI\examples\Layout\Page\Standard\ui;
+
+/**
+ * Class GUIProvider
+ *
+ * @package KPG\Learnplaces\container\provider
+ *
+ * @author  Nicolas Schäfli <ns@studer-raimann.ch>
+ */
+final class GUIProvider implements ServiceProviderInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function register(Container $pimple): void
+    {
+        $pimple[RenderableBlockViewFactory::class] = function ($c) {return new RenderableBlockViewFactoryImpl(); };
+
+        $pimple[xsrlContentGUI::class] = function ($c) {
+            return new xsrlContentGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ui(),
+                $c->ctrl(),
+                $c->http(),
+                $c->refinery(),
+                $c[ilLearnplacesPlugin::class],
+                $c[RenderableBlockViewFactory::class],
+                $c[LearnplaceService::class],
+                $c[AccordionBlockService::class],
+                $c[LearnplaceServiceDecoratorFactory::class],
+                $c[BlockAddFormGUI::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
+
+        $pimple[xsrlPictureUploadBlockGUI::class] = function ($c) {
+            return new xsrlPictureUploadBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ui(),
+                $c->ctrl(),
+                $c->http(),
+                $c[ilLearnplacesPlugin::class],
+                $c[PictureUploadBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[AccordionBlockService::class],
+            );
+        };
+
+        $pimple[xsrlPictureBlockGUI::class] = function ($c) {
+            return new xsrlPictureBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[PictureService::class],
+                $c[PictureBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[AccordionBlockService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
+
+        $pimple[xsrlRichTextBlockGUI::class] = function ($c) {
+            return new xsrlRichTextBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[RichTextBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[AccordionBlockService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
+
+        $pimple[xsrlIliasLinkBlockGUI::class] = function ($c) {
+            return new xsrlIliasLinkBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[ILIASLinkBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[AccordionBlockService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
+
+        $pimple[xsrlMapBlockGUI::class] = function ($c) {
+            return new xsrlMapBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[MapBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
+
+        $pimple[xsrlVideoBlockGUI::class] = function ($c) {
+            return new xsrlVideoBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[VideoBlockService::class],
+                $c[VideoService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[AccordionBlockService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
+
+        $pimple[xsrlAccordionBlockGUI::class] = function ($c) {
+            return new xsrlAccordionBlockGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[AccordionBlockService::class],
+                $c[LearnplaceService::class],
+                $c[ConfigurationService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
+
+        $pimple[xsrlSettingGUI::class] = function ($c) {
+            return new xsrlSettingGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ctrl(),
+                $c[ilLearnplacesPlugin::class],
+                $c[ConfigurationService::class],
+                $c[LocationService::class],
+                $c[LearnplaceService::class],
+                $c[ServerRequestInterface::class],
+                $c[AccessGuard::class]
+            );
+        };
+
+        $pimple['factory'] = function ($c) {
+            return $c->ui()->factory();
+        };
+
+        $pimple['field'] = function ($c) {
+            return $c->ui()->factory()->input()->field();
+        };
+
+        $pimple['renderer'] = function ($c) {
+            return $c->ui()->renderer();
+        };
+
+        $pimple['repositoryTree'] = function ($c) {
+            return $c->repositoryTree();
+        };
+
+        $pimple['query'] = function ($c) {
+            return $c->http()->wrapper()->query();
+        };
+
+        $pimple['post'] = function ($c) {
+            return $c->http()->wrapper()->post();
+        };
+
+        $pimple['user'] = function ($c) {
+            return $c->user();
+        };
+
+        $pimple['rbac'] = function ($c) {
+            return $c->rbac();
+        };
+
+        $pimple['ctrl'] = function ($c) {
+            return $c->ctrl();
+        };
+
+        $pimple['resourceStorage'] = function ($c) {
+            return $c->resourceStorage();
+        };
+
+        $pimple['database'] = function ($c) {
+            return $c->database();
+        };
+
+        $pimple['componentRepository'] = function ($c) {
+            return $c["component.repository"];
+        };
+    }
+}
