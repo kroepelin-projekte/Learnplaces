@@ -12,6 +12,17 @@ use KPG\Learnplaces\service\publicapi\block\ConfigurationService;
 use KPG\Learnplaces\service\publicapi\block\LearnplaceService;
 use KPG\Learnplaces\service\publicapi\block\LocationService;
 use KPG\Learnplaces\service\security\AccessGuard;
+use KPG\Learnplaces\container\PluginContainer;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Label\Font\OpenSans;
+use ILIAS\Data\ReferenceId;
+use ILIAS\UI\Factory;
+use ILIAS\ResourceStorage\Identification\ResourceIdentification;
+use MikaGameAPI\Core\Response;
+use Endroid\QrCode\Writer\Result\ResultInterface;
+use JetBrains\PhpStorm\NoReturn;
 
 /**
  * Class xsrlSettingGUI
@@ -23,6 +34,8 @@ use KPG\Learnplaces\service\security\AccessGuard;
 final class xsrlSettingGUI
 {
     use ReferenceIdAware;
+
+    public const CMD_QR_CODE_DOWNLOAD = 'downloadQrCode';
 
     public const TAB_ID = 'Settings';
     public const BLOCK_ID_QUERY_KEY = 'block';
@@ -104,6 +117,7 @@ final class xsrlSettingGUI
             case CommonControllerAction::CMD_CANCEL:
             case CommonControllerAction::CMD_EDIT:
             case CommonControllerAction::CMD_UPDATE:
+            case self::CMD_QR_CODE_DOWNLOAD:
                 if ($this->accessGuard->hasWritePermission()) {
                     $this->{$cmd}();
                     if ($this->template instanceof ilGlobalPageTemplate) {
@@ -145,7 +159,10 @@ final class xsrlSettingGUI
 
         $view = new SettingEditFormView($model, $this->plugin, $this->controlFlow);
         $view->fillForm();
-        $this->template->setContent($view->getHTML());
+
+        $qrCodePanel = $this->getQrCodePanel();
+
+        $this->template->setContent($view->getHTML() . $qrCodePanel);
     }
 
     /**
@@ -196,5 +213,97 @@ final class xsrlSettingGUI
     private function cancel(): void
     {
         $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
+    }
+
+    /**
+     * @return string
+     */
+    private function getQrCodePanel(): string
+    {
+        /** @var Factory $f */
+        $f = PluginContainer::resolve('factory');
+        $r = PluginContainer::resolve('renderer');
+        $ctrl = PluginContainer::resolve('ctrl');
+
+        $token = $this->getToken();
+
+        $qrCode = $this->getQrCode($token, 'Lernort');
+
+        $uri = $qrCode->getDataUri();
+
+        $qrCodeImage = $r->render(
+            $f->image()->standard($uri, 'QR-Code')
+        );
+
+        $buttonDownloadAction = $ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlSettingGUI::class], self::CMD_QR_CODE_DOWNLOAD);
+        $downloadButton = $r->render(
+            $f->button()->standard('Download', $buttonDownloadAction)
+        );
+
+        $qrCodePanel = $f->panel()->standard('QR-Code', $f->legacy(
+            $downloadButton
+            . "<br>"
+            . $qrCodeImage
+        ));
+
+        return $r->render($qrCodePanel);
+    }
+
+    #[NoReturn]
+    public function downloadQrCode(): void
+    {
+        $token = $this->getToken();
+        $qrCode = $this->getQrCode($token, 'Lernort');
+        $binary = $qrCode->getString();
+
+        header('Content-Type: image/png');
+        header('Content-Disposition: attachment; filename="Lernort-QR-Code.png"');
+
+        if (ob_get_level() > 0) {
+            ob_clean();
+        }
+        flush();
+
+        echo $binary;
+        exit;
+    }
+
+    /**
+     * @param string $url
+     * @param string $label
+     * @return ResultInterface
+     */
+    private function getQrCode(string $url, string $label): ResultInterface
+    {
+        return Builder::create()
+            ->writer(new PngWriter())
+            ->writerOptions([])
+            ->data($url)
+            ->encoding(new Encoding('UTF-8'))
+            ->size(300)
+            ->margin(10)
+            ->labelText($label)
+            ->labelFont(new OpenSans(30))
+            ->build();
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    private function getToken(): string
+    {
+        $refinery = PluginContainer::resolve('refinery');
+        $query = PluginContainer::resolve('query');
+
+        if (!$query->has('ref_id')) {
+            throw new \Exception('Learnplaces - getToken(): ref_id is missing');
+        }
+
+        $secret = "faa7482c9135aa1628e19d7145386ee49f452e7ad3f417d9818748dc2a3b0b89";
+
+        $ref_id = $query->retrieve('ref_id', $refinery->kindlyTo()->int());
+
+        return hash('sha256', $ref_id . $secret);
     }
 }
