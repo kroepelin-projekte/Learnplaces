@@ -13,6 +13,8 @@ use KPG\Learnplaces\gui\helper\CommonControllerAction;
  */
 final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI
 {
+    protected bool $payment_enabled;
+
     /**
      * ilObjLearnplacesListGUI constructor.
      *

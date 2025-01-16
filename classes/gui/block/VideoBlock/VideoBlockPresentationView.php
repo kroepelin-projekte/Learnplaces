@@ -66,7 +66,7 @@ final class VideoBlockPresentationView implements Renderable
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
-        $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.video.html', true, true);
+        $this->template = new ilTemplate('public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.video.html', true, true);
     }
 
     /**
@@ -208,7 +208,7 @@ HTML;*/
      */
     private function wrapWithBlockTemplate(ilTemplate $blockTemplate): ilTemplate
     {
-        $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = new ilTemplate('public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
         //setup button
         $factory = PluginContainer::resolve('factory');

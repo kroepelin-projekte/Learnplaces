@@ -61,7 +61,7 @@ final class PictureUploadBlockPresentationView implements Renderable
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
-        $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.picture_upload.html', true, true);
+        $this->template = new ilTemplate('public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.picture_upload.html', true, true);
         $this->initView();
     }
 
@@ -104,7 +104,7 @@ final class PictureUploadBlockPresentationView implements Renderable
      */
     private function wrapWithBlockTemplate(ilTemplate $blockTemplate): ilTemplate
     {
-        $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = new ilTemplate('public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
         /** @var \ILIAS\UI\Factory $factory */
         $factory = PluginContainer::resolve('factory');

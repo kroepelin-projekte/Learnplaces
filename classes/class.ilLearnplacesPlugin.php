@@ -50,8 +50,9 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
      */
     protected function uninstallCustom(): void
     {
-        $this->deleteFiles();
-        $this->dropDatabase();
+        // TODO
+        #$this->deleteFiles();
+        #$this->dropDatabase();
     }
 
     /**

@@ -32,7 +32,7 @@ use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlAccordionBlockGUI
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlSettingGUI
  */
-final class ilObjLearnplacesGUI extends ilObjectPluginGUI
+final class ilObjLearnplacesGUI extends ilObject2GUI
 {
     public const DEFAULT_CMD = CommonControllerAction::CMD_INDEX;
 
@@ -54,6 +54,8 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
      */
     private $accessGuard;
 
+    private ilLearnplacesPlugin $plugin;
+
     /**
      * ilObjLearnplacesGUI constructor.
      *
@@ -67,9 +69,15 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
     {
         parent::__construct($a_ref_id, $a_id_type, $a_parent_node_id);
         $this->mapBlockService = PluginContainer::resolve(MapBlockService::class);
-        $this->objectId = intval(ilObject::_lookupObjectId($this->ref_id));
+        $this->objectId = ilObject::_lookupObjectId($this->ref_id);
         $this->learnplaceTabs = PluginContainer::resolve('ilTabs');
         $this->accessGuard = PluginContainer::resolve(AccessGuard::class);
+        $this->plugin = ilLearnplacesPlugin::getInstance();
+    }
+
+    public function txt(string $var): string
+    {
+        return $this->plugin->txt($var);
     }
 
     /**

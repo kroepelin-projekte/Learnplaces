@@ -233,7 +233,7 @@ final class xsrlContentGUI
     private function index(): void
     {
         $writePermission = $this->accessGuard->hasWritePermission();
-        $template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block_list.html', true, true);
+        $template = new ilTemplate('public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block_list.html', true, true);
 
         //decorate the learnplace only if the user has no write rights
         $learnplaceService = ($writePermission) ? $this->learnplaceService : $this->learnplaceServiceDecorationFactory->decorate($this->learnplaceService);

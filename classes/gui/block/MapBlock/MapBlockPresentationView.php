@@ -77,7 +77,7 @@ final class MapBlockPresentationView
         $this->controlFlow = $controlFlow;
         $this->http = PluginContainer::resolve('http');
         $this->refinery = PluginContainer::resolve('refinery');
-        $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.map_tab.html', true, true);
+        $this->template = new ilTemplate('public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/default/tpl.map_tab.html', true, true);
     }
 
     /**
