@@ -214,7 +214,7 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
     protected function setSubtabs(): void
     {
         if ($this->accessGuard->hasWritePermission()) {
-            $this->learnplaceTabs->addSubTab(xsrlContentGUI::TAB_ID, $this->lng->txt(xsrlContentGUI::TAB_ID), $this->ctrl->getLinkTarget($this));
+            $this->learnplaceTabs->addSubTab(xsrlContentGUI::TAB_ID, $this->lng->txt(xsrlContentGUI::TAB_ID), $this->ctrl->getLinkTargetByClass(xsrlContentGUI::class, self::DEFAULT_CMD));
             $this->learnplaceTabs->addSubTab('sequence', $this->plugin->txt('content_change_sequence'), $this->ctrl->getLinkTargetByClass(xsrlContentGUI::class, xsrlContentGUI::CMD_SEQUENCE_VIEW));
 
             if ($this->accessGuard->hasWritePermission() && !$this->hasMap()) {

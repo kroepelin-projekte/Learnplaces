@@ -25,14 +25,5 @@
         "htaccess-protect": true,
         "secure-http": true,
         "process-timeout": 600
-    },
-    "scripts": {
-        "test": "../../../../../../../libs/composer/vendor/bin/phpunit",
-        "php-lint-70": "docker run --rm -v $(pwd):/source:ro -w /source php:8.0-cli find . -type f -name '*.php' -exec php -l {} \\; | (! grep -v \"No syntax errors detected\" )",
-        "php-lint-71": "docker run --rm -v $(pwd):/source:ro -w /source php:7.1-cli find . -type f -name '*.php' -exec php -l {} \\; | (! grep -v \"No syntax errors detected\" )",
-        "php-lint-72": "docker run --rm -v $(pwd):/source:ro -w /source php:7.2-cli find . -type f -name '*.php' -exec php -l {} \\; | (! grep -v \"No syntax errors detected\" )",
-        "php-lint-73": "docker run --rm -v $(pwd):/source:ro -w /source php:7.3-cli find . -type f -name '*.php' -exec php -l {} \\; | (! grep -v \"No syntax errors detected\" )",
-        "php-lint-74": "docker run --rm -v $(pwd):/source:ro -w /source php:7.4-cli find . -type f -name '*.php' -exec php -l {} \\; | (! grep -v \"No syntax errors detected\" )",
-        "php-lint-80": "docker run --rm -v $(pwd):/source:ro -w /source php:8.0-cli find . -type f -name '*.php' -exec php -l {} \\; | (! grep -v \"No syntax errors detected\" )"
     }
 }
