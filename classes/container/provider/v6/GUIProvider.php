@@ -238,5 +238,9 @@ final class GUIProvider implements ServiceProviderInterface
         $pimple['componentRepository'] = function ($c) {
             return $c["component.repository"];
         };
+
+        $pimple['url'] = function ($c) {
+            return $c["static_url"];
+        };
     }
 }

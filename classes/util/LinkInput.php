@@ -139,8 +139,8 @@ class LinkInput
                 (function() {
                     const el = document.getElementById('$id');
                     el.id = 'link_input_element';
-                    el.style.visibility = 'hidden';
                     const info = document.createElement('div');
+                    el.querySelector('input').style.pointerEvents = 'none';
                     info.style.marginTop = '20px';
                     info.id = 'ilias_link_info';
                     el.parentElement.prepend(info);
@@ -242,7 +242,7 @@ class LinkInput
                             node_label.addEventListener('click', () => {
                                 const ilias_link_info_element = document.getElementById('ilias_link_info');
                                 ilias_link_info_element.innerHTML = '<b>$title</b><br>Ref ID: $ref_id<br>';
-                                const link_input_element = document.getElementById('link_input_element');
+                                const link_input_element = document.querySelector('#link_input_element input');
                                 link_input_element.value = $ref_id;
                             });
                         })();
