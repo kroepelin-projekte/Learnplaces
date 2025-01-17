@@ -249,6 +249,7 @@ final class xsrlContentGUI
         $template->setVariable('CONTENT', $view->getHTML());
 
         $this->template->addCss(ilLearnplacesPlugin::getInstance()->getStyleSheetLocation('style.css'));
+        $this->template->addJavaScript(ilLearnplacesPlugin::getInstance()->getStyleSheetLocation('script.js'));
         $this->template->setContent($template->get());
     }
 
@@ -323,7 +324,7 @@ final class xsrlContentGUI
 
         $blockIterator->append(new ArrayIterator($learnplace->getBlocks()));
 
-        #$post = $this->request->getParsedBody();
+        $post = $this->request->getParsedBody();
         $form = $this->sequenceForm()->withRequest($this->http->request());
         $formData = $form->getData();
         if ($form->getError()) {
@@ -380,7 +381,9 @@ final class xsrlContentGUI
      */
     private function sortBlocksBySequence(array $blocks): array
     {
-        usort($blocks, function (BlockModel $a, BlockModel $b) { return $a->getSequence() >= $b->getSequence() ? 1 : -1;});
+        usort($blocks, function (BlockModel $a, BlockModel $b) {
+            return $a->getSequence() >= $b->getSequence() ? 1 : -1;
+        });
         return $blocks;
     }
 
@@ -470,15 +473,23 @@ final class xsrlContentGUI
 
             $inputField = $field->numeric('Position', $view->getHtml())
                 ->withValue($block->getSequence())
-                ->withRequired(true);
-
-            if ($block instanceof AccordionBlockModel) {
-                $inputField = $inputField->withOnLoadCode(function ($id) {
+                ->withRequired(true)
+                ->withAdditionalOnLoadCode(function ($id) {
                     return <<<JS
                     (function() {
                         const el = document.getElementById('$id');
-                        el.parentElement.querySelector('.help-block').style.pointerEvents = 'none';
-                        el.parentElement.querySelector('#accordion-arrow').style.transform = 'rotate(90deg)';
+                        el.querySelector('.c-input__help-byline').style.pointerEvents = 'none';
+                    })();
+                    JS;
+                });
+
+            if ($block instanceof AccordionBlockModel) {
+                $inputField = $inputField->withAdditionalOnLoadCode(function ($id) {
+                    return <<<JS
+                    (function() {
+                        const el = document.getElementById('$id');
+                        el.querySelector('.accordion-arrow').classList.add('arrow-fixed-position');
+                        el.querySelector('.c-input__help-byline').style.pointerEvents = 'none';
                     })();
                     JS;
                 });
@@ -490,17 +501,15 @@ final class xsrlContentGUI
                 foreach ($blocksOfAccordion as $accordionBlock) {
                     $view = $renderableBlockViewFactory->getInstance($accordionBlock);
 
-                    //   language var
                     $fields['block_' . $accordionBlock->getId()] = $field->numeric('Position', $view->getHtml())
                         ->withValue($accordionBlock->getSequence())
-                        ->withOnLoadCode(function ($id) {
+                        ->withAdditionalOnLoadCode(function ($id) {
                             return <<<JS
                             (function()  {
                                 const input = document.getElementById('$id');
-                                const el = input.parentElement;
-                                el.style.width = '60%';
-                                el.style.marginLeft = 'auto';
-                                el.style.float = 'right';
+                                input.style.width = '60%';
+                                input.style.marginLeft = 'auto';
+                                input.querySelector('.c-input__help-byline').style.pointerEvents = 'none';
                             })();
                             JS;
                         })
