@@ -333,7 +333,13 @@ final class xsrlContentGUI
             return;
         }
         $post = current($formData);
-        krsort($post);
+
+        uksort($post, function ($key1, $key2) {
+            $num1 = intval(str_replace('block_', '', $key1));
+            $num2 = intval(str_replace('block_', '', $key2));
+            return $num2 <=> $num1;
+        });
+
 
         //yield ['block_12' => '5']
         $iterator = new RegexIterator(new ArrayIterator($post), '/^(?:block\_\d+)$/', RegexIterator::MATCH, RegexIterator::USE_KEY);
