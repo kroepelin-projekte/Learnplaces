@@ -70,6 +70,17 @@ final class ilObjLearnplacesGUI extends ilObjectPluginGUI
         $this->objectId = intval(ilObject::_lookupObjectId($this->ref_id));
         $this->learnplaceTabs = PluginContainer::resolve('ilTabs');
         $this->accessGuard = PluginContainer::resolve(AccessGuard::class);
+
+        // todo for testing:
+        setcookie('example_cookie', 'Test Wert', [
+            'expires' => time() + 3600, // Gültigkeit: 1 Stunde
+            'path' => '/', // Verfügbarkeit auf der gesamten Domain
+            'domain' => '.kroepelin-projekte.de', // Führender Punkt für Subdomains
+            'secure' => true, // Setze Cookies nur über HTTPS
+            'httponly' => true, // Verhindert Zugriff über JavaScript
+            'samesite' => 'Strict' // Optional: Kontrolle über SameSite-Richtlinie
+        ]);
+
     }
 
     /**
