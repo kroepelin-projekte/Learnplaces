@@ -32,13 +32,13 @@ such as formatted text, images, videos, ILIAS links or accordions.
 
 **Create directories**
 ```bash
-mkdir -p Customizing/global/plugins/Services/UIComponent/UserInterfaceHook
-cd Customizing/global/plugins/Services/UIComponent/UserInterfaceHook
+mkdir -p public/Customizing/plugins/Repository/RepositoryObject
+cd public/Customizing/plugins/Repository/RepositoryObject
 ```
 
 **Clone Project**
 ```bash
-git clone https://github.com/kroepelin-projekte/Learnplaces/tree/release_8-9 Learnplaces
+git clone https://github.com/kroepelin-projekte/Learnplaces.git Learnplaces
 ```
 
 **Switch to branch**
@@ -49,7 +49,7 @@ git switch release_x
 
 **Install dependencies**
 ```bash
-composer install --no-dev
+composer install
 ```
 
 ## Activation
