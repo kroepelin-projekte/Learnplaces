@@ -1,6 +1,6 @@
 <?php
 $id = "xsrl";
-$version = "5.0.5";
+$version = "5.12";
 $ilias_min_version = "10.0";
 $ilias_max_version = "10.999";
 $responsible = "Kröpelin Projekt GmbH";

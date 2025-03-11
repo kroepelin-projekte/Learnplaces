@@ -4,6 +4,7 @@
 use KPG\Learnplaces\persistence\entity\Visibility;
 use KPG\Learnplaces\service\filesystem\PathHelper;
 
+
 require_once('./Customizing/plugins/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
 
 \KPG\Learnplaces\persistence\entity\AccordionBlock::installDB();
@@ -122,5 +123,9 @@ foreach ($videos as $video) {
 <?php
 \KPG\Learnplaces\persistence\entity\Picture::updateDB4();
 \KPG\Learnplaces\persistence\entity\VideoBlock::updateDB4();
+?>
+<#5>
+<?php
+KPG\Learnplaces\api\Database\Tables\CookieSecrets::install();
 ?>
 

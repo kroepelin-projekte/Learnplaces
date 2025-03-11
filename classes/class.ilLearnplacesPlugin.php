@@ -53,6 +53,7 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
         // TODO
         #$this->deleteFiles();
         #$this->dropDatabase();
+        \Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings::uninstall();
     }
 
     /**
@@ -109,4 +110,17 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
             $resourceStorage->manage()->remove($identification, new ilLearnplacesStakeholder());
         }
     }
+/*
+    public function beforeActivation(): bool
+    {
+        $base_url = \Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings::getBaseURL();
+        if ($base_url === '') {
+            global $DIC;
+            $DIC->ui()->maintemplate()->setOnScreenMessage('failure', $this->txt("lang_before_Activation"));
+            return false;
+        } else {
+            return true;
+        }
+    }
+*/
 }

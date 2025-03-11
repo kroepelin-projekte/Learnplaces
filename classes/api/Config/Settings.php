@@ -1,0 +1,49 @@
+<?php
+
+namespace Repository\RepositoryObject\Learnplaces\classes\api\Config;
+
+class Settings implements constConfig
+{
+
+    public static function setBaseURL(string $url): void
+    {
+        $settings = new \ilSetting(self::SETTING_MODULE_ID);
+        $settings->set('base_url', $url);
+    }
+
+    public static function getBaseURL(): string
+    {
+        $settings = new \ilSetting(self::SETTING_MODULE_ID);
+        return $settings->get("base_url", '');
+    }
+
+    public static function setCookieExpire(int $expire): void
+    {
+        $settings = new \ilSetting(self::SETTING_MODULE_ID);
+        $settings->set('cookie_expire', $expire);
+    }
+
+    public static function getCookieExpire(): int
+    {
+        $settings = new \ilSetting(self::SETTING_MODULE_ID);
+        return $settings->get("cookie_expire", 8);
+    }
+
+    public static function setPermissionRoles(string $roles): void
+    {
+        $settings = new \ilSetting(self::SETTING_MODULE_ID);
+        $settings->set('roles', $roles);
+    }
+
+    public static function getPermissionRoles(): string
+    {
+        $settings = new \ilSetting(self::SETTING_MODULE_ID);
+        return $settings->get("roles", "");
+    }
+    public static function uninstall(): void
+    {
+        $settings = new \ilSetting(self::SETTING_MODULE_ID);
+        $settings->delete(self::SETTING_MODULE_ID);
+    }
+
+}
