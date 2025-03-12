@@ -20,9 +20,9 @@ use Endroid\QrCode\Label\Font\OpenSans;
 use ILIAS\Data\ReferenceId;
 use ILIAS\UI\Factory;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
-use MikaGameAPI\Core\Response;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 use JetBrains\PhpStorm\NoReturn;
+use KPG\Learnplaces\util\QrCode;
 
 /**
  * Class xsrlSettingGUI
@@ -225,7 +225,9 @@ final class xsrlSettingGUI
         $r = PluginContainer::resolve('renderer');
         $ctrl = PluginContainer::resolve('ctrl');
 
-        $token = $this->getToken();
+        $obj_qr_code = new QrCode();
+
+        $token = $obj_qr_code->createToken();
 
         $qrCode = $this->getQrCode($token, 'Lernort');
 
@@ -252,7 +254,8 @@ final class xsrlSettingGUI
     #[NoReturn]
     public function downloadQrCode(): void
     {
-        $token = $this->getToken();
+        $obj_qr_code = new QrCode();
+        $token = $obj_qr_code->createToken();
         $qrCode = $this->getQrCode($token, 'Lernort');
         $binary = $qrCode->getString();
 
@@ -285,25 +288,5 @@ final class xsrlSettingGUI
             ->labelText($label)
             ->labelFont(new OpenSans(30))
             ->build();
-    }
-
-    /**
-     * @return string
-     * @throws Exception
-     */
-    private function getToken(): string
-    {
-        $refinery = PluginContainer::resolve('refinery');
-        $query = PluginContainer::resolve('query');
-
-        if (!$query->has('ref_id')) {
-            throw new \Exception('Learnplaces - getToken(): ref_id is missing');
-        }
-
-        $secret = "faa7482c9135aa1628e19d7145386ee49f452e7ad3f417d9818748dc2a3b0b89";
-
-        $ref_id = $query->retrieve('ref_id', $refinery->kindlyTo()->int());
-
-        return hash('sha256', $ref_id . $secret);
     }
 }
