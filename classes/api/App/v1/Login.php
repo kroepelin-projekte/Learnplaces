@@ -6,6 +6,6 @@ use RepositoryObject\Learnplaces\classes\api\Core\Response;
 class Login
 {
     public function endpoint(array $params, array $request_body) {
-        Response::send();
+        Response::send(201,NULL, ["login" => "success"]);
     }
 }

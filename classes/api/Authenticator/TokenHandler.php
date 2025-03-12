@@ -12,8 +12,7 @@ class TokenHandler
      */
     public function createSecret(): string
     {
-        $length = 32;
-        return bin2hex(random_bytes($length / 2));
+        return bin2hex(random_bytes(32));
     }
 
     public function encode(array $payload, string $secret): string
