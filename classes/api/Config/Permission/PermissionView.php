@@ -5,6 +5,7 @@ namespace Repository\RepositoryObject\Learnplaces\classes\api\Config\Permission;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\constConfig;
 use ILIAS\DI\Container;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
+use ILIAS\UI\Component\Input\Container\Form\Standard;
 
 class PermissionView implements constConfig
 {
@@ -20,7 +21,7 @@ class PermissionView implements constConfig
     /**
      * @throws \ilCtrlException
      */
-    public function initForm()
+    public function initForm(): Standard
     {
         $form_action = $this->DIC->ctrl()->getLinkTargetByClass(
             \ilLearnplacesConfigGUI::class, self::CMD_SAVE_PERMISSION_SETTINGS

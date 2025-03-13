@@ -4,7 +4,6 @@ namespace KPG\Learnplaces\util;
 
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
-use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\persistence\entity\VisitJournal;
 
 class QrCode

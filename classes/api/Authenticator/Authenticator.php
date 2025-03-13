@@ -67,7 +67,6 @@ class Authenticator
                 Response::send(401, 'AUTH_ERROR');
                 break;
         }
-
         return false;
     }
 

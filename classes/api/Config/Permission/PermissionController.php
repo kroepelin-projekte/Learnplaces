@@ -4,6 +4,7 @@ namespace Repository\RepositoryObject\Learnplaces\classes\api\Config\Permission;
 
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\constConfig;
 use ILIAS\DI\Container;
+use ilCtrlException;
 
 class PermissionController implements constConfig
 {
@@ -19,6 +20,10 @@ class PermissionController implements constConfig
         $this->view = new PermissionView($this->plugin, $this->DIC);
         $this->model = new PermissionModel($this->plugin, $this->DIC);
     }
+
+    /**
+     * @throws ilCtrlException
+     */
     public function performCMD(string $cmd): void
     {
         switch ($cmd) {
@@ -38,7 +43,7 @@ class PermissionController implements constConfig
     }
 
     /**
-     * @throws \ilCtrlException
+     * @throws ilCtrlException
      */
     public function savePermissionSettings(): void
     {
@@ -49,7 +54,7 @@ class PermissionController implements constConfig
         } else {
             $this->DIC->ui()->maintemplate()->setOnScreenMessage('failure', $result[1]);
             $this->showPermissionSettings();
-            return;
         }
     }
+
 }

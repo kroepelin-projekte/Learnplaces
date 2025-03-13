@@ -21,6 +21,9 @@ class ConfigController implements constConfig
         $this->DIC = $DIC;
     }
 
+    /**
+     * @throws ilCtrlException
+     */
     public function performCMD($cmd): void
     {
         $this->initTabs();

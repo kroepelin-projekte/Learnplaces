@@ -16,8 +16,7 @@ try {
     $ilIliasIniFile = new ilIniFile('./ilias.ini.php');
     $ilIliasIniFile->read();
     ilInitialisation::initILIAS();
-    $auth = new Authenticator();
-    $auth_status = $auth->auth();
+    $auth_status = (new Authenticator())->auth();
     if ($auth_status[0]) {
         $request = new Request();
         $request->route($auth_status[1]);
@@ -26,6 +25,8 @@ try {
     }
     echo $auth_status[1];
 } catch (Exception $e) {
-    // Logger einbauen
+    ilLoggerFactory::getLogger('LPRestIntegration')->error('LEARN_PLACES_REST: ' . $e->getMessage());
+    // Bevor wir live gehen, muss die nächste Zeile raus
     echo $e->getMessage();
+    Response::serverError();
 }
