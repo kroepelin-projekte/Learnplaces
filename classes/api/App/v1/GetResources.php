@@ -5,7 +5,7 @@ namespace KPG\Learnplaces\api\App\v1;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 
-class GetRessources
+class GetResources
 {
     public function endpoint(array $params, array $request_body): void
     {

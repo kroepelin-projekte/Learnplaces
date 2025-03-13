@@ -8,6 +8,10 @@ use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
 use KPG\Learnplaces\persistence\dto\Block;
 use KPG\Learnplaces\persistence\dto\Configuration;
 use KPG\Learnplaces\persistence\dto\Learnplace;
+use ILIAS\Data\ReferenceId;
+use xsrlContentGUI;
+use ilObjLearnplacesGUI;
+use ilObject;
 
 class LearnplacesInfo
 {
@@ -30,6 +34,8 @@ class LearnplacesInfo
 
     private function getBlockArray(Block $block): array
     {
+        global $DIC;
+
         $block_array = [
             "id" => $block->getId(),
             "type" => basename(str_replace('\\', '/', get_class($block))),
@@ -59,7 +65,12 @@ class LearnplacesInfo
         }
 
         if (method_exists($block, 'getRefId')) {
-            $block_array['ilias_ref_id'] = $block->getRefId();
+            $url = $DIC['static_url']->builder()->build(
+                ilObject::_lookupType(ilObject::_lookupObjectId($block->getRefId())),
+                new ReferenceId($block->getRefId()),
+            )->__toString();
+
+            $block_array['ilias_obj_url'] = preg_replace('#/api/learnplaceapp/v1/learnplaces/\d+#', '', $url);
         }
 
         if (method_exists($block, 'getResourceId')) {
@@ -126,5 +137,4 @@ class LearnplacesInfo
         $result['blocks'] = $this->orderBlockArray($this->filterBlockArray($block_array, $this->removing_block_ids));
         return $result;
     }
-
 }
