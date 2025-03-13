@@ -9,6 +9,8 @@ use KPG\Learnplaces\persistence\dto\Block;
 use KPG\Learnplaces\persistence\dto\Configuration;
 use KPG\Learnplaces\persistence\dto\Learnplace;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
+use ilObject;
+use ILIAS\Data\ReferenceId;
 
 class LearnplacesInfo
 {
@@ -33,8 +35,9 @@ class LearnplacesInfo
         Response::send(200, null, $this->getResponseArray($obj_learn_place, $obj_learn_place->getConfiguration()));
     }
 
-    private function getBlockArray(Block $block): array | false
+    private function getBlockArray(Block $block, int $learn_place_id): array | false
     {
+        global $DIC;
         if ($block->getVisibility() === "NEVER") {
             return false;
         }
@@ -68,6 +71,12 @@ class LearnplacesInfo
 
         if (method_exists($block, 'getRefId')) {
             $block_array['ilias_ref_id'] = $block->getRefId();
+            $url = $DIC['static_url']->builder()->build(
+                ilObject::_lookupType(ilObject::_lookupObjectId($block->getRefId())),
+                new ReferenceId($block->getRefId()),
+            )->__toString();
+            $block_array['ilias_obj_url'] = str_replace('/api/learnplaceapp/v1/learnplaces/'.$learn_place_id, '', $url);
+            $block_array["ilias_obj_title"] = ilObject::_lookupTitle(ilObject::_lookupObjectId($block->getRefId()));
         }
 
         if (method_exists($block, 'getResourceId')) {
@@ -80,9 +89,9 @@ class LearnplacesInfo
 
             foreach ($sub_blocks as $sub_block) {
                 $this->removing_block_ids[] = $sub_block->getId();
-                $array = $this->getBlockArray($sub_block);
+                $array = $this->getBlockArray($sub_block, $learn_place_id);
                 if($array !== false) {
-                    $sub_block_array[] = $this->getBlockArray($sub_block);
+                    $sub_block_array[] = $array;
                 }
 
             }
@@ -133,7 +142,7 @@ class LearnplacesInfo
         ];
         $block_array = [];
         foreach ($learn_place_blocks as $block) {
-            $array = $this->getBlockArray($block);
+            $array = $this->getBlockArray($block, (int) $obj_learn_place->getId());
             if($array !== false) {
                 $block_array[] = $array;
             }
