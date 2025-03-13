@@ -31,6 +31,7 @@ use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlVideoBlockGUI
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlAccordionBlockGUI
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlSettingGUI
+ * @ilCtrl_Calls      ilObjLearnplacesGUI: VisitorsGUI
  */
 final class ilObjLearnplacesGUI extends ilObject2GUI
 {
@@ -187,6 +188,10 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
                     $template->getStandardTemplate();
                     $template->show();
                 }
+            case strtolower(VisitorsGUI::class):
+                $this->renderTabs();
+                $this->learnplaceTabs->activateTab(VisitorsGUI::TAB_ID);
+                $this->ctrl->forwardCommand(PluginContainer::resolve(VisitorsGUI::class));
                 break;
             default:
                 $this->ctrl->redirectByClass(static::class, $this->getStandardCmd());
@@ -279,6 +284,7 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         $this->learnplaceTabs->addTab(xsrlContentGUI::TAB_ID, $this->plugin->txt('tabs_content'), $this->ctrl->getLinkTargetByClass(xsrlContentGUI::class, self::DEFAULT_CMD));
         if ($this->accessGuard->hasWritePermission()) {
             $this->learnplaceTabs->addTab(xsrlSettingGUI::TAB_ID, $this->plugin->txt('tabs_settings'), $this->ctrl->getLinkTargetByClass(xsrlSettingGUI::class, CommonControllerAction::CMD_EDIT));
+            $this->learnplaceTabs->addTab(VisitorsGUI::TAB_ID, $this->plugin->txt('tabs_visitor'), $this->ctrl->getLinkTargetByClass(VisitorsGUI::class, CommonControllerAction::CMD_INDEX));
         }
         parent::setTabs();
 

@@ -25,7 +25,9 @@ class Learnplaces
                 $ilias_object_learn_place = new \ilObjLearnplaces($ref_id);
                 break;
             };
-
+            if (!$obj_learn_place->getConfiguration()->isOnline() OR $obj_learn_place->getConfiguration()->getDefaultVisibility() === "NEVER") {
+                Response::send(400, "LEARNPLACE_NOT_FOUND", []);
+            }
             $all_learn_places[] = [
                 "id" => $obj_learn_place->getId(),
                 "obj_id" => $obj_learn_place->getObjectId(),
