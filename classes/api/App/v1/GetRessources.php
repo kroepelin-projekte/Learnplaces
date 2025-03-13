@@ -1,4 +1,5 @@
 <?php
+
 namespace KPG\Learnplaces\api\App\v1;
 
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
@@ -6,14 +7,14 @@ use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 
 class GetRessources
 {
-    public function endpoint(array $params, array $request_body) {
+    public function endpoint(array $params, array $request_body): void
+    {
         global $DIC;
 
-        $identifier = $params['rid'];
+        $identifier = htmlspecialchars($params['rid']);
 
         if ($DIC->resourceStorage()->manage()->find($identifier)) {
-            $resource_identification = new ResourceIdentification($identifier);
-            $DIC->resourceStorage()->consume()->download($resource_identification)->run();
+            $DIC->resourceStorage()->consume()->download(new ResourceIdentification($identifier))->run();
             Response::send(200);
         }
         Response::send(400, 'RESSOURCE_NOT_FOUND', []);

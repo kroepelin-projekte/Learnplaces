@@ -7,7 +7,7 @@ use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Authentica
 
 class Logout
 {
-    public function endpoint(array $params, array $request_body)
+    public function endpoint(array $params, array $request_body): void
     {
         global $DIC;
         $user_id = $DIC->user()->getId();

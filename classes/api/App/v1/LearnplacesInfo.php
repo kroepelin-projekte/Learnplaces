@@ -5,30 +5,30 @@ namespace KPG\Learnplaces\api\App\v1;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
+use KPG\Learnplaces\persistence\dto\Block;
+use KPG\Learnplaces\persistence\dto\Configuration;
+use KPG\Learnplaces\persistence\dto\Learnplace;
 
 class LearnplacesInfo
 {
     private array $removing_block_ids = [];
-    public function endpoint(array $params, array $request_body)
-    {
-        global $ilDB;
-        $id = $params['id'];
 
-        $learn_places_repo = PluginContainer::resolve(LearnplaceRepository::class);
+    public function endpoint(array $params, array $request_body): void
+    {
+        $id = htmlspecialchars($params['id']);
+
         try {
-            $obj_learn_place = $learn_places_repo->find($id);
+            $obj_learn_place = PluginContainer::resolve(LearnplaceRepository::class)->find($id);
         } catch (\Exception $e) {
             Response::send(400, "LEARNPLACE_NOT_FOUND", []);
         }
-        $learn_place_configuration = $obj_learn_place->getConfiguration();
-        if (!$learn_place_configuration->isOnline()) {
+        if (!$obj_learn_place->getConfiguration()->isOnline()) {
             Response::send(400, "LEARNPLACE_NOT_FOUND", []);
         }
-
-        Response::send(200, null, $this->getResponseArray($obj_learn_place, $learn_place_configuration));
+        Response::send(200, null, $this->getResponseArray($obj_learn_place, $obj_learn_place->getConfiguration()));
     }
 
-    private function getBlockArray($block): array
+    private function getBlockArray(Block $block): array
     {
         $block_array = [
             "id" => $block->getId(),
@@ -36,33 +36,40 @@ class LearnplacesInfo
             "sequence" => $block->getSequence(),
             "visible" => $block->getVisibility(),
             "constraints" => $block->getConstraint(),
-
         ];
+
         if (method_exists($block, 'getContent')) {
             $block_array['content'] = $block->getContent();
         }
+
         if (method_exists($block, 'getTitle')) {
             $block_array['title'] = $block->getTitle();
         }
+
         if (method_exists($block, 'isExpand')) {
             $block_array['expand'] = $block->isExpand();
         }
+
         if (method_exists($block, 'getDescription')) {
             $block_array['description'] = $block->getDescription();
         }
+
         if (method_exists($block, 'getPicture')) {
             $block_array['picture'] = $block->getPicture()->getResourceId();
         }
+
         if (method_exists($block, 'getRefId')) {
             $block_array['ilias_ref_id'] = $block->getRefId();
         }
-        if(method_exists($block, 'getResourceId')) {
+
+        if (method_exists($block, 'getResourceId')) {
             $block_array['resource_id'] = $block->getResourceId();
         }
 
         if (method_exists($block, 'getBlocks')) {
             $sub_blocks = $block->getBlocks();
             $sub_block_array = [];
+
             foreach ($sub_blocks as $sub_block) {
                 $this->removing_block_ids[] = $sub_block->getId();
                 $sub_block_array[] = $this->getBlockArray($sub_block);
@@ -80,6 +87,7 @@ class LearnplacesInfo
             return !in_array($block['id'], $removing_ids);
         });
     }
+
     private function orderBlockArray(array $block_array): array
     {
         usort($block_array, function ($a, $b) {
@@ -87,9 +95,10 @@ class LearnplacesInfo
         });
 
         return $block_array;
-
     }
-    private function getResponseArray($obj_learn_place, $learn_place_configuration): array {
+
+    private function getResponseArray(Learnplace $obj_learn_place, Configuration $learn_place_configuration): array
+    {
         $learn_place_location = $obj_learn_place->getLocation();
         $learn_place_blocks = $obj_learn_place->getBlocks();
         $obj_id = $obj_learn_place->getObjectId();
@@ -113,10 +122,9 @@ class LearnplacesInfo
         $block_array = [];
         foreach ($learn_place_blocks as $block) {
             $block_array[] = $this->getBlockArray($block);
-
         }
         $result['blocks'] = $this->orderBlockArray($this->filterBlockArray($block_array, $this->removing_block_ids));
-        return  $result;
+        return $result;
     }
 
 }

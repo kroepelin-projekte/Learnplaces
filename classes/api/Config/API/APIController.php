@@ -54,7 +54,6 @@ class APIController implements constConfig
         } else {
             $this->DIC->ui()->maintemplate()->setOnScreenMessage('failure', $result[1]);
             $this->showAPISettings();
-            return;
         }
     }
 }
