@@ -36,6 +36,7 @@ use xsrlSettingGUI;
 use xsrlVideoBlockGUI;
 
 use function ILIAS\UI\examples\Layout\Page\Standard\ui;
+use VisitorsGUI;
 
 /**
  * Class GUIProvider
@@ -51,7 +52,9 @@ final class GUIProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        $pimple[RenderableBlockViewFactory::class] = function ($c) {return new RenderableBlockViewFactoryImpl(); };
+        $pimple[RenderableBlockViewFactory::class] = function ($c) {
+            return new RenderableBlockViewFactoryImpl();
+        };
 
         $pimple[xsrlContentGUI::class] = function ($c) {
             return new xsrlContentGUI(
@@ -69,6 +72,17 @@ final class GUIProvider implements ServiceProviderInterface
                 $c[BlockAddFormGUI::class],
                 $c[ServerRequestInterface::class],
                 $c[AccessGuard::class]
+            );
+        };
+        $pimple[VisitorsGUI::class] = function ($c) {
+            return new VisitorsGUI(
+                $c->tabs(),
+                $c->ui()->mainTemplate(),
+                $c->ui(),
+                $c[ilLearnplacesPlugin::class],
+                $c[LearnplaceService::class],
+                $c[AccessGuard::class],
+                $c->ctrl(),
             );
         };
 

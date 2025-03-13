@@ -8,15 +8,19 @@ use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
 use KPG\Learnplaces\persistence\dto\Block;
 use KPG\Learnplaces\persistence\dto\Configuration;
 use KPG\Learnplaces\persistence\dto\Learnplace;
+use ILIAS\HTTP\Response\Sender\ResponseSendingException;
+use ilObject;
 use ILIAS\Data\ReferenceId;
 use xsrlContentGUI;
 use ilObjLearnplacesGUI;
-use ilObject;
 
 class LearnplacesInfo
 {
     private array $removing_block_ids = [];
 
+    /**
+     * @throws ResponseSendingException
+     */
     public function endpoint(array $params, array $request_body): void
     {
         $id = htmlspecialchars($params['id']);
@@ -26,16 +30,20 @@ class LearnplacesInfo
         } catch (\Exception $e) {
             Response::send(400, "LEARNPLACE_NOT_FOUND", []);
         }
-        if (!$obj_learn_place->getConfiguration()->isOnline()) {
+        if (!$obj_learn_place->getConfiguration()->isOnline() or $obj_learn_place->getConfiguration(
+            )->getDefaultVisibility() === "NEVER") {
             Response::send(400, "LEARNPLACE_NOT_FOUND", []);
         }
         Response::send(200, null, $this->getResponseArray($obj_learn_place, $obj_learn_place->getConfiguration()));
     }
 
-    private function getBlockArray(Block $block): array
+    private function getBlockArray(Block $block, int $learn_place_id): array | false
     {
         global $DIC;
 
+        if ($block->getVisibility() === "NEVER") {
+            return false;
+        }
         $block_array = [
             "id" => $block->getId(),
             "type" => basename(str_replace('\\', '/', get_class($block))),
@@ -65,12 +73,15 @@ class LearnplacesInfo
         }
 
         if (method_exists($block, 'getRefId')) {
+            $block_array['ilias_ref_id'] = $block->getRefId();
+
             $url = $DIC['static_url']->builder()->build(
                 ilObject::_lookupType(ilObject::_lookupObjectId($block->getRefId())),
                 new ReferenceId($block->getRefId()),
             )->__toString();
 
             $block_array['ilias_obj_url'] = preg_replace('#/api/learnplaceapp/v1/learnplaces/\d+#', '', $url);
+            $block_array["ilias_obj_title"] = ilObject::_lookupTitle(ilObject::_lookupObjectId($block->getRefId()));
         }
 
         if (method_exists($block, 'getResourceId')) {
@@ -83,7 +94,11 @@ class LearnplacesInfo
 
             foreach ($sub_blocks as $sub_block) {
                 $this->removing_block_ids[] = $sub_block->getId();
-                $sub_block_array[] = $this->getBlockArray($sub_block);
+                $array = $this->getBlockArray($sub_block, $learn_place_id);
+                if($array !== false) {
+                    $sub_block_array[] = $array;
+                }
+
             }
 
             $block_array['sub_blocks'] = $sub_block_array;
@@ -132,7 +147,10 @@ class LearnplacesInfo
         ];
         $block_array = [];
         foreach ($learn_place_blocks as $block) {
-            $block_array[] = $this->getBlockArray($block);
+            $array = $this->getBlockArray($block, (int) $obj_learn_place->getId());
+            if($array !== false) {
+                $block_array[] = $array;
+            }
         }
         $result['blocks'] = $this->orderBlockArray($this->filterBlockArray($block_array, $this->removing_block_ids));
         return $result;

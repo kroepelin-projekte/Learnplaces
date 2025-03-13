@@ -5,6 +5,7 @@ namespace RepositoryObject\Learnplaces\classes\api\Core;
 use JetBrains\PhpStorm\NoReturn;
 use ILIAS\HTTP\Response\ResponseHeader;
 use ILIAS\Filesystem\Stream\Streams;
+use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 
 class Response
 {
@@ -21,22 +22,19 @@ class Response
     /**
      * @description Return to the client
      * @param int   $status_code
-     * @param $error_code
+     * @param       $error_code
      * @param array $data
-     * @param $msg
+     * @param       $msg
      * @return void
+     * @throws ResponseSendingException
      */
     public static function send(int $status_code = 201, string $error_code = null, array $data = []): void
     {
-        $response_body['status_code'] = $status_code;
-        $response_body['error_code'] = $error_code;
-        $response_body['data'] = $data;
-
         global $DIC;
         $response = $DIC->http()->response()
             ->withHeader(ResponseHeader::CONTENT_TYPE, 'application/json')
             ->withStatus($status_code)
-            ->withBody(Streams::ofString(json_encode($response_body)));
+            ->withBody(Streams::ofString(json_encode( [$status_code, $error_code, $data])));
 
         $DIC->http()->saveResponse($response);
         $DIC->http()->sendResponse();
