@@ -3,6 +3,8 @@
 namespace RepositoryObject\Learnplaces\classes\api\Core;
 
 use JetBrains\PhpStorm\NoReturn;
+use ILIAS\HTTP\Response\ResponseHeader;
+use ILIAS\Filesystem\Stream\Streams;
 
 class Response
 {
@@ -30,10 +32,14 @@ class Response
         $response_body['error_code'] = $error_code;
         $response_body['data'] = $data;
 
-        http_response_code($status_code);
-        header('Content-Type: application/json');
-        header('Cache-Control: no-cache, must-revalidate');
-        echo json_encode($response_body);
-        exit;
+        global $DIC;
+        $response = $DIC->http()->response()
+            ->withHeader(ResponseHeader::CONTENT_TYPE, 'application/json')
+            ->withStatus($status_code)
+            ->withBody(Streams::ofString(json_encode($response_body)));
+
+        $DIC->http()->saveResponse($response);
+        $DIC->http()->sendResponse();
+        $DIC->http()->close();
     }
 }

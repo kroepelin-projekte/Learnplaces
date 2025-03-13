@@ -10,6 +10,8 @@ use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 use KPG\Learnplaces\api\Database\Tables\CookieSecrets;
 use Random\RandomException;
+use ILIAS\HTTP\Response\ResponseHeader;
+use ILIAS\Filesystem\Stream\Streams;
 
 class Authenticator
 {
@@ -20,6 +22,17 @@ class Authenticator
      */
     public function auth(): array
     {
+        header("Access-Control-Allow-Origin: http://localhost:3002"); // Dynamische Origin setzen
+        header('Access-Control-Allow-Credentials: true');       // Cookies zulassen
+        header('Access-Control-Allow-Methods: POST, GET,, DELETE, OPTIONS'); // Erlaubte Methoden
+        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With'); // Erlaubte Header
+
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            // CORS-Preflight response and exit
+            http_response_code(200);
+            exit;
+        }
+
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             if ($this->basicAuth()) {
                 $secret = $this->createSessionToken();
@@ -140,7 +153,7 @@ class Authenticator
         $json_web_token = $token_handler->encode($userPayload, $secret);
         $cookieOptions = [
             'expires' => $userPayload['exp'],
-            'domain' => Settings::getBaseURL(),
+            'domain' => '.' . Settings::getBaseURL(),
             'path' => '/',
             'secure' => true,
             'httponly' => true,

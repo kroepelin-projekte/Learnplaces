@@ -6,7 +6,10 @@ use Repository\RepositoryObject\Learnplaces\classes\api\Config\ConfigController;
  */
 class ilLearnplacesConfigGUI extends ilPluginConfigGUI
 {
-
+    /**
+     * @param string $cmd
+     * @return void
+     */
     public function performCommand(string $cmd): void
     {
         //KPG\Learnplaces\api\Database\Tables\CookieSecrets::install();

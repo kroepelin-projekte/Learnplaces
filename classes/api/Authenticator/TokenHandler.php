@@ -3,10 +3,10 @@
 namespace Repository\RepositoryObject\Learnplaces\classes\api\Authenticator;
 
 use Random\RandomException;
+use Exception;
 
 class TokenHandler
 {
-
     /**
      * @throws RandomException
      */
@@ -15,6 +15,11 @@ class TokenHandler
         return bin2hex(random_bytes(32));
     }
 
+    /**
+     * @param array  $payload
+     * @param string $secret
+     * @return string
+     */
     public function encode(array $payload, string $secret): string
     {
         $headers_encoded = $this->base64UrlEncode(json_encode([
@@ -33,6 +38,10 @@ class TokenHandler
         return "$headers_encoded.$payload_encoded.$signature_encoded";
     }
 
+    /**
+     * @param string $text
+     * @return string
+     */
     private function base64UrlEncode(string $text): string
     {
         return str_replace(
@@ -41,22 +50,56 @@ class TokenHandler
             base64_encode($text)
         );
     }
+
+    /**
+     * @param string $client_token
+     * @param string $secret
+     * @return bool
+     */
     public function decode(string $client_token, string $secret): bool
     {
-        $parts = explode('.', $client_token);
-        if (count($parts) !== 3) {
-            return false;
-        }
-        $signature = hash_hmac('sha256', "$parts[0].$parts[1]", $secret, true);
-        $token_signature = $this->base64UrlDecode($parts[2]);
-
-        if (strlen($signature) !== strlen($token_signature)) {
+        if (preg_match("/^(?<header>.+)\.(?<payload>.+)\.(?<signature>.+)$/", $client_token, $matches) !== 1) {
             return false;
         }
 
-        return hash_equals($signature, $token_signature);
+        $signature = hash_hmac(
+            'sha256',
+            $matches['header'] . '.' . $matches['payload'],
+            $secret,
+            true
+        );
+
+        $token_signature = $this->base64UrlDecode($matches['signature']);
+
+        if (!hash_equals($signature, $token_signature)) {
+            return false;
+        }
+
+        $payload = json_decode($this->base64UrlDecode($matches['payload']), true);
+
+        if (!is_array($payload) || !isset($payload['sub'], $payload['exp'])) {
+            return false;
+        }
+
+        if (!is_int($payload['exp']) || $payload['exp'] <= 0) {
+            return false;
+        }
+
+        if (!is_int($payload['sub']) || empty($payload['sub'])) {
+            return false;
+        }
+
+        if (time() >= $payload['exp']) {
+            return false;
+        }
+
+        return true;
     }
 
+    /**
+     * @param string $text
+     * @return string
+     */
     private function base64UrlDecode(string $text): string
     {
         $padding = strlen($text) % 4;
@@ -71,7 +114,5 @@ class TokenHandler
             )
         );
     }
-
-
 }
 

@@ -15,8 +15,9 @@ class Learnplaces
         $all_learn_places = [];
 
         $result = $ilDB->query("SELECT pk_id FROM xsrl_learnplace");
-        if ($result === null) {
-            Response::send("200");
+
+        if ($result->rowCount() === 0) {
+            Response::send(200);
         }
         while ($record = $ilDB->fetchAssoc($result)) {
             $obj_learn_place = PluginContainer::resolve(LearnplaceRepository::class)->find((int)$record['pk_id']);
@@ -34,6 +35,6 @@ class Learnplaces
                 "tile_image" => $ilias_object_learn_place->getObjectProperties()->getPropertyTileImage()->getTileImage()->getRid()
             ];
         }
-        Response::send("200", null, $all_learn_places);
+        Response::send(200, null, $all_learn_places);
     }
 }
