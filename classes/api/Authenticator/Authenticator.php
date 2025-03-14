@@ -23,6 +23,18 @@ class Authenticator
      */
     public function auth(): array
     {
+        $client_url = Settings::getClientURL();
+        header("Access-Control-Allow-Origin: $client_url");
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Allow-Methods: POST, GET,, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
+
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            // CORS-Preflight response and exit
+            http_response_code(200);
+            exit;
+        }
+
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             if ($this->basicAuth()) {
                 $secret = $this->createSessionToken();
