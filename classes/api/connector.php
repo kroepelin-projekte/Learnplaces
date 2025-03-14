@@ -1,62 +1,34 @@
 <?php
 
-namespace KPG\Learnplaces\api;
+chdir("../../../../../../../../");
 
 use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Authenticator;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\api\Core\Request;
-use ILIAS\HTTP\Response\Sender\ResponseSendingException;
-use Random\RandomException;
-use ilLoggerFactory;
-use ilIniFile;
-use ilInitialisation;
-use Exception;
 
-class connector
-{
-    public function __construct()
-    {
-        chdir("../../../../../../../../");
-        require_once 'vendor/composer/vendor/autoload.php';
+require_once 'vendor/composer/vendor/autoload.php';
 
-        try {
-            if (!file_exists('./ilias.ini.php')) {
-                ilLoggerFactory::getLogger('LPRestIntegration')->error(
-                    'LEARN_PLACES_REST_ILIAS_INI: ' . "ILIAS_INI_FILE_NOT_FOUND"
-                );
-                Response::serverError();
-            }
-            $ilIliasIniFile = new ilIniFile('./ilias.ini.php');
-            $ilIliasIniFile->read();
-            ilInitialisation::initILIAS();
-        } catch (Exception $e) {
-            ilLoggerFactory::getLogger('LPRestIntegration')->error('LEARN_PLACES_REST_ILIAS_INI: ' . $e->getMessage());
-            Response::serverError();
-        }
-    }
-
-    /**
-     * @throws ResponseSendingException
-     */
-    public function connect(): void
-    {
-        try {
-            $obj_authenticator = new Authenticator();
-            $obj_authenticator->httpOptions();
-            $auth_status = $obj_authenticator->auth();
-            if ($auth_status[0]) {
-                $request = new Request();
-                $request->route($auth_status[1]);
-            } else {
-                Response::send(401);
-            }
-        } catch (Exception $e) {
-            ilLoggerFactory::getLogger('LPRestIntegration')->error('LEARN_PLACES_REST_CONNECT: ' . $e->getMessage());
-            Response::serverError();
-        }
-    }
+if (!file_exists('./ilias.ini.php')) {
+    die('The ILIAS setup is not completed. Please run the setup routine.');
 }
 
-$connect = new connector();
-$connect->connect();
-
+try {
+    $ilIliasIniFile = new ilIniFile('./ilias.ini.php');
+    $ilIliasIniFile->read();
+    ilInitialisation::initILIAS();
+    $obj_authenticator = new Authenticator();
+    $obj_authenticator->httpOptions();
+    $auth_status = $obj_authenticator->auth();
+    if ($auth_status[0]) {
+        $request = new Request();
+        $request->route($auth_status[1]);
+    } else {
+        Response::send(401);
+    }
+    echo $auth_status[1];
+} catch (Exception $e) {
+    ilLoggerFactory::getLogger('LPRestIntegration')->error('LEARN_PLACES_REST: ' . $e->getMessage());
+    // Bevor wir live gehen, muss die nächste Zeile raus
+    echo $e->getMessage();
+    Response::serverError();
+}
