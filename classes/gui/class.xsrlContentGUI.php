@@ -248,8 +248,8 @@ final class xsrlContentGUI
 
         $template->setVariable('CONTENT', $view->getHTML());
 
-        $this->template->addCss(ilLearnplacesPlugin::getInstance()->getStyleSheetLocation('style.css'));
-        $this->template->addJavaScript(ilLearnplacesPlugin::getInstance()->getStyleSheetLocation('script.js'));
+        $this->template->addCss('Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/style.css');
+        $this->template->addJavaScript('ilias_10/public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/script.js');
         $this->template->setContent($template->get());
     }
 
@@ -441,7 +441,7 @@ final class xsrlContentGUI
         $this->tabs->activateSubTab('sequence');
         $renderer = PluginContainer::resolve('renderer');
 
-        $this->template->addCss(ilLearnplacesPlugin::getInstance()->getStyleSheetLocation('style.css'));
+        $this->template->addCss('Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/style.css');
 
         $this->template->setContent(
             $renderer->render($this->sequenceForm())

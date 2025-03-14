@@ -31,10 +31,15 @@ class Response
     public static function send(int $status_code = 201, string $error_code = null, array $data = []): void
     {
         global $DIC;
+
+        $response_body['status_code'] = $status_code;
+        $response_body['error_code'] = $error_code;
+        $response_body['data'] = $data;
+
         $response = $DIC->http()->response()
             ->withHeader(ResponseHeader::CONTENT_TYPE, 'application/json')
             ->withStatus($status_code)
-            ->withBody(Streams::ofString(json_encode( [$status_code, $error_code, $data])));
+            ->withBody(Streams::ofString(json_encode($response_body)));
 
         $DIC->http()->saveResponse($response);
         $DIC->http()->sendResponse();

@@ -49,8 +49,6 @@ class VisitorsGUI
 
     private UIServices $ui;
 
-    private LearnplaceService $learnplaceService;
-
     public function __construct(
         ilTabsGUI $tabs,
         $template,
@@ -65,7 +63,6 @@ class VisitorsGUI
         $this->template = $template;
         $this->ui = $ui;
         $this->plugin = $plugin;
-        $this->learnplaceService = $learnplaceService;
         $this->accessGuard = $accessGuard;
     }
 
@@ -105,5 +102,4 @@ class VisitorsGUI
 
         $this->template->setContent($this->ui->renderer()->render($final_table->withRequest($DIC->http()->request())));
     }
-
 }

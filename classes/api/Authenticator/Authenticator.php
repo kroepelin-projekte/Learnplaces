@@ -22,6 +22,7 @@ class Authenticator
      */
     public function auth(): array
     {
+        // todo config input for domain
         header("Access-Control-Allow-Origin: http://localhost:3002"); // Dynamische Origin setzen
         header('Access-Control-Allow-Credentials: true');       // Cookies zulassen
         header('Access-Control-Allow-Methods: POST, GET,, DELETE, OPTIONS'); // Erlaubte Methoden
