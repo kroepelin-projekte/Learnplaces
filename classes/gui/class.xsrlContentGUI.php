@@ -249,7 +249,7 @@ final class xsrlContentGUI
         $template->setVariable('CONTENT', $view->getHTML());
 
         $this->template->addCss('Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/style.css');
-        $this->template->addJavaScript('ilias_10/public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/script.js');
+        $this->template->addJavaScript('Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/script.js');
         $this->template->setContent($template->get());
     }
 
