@@ -45,5 +45,16 @@ class Settings implements constConfig
         $settings = new \ilSetting(self::SETTING_MODULE_ID);
         $settings->delete(self::SETTING_MODULE_ID);
     }
+    public static function setClientURL(string $url): void
+    {
+        $settings = new \ilSetting(self::SETTING_MODULE_ID);
+        $settings->set('client_url', $url);
+    }
+
+    public static function getClientURL(): string
+    {
+        $settings = new \ilSetting(self::SETTING_MODULE_ID);
+        return $settings->get("client_url", '');
+    }
 
 }

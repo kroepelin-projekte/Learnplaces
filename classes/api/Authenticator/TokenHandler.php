@@ -2,14 +2,8 @@
 
 namespace Repository\RepositoryObject\Learnplaces\classes\api\Authenticator;
 
-use Random\RandomException;
-use Exception;
-
 class TokenHandler
 {
-    /**
-     * @throws RandomException
-     */
     public function createSecret(): string
     {
         return bin2hex(random_bytes(32));

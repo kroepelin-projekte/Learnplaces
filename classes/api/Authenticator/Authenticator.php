@@ -12,6 +12,7 @@ use KPG\Learnplaces\api\Database\Tables\CookieSecrets;
 use Random\RandomException;
 use ILIAS\HTTP\Response\ResponseHeader;
 use ILIAS\Filesystem\Stream\Streams;
+use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 
 class Authenticator
 {
@@ -22,18 +23,6 @@ class Authenticator
      */
     public function auth(): array
     {
-        // todo config input for domain
-        header("Access-Control-Allow-Origin: http://localhost:3002"); // Dynamische Origin setzen
-        header('Access-Control-Allow-Credentials: true');       // Cookies zulassen
-        header('Access-Control-Allow-Methods: POST, GET,, DELETE, OPTIONS'); // Erlaubte Methoden
-        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With'); // Erlaubte Header
-
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            // CORS-Preflight response and exit
-            http_response_code(200);
-            exit;
-        }
-
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             if ($this->basicAuth()) {
                 $secret = $this->createSessionToken();
@@ -177,5 +166,27 @@ class Authenticator
     public static function destroyCookieByUserID(int $user_id): void {
         setcookie(self::TOKEN_COOKIE_NAME, '', time() - 3600);
         CookieSecrets::deleteSecretByUserID($user_id);
+    }
+
+    /**
+     * @throws ResponseSendingException
+     */
+    public function httpOptions (): void {
+        $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
+
+        header("Access-Control-Allow-Origin: $client_url");
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
+
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            global $DIC;
+            $response = $DIC->http()->response()
+                            ->withHeader(ResponseHeader::CONTENT_TYPE, 'application/json')
+                            ->withStatus(200);
+            $DIC->http()->saveResponse($response);
+            $DIC->http()->sendResponse();
+            $DIC->http()->close();
+        }
     }
 }

@@ -9,10 +9,10 @@ class ilLearnplacesConfigGUI extends ilPluginConfigGUI
     /**
      * @param string $cmd
      * @return void
+     * @throws ilCtrlException
      */
     public function performCommand(string $cmd): void
     {
-        //KPG\Learnplaces\api\Database\Tables\CookieSecrets::install();
         $config_controller = new ConfigController();
         $config_controller->performCMD($cmd);
     }

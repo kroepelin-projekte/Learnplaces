@@ -2,7 +2,6 @@
 
 namespace RepositoryObject\Learnplaces\classes\api\Core;
 
-use JetBrains\PhpStorm\NoReturn;
 use ILIAS\HTTP\Response\ResponseHeader;
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
@@ -13,6 +12,7 @@ class Response
     /**
      * @description return a Server Error to the Client
      * @return void
+     * @throws ResponseSendingException
      */
     public static function serverError(): void
     {
@@ -21,10 +21,9 @@ class Response
 
     /**
      * @description Return to the client
-     * @param int   $status_code
-     * @param       $error_code
-     * @param array $data
-     * @param       $msg
+     * @param int         $status_code
+     * @param string|null $error_code
+     * @param array       $data
      * @return void
      * @throws ResponseSendingException
      */

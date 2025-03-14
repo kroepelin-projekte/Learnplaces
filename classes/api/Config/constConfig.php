@@ -11,6 +11,9 @@ interface constConfig {
     public const LANG_TAB_SUB_PERMISSION_SETTINGS = "lang_tab_sub_permission_settings";
     public const LANG_INPUT_TEXT_BASE_URL = "lang_input_text_base_url";
     public const LANG_INPUT_TEXT_BASE_URL_BYLINE = "lang_input_text_base_url_byline";
+    public const LANG_INPUT_TEXT_CLIENT_URL = "lang_input_text_client_url";
+    public const LANG_INPUT_TEXT_BASE_CLIENT_BYLINE = "lang_input_text_client_url_byline";
+
     public const LANG_INPUT_TEXT_COOKIE_EXPIRE = "lang_input_text_cookie_expire";
     public const LANG_INPUT_TEXT_COOKIE_EXPIRE_BYLINE = "lang_input_text_cookie_expire_byline";
     public const LANG_SETTINGS = "lang_settings";

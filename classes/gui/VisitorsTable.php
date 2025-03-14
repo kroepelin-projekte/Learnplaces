@@ -2,23 +2,23 @@
 
 namespace KPG\Learnplaces\gui;
 
-use ILIAS\UI\Implementation\Component\Table as T;
 use ILIAS\UI\Component\Table as I;
 use ILIAS\Data\Range;
 use ILIAS\Data\Order;
-use ILIAS\UI\URLBuilder;
-use Psr\Http\Message\ServerRequestInterface;
 use ILIAS\UI\Component\Table\DataRowBuilder;
 use Generator;
 use ilLearnplacesPlugin;
+use ILIAS\Data\Factory;
+use ILIAS\UI\Implementation\Component\Table\Data;
+use ILIAS\DI\Container;
 
 class VisitorsTable implements I\DataRetrieval
 {
 
     protected \ILIAS\UI\Factory $ui_factory;
-    protected \ILIAS\Data\Factory $df;
+    protected Factory $df;
     private array $table_data;
-    private \ILIAS\DI\Container $DIC;
+    private Container $DIC;
     private ilLearnplacesPlugin $plugin;
 
 
@@ -26,10 +26,14 @@ class VisitorsTable implements I\DataRetrieval
     {
         global $DIC;
         $this->ui_factory = $DIC['ui.factory'];
-        $this->df = new \ILIAS\Data\Factory();
+        $this->df = new Factory();
         global $DIC;
         $this->DIC = $DIC;
         $this->plugin = $plugin;
+        $this->table_data = $table_data;
+    }
+    public function setTableData(array $table_data): void
+    {
         $this->table_data = $table_data;
     }
 
@@ -57,8 +61,9 @@ class VisitorsTable implements I\DataRetrieval
             }
         }
         foreach ($record_data as $row) {
-            $record['name_with_link'] = $row['object_name_with_link'];
-            $record['date'] = $row['number_of_ratings'];
+            $record['full_name'] = $row['full_name'];
+            $record['login'] = $row['login'];
+            $record['visited_at'] = $row['visited_at'];
             yield $row_builder->buildDataRow($row_id, $record);
             $row_id++;
         }
@@ -69,8 +74,9 @@ class VisitorsTable implements I\DataRetrieval
     {
         $f = $this->ui_factory;
         $columns = [
-            'name_with_link' => $f->table()->column()->text("Besucher"),
-            'date' => $f->table()->column()->text("Datum und Uhrzeit"),
+            'full_name' => $f->table()->column()->text($this->plugin->txt('lang_visitor_table_visitor')),
+            'login' => $f->table()->column()->text($this->plugin->txt('lang_visitor_table_login')),
+            'visited_at' => $f->table()->column()->text($this->plugin->txt('lang_visitor_table_vistited_at')),
         ];
         return $columns;
     }
@@ -81,7 +87,7 @@ class VisitorsTable implements I\DataRetrieval
     {
         return count($this->table_data);
     }
-    public function getTableForRepresentation(): \ILIAS\UI\Implementation\Component\Table\Data
+    public function getTableForRepresentation(): Data
     {
         return $this->ui_factory->table()->data(
             '',

@@ -41,7 +41,7 @@ class CookieSecrets
         }
     }
 
-    public static function uninstall()
+    public static function uninstall(): void
     {
         global $ilDB;
         if (!$ilDB->tableExists(self::TABLE_NAME)) {
@@ -72,7 +72,7 @@ class CookieSecrets
         }
     }
 
-    public static function getAll()
+    public static function getAll(): array
     {
         global $ilDB;
         $sql = "SELECT * FROM " . self::TABLE_NAME;
