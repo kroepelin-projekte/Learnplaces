@@ -11,11 +11,7 @@ use KPG\Learnplaces\container\PluginContainer;
 
 class VisitorsGUI
 {
-
     public const TAB_ID = 'participant';
-    /**
-     * Command to store the sequence numbers
-     */
 
     /**
      * @var ilTabsGUI $tabs
@@ -40,6 +36,7 @@ class VisitorsGUI
     private AccessGuard $accessGuard;
 
     private UIServices $ui;
+    private $learnplaceService;
 
     public function __construct(
         ilTabsGUI $tabs,
@@ -56,6 +53,7 @@ class VisitorsGUI
         $this->ui = $ui;
         $this->plugin = $plugin;
         $this->accessGuard = $accessGuard;
+        $this->learnplaceService = $learnplaceService;
     }
 
     /**
@@ -101,7 +99,7 @@ class VisitorsGUI
         $obj_id = \ilObject::_lookupObjectId($query->retrieve('ref_id', $refinery->kindlyTo()->int()));
 
         $visitors = [];
-        foreach ( $this->learnplaceService->findByObjectId($obj_id)->getVisitJournals() as $visitJournal) {
+        foreach ($this->learnplaceService->findByObjectId($obj_id)->getVisitJournals() as $visitJournal) {
             $visitors[] = [
               'full_name' => ilObjUser::_lookupFullname( $visitJournal->getUserId()),
               "login" => ilObjUser::_lookupLogin($visitJournal->getUserId()),

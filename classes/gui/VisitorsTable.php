@@ -14,13 +14,11 @@ use ILIAS\DI\Container;
 
 class VisitorsTable implements I\DataRetrieval
 {
-
     protected \ILIAS\UI\Factory $ui_factory;
     protected Factory $df;
     private array $table_data;
     private Container $DIC;
     private ilLearnplacesPlugin $plugin;
-
 
     public function __construct( ilLearnplacesPlugin $plugin, $table_data)
     {
@@ -32,6 +30,7 @@ class VisitorsTable implements I\DataRetrieval
         $this->plugin = $plugin;
         $this->table_data = $table_data;
     }
+
     public function setTableData(array $table_data): void
     {
         $this->table_data = $table_data;
@@ -81,12 +80,11 @@ class VisitorsTable implements I\DataRetrieval
         return $columns;
     }
 
-
-
     public function getTotalRowCount(?array $filter_data, ?array $additional_parameters): ?int
     {
         return count($this->table_data);
     }
+
     public function getTableForRepresentation(): Data
     {
         return $this->ui_factory->table()->data(
@@ -95,6 +93,4 @@ class VisitorsTable implements I\DataRetrieval
             $this
         );
     }
-
-
 }
