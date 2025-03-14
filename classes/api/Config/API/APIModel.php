@@ -28,6 +28,7 @@ class APIModel implements constConfig
         }
         Settings::setBaseUrl($result['api']['url']);
         Settings::setCookieExpire($result['api']['cookie']);
+        Settings::setBaseURL($result['api']['client']);
 
         return [true, $this->plugin->txt(self::LANG_SUCCESS_SETTINGS)];
     }

@@ -107,3 +107,8 @@ lang_before_Activation#:#Bevor das Plugin aktiviert werden kann, muss in den Plu
 lang_input_text_roles#:#Rollenfreigabe
 lang_input_text_roles_byline#:#Eingabe von Rollen, die für die Schnittstelle freigegeben sind. Die Rollen sind mit einem Komma zu trennten. globale Administratoren haben unabhängig von dieser Einstellung Zugriff
 tabs_visitor#:#Besucher
+lang_input_text_client_url#:#Client URL
+lang_input_text_client_url_byline#:#Um eine zuverlässige Verbindung zwischen ILIAS und dem Client zu gewährleisten, wird die Client URL benötigt. Mit https:// am Anfang. Bleibt das Feld leer, so wird angenommen, das der Client unter der gleichen URL (auch Sub Domain, sowie Port) verfügbar ist
+lang_visitor_table_visitor#:#Besucher
+lang_visitor_table_login#:#ILIAS Login
+lang_visitor_table_vistited_at#:#Besucht am

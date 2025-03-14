@@ -11,8 +11,6 @@ use KPG\Learnplaces\persistence\dto\Learnplace;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 use ilObject;
 use ILIAS\Data\ReferenceId;
-use xsrlContentGUI;
-use ilObjLearnplacesGUI;
 
 class LearnplacesInfo
 {

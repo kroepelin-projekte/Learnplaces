@@ -2,17 +2,12 @@
 
 declare(strict_types=1);
 
-use KPG\Learnplaces\gui\block\RenderableBlockViewFactory;
 use KPG\Learnplaces\service\publicapi\block\LearnplaceService;
-use KPG\Learnplaces\service\publicapi\block\AccordionBlockService;
-use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
-use KPG\Learnplaces\gui\block\BlockAddFormGUI;
-use Psr\Http\Message\ServerRequestInterface;
 use KPG\Learnplaces\service\security\AccessGuard;
-use ILIAS\Refinery;
 use ILIAS\DI\UIServices;
 use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\gui\VisitorsTable;
+use KPG\Learnplaces\container\PluginContainer;
 
 class VisitorsGUI
 {
@@ -21,9 +16,6 @@ class VisitorsGUI
     /**
      * Command to store the sequence numbers
      */
-    public const CMD_SEQUENCE = 'cmd_participant';
-    private const CMD_SEQUENCE_FORM = 'participantForm';
-    public const CMD_SEQUENCE_VIEW = 'participantView';
 
     /**
      * @var ilTabsGUI $tabs
@@ -32,20 +24,20 @@ class VisitorsGUI
     /**
      * @var ilGlobalPageTemplate $template
      */
-    private $template;
+    private ilGlobalPageTemplate $template;
     /**
      * @var ilCtrl $controlFlow
      */
-    private $controlFlow;
+    private ilCtrl $controlFlow;
     /**
      * @var ilLearnplacesPlugin $plugin
      */
-    private $plugin;
+    private ilLearnplacesPlugin $plugin;
 
     /**
      * @var AccessGuard $accessGuard
      */
-    private $accessGuard;
+    private AccessGuard $accessGuard;
 
     private UIServices $ui;
 
@@ -92,14 +84,33 @@ class VisitorsGUI
      *
      * @return void
      * @throws ilCtrlException
-     * @throws ilTemplateException
+     * @throws ilTemplateException|Exception
      */
     private function index(): void
     {
         $table = new VisitorsTable($this->plugin,[]);
-        $final_table = $table->getTableForRepresentation();
-        global $DIC;
 
+        global $DIC;
+        $refinery = PluginContainer::resolve('refinery');
+        $query = PluginContainer::resolve('query');
+
+        if (!$query->has('ref_id')) {
+            throw new \Exception('Learnplaces - getToken(): ref_id is missing');
+        }
+
+        $obj_id = \ilObject::_lookupObjectId($query->retrieve('ref_id', $refinery->kindlyTo()->int()));
+
+        $visitors = [];
+        foreach ( $this->learnplaceService->findByObjectId($obj_id)->getVisitJournals() as $visitJournal) {
+            $visitors[] = [
+              'full_name' => ilObjUser::_lookupFullname( $visitJournal->getUserId()),
+              "login" => ilObjUser::_lookupLogin($visitJournal->getUserId()),
+              'visited_at' => $visitJournal->getTime()->format('d.m.Y H:i'),
+            ];
+        }
+        $table->setTableData($visitors);
+
+        $final_table = $table->getTableForRepresentation();
         $this->template->setContent($this->ui->renderer()->render($final_table->withRequest($DIC->http()->request())));
     }
 }
