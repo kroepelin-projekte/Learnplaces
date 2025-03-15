@@ -184,8 +184,9 @@ class Authenticator
         Response::send(200, null, [$client_url]);
 
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            http_response_code(200);
-            exit;
+            header('Content-Length: 0');
+            header('Content-Type: text/plain');
+            exit; // Keine weitere Verarbeitung
         }
     }
 }
