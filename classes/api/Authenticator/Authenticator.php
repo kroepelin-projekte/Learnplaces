@@ -181,16 +181,10 @@ class Authenticator
         header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
         header("Vary: Origin");
 
-        ilLoggerFactory::getLogger('LPRestIntegration')->error('LEARN_PLACES_REST CLIENT: ' . $client_url);
+        Response::send(200, null, [$client_url]);
 
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            global $DIC;
-            $response = $DIC->http()->response()
-                            ->withHeader(ResponseHeader::CONTENT_TYPE, 'application/json')
-                            ->withStatus(200);
-            $DIC->http()->saveResponse($response);
-            $DIC->http()->sendResponse();
-            $DIC->http()->close();
+            http_response_code(200);
             exit;
         }
     }
