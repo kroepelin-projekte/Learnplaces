@@ -13,7 +13,6 @@ use Random\RandomException;
 use ILIAS\HTTP\Response\ResponseHeader;
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
-use ilLoggerFactory;
 
 class Authenticator
 {
@@ -175,18 +174,19 @@ class Authenticator
     public function httpOptions (): void {
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
 
-        header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de/l");
+        header("Access-Control-Allow-Origin: $client_url");
         header('Access-Control-Allow-Credentials: true');
         header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
-        header("Vary: Origin");
-
-        Response::send(200, null, [$client_url]);
 
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            header('Content-Length: 0');
-            header('Content-Type: text/plain');
-            exit; // Keine weitere Verarbeitung
+            global $DIC;
+            $response = $DIC->http()->response()
+                            ->withHeader(ResponseHeader::CONTENT_TYPE, 'application/json')
+                            ->withStatus(200);
+            $DIC->http()->saveResponse($response);
+            $DIC->http()->sendResponse();
+            $DIC->http()->close();
         }
     }
 }
