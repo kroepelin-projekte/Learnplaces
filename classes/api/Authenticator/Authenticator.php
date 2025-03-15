@@ -146,7 +146,7 @@ class Authenticator
             'path' => '/',
             'secure' => true,
             'httponly' => true,
-            'samesite' => 'None',
+            'samesite' => 'Lax',
         ];
         setcookie(self::TOKEN_COOKIE_NAME, $json_web_token, $cookieOptions);
         return $secret;
@@ -173,9 +173,6 @@ class Authenticator
      */
     public function httpOptions (): void {
 
-        //header_remove("Set-Cookie");
-        //header('Set-Cookie: PHPSESSID=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None; Secure');
-
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
@@ -186,7 +183,6 @@ class Authenticator
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             http_response_code(200);
             exit; // Stoppt die Verarbeitung, da die OPTIONS-Anfrage bereits beantwortet wurde.
-
         }
     }
 }
