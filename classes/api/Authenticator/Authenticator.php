@@ -172,11 +172,7 @@ class Authenticator
      * @throws ResponseSendingException
      */
     public function httpOptions (): void {
-        if (isset($_COOKIE['PHPSESSID'])) {
-            unset($_COOKIE['PHPSESSID']); // Entfernt ihn aus `$_COOKIE`
-            setcookie("PHPSESSID", "", time() - 3600, "/"); // Löscht ihn auch für den Client
-        }
-
+        session_destroy();
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
