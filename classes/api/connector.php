@@ -1,13 +1,13 @@
 <?php
-
+error_log("Wir starten");
 chdir("../../../../../../../../");
-
+error_log("Verzeichnis gewechselt");
 use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Authenticator;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\api\Core\Request;
 
 require_once 'vendor/composer/vendor/autoload.php';
-
+error_log("Autoloader gestartet");
 if (!file_exists('./ilias.ini.php')) {
     ilLoggerFactory::getLogger('LPRestIntegration')->error('INI wurde nicht gefunden.');
     die('The ILIAS setup is not completed. Please run the setup routine.');
