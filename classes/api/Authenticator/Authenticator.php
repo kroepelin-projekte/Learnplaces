@@ -146,7 +146,7 @@ class Authenticator
             'path' => '/',
             'secure' => true,
             'httponly' => true,
-            'samesite' => 'Lax',
+            'samesite' => 'None',
         ];
         setcookie(self::TOKEN_COOKIE_NAME, $json_web_token, $cookieOptions);
         return $secret;
@@ -185,6 +185,7 @@ class Authenticator
             header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
             header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
             header("Access-Control-Allow-Credentials: true");
+
             http_response_code(200);
             exit; // Stoppt die Verarbeitung, da die OPTIONS-Anfrage bereits beantwortet wurde.
 
