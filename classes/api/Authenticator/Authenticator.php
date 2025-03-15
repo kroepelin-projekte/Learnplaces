@@ -146,7 +146,7 @@ class Authenticator
             'path' => '/',
             'secure' => true,
             'httponly' => true,
-            'samesite' => 'Lax',
+            'samesite' => 'None',
         ];
         setcookie(self::TOKEN_COOKIE_NAME, $json_web_token, $cookieOptions);
         return $secret;
@@ -172,6 +172,7 @@ class Authenticator
      * @throws ResponseSendingException
      */
     public function httpOptions (): void {
+        header_remove("Set-Cookie");
 
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de");
