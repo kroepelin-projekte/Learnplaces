@@ -174,9 +174,6 @@ class Authenticator
     public function httpOptions (): void {
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
 
-        error_log("DEBUG: Access-Control-Allow-Origin set to: $client_url");
-
-
         header("Access-Control-Allow-Origin: $client_url");
         header('Access-Control-Allow-Credentials: true');
         header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
