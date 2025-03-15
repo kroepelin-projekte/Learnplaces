@@ -146,7 +146,7 @@ class Authenticator
             'path' => '/',
             'secure' => true,
             'httponly' => true,
-            'samesite' => 'None',
+            'samesite' => 'Lax',
         ];
         setcookie(self::TOKEN_COOKIE_NAME, $json_web_token, $cookieOptions);
         return $secret;
@@ -173,18 +173,15 @@ class Authenticator
      */
     public function httpOptions (): void {
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
-
-    /*    header("Access-Control-Allow-Origin: $client_url");
-        header('Access-Control-Allow-Credentials: true');
-        header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
-        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With'); */
+        header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de");
+        header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
+        header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
+        header("Access-Control-Allow-Credentials: true");
 
 
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de");
-            header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
-            header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
             header("Access-Control-Allow-Credentials: true");
+
 
             http_response_code(200);
             exit; // Stoppt die Verarbeitung, da die OPTIONS-Anfrage bereits beantwortet wurde.
