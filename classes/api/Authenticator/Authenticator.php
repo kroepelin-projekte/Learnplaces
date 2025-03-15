@@ -178,6 +178,7 @@ class Authenticator
         header('Access-Control-Allow-Credentials: true');
         header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
+        header("Vary: Origin");
 
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             global $DIC;
@@ -187,6 +188,7 @@ class Authenticator
             $DIC->http()->saveResponse($response);
             $DIC->http()->sendResponse();
             $DIC->http()->close();
+            exit;
         }
     }
 }
