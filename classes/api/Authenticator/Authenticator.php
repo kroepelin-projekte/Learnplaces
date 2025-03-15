@@ -174,20 +174,20 @@ class Authenticator
     public function httpOptions (): void {
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
 
-        header("Access-Control-Allow-Origin: $client_url");
+    /*    header("Access-Control-Allow-Origin: $client_url");
         header('Access-Control-Allow-Credentials: true');
         header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
-        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
+        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With'); */
 
 
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            global $DIC;
-            $response = $DIC->http()->response()
-                            ->withHeader(ResponseHeader::CONTENT_TYPE, 'application/json')
-                            ->withStatus(200);
-            $DIC->http()->saveResponse($response);
-            $DIC->http()->sendResponse();
-            $DIC->http()->close();
+            header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de");
+            header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
+            header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
+            header("Access-Control-Allow-Credentials: true");
+            http_response_code(200);
+            exit; // Stoppt die Verarbeitung, da die OPTIONS-Anfrage bereits beantwortet wurde.
+
         }
     }
 }
