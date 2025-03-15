@@ -30,7 +30,7 @@ class Learnplaces
                 break;
             };
             if (!$obj_learn_place->getConfiguration()->isOnline() OR $obj_learn_place->getConfiguration()->getDefaultVisibility() === "NEVER") {
-                Response::send(400, "LEARNPLACE_NOT_FOUND", []);
+                continue;
             }
             $all_learn_places[] = [
                 "id" => $obj_learn_place->getId(),
