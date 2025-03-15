@@ -13,6 +13,7 @@ use Random\RandomException;
 use ILIAS\HTTP\Response\ResponseHeader;
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
+use ilLoggerFactory;
 
 class Authenticator
 {
@@ -179,6 +180,8 @@ class Authenticator
         header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
         header("Vary: Origin");
+
+        ilLoggerFactory::getLogger('LPRestIntegration')->error('LEARN_PLACES_REST CLIENT: ' . $client_url);
 
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             global $DIC;
