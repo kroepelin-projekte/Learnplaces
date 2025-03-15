@@ -13,8 +13,6 @@ if (!file_exists('./ilias.ini.php')) {
     die('The ILIAS setup is not completed. Please run the setup routine.');
 }
 try {
-
-
     $ilIliasIniFile = new ilIniFile('./ilias.ini.php');
     $ilIliasIniFile->read();
     ilInitialisation::initILIAS();

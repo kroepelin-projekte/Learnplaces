@@ -25,6 +25,7 @@ class Authenticator
     {
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             if ($this->basicAuth()) {
+                session_destroy();
                 $secret = $this->createSessionToken();
                 $this->addSecretToDatabase($secret);
                 return [true, "basic_auth"];
@@ -172,7 +173,6 @@ class Authenticator
      * @throws ResponseSendingException
      */
     public function httpOptions (): void {
-        session_destroy();
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
