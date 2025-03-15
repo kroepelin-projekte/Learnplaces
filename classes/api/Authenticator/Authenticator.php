@@ -175,7 +175,7 @@ class Authenticator
     public function httpOptions (): void {
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
 
-        header("Access-Control-Allow-Origin: $client_url");
+        header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de/l");
         header('Access-Control-Allow-Credentials: true');
         header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
