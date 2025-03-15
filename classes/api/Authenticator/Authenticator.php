@@ -179,6 +179,7 @@ class Authenticator
         header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
 
+
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             global $DIC;
             $response = $DIC->http()->response()
