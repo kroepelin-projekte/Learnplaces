@@ -9,14 +9,18 @@ use KPG\Learnplaces\api\Core\Request;
 require_once 'vendor/composer/vendor/autoload.php';
 
 if (!file_exists('./ilias.ini.php')) {
+    ilLoggerFactory::getLogger('LPRestIntegration')->error('INI wurde nicht gefunden.');
     die('The ILIAS setup is not completed. Please run the setup routine.');
 }
 error_log("Wir starten in das Try");
 try {
+    ilLoggerFactory::getLogger('LPRestIntegration')->error('LEARN_PLACES_REST: Wir starten');
+
     $ilIliasIniFile = new ilIniFile('./ilias.ini.php');
     $ilIliasIniFile->read();
     ilInitialisation::initILIAS();
     $obj_authenticator = new Authenticator();
+    ilLoggerFactory::getLogger('LPRestIntegration')->error('LEARN_PLACES_REST: HTTP Options');
     $obj_authenticator->httpOptions();
     $auth_status = $obj_authenticator->auth();
     if ($auth_status[0]) {
