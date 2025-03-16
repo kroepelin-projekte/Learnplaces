@@ -172,21 +172,20 @@ class Authenticator
      * @throws ResponseSendingException
      */
     public function httpOptions (): void {
-        if (isset($_COOKIE['PHPSESSID'])) {
+/*        if (isset($_COOKIE['PHPSESSID'])) {
             unset($_COOKIE['PHPSESSID']); // Entfernt ihn aus `$_COOKIE`
             setcookie("PHPSESSID", "", time() - 3600, "/"); // Löscht ihn auch für den Client
-        }
+        }*/
 
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
-        header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de");
+        header("Access-Control-Allow-Origin: $client_url");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
         header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
         header("Access-Control-Allow-Credentials: true");
 
-
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             http_response_code(200);
-            exit; // Stoppt die Verarbeitung, da die OPTIONS-Anfrage bereits beantwortet wurde.
+            exit;
         }
     }
 }
