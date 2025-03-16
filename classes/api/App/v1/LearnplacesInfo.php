@@ -63,7 +63,7 @@ class LearnplacesInfo
         }
 
         if (method_exists($block, 'getDescription')) {
-            $block_array['description'] = $block->getDescription();
+            $block_array['description'] = nl2br($block->getDescription());
         }
 
         if (method_exists($block, 'getPicture')) {
