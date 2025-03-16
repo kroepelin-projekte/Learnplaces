@@ -25,6 +25,7 @@ class Authenticator
     {
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             if ($this->basicAuth()) {
+                session_destroy();
                 $secret = $this->createSessionToken();
                 $this->addSecretToDatabase($secret);
                 return [true, "basic_auth"];
