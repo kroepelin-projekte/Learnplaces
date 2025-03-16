@@ -173,10 +173,10 @@ class Authenticator
      * @throws ResponseSendingException
      */
     public function httpOptions (): void {
-/*        if (isset($_COOKIE['PHPSESSID'])) {
+        if (isset($_COOKIE['PHPSESSID'])) {
             unset($_COOKIE['PHPSESSID']); // Entfernt ihn aus `$_COOKIE`
             setcookie("PHPSESSID", "", time() - 3600, "/"); // Löscht ihn auch für den Client
-        }*/
+        }
 
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: $client_url");
