@@ -165,7 +165,7 @@ class Authenticator
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: $client_url");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
-        header("Access-Control-Allow-Headers: *");
+        header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With, Learnplaces_token");
         header('Access-Control-Expose-Headers: Learnplaces_token');
 
 
