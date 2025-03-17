@@ -8,7 +8,6 @@ use ilAuthStatus;
 use ilAuthFrontendFactory;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
-use KPG\Learnplaces\api\Database\Tables\CookieSecrets;
 use Random\RandomException;
 use ILIAS\HTTP\Response\ResponseHeader;
 use ILIAS\Filesystem\Stream\Streams;
@@ -25,14 +24,15 @@ class Authenticator
     {
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             if ($this->basicAuth()) {
-                $jwt = $this->createSessionToken();
-                return [true, "basic_auth", $jwt];
+                 $this->createSessionToken();
+
+                return [true, "basic_auth"];
             } else {
                 return [false, "basic_auth"];
             }
         } elseif ($this->tokenAuth()) {
-            $jwt = $this->createSessionToken();
-            return [true, "token_auth", $jwt];
+            $this->createSessionToken();
+            return [true, "token_auth"];
         } else {
             return [false, "token_auth"];
         }
@@ -101,19 +101,22 @@ class Authenticator
      */
     private function tokenAuth(): bool
     {
-        global $DIC;
-        if (!isset($_COOKIE[self::TOKEN_COOKIE_NAME])) {
-            Response::send(401, 'AUTH_ERROR_NO_COOKIE');
-            return false;
+        if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            Response::send(401, 'AUTH_ERROR_NO_BEARER_TOKEN');
         }
+        $bearer_token = $_SERVER['HTTP_AUTHORIZATION'];
+        if (!str_starts_with($bearer_token, 'Bearer ')) {
+            Response::send(401, 'AUTH_ERROR_INVALID_BEARER_TOKEN');
+        }
+        $token = substr($bearer_token, 7);
+
         $token_handler = new TokenHandler();
-        $jwt = $_COOKIE[self::TOKEN_COOKIE_NAME];
 
-        if (!$user_id = $token_handler->decode($jwt)) {
-            Response::send(401, 'AUTH_ERROR_INVALID_TOKEN');
+        if (!$user_id = $token_handler->decode($token)) {
+            Response::send(401, 'AUTH_ERROR_INVALID_JWT');
             return false;
         }
-
+        global $DIC;
         $DIC->user()->setId($user_id);
         return true;
     }
@@ -121,7 +124,7 @@ class Authenticator
     /**
      * @throws RandomException
      */
-    private function createSessionToken(): string
+    private function createSessionToken(): void
     {
         global $DIC;
         $token_handler = new TokenHandler();
@@ -131,9 +134,9 @@ class Authenticator
 
         $userPayload['iat'] = time();
         $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
-        $json_web_token = $token_handler->encode($userPayload, $secret);
 
-        return $json_web_token;
+        header("learnplaces_token: ". $token_handler->encode($userPayload, $secret));
+
     }
 
     /**

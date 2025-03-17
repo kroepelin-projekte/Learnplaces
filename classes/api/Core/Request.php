@@ -31,7 +31,7 @@ class Request
         ];
     }
 
-    public function route(string $auth_mode, string $token = ""): void
+    public function route(string $auth_mode): void
     {
         $requestedUri = urldecode(str_replace($this->path, '', explode('?', $_SERVER['REQUEST_URI'])[0]));
         foreach ($this->routes as $route) {
@@ -48,9 +48,7 @@ class Request
                         $params[$key] = $value;
                     }
                 }
-                if($token != "") {
-                    $params['bearer_token'] = $token;
-                }
+
                 $this->callHandler($route['handler'], $route['namespace'], $params);
                 return;
             }
