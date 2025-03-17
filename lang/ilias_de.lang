@@ -96,8 +96,6 @@ news_deleted#:#Lernort wurde gel&ouml;scht.
 lang_tab_api_settings#:#API Einstellungen
 lang_tab_sub_api_settings#:#API Einstellungen
 lang_tab_sub_permission_settings#:#Rollenberechtigungen
-lang_input_text_base_url#:#Basis URL der Website
-lang_input_text_base_url_byline#:#Bitte geben Sie die Basis-URL ein, unter der sowohl die ILIAS-Instanz als auch die dazugehörige App erreichbar sind. Die Eingabe erfolgt ohne Https:// oder wwww am Anfang
 lang_input_text_cookie_expire#:#Automatischer Logout nach Stunden
 lang_input_text_cookie_expire_byline#:#Geben Sie an, nach wie vielen Stunden der gesetzte Cookie ablaufen soll. Nach Ablauf des Cookies muss sich der Benutzer in der App erneut mit Benutzername und Passwort anmelden. Angabe in ganzen Stunden.
 lang_settings#:#Einstellungen

@@ -5,18 +5,6 @@ namespace Repository\RepositoryObject\Learnplaces\classes\api\Config;
 class Settings implements constConfig
 {
 
-    public static function setBaseURL(string $url): void
-    {
-        $settings = new \ilSetting(self::SETTING_MODULE_ID);
-        $settings->set('base_url', $url);
-    }
-
-    public static function getBaseURL(): string
-    {
-        $settings = new \ilSetting(self::SETTING_MODULE_ID);
-        return $settings->get("base_url", '');
-    }
-
     public static function setCookieExpire(int $expire): void
     {
         $settings = new \ilSetting(self::SETTING_MODULE_ID);
