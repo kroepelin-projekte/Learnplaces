@@ -15,8 +15,6 @@ use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 
 class Authenticator
 {
-    public const TOKEN_COOKIE_NAME = "learnplaces_token_auth_cookie";
-
     /**
      * @throws RandomException
      */
@@ -24,14 +22,14 @@ class Authenticator
     {
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             if ($this->basicAuth()) {
-                 $this->createSessionToken();
+                 $this->createToken();
 
                 return [true, "basic_auth"];
             } else {
                 return [false, "basic_auth"];
             }
         } elseif ($this->tokenAuth()) {
-            $this->createSessionToken();
+            $this->createToken();
             return [true, "token_auth"];
         } else {
             return [false, "token_auth"];
@@ -125,7 +123,7 @@ class Authenticator
     /**
      * @throws RandomException
      */
-    private function createSessionToken(): void
+    private function createToken(): void
     {
         global $DIC;
         $token_handler = new TokenHandler();
