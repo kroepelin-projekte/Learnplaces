@@ -112,3 +112,5 @@ lang_input_text_client_url_byline#:#Um eine zuverlässige Verbindung zwischen IL
 lang_visitor_table_visitor#:#Besucher
 lang_visitor_table_login#:#ILIAS Login
 lang_visitor_table_vistited_at#:#Besucht am
+lang_input_text_secret#:#App Secret
+lang_input_text_secret_byline#:#Speichern Sie ein Secret

@@ -8,7 +8,6 @@ use ilAuthStatus;
 use ilAuthFrontendFactory;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
-use KPG\Learnplaces\api\Database\Tables\CookieSecrets;
 use Random\RandomException;
 use ILIAS\HTTP\Response\ResponseHeader;
 use ILIAS\Filesystem\Stream\Streams;
@@ -25,21 +24,16 @@ class Authenticator
     {
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             if ($this->basicAuth()) {
-                session_destroy();
-                $secret = $this->createSessionToken();
-                $this->addSecretToDatabase($secret);
-                return [true, "basic_auth"];
+                $jwt = $this->createSessionToken();
+                return [true, "basic_auth", $jwt];
             } else {
                 return [false, "basic_auth"];
             }
+        } elseif ($this->tokenAuth()) {
+            $jwt = $this->createSessionToken();
+            return [true, "token_auth", $jwt];
         } else {
-            if ($this->tokenAuth()) {
-                $secret = $this->createSessionToken();
-                $this->addSecretToDatabase($secret);
-                return [true, "token_auth"];
-            } else {
-                return [false, "token_auth"];
-            }
+            return [false, "token_auth"];
         }
     }
 
@@ -112,30 +106,14 @@ class Authenticator
             return false;
         }
         $token_handler = new TokenHandler();
-        $client_token = $_COOKIE[self::TOKEN_COOKIE_NAME];
-        $all_secrets = CookieSecrets::getAll();
-        $auth = false;
-        $auth_secret = [];
-        foreach ($all_secrets as $secret) {
-            if ($token_handler->decode($client_token, $secret['secret'])) {
-                $auth = true;
-                $auth_secret = $secret;
-                break;
-            }
-        }
-        if (!$auth) {
+        $jwt = $_COOKIE[self::TOKEN_COOKIE_NAME];
+
+        if (!$user_id = $token_handler->decode($jwt)) {
             Response::send(401, 'AUTH_ERROR_INVALID_TOKEN');
             return false;
         }
 
-        $expiration_timestamp =  strtotime($auth_secret['updated_at']) + Settings::getCookieExpire() * 60 * 60;
-        $current_time = time();
-        if ($current_time > $expiration_timestamp) {
-            $this->destroyCookieByID($auth_secret['id']);
-            Response::send(401, 'AUTH_ERROR_TOKEN_EXPIRED');
-            return false;
-        }
-        $DIC->user()->setId($auth_secret['user_id']);
+        $DIC->user()->setId($user_id);
         return true;
     }
 
@@ -148,50 +126,13 @@ class Authenticator
         $token_handler = new TokenHandler();
         $userPayload['username'] = $DIC->user()->getlogin();
         $userPayload['sub'] = $DIC->user()->getId();
-        $secret = $token_handler->createSecret();
+        $secret = Settings::getSecret();
 
         $userPayload['iat'] = time();
         $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
         $json_web_token = $token_handler->encode($userPayload, $secret);
-        $cookieOptions = [
-            'expires' => $userPayload['exp'],
-            'domain' => '.' . Settings::getBaseURL(),
-            'path' => '/',
-            'secure' => true,
-            'httponly' => true,
-            'samesite' => 'None',
-        ];
-        setcookie(self::TOKEN_COOKIE_NAME, $json_web_token, $cookieOptions);
-        return $secret;
-    }
 
-    /**
-     * @param string $secret
-     * @return void
-     */
-    private function addSecretToDatabase(string $secret): void
-    {
-        global $DIC;
-        CookieSecrets::updateOrInsertSecret($secret, $DIC->user()->getId());
-    }
-
-    /**
-     * @param int $id
-     * @return void
-     */
-    private function destroyCookieByID(int $id): void
-    {
-        setcookie(self::TOKEN_COOKIE_NAME, '', time() - 3600);
-        CookieSecrets::deleteSecretByID($id);
-    }
-
-    /**
-     * @param int $user_id
-     * @return void
-     */
-    public static function destroyCookieByUserID(int $user_id): void {
-        setcookie(self::TOKEN_COOKIE_NAME, '', time() - 3600);
-        CookieSecrets::deleteSecretByUserID($user_id);
+        return $json_web_token;
     }
 
     /**
@@ -199,11 +140,6 @@ class Authenticator
      */
     public function httpOptions(): void
     {
-/*        if (isset($_COOKIE['PHPSESSID'])) {
-            unset($_COOKIE['PHPSESSID']); // Entfernt ihn aus `$_COOKIE`
-            setcookie("PHPSESSID", "", time() - 3600, "/"); // Löscht ihn auch für den Client
-        }*/
-
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: $client_url");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");

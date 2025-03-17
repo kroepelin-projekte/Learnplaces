@@ -2,6 +2,8 @@
 
 namespace Repository\RepositoryObject\Learnplaces\classes\api\Authenticator;
 
+use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
+
 class TokenHandler
 {
     public function createSecret(): string
@@ -47,14 +49,15 @@ class TokenHandler
 
     /**
      * @param string $client_token
-     * @param string $secret
-     * @return bool
+     * @return mixed
      */
-    public function decode(string $client_token, string $secret): bool
+    public function decode(string $client_token): mixed
     {
         if (preg_match("/^(?<header>.+)\.(?<payload>.+)\.(?<signature>.+)$/", $client_token, $matches) !== 1) {
             return false;
         }
+
+        $secret = Settings::getSecret();
 
         $signature = hash_hmac(
             'sha256',
@@ -87,7 +90,7 @@ class TokenHandler
             return false;
         }
 
-        return true;
+        return $payload['sub'];
     }
 
     /**

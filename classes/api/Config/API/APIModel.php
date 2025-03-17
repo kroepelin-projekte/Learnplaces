@@ -2,8 +2,6 @@
 
 namespace Repository\RepositoryObject\Learnplaces\classes\api\Config\API;
 
-
-
 use ILIAS\DI\Container;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\constConfig;
@@ -29,8 +27,8 @@ class APIModel implements constConfig
         Settings::setBaseUrl($result['api']['url']);
         Settings::setCookieExpire($result['api']['cookie']);
         Settings::setClientURL($result['api']['client']);
+        Settings::setSecret($result['api']['secret']);
 
         return [true, $this->plugin->txt(self::LANG_SUCCESS_SETTINGS)];
     }
-
 }

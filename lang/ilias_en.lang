@@ -111,3 +111,5 @@ lang_input_text_client_url_byline#:#To ensure a reliable connection between ILIA
 lang_visitor_table_visitor#:#Visitor
 lang_visitor_table_login#:#ILIAS Login
 lang_visitor_table_vistited_at#:#Visited At
+lang_input_text_secret#:#App Secret
+lang_input_text_secret_byline#:#Save a secret
