@@ -25,7 +25,7 @@ try {
 
     if ($auth_status[0]) {
         $request = new Request();
-        $request->route($auth_status[1]);
+        $request->route($auth_status[1], $auth_status[2]);
     } else {
         Response::send(401);
     }

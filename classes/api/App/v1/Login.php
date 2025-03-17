@@ -12,6 +12,6 @@ class Login
      */
     public function endpoint(array $params, array $request_body): void
     {
-        Response::send(201, null, ["login" => "success"]);
+        Response::send(201, null, ["login" => "success", "bearer_jwt" => $params['bearer_token']]);
     }
 }
