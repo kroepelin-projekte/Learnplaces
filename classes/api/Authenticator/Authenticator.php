@@ -190,11 +190,13 @@ class Authenticator
        ini_set('session.use_cookies', 0);
        ini_set('session.use_trans_sid', 0);
 
-        if (!$http_origin) {
-            header("HTTP/1.1 403 Forbidden");
+        if (in_array($http_origin, $allowed_origins)) {
+            header("Access-Control-Allow-Origin: $http_origin");
+        } else {
+            http_response_code(403);
             exit;
         }
-        header("Access-Control-Allow-Origin: $http_origin");
+
         header("Access-Control-Allow-Credentials: true");
         header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
         header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
