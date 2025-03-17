@@ -8,6 +8,7 @@ use ilAuthStatus;
 use ilAuthFrontendFactory;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
+use KPG\Learnplaces\api\Database\Tables\CookieSecrets;
 use Random\RandomException;
 use ILIAS\HTTP\Response\ResponseHeader;
 use ILIAS\Filesystem\Stream\Streams;
