@@ -182,38 +182,30 @@ class Authenticator
 
         $http_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
-        // Falls keine Origin gesetzt ist, Standard auf "Same-Origin".
-        if (empty($http_origin)) {
-            $http_origin = $client_url;
-        }
 
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_write_close();
         }
 
-        ini_set('session.use_cookies', 0);
-        ini_set('session.use_trans_sid', 0);
+       ini_set('session.use_cookies', 0);
+       ini_set('session.use_trans_sid', 0);
 
-        // CORS-Header nur setzen, wenn der Origin erlaubt ist.
-        if (in_array($http_origin, $allowed_origins)) {
-            header("Access-Control-Allow-Origin: $http_origin");
-        } else {
-            http_response_code(403); // Verboten
+        if (!$http_origin) {
+            header("HTTP/1.1 403 Forbidden");
             exit;
         }
-
-        // CORS Header
+        header("Access-Control-Allow-Origin: $http_origin");
         header("Access-Control-Allow-Credentials: true");
         header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
         header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
 
-        // Preflight OPTIONS-Request
+
+        session_start();
+
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             http_response_code(200); // OK
             exit;
         }
-
-        session_start();
     }
 
     private function refreshILIASCookie(): void
