@@ -16,6 +16,7 @@ class Logout
         global $DIC;
         $user_id = $DIC->user()->getId();
         Authenticator::destroyCookieByUserID($user_id);
+        session_destroy();
         Response::send(200, NULL, ["logout" => "success"]);
     }
 }

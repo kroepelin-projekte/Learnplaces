@@ -10,8 +10,6 @@ use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 use KPG\Learnplaces\api\Database\Tables\CookieSecrets;
 use Random\RandomException;
-use ILIAS\HTTP\Response\ResponseHeader;
-use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 
 class Authenticator
@@ -19,14 +17,14 @@ class Authenticator
     public const TOKEN_COOKIE_NAME = "learnplaces_token_auth_cookie";
 
     /**
-     * @throws RandomException
+     * @throws RandomException|ResponseSendingException
      */
     public function auth(): array
     {
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             if ($this->basicAuth()) {
-                session_destroy();
                 $secret = $this->createSessionToken();
+                $this->refreshILIASCookie();
                 $this->addSecretToDatabase($secret);
                 return [true, "basic_auth"];
             } else {
@@ -36,6 +34,7 @@ class Authenticator
             if ($this->tokenAuth()) {
                 $secret = $this->createSessionToken();
                 $this->addSecretToDatabase($secret);
+                $this->refreshILIASCookie();
                 return [true, "token_auth"];
             } else {
                 return [false, "token_auth"];
@@ -43,6 +42,9 @@ class Authenticator
         }
     }
 
+    /**
+     * @throws ResponseSendingException
+     */
     private function basicAuth(): bool
     {
         $credentials = new ilAuthFrontendCredentials();
@@ -116,7 +118,7 @@ class Authenticator
             return false;
         }
 
-        $expiration_timestamp =  strtotime($auth_secret['updated_at']) + Settings::getCookieExpire() * 60 * 60;
+        $expiration_timestamp = strtotime($auth_secret['updated_at']) + Settings::getCookieExpire() * 60 * 60;
         $current_time = time();
         if ($current_time > $expiration_timestamp) {
             $this->destroyCookieByID($auth_secret['id']);
@@ -147,7 +149,7 @@ class Authenticator
             'path' => '/',
             'secure' => true,
             'httponly' => true,
-            'samesite' => 'None',
+            'samesite' => 'Lax',
         ];
         setcookie(self::TOKEN_COOKIE_NAME, $json_web_token, $cookieOptions);
         return $secret;
@@ -164,21 +166,15 @@ class Authenticator
         setcookie(self::TOKEN_COOKIE_NAME, '', time() - 3600);
         CookieSecrets::deleteSecretByID($id);
     }
-    public static function destroyCookieByUserID(int $user_id): void {
+
+    public static function destroyCookieByUserID(int $user_id): void
+    {
         setcookie(self::TOKEN_COOKIE_NAME, '', time() - 3600);
         CookieSecrets::deleteSecretByUserID($user_id);
     }
 
-    /**
-     * @throws ResponseSendingException
-     */
     public function httpOptions(): void
     {
-/*        if (isset($_COOKIE['PHPSESSID'])) {
-            unset($_COOKIE['PHPSESSID']); // Entfernt ihn aus `$_COOKIE`
-            setcookie("PHPSESSID", "", time() - 3600, "/"); // Löscht ihn auch für den Client
-        }*/
-
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: $client_url");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
@@ -189,5 +185,20 @@ class Authenticator
             http_response_code(200);
             exit;
         }
+    }
+
+    private function refreshILIASCookie(): void
+    {
+        $sessionName = session_name();
+        $sessionId = session_id();
+        $cookieParams = session_get_cookie_params();
+        setcookie($sessionName, $sessionId, [
+            'expires' => $cookieParams['lifetime'] > 0 ? time() + $cookieParams['lifetime'] : 0,
+            'path' => $cookieParams['path'],
+            'domain' => $cookieParams['domain'],
+            'secure' => $cookieParams['secure'],
+            'httponly' => $cookieParams['httponly'],
+            'samesite' => 'Lax'
+        ]);
     }
 }

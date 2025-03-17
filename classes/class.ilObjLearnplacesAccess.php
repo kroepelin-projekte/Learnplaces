@@ -28,6 +28,7 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess
      */
     public function __construct()
     {
+        parent::__construct();
         $this->currentUser = PluginContainer::resolve('ilUser');
         $this->accessControl = PluginContainer::resolve('ilAccess');
     }
