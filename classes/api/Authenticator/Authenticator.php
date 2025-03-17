@@ -134,7 +134,7 @@ class Authenticator
         $userPayload['iat'] = time();
         $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
 
-        header('Access-Control-Expose-Headers: Learnplaces_token');
+       // header('Access-Control-Expose-Headers: Learnplaces_token');
         header("Learnplaces_token: ". $token_handler->encode($userPayload, $secret));
 
     }
@@ -148,6 +148,8 @@ class Authenticator
         header("Access-Control-Allow-Origin: $client_url");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
         header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With, Learnplaces_token");
+        header('Access-Control-Expose-Headers: Learnplaces_token');
+
 
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             http_response_code(200);
