@@ -183,7 +183,7 @@ class Authenticator
 
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
 
-        header("Access-Control-Allow-Origin: ".Settings::getClientURL());
+        header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
         header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
         header("Access-Control-Allow-Credentials: true");
