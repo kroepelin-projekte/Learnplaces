@@ -24,7 +24,7 @@ class Authenticator
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             if ($this->basicAuth()) {
                 $secret = $this->createSessionToken();
-                $this->refreshILIASCookie();
+                //$this->refreshILIASCookie();
                 $this->addSecretToDatabase($secret);
                 return [true, "basic_auth"];
             } else {
@@ -34,7 +34,7 @@ class Authenticator
             if ($this->tokenAuth()) {
                 $secret = $this->createSessionToken();
                 $this->addSecretToDatabase($secret);
-                $this->refreshILIASCookie();
+               // $this->refreshILIASCookie();
                 return [true, "token_auth"];
             } else {
                 return [false, "token_auth"];
@@ -175,11 +175,19 @@ class Authenticator
 
     public function httpOptions(): void
     {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+        ini_set('session.use_cookies', 0);
+        ini_set('session.use_trans_sid', 0);
+
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: $client_url");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
         header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
         header("Access-Control-Allow-Credentials: true");
+
+        session_start();
 
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             http_response_code(200);
