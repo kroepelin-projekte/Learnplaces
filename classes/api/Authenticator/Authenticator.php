@@ -101,10 +101,11 @@ class Authenticator
      */
     private function tokenAuth(): bool
     {
-        if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        $request_header = getallheaders();
+        if (!isset($request_header['Authorization'])) {
             Response::send(401, 'AUTH_ERROR_NO_BEARER_TOKEN');
         }
-        $bearer_token = $_SERVER['HTTP_AUTHORIZATION'];
+        $bearer_token = $request_header['Authorization'];
         if (!str_starts_with($bearer_token, 'Bearer ')) {
             Response::send(401, 'AUTH_ERROR_INVALID_BEARER_TOKEN');
         }
@@ -135,7 +136,8 @@ class Authenticator
         $userPayload['iat'] = time();
         $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
 
-        header("learnplaces_token: ". $token_handler->encode($userPayload, $secret));
+        header('Access-Control-Expose-Headers: Learnplaces_token');
+        header("Learnplaces_token: ". $token_handler->encode($userPayload, $secret));
 
     }
 
