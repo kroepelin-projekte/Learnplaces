@@ -28,6 +28,14 @@ class LearnplacesInfo
         } catch (\Exception $e) {
             Response::send(400, "LEARNPLACE_NOT_FOUND", []);
         }
+        foreach (\ilObjLearnplaces::_getAllReferences((int) $obj_learn_place->getObjectId()) as $ref_id) {
+            $ilias_object_learn_place = new \ilObjLearnplaces($ref_id);
+            break;
+        };
+        if(\ilObject::_isInTrash($ref_id)) {
+            Response::send(400, "LEARNPLACE_NOT_FOUND", []);
+        }
+
         if (!$obj_learn_place->getConfiguration()->isOnline() or $obj_learn_place->getConfiguration(
             )->getDefaultVisibility() === "NEVER") {
             Response::send(400, "LEARNPLACE_NOT_FOUND", []);

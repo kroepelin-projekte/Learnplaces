@@ -29,6 +29,9 @@ class Learnplaces
                 $ilias_object_learn_place = new \ilObjLearnplaces($ref_id);
                 break;
             };
+            if(\ilObject::_isInTrash($ref_id)) {
+                continue;
+            }
             if (!$obj_learn_place->getConfiguration()->isOnline() OR $obj_learn_place->getConfiguration()->getDefaultVisibility() === "NEVER") {
                 continue;
             }
