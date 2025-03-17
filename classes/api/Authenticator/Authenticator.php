@@ -21,6 +21,8 @@ class Authenticator
      */
     public function auth(): array
     {
+        error_log('auth started');
+
         $logger = ilLoggerFactory::getLogger('api___');
         $logger->info('start auth');
 
@@ -157,6 +159,9 @@ class Authenticator
      */
     public function httpOptions(): void
     {
+        error_log('httpOptions started');
+
+
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: $client_url");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");

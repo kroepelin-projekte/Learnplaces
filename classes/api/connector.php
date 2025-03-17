@@ -23,6 +23,8 @@ try {
     $logger->info('api started');
     $logger->info($_SERVER['REQUEST_METHOD']);
 
+    error_log('api started');
+
     $obj_authenticator = new Authenticator();
     $obj_authenticator->httpOptions();
     $auth_status = $obj_authenticator->auth();
