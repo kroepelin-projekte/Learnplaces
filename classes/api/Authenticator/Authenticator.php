@@ -43,6 +43,10 @@ class Authenticator
         }
     }
 
+    /**
+     * @return bool
+     * @throws ResponseSendingException
+     */
     private function basicAuth(): bool
     {
         $credentials = new ilAuthFrontendCredentials();
@@ -74,6 +78,10 @@ class Authenticator
         return false;
     }
 
+    /**
+     * @return bool
+     * @throws ResponseSendingException
+     */
     private function checkRolePermission(): bool
     {
         global $DIC;
@@ -92,6 +100,10 @@ class Authenticator
         return false;
     }
 
+    /**
+     * @return bool
+     * @throws ResponseSendingException
+     */
     private function tokenAuth(): bool
     {
         global $DIC;
@@ -153,17 +165,30 @@ class Authenticator
         return $secret;
     }
 
+    /**
+     * @param string $secret
+     * @return void
+     */
     private function addSecretToDatabase(string $secret): void
     {
         global $DIC;
         CookieSecrets::updateOrInsertSecret($secret, $DIC->user()->getId());
     }
 
+    /**
+     * @param int $id
+     * @return void
+     */
     private function destroyCookieByID(int $id): void
     {
         setcookie(self::TOKEN_COOKIE_NAME, '', time() - 3600);
         CookieSecrets::deleteSecretByID($id);
     }
+
+    /**
+     * @param int $user_id
+     * @return void
+     */
     public static function destroyCookieByUserID(int $user_id): void {
         setcookie(self::TOKEN_COOKIE_NAME, '', time() - 3600);
         CookieSecrets::deleteSecretByUserID($user_id);
