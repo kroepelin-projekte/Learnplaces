@@ -21,7 +21,12 @@ class Authenticator
      */
     public function auth(): array
     {
+        $logger = ilLoggerFactory::getLogger('api___');
+        $logger->info('start auth');
+
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
+            $logger->info('basic auth');
+
             if ($this->basicAuth()) {
                  $this->createToken();
 
@@ -30,6 +35,8 @@ class Authenticator
                 return [false, "basic_auth"];
             }
         } elseif ($this->tokenAuth()) {
+            $logger->info('token auth');
+
             $this->createToken();
             return [true, "token_auth"];
         } else {
