@@ -12,6 +12,7 @@ use Random\RandomException;
 use ILIAS\HTTP\Response\ResponseHeader;
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
+use ilLoggerFactory;
 
 class Authenticator
 {
@@ -100,6 +101,11 @@ class Authenticator
     private function tokenAuth(): bool
     {
         $request_header = getallheaders();
+
+        $logger = ilLoggerFactory::getLogger('api___');
+        $logger->info(implode(', ', $request_header));
+
+
         if (!isset($request_header['Authorization'])) {
             Response::send(401, 'AUTH_ERROR_NO_BEARER_TOKEN');
         }
