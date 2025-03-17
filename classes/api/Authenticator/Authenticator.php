@@ -149,7 +149,7 @@ class Authenticator
             'path' => '/',
             'secure' => true,
             'httponly' => true,
-            'samesite' => 'Lax',
+            'samesite' => 'None',
         ];
         setcookie(self::TOKEN_COOKIE_NAME, $json_web_token, $cookieOptions);
         return $secret;
@@ -198,7 +198,7 @@ class Authenticator
             'domain' => $cookieParams['domain'],
             'secure' => $cookieParams['secure'],
             'httponly' => $cookieParams['httponly'],
-            'samesite' => 'Lax'
+            'samesite' => 'None'
         ]);
     }
 }
