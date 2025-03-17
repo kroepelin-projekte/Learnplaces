@@ -175,57 +175,79 @@ class Authenticator
 
     public function httpOptions(): void
     {
+        // Debug: Schritt 1 - Client-URL und erlaubte Origins
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         $allowed_origins = [
             $client_url
         ];
+
+        // Debug-Ausgabe
+        header("X-Debug-Client-URL: $client_url");
+        header("X-Debug-Allowed-Origins: " . implode(',', $allowed_origins));
+
+        // Debug: PHP-Sessionstatus
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_write_close();
+            header("X-Debug-Session: Active");
+        } else {
+            header("X-Debug-Session: Inactive");
         }
-        $http_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
+        // Debug: HTTP-Origin prüfen
+        $http_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+        header("X-Debug-Origin: $http_origin");
+
+        // Session-Konfiguration
         ini_set('session.use_cookies', 0);
         ini_set('session.use_trans_sid', 0);
 
+        // Standard-CORS-Header setzen
         header("Access-Control-Allow-Credentials: true");
         header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
         header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
 
+        // Origin prüfen + passenden Header setzen
         if (in_array($http_origin, $allowed_origins)) {
             header("Access-Control-Allow-Origin: $http_origin");
+            header("X-Debug-Origin-Allowed: true");
         } else {
-            header("Access-Control-Allow-Origin: null"); // Optional: `null` bedeutet Blockierung
+            header("Access-Control-Allow-Origin: null"); // Optional: null blockiert den Zugriff
+            header("X-Debug-Origin-Allowed: false");
         }
+
+        // Debug: Session starten
         session_start();
+        header("X-Debug-Session-Start: Successful");
+
+        // OPTIONS-Anfragen (Preflight)
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            header("X-Debug-Request-Method: OPTIONS");
+
             if (!in_array($http_origin, $allowed_origins)) {
                 http_response_code(403); // Verboten
+                echo json_encode(['debug' => 'OPTIONS: Origin not allowed']);
                 exit;
             }
+
             http_response_code(200); // OK
+            echo json_encode(['debug' => 'OPTIONS: Success']);
             exit;
         }
+
+        // Andere Anfragen prüfen
         if (!in_array($http_origin, $allowed_origins)) {
+            header("X-Debug-Request-Status: Forbidden");
             http_response_code(403); // Verboten
-            echo json_encode(['error' => 'Origin not allowed']);
+            echo json_encode([
+                'error' => 'Origin not allowed',
+                'debug' => 'HTTP origin is not in allowed list'
+            ]);
             exit;
         }
 
+        // Debug: Aufruf ist korrekt
+        header("X-Debug-Request-Status: Allowed");
 
-        /*  $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
-
-          header("Access-Control-Allow-Origin: https://learnplaces.kroepelin-projekte.de");
-          header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
-          header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
-          header("Access-Control-Allow-Credentials: true");
-
-          session_start();
-
-          if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-              http_response_code(200);
-              exit;
-          }
-        */
     }
 
     private function refreshILIASCookie(): void
