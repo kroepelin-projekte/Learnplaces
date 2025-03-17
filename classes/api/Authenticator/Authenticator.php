@@ -21,14 +21,7 @@ class Authenticator
      */
     public function auth(): array
     {
-        error_log('auth started');
-
-        $logger = ilLoggerFactory::getLogger('api___');
-        $logger->info('start auth');
-
         if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
-            $logger->info('basic auth');
-
             if ($this->basicAuth()) {
                  $this->createToken();
 
@@ -37,8 +30,6 @@ class Authenticator
                 return [false, "basic_auth"];
             }
         } elseif ($this->tokenAuth()) {
-            $logger->info('token auth');
-
             $this->createToken();
             return [true, "token_auth"];
         } else {
@@ -110,11 +101,6 @@ class Authenticator
     private function tokenAuth(): bool
     {
         $request_header = getallheaders();
-
-        $logger = ilLoggerFactory::getLogger('api___');
-        $logger->info(implode(', ', $request_header));
-
-
         if (!isset($request_header['Authorization'])) {
             Response::send(401, 'AUTH_ERROR_NO_BEARER_TOKEN');
         }
@@ -149,9 +135,7 @@ class Authenticator
         $userPayload['iat'] = time();
         $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
 
-       // header('Access-Control-Expose-Headers: Learnplaces_token');
         header("Learnplaces_token: ". $token_handler->encode($userPayload, $secret));
-
     }
 
     /**
@@ -159,15 +143,11 @@ class Authenticator
      */
     public function httpOptions(): void
     {
-        error_log('httpOptions started');
-
-
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
         header("Access-Control-Allow-Origin: $client_url");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
         header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With, Learnplaces_token");
         header('Access-Control-Expose-Headers: Learnplaces_token');
-
 
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             http_response_code(200);
