@@ -186,20 +186,21 @@ class Authenticator
         header("X-Debug-Allowed-Origins: " . implode(',', $allowed_origins));
 
         // Debug: PHP-Sessionstatus
-        if (session_status() === PHP_SESSION_ACTIVE) {
+       /* if (session_status() === PHP_SESSION_ACTIVE) {
             session_write_close();
             header("X-Debug-Session: Active");
         } else {
             header("X-Debug-Session: Inactive");
-        }
+        } */
 
         // Debug: HTTP-Origin prüfen
         $http_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
         header("X-Debug-Origin: $http_origin");
 
         // Session-Konfiguration
-        ini_set('session.use_cookies', 0);
-        ini_set('session.use_trans_sid', 0);
+       // ini_set('session.use_cookies', 0);
+        //ini_set('session.use_trans_sid', 0);
+        session_destroy();
 
         // Standard-CORS-Header setzen
         header("Access-Control-Allow-Credentials: true");
@@ -216,7 +217,7 @@ class Authenticator
         }
 
         // Debug: Session starten
-        session_start();
+        //session_start();
         header("X-Debug-Session-Start: Successful");
 
         // OPTIONS-Anfragen (Preflight)
