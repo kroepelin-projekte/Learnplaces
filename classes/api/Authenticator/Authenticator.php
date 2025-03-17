@@ -176,7 +176,7 @@ class Authenticator
     public function httpOptions(): void
     {
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
-        header("Access-Control-Allow-Origin: .".Settings::getBaseUrl());
+        header("Access-Control-Allow-Origin: $client_url");
         header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
         header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
         header("Access-Control-Allow-Credentials: true");
@@ -189,16 +189,20 @@ class Authenticator
 
     private function refreshILIASCookie(): void
     {
-        $sessionName = session_name();
-        $sessionId = session_id();
+
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
         $cookieParams = session_get_cookie_params();
-        setcookie($sessionName, $sessionId, [
-            'expires' => $cookieParams['lifetime'] > 0 ? time() + $cookieParams['lifetime'] : 0,
+
+        session_set_cookie_params([
+            'lifetime' => $cookieParams['lifetime'],
             'path' => $cookieParams['path'],
             'domain' => $cookieParams['domain'],
             'secure' => $cookieParams['secure'],
             'httponly' => $cookieParams['httponly'],
-            'samesite' => 'None'
+            'samesite' => 'None',
         ]);
+        session_start();
     }
 }
