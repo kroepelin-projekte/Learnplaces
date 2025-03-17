@@ -19,6 +19,10 @@ try {
 
     ilInitialisation::initILIAS();
 
+    $logger = ilLoggerFactory::getLogger('api___');
+    $logger->info('api started');
+    $logger->info($_SERVER['REQUEST_METHOD']);
+
     $obj_authenticator = new Authenticator();
     $obj_authenticator->httpOptions();
     $auth_status = $obj_authenticator->auth();
