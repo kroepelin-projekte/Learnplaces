@@ -175,38 +175,41 @@ class Authenticator
 
     public function httpOptions(): void
     {
+
         $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
-        $allowed_origins = [
-            $client_url
-        ];
-
-        $http_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-
+        $session_exists = false;
 
         if (session_status() === PHP_SESSION_ACTIVE) {
-            session_write_close();
+            $cookieParams = session_get_cookie_params();
+            session_destroy();
+            $session_exists = true;
         }
 
-       ini_set('session.use_cookies', 0);
-       ini_set('session.use_trans_sid', 0);
 
-        if (in_array($http_origin, $allowed_origins)) {
-            header("Access-Control-Allow-Origin: $http_origin");
-        } else {
-            http_response_code(403);
-            exit;
-        }
 
+        header("Access-Control-Allow-Origin: $client_url");
         header("Access-Control-Allow-Credentials: true");
         header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
         header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
 
 
-        session_start();
-
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            http_response_code(200); // OK
+            header("X-Debug-Request-Method: OPTIONS");
+            http_response_code(200);
             exit;
+        }
+
+        if($session_exists){
+            session_set_cookie_params([
+                'lifetime' => $cookieParams['lifetime'],
+                'path' => $cookieParams['path'],
+                'domain' => $cookieParams['domain'],
+                'secure' => true,
+                'httponly' => $cookieParams['httponly'],
+                'samesite' => 'None'
+            ]);
+            session_start();
+            session_regenerate_id(true);
         }
     }
 
