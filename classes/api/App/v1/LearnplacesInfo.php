@@ -130,7 +130,7 @@ class LearnplacesInfo
             "id" => $obj_learn_place->getId(),
             "object_id" => $obj_id,
             "title" => \ilObjLearnplaces::_lookupTitle($obj_id),
-            "description" => \ilObjLearnplaces::_lookupDescription($obj_id),
+            "description" => nl2br(\ilObjLearnplaces::_lookupDescription($obj_id)),
             "configuration" => [
                 "online" => $learn_place_configuration->isOnline(),
                 "default_visibility" => $learn_place_configuration->getDefaultVisibility(),

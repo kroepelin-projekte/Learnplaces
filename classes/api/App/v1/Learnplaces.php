@@ -36,7 +36,7 @@ class Learnplaces
                 "id" => $obj_learn_place->getId(),
                 "obj_id" => $obj_learn_place->getObjectId(),
                 "title" => \ilObjLearnplaces::_lookupTitle($obj_learn_place->getObjectId()),
-                "description" => \ilObjLearnplaces::_lookupDescription($obj_learn_place->getObjectId()),
+                "description" => nl2br(\ilObjLearnplaces::_lookupDescription($obj_learn_place->getObjectId())),
                 "tile_image" => $ilias_object_learn_place->getObjectProperties()->getPropertyTileImage()->getTileImage(
                 )->getRid()
             ];
