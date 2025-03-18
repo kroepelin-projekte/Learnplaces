@@ -34,6 +34,8 @@ class TokenHandler
         global $DIC;
         $token_handler = new TokenHandler();
         $userPayload['sub'] = $DIC->user()->getId();
+        $logger = \ilLoggerFactory::getLogger('api___');
+        $logger->info("User ID bei der Erstellung des auth Tokens: " . $userPayload['sub'] );
         $secret = Settings::getSecret();
 
         $userPayload['iat'] = time();
@@ -82,8 +84,6 @@ class TokenHandler
         }
 
         $payload = json_decode($this->base64UrlDecode($matches['payload']), true);
-
-
 
         if (!is_array($payload) || !isset($payload['sub'], $payload['exp'])) {
             return false;
