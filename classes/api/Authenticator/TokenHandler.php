@@ -39,8 +39,6 @@ class TokenHandler
         $userPayload['iat'] = time();
         $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
 
-        $logger = \ilLoggerFactory::getLogger('api___');
-        $logger->info( $userPayload['sub']);
 
         header("Learnplaces_token: ". $token_handler->encode($userPayload, $secret));
     }
@@ -102,8 +100,6 @@ class TokenHandler
         if (time() >= $payload['exp']) {
             return false;
         }
-        $logger = \ilLoggerFactory::getLogger('api___');
-        $logger->info("Der Payload im Token bei Token Auth" . $payload['sub']);
 
         return $payload['sub'];
     }
