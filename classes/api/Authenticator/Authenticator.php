@@ -102,9 +102,10 @@ class Authenticator
         }
         $logger = \ilLoggerFactory::getLogger('api___');
         $logger->info("User ID nach dem Token auth: " . $user_id);
-        $this->tokenHandler->createToken();
         global $DIC;
         $DIC->user()->setId($user_id);
+
+        $this->tokenHandler->createToken();
 
         return true;
     }
