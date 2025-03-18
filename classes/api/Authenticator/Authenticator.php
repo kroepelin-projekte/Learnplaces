@@ -82,6 +82,9 @@ class Authenticator
      */
     private function tokenAuth(): bool
     {
+        global $DIC;
+
+
         $request_header = getallheaders();
         if (!isset($request_header['Authorization'])) {
             Response::send(401, 'AUTH_ERROR_NO_BEARER_TOKEN');
@@ -94,15 +97,11 @@ class Authenticator
         }
         $token = substr($bearer_token, 7);
 
-        $token_handler = new TokenHandler();
-
-        if (!$user_id = $token_handler->decode($token)) {
+        if (!$user_id = $this->tokenHandler->decode($token)) {
             Response::send(401, 'AUTH_ERROR_INVALID_JWT');
             return false;
         }
-        $logger = \ilLoggerFactory::getLogger('api___');
-        $logger->info("User ID nach dem Token auth: " . $user_id);
-        global $DIC;
+
         $DIC->user()->setId($user_id);
 
         $this->tokenHandler->createToken();
