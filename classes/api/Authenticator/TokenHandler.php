@@ -84,6 +84,9 @@ class TokenHandler
         }
 
         $payload = json_decode($this->base64UrlDecode($matches['payload']), true);
+        $logger = \ilLoggerFactory::getLogger('api___');
+        $logger->info("Der Payload im Token bei Token Auth" , $payload);
+
 
         if (!is_array($payload) || !isset($payload['sub'], $payload['exp'])) {
             return false;
