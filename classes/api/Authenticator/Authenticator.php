@@ -61,6 +61,9 @@ class Authenticator
 
         switch ($status->getStatus()) {
             case ilAuthStatus::STATUS_AUTHENTICATED:
+                $logger = \ilLoggerFactory::getLogger('api___');
+                global $DIC;
+                $logger->info("User ID nach dem basic auth: " . $DIC->user()->getId());
                 if ($this->checkRolePermission()) {
                     $this->tokenHandler->createToken();
                     return true;
