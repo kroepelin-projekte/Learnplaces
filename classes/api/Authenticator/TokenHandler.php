@@ -33,12 +33,14 @@ class TokenHandler
     {
         global $DIC;
         $token_handler = new TokenHandler();
-        $userPayload['username'] = $DIC->user()->getlogin();
         $userPayload['sub'] = $DIC->user()->getId();
         $secret = Settings::getSecret();
 
         $userPayload['iat'] = time();
         $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
+
+        $logger = \ilLoggerFactory::getLogger('api___');
+        $logger->info( $userPayload['sub']);
 
         header("Learnplaces_token: ". $token_handler->encode($userPayload, $secret));
     }
