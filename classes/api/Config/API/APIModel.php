@@ -24,7 +24,6 @@ class APIModel implements constConfig
         if ($result === null) {
             return [false, $this->plugin->txt(self::LANG_ERROR_REQUIRED_FIELD)];
         }
-        Settings::setBaseUrl($result['api']['url']);
         Settings::setCookieExpire($result['api']['cookie']);
         Settings::setClientURL($result['api']['client']);
         Settings::setSecret($result['api']['secret']);

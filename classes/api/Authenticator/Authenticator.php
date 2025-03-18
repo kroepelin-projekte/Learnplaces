@@ -8,33 +8,31 @@ use ilAuthStatus;
 use ilAuthFrontendFactory;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
-use Random\RandomException;
-use ILIAS\HTTP\Response\ResponseHeader;
-use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
-use ilLoggerFactory;
 
 class Authenticator
 {
+    private TokenHandler $tokenHandler;
+
+    public function __construct()
+    {
+        $this->tokenHandler = new TokenHandler();
+    }
+
     /**
-     * @throws RandomException
+     * @throws ResponseSendingException
      */
     public function auth(): array
     {
-        if (array_key_exists('PHP_AUTH_USER', $_SERVER) or array_key_exists('PHP_AUTH_PW', $_SERVER)) {
-            if ($this->basicAuth()) {
-                 $this->createToken();
-
-                return [true, "basic_auth"];
-            } else {
-                return [false, "basic_auth"];
-            }
-        } elseif ($this->tokenAuth()) {
-            $this->createToken();
-            return [true, "token_auth"];
-        } else {
-            return [false, "token_auth"];
+        if (isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) && $this->basicAuth()) {
+            return ['success' => true, "auth_mode" => "basic_auth"];
         }
+
+        if ($this->tokenAuth()) {
+            return ['success' => true, "auth_mode" => "token_auth"];
+        }
+
+        return ['success' => false, "auth_mode" => "none"];
     }
 
     /**
@@ -63,13 +61,50 @@ class Authenticator
 
         switch ($status->getStatus()) {
             case ilAuthStatus::STATUS_AUTHENTICATED:
-                return $this->checkRolePermission();
+                if ($this->checkRolePermission()) {
+                    $this->tokenHandler->createToken();
+                    return true;
+                } else {
+                    Response::send(401, 'AUTH_ERROR');
+                    return false;
+                }
                 break;
             default:
                 Response::send(401, 'AUTH_ERROR');
+                return false;
                 break;
         }
-        return false;
+    }
+
+    /**
+     * @return bool
+     * @throws ResponseSendingException
+     */
+    private function tokenAuth(): bool
+    {
+        $request_header = getallheaders();
+        if (!isset($request_header['Authorization'])) {
+            Response::send(401, 'AUTH_ERROR_NO_BEARER_TOKEN');
+            return false;
+        }
+        $bearer_token = $request_header['Authorization'];
+        if (!str_starts_with($bearer_token, 'Bearer ')) {
+            Response::send(401, 'AUTH_ERROR_INVALID_BEARER_TOKEN');
+            return false;
+        }
+        $token = substr($bearer_token, 7);
+
+        $token_handler = new TokenHandler();
+
+        if (!$user_id = $token_handler->decode($token)) {
+            Response::send(401, 'AUTH_ERROR_INVALID_JWT');
+            return false;
+        }
+        $this->tokenHandler->createToken();
+        global $DIC;
+        $DIC->user()->setId($user_id);
+
+        return true;
     }
 
     /**
@@ -92,66 +127,5 @@ class Authenticator
         }
         Response::send(401, 'AUTH_ERROR');
         return false;
-    }
-
-    /**
-     * @return bool
-     * @throws ResponseSendingException
-     */
-    private function tokenAuth(): bool
-    {
-        $request_header = getallheaders();
-        if (!isset($request_header['Authorization'])) {
-            Response::send(401, 'AUTH_ERROR_NO_BEARER_TOKEN');
-        }
-        $bearer_token = $request_header['Authorization'];
-        if (!str_starts_with($bearer_token, 'Bearer ')) {
-            Response::send(401, 'AUTH_ERROR_INVALID_BEARER_TOKEN');
-        }
-        $token = substr($bearer_token, 7);
-
-        $token_handler = new TokenHandler();
-
-        if (!$user_id = $token_handler->decode($token)) {
-            Response::send(401, 'AUTH_ERROR_INVALID_JWT');
-            return false;
-        }
-        global $DIC;
-        $DIC->user()->setId($user_id);
-        return true;
-    }
-
-    /**
-     * @throws RandomException
-     */
-    private function createToken(): void
-    {
-        global $DIC;
-        $token_handler = new TokenHandler();
-        $userPayload['username'] = $DIC->user()->getlogin();
-        $userPayload['sub'] = $DIC->user()->getId();
-        $secret = Settings::getSecret();
-
-        $userPayload['iat'] = time();
-        $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
-
-        header("Learnplaces_token: ". $token_handler->encode($userPayload, $secret));
-    }
-
-    /**
-     * @throws ResponseSendingException
-     */
-    public function httpOptions(): void
-    {
-        $client_url = Settings::getClientURL() ?: Settings::getBaseUrl();
-        header("Access-Control-Allow-Origin: $client_url");
-        header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
-        header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With, Learnplaces_token");
-        header('Access-Control-Expose-Headers: Learnplaces_token');
-
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            http_response_code(200);
-            exit;
-        }
     }
 }

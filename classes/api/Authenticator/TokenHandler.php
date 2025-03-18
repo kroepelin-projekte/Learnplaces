@@ -6,11 +6,6 @@ use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 
 class TokenHandler
 {
-    public function createSecret(): string
-    {
-        return bin2hex(random_bytes(32));
-    }
-
     /**
      * @param array  $payload
      * @param string $secret
@@ -32,6 +27,20 @@ class TokenHandler
             )
         );
         return "$headers_encoded.$payload_encoded.$signature_encoded";
+    }
+
+    public function createToken(): void
+    {
+        global $DIC;
+        $token_handler = new TokenHandler();
+        $userPayload['username'] = $DIC->user()->getlogin();
+        $userPayload['sub'] = $DIC->user()->getId();
+        $secret = Settings::getSecret();
+
+        $userPayload['iat'] = time();
+        $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
+
+        header("Learnplaces_token: ". $token_handler->encode($userPayload, $secret));
     }
 
     /**

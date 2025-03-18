@@ -9,8 +9,7 @@ interface constConfig {
     public const LANG_TAB_API_SETTINGS = "lang_tab_api_settings";
     public const LANG_TAB_SUB_API_SETTINGS = "lang_tab_sub_api_settings";
     public const LANG_TAB_SUB_PERMISSION_SETTINGS = "lang_tab_sub_permission_settings";
-    public const LANG_INPUT_TEXT_BASE_URL = "lang_input_text_base_url";
-    public const LANG_INPUT_TEXT_BASE_URL_BYLINE = "lang_input_text_base_url_byline";
+
     public const LANG_INPUT_TEXT_CLIENT_URL = "lang_input_text_client_url";
     public const LANG_INPUT_TEXT_BASE_CLIENT_BYLINE = "lang_input_text_client_url_byline";
 

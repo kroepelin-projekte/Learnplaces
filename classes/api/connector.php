@@ -5,6 +5,7 @@ chdir("../../../../../../../../");
 use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Authenticator;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\api\Core\Request;
+use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 
 require_once 'vendor/composer/vendor/autoload.php';
 
@@ -19,19 +20,23 @@ try {
 
     ilInitialisation::initILIAS();
 
-    $logger = ilLoggerFactory::getLogger('api___');
-    $logger->info('api started');
-    $logger->info($_SERVER['REQUEST_METHOD']);
+    $client_url = Settings::getClientURL() ?: $_SERVER['HTTP_HOST'];
+    header("Access-Control-Allow-Origin: $client_url");
+    header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With, Learnplaces_token");
+    header('Access-Control-Expose-Headers: Learnplaces_token');
 
-    error_log('api started');
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(200);
+        exit;
+    }
 
-    $obj_authenticator = new Authenticator();
-    $obj_authenticator->httpOptions();
-    $auth_status = $obj_authenticator->auth();
 
-    if ($auth_status[0]) {
+    $auth_status = (new Authenticator())->auth();
+
+    if ($auth_status['success']) {
         $request = new Request();
-        $request->route($auth_status[1]);
+        $request->route($auth_status['auth_mode']);
     } else {
         Response::send(401);
     }

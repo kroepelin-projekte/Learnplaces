@@ -35,6 +35,22 @@ such as formatted text, images, videos, ILIAS links or accordions.
 mkdir -p public/Customizing/plugins/Repository/RepositoryObject
 cd public/Customizing/plugins/Repository/RepositoryObject
 ```
+**Apache Config**
+```bash
+<Directory /var/www/html>
+  AllowOverride All
+  Require all granted
+</Directory>
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule "^/api/*" "/Customizing/plugins/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
+
+RewriteCond %{HTTP:Authorization} ^(.)
+RewriteRule . - [E=HTTP_AUTHORIZATION:%1]
+
+```
 
 **Clone Project**
 ```bash
