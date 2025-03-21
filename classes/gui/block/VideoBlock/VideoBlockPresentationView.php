@@ -81,22 +81,12 @@ final class VideoBlockPresentationView implements Renderable
         $resourceId = $this->model->getResourceId();
         $resource = new ResourceIdentification($resourceId);
         if ($resourceStorage->manage()->find($resourceId)) {
+            $src = $resourceStorage->consume()
+                                   ->src($resource)
+                                   ->getSrc();
 
-            $videoHTML = '';
-            if (version_compare(ILIAS_VERSION_NUMERIC, "9.0", "<")) {
-                $src = $resourceStorage->consume()
-                    ->src($resource)
-                    ->getSrc();
-
-                // Kitchensink-Component Video is not responsive
-                $videoHTML = "<video style='width: 100%;' controls><source src=\"$src\" type=\"video/mp4\">Your browser does not support the video tag.</video>";
-            } else {
-                // ILIAS 9 FileDelivery is not working
-                $videoBinary = $resourceStorage->consume()->stream($resource)->getStream()->getContents();
-                $videoBase64Encoded = base64_encode($videoBinary);
-                $src = "data:video/mp4;base64,$videoBase64Encoded";
-                $videoHTML = "<video style='width: 100%;' controls><source src=\"$src\" type=\"video/mp4\">Your browser does not support the video tag.</video>";
-            }
+            // Kitchensink-Component Video is not responsive
+            $videoHTML = "<video style='width: 100%;' controls><source src=\"$src\" type=\"video/mp4\">Your browser does not support the video tag.</video>";
 
             $this->template->setVariable('CONTENT', $videoHTML);
         }
