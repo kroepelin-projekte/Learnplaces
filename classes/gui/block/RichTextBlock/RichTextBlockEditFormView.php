@@ -90,7 +90,7 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView
     {
         $config = HTMLPurifier_Config::createDefault();
         $config->set('Cache.DefinitionImpl', null);
-        $config->set('HTML.AllowedElements', 'p,br,strong,b,i,u,s,strike,em,span');
+        $config->set('HTML.AllowedElements', 'p,br,strong,b,i,u,s,strike,em,span,ul,ol,li');
         $config->set('HTML.AllowedAttributes', ['style']);
         $purifier = new HTMLPurifier($config);
 
