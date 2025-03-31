@@ -85,4 +85,25 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess
             return true;
         }
     }
+
+    /**
+     * check whether goto script will succeed
+     */
+    public static function _checkGoto(string $target): bool
+    {
+        global $DIC;
+
+        $ilAccess = $DIC->access();
+
+        $t_arr = explode("_", $target);
+
+        if ($t_arr[1] === 'lernorte-auth') {
+            return true;
+        }
+
+        if ($ilAccess->checkAccess("read", "", (int) $t_arr[1])) {
+            return true;
+        }
+        return false;
+    }
 }

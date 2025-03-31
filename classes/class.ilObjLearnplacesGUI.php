@@ -308,4 +308,19 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
             return false;
         }
     }
+
+    /**
+     * @param array $a_target
+     * @return void
+     * @throws ilCtrlException
+     */
+    public static function _goto(array $a_target): void
+    {
+        if (!isset($a_target[0]) || $a_target[0] !== 'lernorte-auth') {
+            return;
+        }
+
+        global $DIC;
+        $DIC->ctrl()->redirectByClass([ilUIPluginRouterGUI::class, xsrlAuthGUI::class], xsrlAuthGUI::CMD_AUTH);
+    }
 }

@@ -24,6 +24,9 @@ class Authenticator
      */
     public function auth(): array
     {
+        // todo: auth und token routes nicht protected
+        return ['success' => true, "auth_mode" => "token_auth"];
+
         if (isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) && $this->basicAuth()) {
             return ['success' => true, "auth_mode" => "basic_auth"];
         }
