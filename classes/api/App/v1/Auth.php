@@ -5,6 +5,7 @@ namespace KPG\Learnplaces\api\App\v1;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 use KPG\Learnplaces\api\Database\OAuthEntity;
+use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 
 class Auth
 {
@@ -25,7 +26,14 @@ class Auth
         }
         $state = $query->retrieve('state', $string);
         $redirect_uri = $query->retrieve('redirect_uri', $string);
+        $redirect_uri = $this->urlsafe_base64_decode($redirect_uri);
         $code_challenge = $query->retrieve('code_challenge', $string);
+
+        $client_url = Settings::getClientURL();
+
+        if (!str_contains($redirect_uri, $client_url)) {
+            Response::send(400, 'BAD_REQUEST', []);
+        }
 
         (new OAuthEntity())
             ->setState($state)
@@ -34,11 +42,23 @@ class Auth
             ->setExpire(time() + 300)
             ->store();
 
-
-        // todo validierung: redirect_uri muss unter definierten erlaubten uris sein
-
         $base_url = strstr(ILIAS_HTTP_PATH, '/api', true);
         Header("Location: $base_url/goto.php?target=xsrl_lernorte-auth_$state");
         exit;
+    }
+
+    /**
+     * @param $input
+     * @return false|string
+     */
+    private function urlsafe_base64_decode($input) {
+        $replaced = str_replace(['-', '_'], ['+', '/'], $input);
+
+        $padding = strlen($replaced) % 4;
+        if ($padding > 0) {
+            $replaced .= str_repeat('=', 4 - $padding);
+        }
+
+        return base64_decode($replaced);
     }
 }
