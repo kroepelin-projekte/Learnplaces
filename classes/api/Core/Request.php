@@ -19,7 +19,7 @@ class Request
         string $namespace,
         string $handler,
         string $http_method,
-        string $auth_mode
+        bool $auth = false,
     ): void {
         $pattern = preg_replace('/:([\w-]+)/', '(?<$1>[^/]+)', $pattern);
         $this->routes[] = [
@@ -27,11 +27,11 @@ class Request
             'namespace' => $namespace,
             'handler' => $handler,
             'http_method' => $http_method,
-            'auth_mode' => $auth_mode
+            'auth_mode' => $auth
         ];
     }
 
-    public function route(string $auth_mode): void
+    public function route(): void
     {
         $requestedUri = urldecode(str_replace($this->path, '', explode('?', $_SERVER['REQUEST_URI'])[0]));
         foreach ($this->routes as $route) {
@@ -39,8 +39,8 @@ class Request
                     $route['pattern'], $requestedUri, $matches
                 ) && $route['http_method'] == $_SERVER['REQUEST_METHOD']) {
 
-                if($auth_mode != $route['auth_mode']) {
-                    Response::send(401, 'WRONG_AUTH_MODE');
+                if($route['auth_mode']) {
+                    Response::send(404, 'AUTH_REQUIRED');
                 }
                 $params = [];
                 foreach ($matches as $key => $value) {

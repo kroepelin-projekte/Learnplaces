@@ -14,7 +14,6 @@ if (!file_exists('./ilias.ini.php')) {
 }
 
 try {
-
     $ilIliasIniFile = new ilIniFile('./ilias.ini.php');
     $ilIliasIniFile->read();
 
@@ -31,15 +30,8 @@ try {
         exit;
     }
 
-
-    $auth_status = (new Authenticator())->auth();
-
-    if ($auth_status['success']) {
-        $request = new Request();
-        $request->route($auth_status['auth_mode']);
-    } else {
-        Response::send(401);
-    }
+    $request = new Request();
+    $request->route();
 
 } catch (Exception $e) {
     echo $e->getMessage();

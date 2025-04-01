@@ -9,6 +9,9 @@ use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\gui\VisitorsTable;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\api\Database\OAuthEntity;
+use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\HTTPHandler;
+use RepositoryObject\Learnplaces\classes\api\Core\Response;
+use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\PKCEHandler;
 
 /**
  * @ilCtrl_isCalledBy xsrlAuthGUI: ilUIPluginRouterGUI
@@ -25,23 +28,19 @@ class xsrlAuthGUI
     public function executeCommand(): void
     {
         global $DIC;
-        $query = $DIC->http()->wrapper()->query();
-        $string = $DIC->refinery()->kindlyTo()->string();
 
-        if (!$query->has('state')) {
-            throw new \Exception('Permission Denied');
+        $http_handler = new HTTPHandler();
+        if(!$http_handler->setState()) {
+            Response::send(400, 'BAD_REQUEST');
         }
-
-        $state = $query->retrieve('state', $string);
 
         if ($DIC->user()->isAnonymous()) {
-            $target = 'xsrl_lernorte-auth_' . $state;
-            $DIC->ctrl()->redirectToURL('login.php?target=' . $target . '&cmd=force_login');
+            $http_handler->redirectLogin();
         }
 
-        switch ($cmd = $DIC->ctrl()->getCmd()) {
+        switch ($DIC->ctrl()->getCmd()) {
             case self::CMD_AUTH:
-                $this->$cmd();
+                $this->auth($http_handler);
                 break;
         }
     }
@@ -49,26 +48,18 @@ class xsrlAuthGUI
     /**
      * @return void
      */
-    private function auth(): void
+    private function auth(HTTPHandler $http_handler): void
     {
-        global $DIC;
-        $query = $DIC->http()->wrapper()->query();
-        $string = $DIC->refinery()->kindlyTo()->string();
 
-        if (!$query->has('state')) {
-            throw new \Exception('Permission Denied');
-        }
+        (new PKCEHandler($http_handler))->initAfterILIASAuth();
 
-        $state = $query->retrieve('state', $string);
 
-        $record = OAuthEntity::where(['state' => $state])->first();
-        if (!$record) {
-            throw new \Exception('Permission Denied');
-        }
+
+
+        $expire = $record->getExpire();
 
         $redirect_uri = $record->getRedirectUri();
-        $code_challenge = $record->getCodeChallenge();
-        $expire = $record->getExpire();
+        $redirect_uri = $this->urlsafe_base64_decode($redirect_uri);
 
         if (time() > $expire) {
             header("Location: $redirect_uri");
@@ -77,13 +68,27 @@ class xsrlAuthGUI
 
         $code = bin2hex(random_bytes(32));
 
-        $record
-            ->setCode($code)
-            ->update();
+
 
         $uri = "$redirect_uri?code=$code&state=$state";
 
         header("Location: $uri");
         exit;
+    }
+
+    /**
+     * @param $input
+     * @return false|string
+     */
+    private function urlsafe_base64_decode($input)
+    {
+        $replaced = str_replace(['-', '_'], ['+', '/'], $input);
+
+        $padding = strlen($replaced) % 4;
+        if ($padding > 0) {
+            $replaced .= str_repeat('=', 4 - $padding);
+        }
+
+        return base64_decode($replaced);
     }
 }
