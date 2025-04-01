@@ -15,7 +15,6 @@ class Token
     {
         global $DIC;
 
-
         if (!isset($request_body['state'], $request_body['code'], $request_body['code_verifier'])) {
             Response::send(400, 'BAD_REQUEST', []);
         }
@@ -26,17 +25,17 @@ class Token
 
         $record = OAuthEntity::where(['state' => $state])->first();
         if (!$record) {
-            Response::send(400, 'BAD_REQUEST', []);
+            Response::send(400, null, ['success' => false, 'access_token' => null]);
         }
 
         if (time() > $record->getExpire()) {
             $record->delete();
-            Response::send(400, 'BAD_REQUEST', []);
+            Response::send(400, null, ['success' => false, 'access_token' => null]);
         }
 
         if ($record->getCode() !== $code) {
             $record->delete();
-            Response::send(400, 'BAD_REQUEST', []);
+            Response::send(400, null, ['success' => false, 'access_token' => null]);
         }
 
         $code_challenge = $record->getCodeChallenge();
@@ -44,14 +43,14 @@ class Token
         $hashedVerifier = $this->base64UrlEncode($code_verifier_hash); // Wichtig: raw_output = true
         if (!hash_equals($code_challenge, $hashedVerifier)) {
             $record->delete();
-            Response::send(400, 'BAD_REQUEST', []);
+            Response::send(400, null, ['success' => false, 'access_token' => null]);
         }
 
         // todo jwt
         $jwt = 'xyz';
 
         $record->delete();
-        Response::send(201, null, ['access_token' => $jwt]);
+        Response::send(201, null, ['success' => true, 'access_token' => $jwt]);
     }
 
     /**
