@@ -37,11 +37,6 @@ class xsrlAuthGUI
         if ($DIC->user()->isAnonymous()) {
             $target = 'xsrl_lernorte-auth_' . $state;
             $DIC->ctrl()->redirectToURL('login.php?target=' . $target . '&cmd=force_login');
-
-            // todo info speichern zum später wieder ausloggen
-
-            // todo info message?
-            //$DIC->ui()->mainTemplate()->setOnScreenMessage('info', '<strong>Anmeldung zur Lernorte App</strong>', true);
         }
 
         switch ($cmd = $DIC->ctrl()->getCmd()) {
@@ -61,7 +56,6 @@ class xsrlAuthGUI
         $string = $DIC->refinery()->kindlyTo()->string();
 
         if (!$query->has('state')) {
-            // todo zur lernorte app leiten?
             throw new \Exception('Permission Denied');
         }
 
@@ -69,7 +63,6 @@ class xsrlAuthGUI
 
         $record = OAuthEntity::where(['state' => $state])->first();
         if (!$record) {
-            // todo zur lernorte app leiten?
             throw new \Exception('Permission Denied');
         }
 
@@ -79,8 +72,8 @@ class xsrlAuthGUI
         $expire = $record->getExpire();
 
         if (time() > $expire) {
-            // todo zur lernorte app leiten?
-            throw new \Exception('Permission Denied');
+            header("Location: $redirect_uri");
+            exit;
         }
 
         $code = bin2hex(random_bytes(32));

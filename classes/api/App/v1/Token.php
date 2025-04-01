@@ -29,7 +29,13 @@ class Token
             Response::send(400, 'BAD_REQUEST', []);
         }
 
+        if (time() > $record->getExpire()) {
+            $record->delete();
+            Response::send(400, 'BAD_REQUEST', []);
+        }
+
         if ($record->getCode() !== $code) {
+            $record->delete();
             Response::send(400, 'BAD_REQUEST', []);
         }
 
@@ -37,27 +43,23 @@ class Token
         $code_verifier_hash = hash('sha256', $code_verifier, true);
         $hashedVerifier = $this->base64UrlEncode($code_verifier_hash); // Wichtig: raw_output = true
         if (!hash_equals($code_challenge, $hashedVerifier)) {
+            $record->delete();
             Response::send(400, 'BAD_REQUEST', []);
         }
 
-
-        // todo validierung:
-        //  hash_equals mit code_challenge vom Zwischenspeicher und code_verifier vom Parameter
-        //  state abgleich
-        //  code abgleich
-
-        // todo zwischenspeicher löschen
-
-        // todo jwt als response schicken
+        // todo jwt
         $jwt = 'xyz';
 
+        $record->delete();
         Response::send(201, null, ['access_token' => $jwt]);
     }
 
+    /**
+     * @param string $text
+     * @return string
+     */
     private function base64UrlEncode(string $text): string
     {
-        // Konvertiere Rohdaten (binär) in einen Base64-String und mache ihn URL-sicher
         return rtrim(strtr(base64_encode($text), '+/', '-_'), '=');
     }
-
 }

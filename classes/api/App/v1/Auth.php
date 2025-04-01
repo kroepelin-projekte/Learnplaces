@@ -37,8 +37,6 @@ class Auth
 
         // todo validierung: redirect_uri muss unter definierten erlaubten uris sein
 
-        // todo parameter (redirect_uri, code_challenge) zwischespeichern 5min
-
         $base_url = strstr(ILIAS_HTTP_PATH, '/api', true);
         Header("Location: $base_url/goto.php?target=xsrl_lernorte-auth_$state");
         exit;
