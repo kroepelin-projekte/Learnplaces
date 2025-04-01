@@ -126,6 +126,6 @@ foreach ($videos as $video) {
 ?>
 <#5>
 <?php
-KPG\Learnplaces\api\Database\Tables\CookieSecrets::install();
+KPG\Learnplaces\api\Database\OAuthEntityInstall::install();
 ?>
 

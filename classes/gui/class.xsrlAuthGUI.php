@@ -8,6 +8,7 @@ use ILIAS\DI\UIServices;
 use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\gui\VisitorsTable;
 use KPG\Learnplaces\container\PluginContainer;
+use KPG\Learnplaces\api\Database\OAuthEntity;
 
 /**
  * @ilCtrl_isCalledBy xsrlAuthGUI: ilUIPluginRouterGUI
@@ -24,10 +25,23 @@ class xsrlAuthGUI
     public function executeCommand(): void
     {
         global $DIC;
+        $query = $DIC->http()->wrapper()->query();
+        $string = $DIC->refinery()->kindlyTo()->string();
+
+        if (!$query->has('state')) {
+            throw new \Exception('Permission Denied');
+        }
+
+        $state = $query->retrieve('state', $string);
 
         if ($DIC->user()->isAnonymous()) {
-            $target = 'xsrl_lernorte-auth';
+            $target = 'xsrl_lernorte-auth_' . $state;
             $DIC->ctrl()->redirectToURL('login.php?target=' . $target . '&cmd=force_login');
+
+            // todo info speichern zum später wieder ausloggen
+
+            // todo info message?
+            //$DIC->ui()->mainTemplate()->setOnScreenMessage('info', '<strong>Anmeldung zur Lernorte App</strong>', true);
         }
 
         switch ($cmd = $DIC->ctrl()->getCmd()) {
@@ -42,21 +56,57 @@ class xsrlAuthGUI
      */
     private function auth(): void
     {
-        // todo wenn an dieser Stelle kein Zwischenspeicher ist dann abbrechen.
+        global $DIC;
+        $query = $DIC->http()->wrapper()->query();
+        $string = $DIC->refinery()->kindlyTo()->string();
+
+        if (!$query->has('state')) {
+            // todo zur lernorte app leiten?
+            throw new \Exception('Permission Denied');
+        }
+
+        $state = $query->retrieve('state', $string);
+
+        $record = OAuthEntity::where(['state' => $state])->first();
+        if (!$record) {
+            // todo zur lernorte app leiten?
+            throw new \Exception('Permission Denied');
+        }
+
+        $redirect_uri = $record->getRedirectUri();
+        $redirect_uri = $this->urlsafe_base64_decode($redirect_uri);
+        $code_challenge = $record->getCodeChallenge();
+        $expire = $record->getExpire();
+
+        if (time() > $expire) {
+            // todo zur lernorte app leiten?
+            throw new \Exception('Permission Denied');
+        }
 
         $code = bin2hex(random_bytes(32));
 
-        // todo code mit den anderen daten von der auth route zwischenspeichern.
+        $record
+            ->setCode($code)
+            ->update();
 
-        $state = 'vom_zwischenspeicher';
+        $uri = "$redirect_uri?code=$code&state=$state";
 
-        // todo hier die redirect_uri vom zwischenspeicher benutzen
-        $redirect_uri = 'http://localhost:5173/auth_callback';
-
-        $uri = urlencode("$redirect_uri?code=$code&state=$state");
-
-        // todo code und state vom zwischenspeicher mit zurückschicken
         header("Location: $uri");
         exit;
+    }
+
+    /**
+     * @param $input
+     * @return false|string
+     */
+    private function urlsafe_base64_decode($input) {
+        $replaced = str_replace(['-', '_'], ['+', '/'], $input);
+
+        $padding = strlen($replaced) % 4;
+        if ($padding > 0) {
+            $replaced .= str_repeat('=', 4 - $padding);
+        }
+
+        return base64_decode($replaced);
     }
 }

@@ -316,11 +316,19 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
      */
     public static function _goto(array $a_target): void
     {
-        if (!isset($a_target[0]) || $a_target[0] !== 'lernorte-auth') {
+        if (!isset($a_target[0])) {
+            return;
+        }
+
+        try {
+            [$cmd, $state] = explode('_', $a_target[0]);
+        } catch (Exception $ex) {
             return;
         }
 
         global $DIC;
+        $DIC->ctrl()->setParameterByClass(xsrlAuthGUI::class, 'state', $state);
         $DIC->ctrl()->redirectByClass([ilUIPluginRouterGUI::class, xsrlAuthGUI::class], xsrlAuthGUI::CMD_AUTH);
+        $DIC->ctrl()->clearParametersByClass(xsrlAuthGUI::class);
     }
 }
