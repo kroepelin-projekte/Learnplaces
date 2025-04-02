@@ -2,13 +2,9 @@
 
 declare(strict_types=1);
 
-use KPG\Learnplaces\service\publicapi\block\LearnplaceService;
-use KPG\Learnplaces\service\security\AccessGuard;
-use ILIAS\DI\UIServices;
-use KPG\Learnplaces\gui\helper\CommonControllerAction;
-use KPG\Learnplaces\gui\VisitorsTable;
-use KPG\Learnplaces\container\PluginContainer;
-use KPG\Learnplaces\api\Database\OAuthEntity;
+use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\HTTPHandler;
+use RepositoryObject\Learnplaces\classes\api\Core\Response;
+use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\PKCEHandler;
 
 /**
  * @ilCtrl_isCalledBy xsrlAuthGUI: ilUIPluginRouterGUI
@@ -25,65 +21,20 @@ class xsrlAuthGUI
     public function executeCommand(): void
     {
         global $DIC;
-        $query = $DIC->http()->wrapper()->query();
-        $string = $DIC->refinery()->kindlyTo()->string();
 
-        if (!$query->has('state')) {
-            throw new \Exception('Permission Denied');
+        $http_handler = new HTTPHandler();
+        if(!$http_handler->setState()) {
+            Response::send(400, null, ['success' => false, 'access_token' => null]);
         }
-
-        $state = $query->retrieve('state', $string);
 
         if ($DIC->user()->isAnonymous()) {
-            $target = 'xsrl_lernorte-auth_' . $state;
-            $DIC->ctrl()->redirectToURL('login.php?target=' . $target . '&cmd=force_login');
+            $http_handler->redirectLogin();
         }
 
-        switch ($cmd = $DIC->ctrl()->getCmd()) {
+        switch ($DIC->ctrl()->getCmd()) {
             case self::CMD_AUTH:
-                $this->$cmd();
+                (new PKCEHandler($http_handler))->initAfterILIASAuth();
                 break;
         }
-    }
-
-    /**
-     * @return void
-     */
-    private function auth(): void
-    {
-        global $DIC;
-        $query = $DIC->http()->wrapper()->query();
-        $string = $DIC->refinery()->kindlyTo()->string();
-
-        if (!$query->has('state')) {
-            throw new \Exception('Permission Denied');
-        }
-
-        $state = $query->retrieve('state', $string);
-
-        $record = OAuthEntity::where(['state' => $state])->first();
-        if (!$record) {
-            throw new \Exception('Permission Denied');
-        }
-
-        $redirect_uri = $record->getRedirectUri();
-        $code_challenge = $record->getCodeChallenge();
-        $expire = $record->getExpire();
-
-        if (time() > $expire) {
-            header("Location: $redirect_uri");
-            exit;
-        }
-
-        $code = bin2hex(random_bytes(32));
-
-        $record
-            ->setCode($code)
-            ->update();
-
-        $uri = "$redirect_uri?code=$code&state=$state";
-
-        header("Location: $uri");
-        exit;
     }
 }

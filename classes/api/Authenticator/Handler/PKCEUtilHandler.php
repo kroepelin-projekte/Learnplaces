@@ -1,17 +1,51 @@
 <?php
 
-namespace Repository\RepositoryObject\Learnplaces\classes\api\Authenticator;
+namespace KPG\Learnplaces\api\Authenticator\Handler;
 
+use Random\RandomException;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 
-class TokenHandler
+class PKCEUtilHandler
 {
+
     /**
-     * @param array  $payload
-     * @param string $secret
-     * @return string
+     * @throws RandomException
      */
-    public function encode(array $payload, string $secret): string
+    public function generateCode(): string
+    {
+        return bin2hex(random_bytes(32));
+    }
+
+
+
+    public function base64UrlEncode(string $text): string
+    {
+        return rtrim(strtr(base64_encode($text), '+/', '-_'), '=');
+    }
+
+    public function hash(string $value): string
+    {
+        return hash('sha256', $value, true);
+    }
+
+    public function hash_equals($a, $b): bool
+    {
+        return hash_equals($a, $b);
+    }
+
+    public function createAccessToken(): string
+    {
+        global $DIC;
+        $userPayload['sub'] = $DIC->user()->getId();
+        // ToDo, mach besser
+        $secret = Settings::getSecret();
+
+        $userPayload['iat'] = time();
+        $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
+        return $this->encodeAccessToken($userPayload, $secret);
+    }
+
+    public function encodeAccessToken(array $payload, string $secret): string
     {
         $headers_encoded = $this->base64UrlEncode(json_encode([
             'alg' => 'HS256',
@@ -29,40 +63,7 @@ class TokenHandler
         return "$headers_encoded.$payload_encoded.$signature_encoded";
     }
 
-    public function createToken(): void
-    {
-        global $DIC;
-        $token_handler = new TokenHandler();
-        $userPayload['sub'] = $DIC->user()->getId();
-        $logger = \ilLoggerFactory::getLogger('api___');
-        $logger->info("User ID bei der Erstellung des auth Tokens: " . $userPayload['sub'] );
-        $secret = Settings::getSecret();
-
-        $userPayload['iat'] = time();
-        $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
-
-
-        header("Learnplaces_token: ". $token_handler->encode($userPayload, $secret));
-    }
-
-    /**
-     * @param string $text
-     * @return string
-     */
-    private function base64UrlEncode(string $text): string
-    {
-        return str_replace(
-            ['+', '/', '='],
-            ['-', '_', ''],
-            base64_encode($text)
-        );
-    }
-
-    /**
-     * @param string $client_token
-     * @return mixed
-     */
-    public function decode(string $client_token): mixed
+    public function decodeAccessToken(string $client_token): mixed
     {
         if (preg_match("/^(?<header>.+)\.(?<payload>.+)\.(?<signature>.+)$/", $client_token, $matches) !== 1) {
             return false;
@@ -104,11 +105,7 @@ class TokenHandler
         return $payload['sub'];
     }
 
-    /**
-     * @param string $text
-     * @return string
-     */
-    private function base64UrlDecode(string $text): string
+    public function base64UrlDecode(string $text): string
     {
         $padding = strlen($text) % 4;
         if ($padding > 0) {
@@ -123,4 +120,3 @@ class TokenHandler
         );
     }
 }
-

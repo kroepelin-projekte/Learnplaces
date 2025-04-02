@@ -4,7 +4,8 @@ namespace KPG\Learnplaces\api\App\v1;
 
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
-use KPG\Learnplaces\api\Database\OAuthEntity;
+use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\HTTPHandler;
+use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\PKCEHandler;
 
 class Token
 {
@@ -13,60 +14,27 @@ class Token
      */
     public function endpoint(array $params, array $request_body): void
     {
-        global $DIC;
-
         if (!isset($request_body['state'], $request_body['code'], $request_body['code_verifier'])) {
-            Response::send(400, 'BAD_REQUEST', []);
+            Response::send(400, null, ['success' => false]);
         }
-
-        $state = $request_body['state'];
-        $code = $request_body['code'];
-        $code_verifier = $request_body['code_verifier'];
 
         $regex = '/^[a-zA-Z0-9]+$/';
-        if (!preg_match($regex, $state)
-            || !preg_match($regex, $code)
-            || !preg_match($regex, $code_verifier)
+        if (!preg_match($regex, $request_body['state'])
+            || !preg_match($regex, $request_body['code'])
+            || !preg_match($regex, $request_body['code_verifier'])
         ) {
-            Response::send(400, null, ['success' => false, 'access_token' => null]);
+            Response::send(400, null, ['success' => false]);
         }
 
-        $record = OAuthEntity::where(['state' => $state])->first();
-        if (!$record) {
-            Response::send(400, null, ['success' => false, 'access_token' => null]);
-        }
+        $http_handler = new HTTPHandler();
+        $http_handler->setState($request_body['state']);
+        $http_handler->setCode($request_body['code']);
+        $http_handler->setCodeVerifier($request_body['code_verifier']);
 
-        if (time() > $record->getExpire()) {
-            $record->delete();
-            Response::send(400, null, ['success' => false, 'access_token' => null]);
-        }
+        (new PKCEHandler($http_handler))->initTokenAuth();
 
-        if ($record->getCode() !== $code) {
-            $record->delete();
-            Response::send(400, null, ['success' => false, 'access_token' => null]);
-        }
-
-        $code_challenge = $record->getCodeChallenge();
-        $code_verifier_hash = hash('sha256', $code_verifier, true);
-        $hashedVerifier = $this->base64UrlEncode($code_verifier_hash); // Wichtig: raw_output = true
-        if (!hash_equals($code_challenge, $hashedVerifier)) {
-            $record->delete();
-            Response::send(400, null, ['success' => false, 'access_token' => null]);
-        }
-
-        // todo jwt
-        $jwt = 'xyz';
-
-        $record->delete();
-        Response::send(201, null, ['success' => true, 'access_token' => $jwt]);
-    }
-
-    /**
-     * @param string $text
-     * @return string
-     */
-    private function base64UrlEncode(string $text): string
-    {
-        return rtrim(strtr(base64_encode($text), '+/', '-_'), '=');
+        Response::send(
+            201, null, ['success' => true]
+        );
     }
 }
