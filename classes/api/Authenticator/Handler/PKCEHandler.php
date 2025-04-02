@@ -97,12 +97,14 @@ class PKCEHandler
         if(!$user_id = $this->pkce_util->decodeAccessToken($this->http_handler->getAccessToken())){
             return false;
         }
+        global $DIC;
+        $DIC->user()->setId($user_id);
 
         //ToDo Codes, die älter als 5 Minuten sind, müssen gelöscht werden
 
         header("Learnplaces_token: " . $this->pkce_util->createAccessToken());
 
-        return $user_id;
+        return true;
     }
 
 }

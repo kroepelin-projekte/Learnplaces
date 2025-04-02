@@ -34,12 +34,10 @@ class Authenticator
         $http_handler = new HTTPHandler();
         $http_handler->setAccessToken(substr($bearer_token, 7));
         $pkce_handler = new PKCEHandler($http_handler);
-        if(!$user_id  = $pkce_handler->initAccessTokenAuth()){
+        if(!$pkce_handler->initAccessTokenAuth()){
             Response::send(400, null, ['success' => false]);
         }
 
-        global $DIC;
-        $DIC->user()->setId($user_id);
         return $this->checkRolePermission();
     }
 
