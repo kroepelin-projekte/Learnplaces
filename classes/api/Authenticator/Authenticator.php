@@ -9,7 +9,6 @@ use ilAuthFrontendFactory;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
-use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\TokenHandler;
 use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\HTTPHandler;
 use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\PKCEHandler;
 
