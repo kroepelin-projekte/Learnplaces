@@ -5,6 +5,9 @@ namespace Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Hand
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\api\Database\OAuthEntity;
 use KPG\Learnplaces\api\Authenticator\Handler\PKCEUtilHandler;
+use ILIAS\HTTP\Response\Sender\ResponseSendingException;
+use Random\RandomException;
+use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 
 class PKCEHandler
 {
@@ -17,7 +20,7 @@ class PKCEHandler
         $this->pkce_util = new PKCEUtilHandler();
     }
 
-    public function initbeforeILIASAuth()
+    public function initBeforeILIASAuth(): void
     {
         if (!$this->http_handler->setRedirectUri()
             || !$this->http_handler->setCodeChallenge()
@@ -34,22 +37,21 @@ class PKCEHandler
         $this->http_handler->redirectTargetAuthGUI();
     }
 
+    /**
+     * @throws ResponseSendingException
+     * @throws RandomException
+     */
     public function initAfterILIASAuth(): void
     {
         $record = OAuthEntity::where(['state' => $this->http_handler->getState()])->first();
         if (!$record) {
-            #Weiterleitung auf client ??
-            Response::send(400, 'BAD_REQUEST');
-            throw new \Exception('Permission Denied');
+            $this->http_handler->redirectTarget(Settings::getClientURL());
         }
 
-        $expire = $record->getExpire();
-
         $redirect_uri = $record->getRedirectUri();
-        $redirect_uri = $this->urlsafe_base64_decode($redirect_uri);
 
-        if (time() > $expire) {
-            header("Location: $redirect_uri");
+        if (time() > $record->getExpire()) {
+            $this->http_handler->redirectTarget($redirect_uri);
             exit;
         }
         $code = $this->pkce_util->generateCode();
@@ -57,10 +59,48 @@ class PKCEHandler
         $record
             ->setCode($code)
             ->update();
-        $uri = "$redirect_uri?code=$code&state=$this->http_handler->getState()";
 
-        header("Location: $uri");
+        $this->http_handler->redirectTarget("$redirect_uri?code=$code&state=" . $this->http_handler->getState());
+
         exit;
+    }
+
+    public function initTokenAuth(): void
+    {
+        $record = OAuthEntity::where(['state' => $this->http_handler->getState()])->first();
+        if (!$record) {
+            Response::send(400, null, ['success' => false, 'access_token' => null]);
+        }
+        if (time() > $record->getExpire()) {
+            $record->delete();
+            Response::send(400, null, ['success' => false, 'access_token' => null]);
+        }
+        if ($record->getCode() !== $this->http_handler->getCode()) {
+            $record->delete();
+            Response::send(400, null, ['success' => false, 'access_token' => null]);
+        }
+        $code_verifier_hash = $this->pkce_util->base64UrlEncode(
+            $this->pkce_util->hash($this->http_handler->getCodeVerifier())
+        );
+        if (!$this->pkce_util->hash_equals($code_verifier_hash, $record->getCodeChallenge())) {
+            $record->delete();
+            Response::send(400, null, ['success' => false, 'access_token' => null]);
+        }
+        header("Learnplaces_token: " . $this->pkce_util->createAccessToken());
+    }
+
+    public function initAccessTokenAuth(): bool|string|int
+    {
+
+        if(!$user_id = $this->pkce_util->decodeAccessToken($this->http_handler->getAccessToken())){
+            return false;
+        }
+
+        //ToDo Codes, die älter als 5 Minuten sind, müssen gelöscht werden
+
+        header("Learnplaces_token: " . $this->pkce_util->createAccessToken());
+
+        return $user_id;
     }
 
 }

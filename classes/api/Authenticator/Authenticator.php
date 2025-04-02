@@ -9,107 +9,38 @@ use ilAuthFrontendFactory;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
+use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\TokenHandler;
+use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\HTTPHandler;
+use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\PKCEHandler;
 
 class Authenticator
 {
-    private TokenHandler $tokenHandler;
-
-    public function __construct()
-    {
-        $this->tokenHandler = new TokenHandler();
-    }
 
     /**
      * @throws ResponseSendingException
      */
-    public function auth(): array
+    public function auth(): bool
     {
-        // todo: auth und token routes nicht protected
-        return ['success' => true, "auth_mode" => "token_auth"];
-
-        if (isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) && $this->basicAuth()) {
-            return ['success' => true, "auth_mode" => "basic_auth"];
-        }
-
-        if ($this->tokenAuth()) {
-            return ['success' => true, "auth_mode" => "token_auth"];
-        }
-
-        return ['success' => false, "auth_mode" => "none"];
-    }
-
-    /**
-     * @return bool
-     * @throws ResponseSendingException
-     */
-    private function basicAuth(): bool
-    {
-        $credentials = new ilAuthFrontendCredentials();
-        $credentials->setUsername(htmlspecialchars($_SERVER['PHP_AUTH_USER']));
-        $credentials->setPassword(htmlspecialchars($_SERVER['PHP_AUTH_PW']));
-        $provider_factory = new ilAuthProviderFactory();
-        $providers = $provider_factory->getProviders($credentials);
-
-        $status = ilAuthStatus::getInstance();
-
-        $frontend_factory = new ilAuthFrontendFactory();
-        $frontend_factory->setContext(ilAuthFrontendFactory::CONTEXT_CLI);
-        $frontend = $frontend_factory->getFrontend(
-            $GLOBALS['DIC']['ilAuthSession'],
-            $status,
-            $credentials,
-            $providers
-        );
-        $frontend->authenticate();
-
-        switch ($status->getStatus()) {
-            case ilAuthStatus::STATUS_AUTHENTICATED:
-                if ($this->checkRolePermission()) {
-                    $this->tokenHandler->createToken();
-                    return true;
-                } else {
-                    Response::send(401, 'AUTH_ERROR');
-                    return false;
-                }
-                break;
-            default:
-                Response::send(401, 'AUTH_ERROR');
-                return false;
-                break;
-        }
-    }
-
-    /**
-     * @return bool
-     * @throws ResponseSendingException
-     */
-    private function tokenAuth(): bool
-    {
-        global $DIC;
-
-
         $request_header = getallheaders();
         if (!isset($request_header['Authorization'])) {
-            Response::send(401, 'AUTH_ERROR_NO_BEARER_TOKEN');
+            Response::send(400, null, ['success' => false]);
             return false;
         }
         $bearer_token = $request_header['Authorization'];
         if (!str_starts_with($bearer_token, 'Bearer ')) {
-            Response::send(401, 'AUTH_ERROR_INVALID_BEARER_TOKEN');
+            Response::send(400, null, ['success' => false]);
             return false;
         }
-        $token = substr($bearer_token, 7);
-
-        if (!$user_id = $this->tokenHandler->decode($token)) {
-            Response::send(401, 'AUTH_ERROR_INVALID_JWT');
-            return false;
+        $http_handler = new HTTPHandler();
+        $http_handler->setAccessToken(substr($bearer_token, 7));
+        $pkce_handler = new PKCEHandler($http_handler);
+        if(!$user_id  = $pkce_handler->initAccessTokenAuth()){
+            Response::send(400, null, ['success' => false]);
         }
 
+        global $DIC;
         $DIC->user()->setId($user_id);
-
-        $this->tokenHandler->createToken();
-
-        return true;
+        return $this->checkRolePermission();
     }
 
     /**
@@ -124,13 +55,13 @@ class Authenticator
             return true;
         }
 
-        $perrmission_roles = explode(",", Settings::getPermissionRoles());
+        $permissions_roles = explode(",", Settings::getPermissionRoles());
         foreach ($user_roles as $role) {
-            if (in_array($role, $perrmission_roles)) {
+            if (in_array($role, $permissions_roles)) {
                 return true;
             }
         }
-        Response::send(401, 'AUTH_ERROR');
+        Response::send(400, null, ['success' => false]);
         return false;
     }
 }

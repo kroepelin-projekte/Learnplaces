@@ -2,7 +2,6 @@
 
 chdir("../../../../../../../../");
 
-use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Authenticator;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\api\Core\Request;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;

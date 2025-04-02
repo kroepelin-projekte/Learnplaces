@@ -3,6 +3,8 @@
 namespace KPG\Learnplaces\api\Core;
 
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
+use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Authenticator;
+use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 
 class Request
 {
@@ -31,6 +33,9 @@ class Request
         ];
     }
 
+    /**
+     * @throws ResponseSendingException
+     */
     public function route(): void
     {
         $requestedUri = urldecode(str_replace($this->path, '', explode('?', $_SERVER['REQUEST_URI'])[0]));
@@ -40,7 +45,9 @@ class Request
                 ) && $route['http_method'] == $_SERVER['REQUEST_METHOD']) {
 
                 if($route['auth_mode']) {
-                    Response::send(404, 'AUTH_REQUIRED');
+                    if(!(new Authenticator())->auth()) {
+                        Response::send(400, null, ['success' => false]);
+                    }
                 }
                 $params = [];
                 foreach ($matches as $key => $value) {
