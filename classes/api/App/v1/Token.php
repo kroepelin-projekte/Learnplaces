@@ -18,14 +18,6 @@ class Token
             Response::send(400, null, ['success' => false]);
         }
 
-        $regex = '/^[a-zA-Z0-9]+$/';
-        if (!preg_match($regex, $request_body['state'])
-            || !preg_match($regex, $request_body['code'])
-            || !preg_match($regex, $request_body['code_verifier'])
-        ) {
-            Response::send(400, null, ['success' => false]);
-        }
-
         $http_handler = new HTTPHandler();
         $http_handler->setState($request_body['state']);
         $http_handler->setCode($request_body['code']);

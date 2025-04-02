@@ -128,4 +128,9 @@ foreach ($videos as $video) {
 <?php
 KPG\Learnplaces\api\Database\OAuthEntityInstall::install();
 ?>
+<#6>
+<?php
+KPG\Learnplaces\api\Database\OAuthEntityInstall::update_2();
+?>
+
 

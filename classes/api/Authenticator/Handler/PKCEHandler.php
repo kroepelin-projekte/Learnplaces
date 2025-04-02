@@ -22,6 +22,7 @@ class PKCEHandler
 
     public function initBeforeILIASAuth(): void
     {
+        global $DIC;
         if (!$this->http_handler->setRedirectUri()
             || !$this->http_handler->setCodeChallenge()
             || !$this->http_handler->setState()
@@ -33,6 +34,7 @@ class PKCEHandler
             ->setRedirectUri($this->http_handler->getRedirectUri())
             ->setCodeChallenge($this->http_handler->getCodeChallenge())
             ->setExpire(time() + 300)
+            ->setCode(null)
             ->store();
         $this->http_handler->redirectTargetAuthGUI();
     }
@@ -55,10 +57,8 @@ class PKCEHandler
             exit;
         }
         $code = $this->pkce_util->generateCode();
-
-        $record
-            ->setCode($code)
-            ->update();
+        global $DIC;
+        $record->setCode($code)->setUserId($DIC->user()->getId())->update();
 
         $this->http_handler->redirectTarget("$redirect_uri?code=$code&state=" . $this->http_handler->getState());
 
@@ -86,6 +86,8 @@ class PKCEHandler
             $record->delete();
             Response::send(400, null, ['success' => false, 'access_token' => null]);
         }
+        global $DIC;
+        $DIC->user()->setId($record->getUserId());
         header("Learnplaces_token: " . $this->pkce_util->createAccessToken());
     }
 

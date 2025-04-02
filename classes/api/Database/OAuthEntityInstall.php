@@ -52,4 +52,14 @@ class OAuthEntityInstall
             }
         }
     }
+
+    public static function update_2(): void
+    {
+        global $ilDB;
+        $table = OAuthEntity::TABLE_NAME;
+        if (!$ilDB->tableColumnExists($table, 'user_id')) {
+            $ilDB->addTableColumn($table, 'user_id', ['type' => 'integer', 'notnull' => false, 'length' => '4', "default" => 0]);
+        }
+
+    }
 }

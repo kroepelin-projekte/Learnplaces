@@ -69,6 +69,15 @@ class OAuthEntity extends ActiveRecord
      * @con_is_notnull true
      */
     protected ?string $expire = null;
+    /**
+     *
+     * @con_has_field  true
+     * @con_fieldtype  integer
+     * @con_length     4
+     * @con_is_notnull false
+     * @cron_default = 0
+     */
+    protected ?int $user_id = 0;
 
     public function getId(): ?int
     {
@@ -133,6 +142,15 @@ class OAuthEntity extends ActiveRecord
     public function setExpire(?string $expire): OAuthEntity
     {
         $this->expire = $expire;
+        return $this;
+    }
+    public function getUserId(): ?int
+    {
+        return $this->user_id;
+    }
+    public function setUserId(?int $user_id): OAuthEntity
+    {
+        $this->user_id = $user_id;
         return $this;
     }
 }
