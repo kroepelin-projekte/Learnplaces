@@ -32,6 +32,7 @@ class ConfigController implements constConfig
         switch ($cmd) {
             case self::CMD_SHOW_API_SETTINGS:
             case self::CMD_SAVE_API_SETTINGS:
+            case self::CMD_REFRESH_SECRET:
             case "configure":
                 $this->activateSubTab(self::TAB_SUB_ID_API_SETTINGS);
                 $controller = new APIController($this->plugin, $this->DIC);

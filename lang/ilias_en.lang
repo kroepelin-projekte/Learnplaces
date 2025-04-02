@@ -98,7 +98,8 @@ lang_tab_sub_permission_settings#:#Role Permissions
 lang_input_text_base_url#:#Base URL of the Website
 lang_input_text_base_url_byline#:#Please enter the base URL where the ILIAS instance and the associated app are accessible. Enter without https:// or www at the beginning.
 lang_input_text_cookie_expire#:#Automatic Logout After Hours
-lang_input_text_cookie_expire_byline#:#Specify after how many hours the cookie should expire. Once the cookie expires, the user must log in again with a username and password in the app. Enter the time in whole hours.
+lang_input_text_cookie_expire_byline#:#After how many hours of inactivity should a forced logout occur?
+
 lang_settings#:#Settings
 lang_error_required_field#:#Please fill out all fields
 lang_success_settings#:#The settings have been successfully saved
@@ -113,3 +114,8 @@ lang_visitor_table_login#:#ILIAS Login
 lang_visitor_table_vistited_at#:#Visited At
 lang_input_text_secret#:#App Secret
 lang_input_text_secret_byline#:#Save a secret
+
+lang_secret_info#:#It is recommended to regularly generate a new secret. This can be done using the button below. After regeneration, all users will be logged out. The secret is required for secure communication between ILIAS and the app.
+lang_secret_button#:#Renew secret
+lang_secret_success#:#The secret has been renewed
+lang_security#:#Security

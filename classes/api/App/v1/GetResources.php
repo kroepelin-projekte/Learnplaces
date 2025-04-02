@@ -28,6 +28,6 @@ class GetResources
             $src = $base_url . strstr($src, '/deliver.php', false);
             Response::send(200, null, ['src' => $src]);*/
         }
-        Response::send(400, 'RESSOURCE_NOT_FOUND', []);
+        Response::send(401, 'RESSOURCE_NOT_FOUND', []);
     }
 }

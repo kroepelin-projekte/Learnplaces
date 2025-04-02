@@ -22,19 +22,19 @@ class Authenticator
     {
         $request_header = getallheaders();
         if (!isset($request_header['Authorization'])) {
-            Response::send(400, null, ['success' => false]);
+            Response::send(401, null, ['success' => false]);
             return false;
         }
         $bearer_token = $request_header['Authorization'];
         if (!str_starts_with($bearer_token, 'Bearer ')) {
-            Response::send(400, null, ['success' => false]);
+            Response::send(401, null, ['success' => false]);
             return false;
         }
         $http_handler = new HTTPHandler();
         $http_handler->setAccessToken(substr($bearer_token, 7));
         $pkce_handler = new PKCEHandler($http_handler);
         if(!$pkce_handler->initAccessTokenAuth()){
-            Response::send(400, null, ['success' => false]);
+            Response::send(401, null, ['success' => false]);
         }
 
         return $this->checkRolePermission();
@@ -58,7 +58,7 @@ class Authenticator
                 return true;
             }
         }
-        Response::send(400, null, ['success' => false]);
+        Response::send(401, null, ['success' => false]);
         return false;
     }
 }

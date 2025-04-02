@@ -26,8 +26,12 @@ class APIModel implements constConfig
         }
         Settings::setCookieExpire($result['api']['cookie']);
         Settings::setClientURL($result['api']['client']);
-        Settings::setSecret($result['api']['secret']);
 
         return [true, $this->plugin->txt(self::LANG_SUCCESS_SETTINGS)];
+    }
+
+    public function refreshSecret()
+    {
+        Settings::setSecret(bin2hex(random_bytes(32)));
     }
 }

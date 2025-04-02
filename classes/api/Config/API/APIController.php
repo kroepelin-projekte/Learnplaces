@@ -33,13 +33,19 @@ class APIController implements constConfig
             case self::CMD_SAVE_API_SETTINGS:
                 $this->saveAPISettings();
                 break;
+            case self::CMD_REFRESH_SECRET:
+                $this->refreshSecret();
+                break;
         }
     }
 
     public function showAPISettings(): void
     {
         $panel = $this->DIC->ui()->factory()->panel()->standard('', $this->view->initForm());
-        $this->DIC->ui()->mainTemplate()->setContent($this->DIC->ui()->renderer()->render($panel));
+        $panel_secret = $this->DIC->ui()->factory()->panel()->standard(
+            $this->plugin->txt(self::LANG_SETTINGS), [$this->view->buildSecretInformation(), $this->view->buildRefreshButton()]
+        );
+        $this->DIC->ui()->mainTemplate()->setContent($this->DIC->ui()->renderer()->render([$panel, $panel_secret]));
     }
 
     /**
@@ -55,5 +61,12 @@ class APIController implements constConfig
             $this->DIC->ui()->maintemplate()->setOnScreenMessage('failure', $result[1]);
             $this->showAPISettings();
         }
+    }
+
+    public function refreshSecret(): void
+    {
+        $this->model->refreshSecret();
+        $this->DIC->ui()->mainTemplate()->setOnScreenMessage('success', $this->plugin->txt(self::LANG_SECRET_SUCCESS), true);
+        $this->DIC->ctrl()->redirectByClass(\ilLearnplacesConfigGUI::class, self::CMD_SHOW_API_SETTINGS);
     }
 }

@@ -15,7 +15,7 @@ class Token
     public function endpoint(array $params, array $request_body): void
     {
         if (!isset($request_body['state'], $request_body['code'], $request_body['code_verifier'])) {
-            Response::send(400, null, ['success' => false]);
+            Response::send(401, null, ['success' => false]);
         }
 
         $http_handler = new HTTPHandler();

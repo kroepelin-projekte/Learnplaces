@@ -97,7 +97,7 @@ lang_tab_api_settings#:#API Einstellungen
 lang_tab_sub_api_settings#:#API Einstellungen
 lang_tab_sub_permission_settings#:#Rollenberechtigungen
 lang_input_text_cookie_expire#:#Automatischer Logout nach Stunden
-lang_input_text_cookie_expire_byline#:#Geben Sie an, nach wie vielen Stunden der gesetzte Cookie ablaufen soll. Nach Ablauf des Cookies muss sich der Benutzer in der App erneut mit Benutzername und Passwort anmelden. Angabe in ganzen Stunden.
+lang_input_text_cookie_expire_byline#:#Nach wie vielen Stunden soll ein inaktivität soll ein Zwangslogout erfolgen?
 lang_settings#:#Einstellungen
 lang_error_required_field#:#Bitte Füllen Sie alle Felder aus
 lang_success_settings#:#Die Einstellungen wurden erfolgreich gespeichert
@@ -112,3 +112,8 @@ lang_visitor_table_login#:#ILIAS Login
 lang_visitor_table_vistited_at#:#Besucht am
 lang_input_text_secret#:#App Secret
 lang_input_text_secret_byline#:#Speichern Sie ein Secret
+
+lang_secret_info#:#Es wird empfohlen,regelmäßig einen neuen Secret zu generieren. Dies erfolgt mit dem Button unten. Nach der Neugenerierung werden alle User ausgeloggt. Das Secret ist für die sichere Kommunikation zwischen ILIAS und der App erforderlich.
+lang_secret_button#:#Secret erneuern
+lang_secret_success#:#Der Secret wurde erneuert
+lang_security#:#Sicherheit

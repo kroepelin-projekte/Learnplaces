@@ -11,6 +11,7 @@ use KPG\Learnplaces\persistence\dto\Learnplace;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 use ilObject;
 use ILIAS\Data\ReferenceId;
+use KPG\Learnplaces\persistence\entity\VisitJournal;
 
 class LearnplacesInfo
 {
@@ -26,24 +27,23 @@ class LearnplacesInfo
         try {
             $obj_learn_place = PluginContainer::resolve(LearnplaceRepository::class)->find($id);
         } catch (\Exception $e) {
-            Response::send(400, "LEARNPLACE_NOT_FOUND", []);
+            Response::send(401, "LEARNPLACE_NOT_FOUND", []);
         }
         foreach (\ilObjLearnplaces::_getAllReferences((int) $obj_learn_place->getObjectId()) as $ref_id) {
-            if(\ilObject::_isInTrash($ref_id)) {
-                Response::send(400, "LEARNPLACE_NOT_FOUND", []);
+            if (\ilObject::_isInTrash($ref_id)) {
+                Response::send(401, "LEARNPLACE_NOT_FOUND", []);
             }
             break;
         };
 
-
         if (!$obj_learn_place->getConfiguration()->isOnline() or $obj_learn_place->getConfiguration(
             )->getDefaultVisibility() === "NEVER") {
-            Response::send(400, "LEARNPLACE_NOT_FOUND", []);
+            Response::send(401, "LEARNPLACE_NOT_FOUND", []);
         }
         Response::send(200, null, $this->getResponseArray($obj_learn_place, $obj_learn_place->getConfiguration()));
     }
 
-    private function getBlockArray(Block $block, int $learn_place_id): array | false
+    private function getBlockArray(Block $block, int $learn_place_id): array|false
     {
         global $DIC;
 
@@ -101,10 +101,9 @@ class LearnplacesInfo
             foreach ($sub_blocks as $sub_block) {
                 $this->removing_block_ids[] = $sub_block->getId();
                 $array = $this->getBlockArray($sub_block, $learn_place_id);
-                if($array !== false) {
+                if ($array !== false) {
                     $sub_block_array[] = $array;
                 }
-
             }
 
             $block_array['sub_blocks'] = $sub_block_array;
@@ -131,9 +130,16 @@ class LearnplacesInfo
 
     private function getResponseArray(Learnplace $obj_learn_place, Configuration $learn_place_configuration): array
     {
+        global $DIC;
         $learn_place_location = $obj_learn_place->getLocation();
         $learn_place_blocks = $obj_learn_place->getBlocks();
         $obj_id = $obj_learn_place->getObjectId();
+        global $ilDB;
+        $result = $ilDB->query(
+            "SELECT * FROM ilias.xsrl_visit_journal WHERE fk_learnplace_id = " . $obj_learn_place->getID(
+            ) . " AND user_id = " . $DIC->user()->getId()
+        );
+
         $result = [
             "id" => $obj_learn_place->getId(),
             "object_id" => $obj_id,
@@ -149,12 +155,13 @@ class LearnplacesInfo
                 "longitude" => $learn_place_location->getLongitude(),
                 "elevation" => $learn_place_location->getElevation(),
                 "radius" => $learn_place_location->getRadius(),
-            ]
+            ],
+            "visited" => $result->rowCount() > 0,
         ];
         $block_array = [];
         foreach ($learn_place_blocks as $block) {
             $array = $this->getBlockArray($block, (int) $obj_learn_place->getId());
-            if($array !== false) {
+            if ($array !== false) {
                 $block_array[] = $array;
             }
         }

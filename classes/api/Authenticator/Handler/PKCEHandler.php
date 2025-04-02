@@ -22,12 +22,11 @@ class PKCEHandler
 
     public function initBeforeILIASAuth(): void
     {
-        global $DIC;
         if (!$this->http_handler->setRedirectUri()
             || !$this->http_handler->setCodeChallenge()
             || !$this->http_handler->setState()
         ) {
-            Response::send(400, 'BAD_REQUEST');
+            Response::send(401, null, ['success' => false]);
         }
         (new OAuthEntity())
             ->setState($this->http_handler->getState())
@@ -53,6 +52,7 @@ class PKCEHandler
         $redirect_uri = $record->getRedirectUri();
 
         if (time() > $record->getExpire()) {
+            $record->delete();
             $this->http_handler->redirectTarget($redirect_uri);
             exit;
         }
@@ -69,25 +69,26 @@ class PKCEHandler
     {
         $record = OAuthEntity::where(['state' => $this->http_handler->getState()])->first();
         if (!$record) {
-            Response::send(400, null, ['success' => false, 'access_token' => null]);
+            Response::send(401, null, ['success' => false, 'access_token' => null]);
         }
         if (time() > $record->getExpire()) {
             $record->delete();
-            Response::send(400, null, ['success' => false, 'access_token' => null]);
+            Response::send(401, null, ['success' => false, 'access_token' => null]);
         }
         if ($record->getCode() !== $this->http_handler->getCode()) {
             $record->delete();
-            Response::send(400, null, ['success' => false, 'access_token' => null]);
+            Response::send(401, null, ['success' => false, 'access_token' => null]);
         }
         $code_verifier_hash = $this->pkce_util->base64UrlEncode(
             $this->pkce_util->hash($this->http_handler->getCodeVerifier())
         );
         if (!$this->pkce_util->hash_equals($code_verifier_hash, $record->getCodeChallenge())) {
             $record->delete();
-            Response::send(400, null, ['success' => false, 'access_token' => null]);
+            Response::send(401, null, ['success' => false, 'access_token' => null]);
         }
         global $DIC;
         $DIC->user()->setId($record->getUserId());
+        $record->delete();
         header("Learnplaces_token: " . $this->pkce_util->createAccessToken());
     }
 
@@ -100,7 +101,12 @@ class PKCEHandler
         global $DIC;
         $DIC->user()->setId($user_id);
 
-        //ToDo Codes, die älter als 5 Minuten sind, müssen gelöscht werden
+        $record = OAuthEntity::get();
+        foreach($record as $r){
+            if(time() > $r->getExpire()){
+                $r->delete();
+            }
+        }
 
         header("Learnplaces_token: " . $this->pkce_util->createAccessToken());
 

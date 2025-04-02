@@ -35,13 +35,21 @@ class APIView implements constConfig
             $this->plugin->txt(self::LANG_INPUT_TEXT_CLIENT_URL),
             $this->plugin->txt(self::LANG_INPUT_TEXT_BASE_CLIENT_BYLINE)
         )->withValue(Settings::getClientURL())->withRequired(false);
-        $secret_input = $this->DIC->ui()->factory()->input()->field()->text(
-            $this->plugin->txt(self::LANG_INPUT_TEXT_SECRET),
-            $this->plugin->txt(self::LANG_INPUT_TEXT_SECRET_BYLINE) . ': ' . bin2hex(random_bytes(32))
-        )->withValue(Settings::getSecret())->withRequired(false);
         $sections = $this->DIC->ui()->factory()->input()->field()->section(
-            ['cookie' => $cookie_input, "client" => $client_input, "secret" => $secret_input], $this->plugin->txt(self::LANG_SETTINGS)
+            ['cookie' => $cookie_input, "client" => $client_input],
+            $this->plugin->txt(self::LANG_SETTINGS)
         );
         return $this->DIC->ui()->factory()->input()->container()->form()->standard($form_action, ['api' => $sections]);
+    }
+
+    public function buildSecretInformation(): UI\Component\Item\Item
+    {
+        return $this->DIC->ui()->factory()->item()->standard($this->plugin->txt(self::LANG_SECRET_INFO));
+    }
+    public function buildRefreshButton(): UI\Component\Button\Button {
+        $action = $this->DIC->ctrl()->getLinkTargetByClass(
+            \ilLearnplacesConfigGUI::class, self::CMD_REFRESH_SECRET
+        );
+        return $this->DIC->ui()->factory()->button()->standard($this->plugin->txt(self::LANG_SECRET_BUTTON), $action);
     }
 }
