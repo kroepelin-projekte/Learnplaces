@@ -23,6 +23,14 @@ class Token
         $code = $request_body['code'];
         $code_verifier = $request_body['code_verifier'];
 
+        $regex = '/^[a-zA-Z0-9]+$/';
+        if (!preg_match($regex, $state)
+            || !preg_match($regex, $code)
+            || !preg_match($regex, $code_verifier)
+        ) {
+            Response::send(400, null, ['success' => false, 'access_token' => null]);
+        }
+
         $record = OAuthEntity::where(['state' => $state])->first();
         if (!$record) {
             Response::send(400, null, ['success' => false, 'access_token' => null]);

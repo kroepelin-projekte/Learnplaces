@@ -25,9 +25,14 @@ class Auth
             Response::send(400, 'BAD_REQUEST', []);
         }
         $state = $query->retrieve('state', $string);
+        $code_challenge = $query->retrieve('code_challenge', $string);
         $redirect_uri = $query->retrieve('redirect_uri', $string);
         $redirect_uri = $this->urlsafe_base64_decode($redirect_uri);
-        $code_challenge = $query->retrieve('code_challenge', $string);
+        $redirect_uri = $safe_url = htmlspecialchars($redirect_uri, ENT_QUOTES, 'UTF-8');
+
+        if (!filter_var($redirect_uri, FILTER_VALIDATE_URL)) {
+            Response::send(400, 'BAD_REQUEST', []);
+        }
 
         $client_url = Settings::getClientURL();
 
