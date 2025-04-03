@@ -27,18 +27,18 @@ class LearnplacesInfo
         try {
             $obj_learn_place = PluginContainer::resolve(LearnplaceRepository::class)->find($id);
         } catch (\Exception $e) {
-            Response::send(401, "LEARNPLACE_NOT_FOUND", []);
+            Response::send(400, "LEARNPLACE_NOT_FOUND", []);
         }
         foreach (\ilObjLearnplaces::_getAllReferences((int) $obj_learn_place->getObjectId()) as $ref_id) {
             if (\ilObject::_isInTrash($ref_id)) {
-                Response::send(401, "LEARNPLACE_NOT_FOUND", []);
+                Response::send(400, "LEARNPLACE_NOT_FOUND", []);
             }
             break;
         };
 
         if (!$obj_learn_place->getConfiguration()->isOnline() or $obj_learn_place->getConfiguration(
             )->getDefaultVisibility() === "NEVER") {
-            Response::send(401, "LEARNPLACE_NOT_FOUND", []);
+            Response::send(400, "LEARNPLACE_NOT_FOUND", []);
         }
         Response::send(200, null, $this->getResponseArray($obj_learn_place, $obj_learn_place->getConfiguration()));
     }
