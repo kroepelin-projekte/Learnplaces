@@ -31,7 +31,7 @@ class VerifyQRCode
 
         global $ilDB;
         $result = $ilDB->query(
-            "SELECT * FROM ilias.xsrl_visit_journal WHERE fk_learnplace_id = " . $obj_learn_place->getID(
+            "SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $obj_learn_place->getID(
             ) . " AND user_id = " . $DIC->user()->getId()
         );
         if($result->rowCount() == 0) {
