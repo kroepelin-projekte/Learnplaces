@@ -18,7 +18,7 @@ class Learnplaces
     public function endpoint(array $params, array $request_body): void
     {
         if(!is_numeric($params['container_ref_id'])) {
-            Response::send(400, null, ['error' => 'INVALID_CONTAINER_REF_ID']);
+            Response::send(400, null, []);
         }
         $container_ref_id = $params['container_ref_id'];
         $learn_places_ref_id = $this->getContainerLearnPlacesObjectID($container_ref_id);
@@ -47,8 +47,7 @@ class Learnplaces
                 )->getDefaultVisibility() === "NEVER") {
                 continue;
             }
-            //Wieder entfernen
-            $DIC->user()->setId(6);
+
             $user_id = $DIC->user()->getId();
             if (!$DIC->rbac()->system()->checkAccessOfUser($user_id, 'read', $ref_id)) {
                 continue;

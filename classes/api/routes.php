@@ -1,8 +1,7 @@
 <?php
-$this->add('/learnplaceapp/v1/containers', 'KPG\Learnplaces\api\App\v1', 'Containers@endpoint', 'GET');
+$this->add('/learnplaceapp/v1/containers', 'KPG\Learnplaces\api\App\v1', 'Containers@endpoint', 'GET', true);
 
-# Name geändert von learnplaces zu containers da sonst der Request learnplaces und learnplacesInfo von der Route nicht unterscheiden kann
-$this->add('/learnplaceapp/v1/containers/:container_ref_id', 'KPG\Learnplaces\api\App\v1', 'Learnplaces@endpoint', 'GET');
+$this->add('/learnplaceapp/v1/containers/:container_ref_id', 'KPG\Learnplaces\api\App\v1', 'Learnplaces@endpoint', 'GET', true);
 
 $this->add('/learnplaceapp/v1/learnplaces/:id', 'KPG\Learnplaces\api\App\v1', 'LearnplacesInfo@endpoint', 'GET', true);
 $this->add('/learnplaceapp/v1/learnplaces/:id/verify/:token', 'KPG\Learnplaces\api\App\v1', 'VerifyQRCode@endpoint', 'POST', true);

@@ -17,8 +17,6 @@ class VerifyQRCode
      */
     public function endpoint(array $params, array $request_body): void
     {
-
-
         $obj_learn_place = PluginContainer::resolve(LearnplaceRepository::class)->find((int) $params['id']);
         $client_token = htmlspecialchars($params['token']);
         $qr_code_util = new QrCode();
@@ -39,7 +37,6 @@ class VerifyQRCode
         if($result->rowCount() == 0) {
             Response::send(401, "QR_CODE_USER_WARS_HERE", ["valid" => true]);
         }
-
 
         $ar_visit = new VisitJournal();
         $ar_visit->setUserId($user_id)->setFkLearnplaceId($learn_place_id)->setTime(time())->create();

@@ -25,9 +25,6 @@ class Containers
                 continue;
             }
 
-            # Wieder entfernen
-            $DIC->user()->setId(6);
-
             if (!$DIC->rbac()->system()->checkAccessOfUser(
                 $DIC->user()->getId(), 'read', $ilias_object_learn_place->getRefId()
             )) {
@@ -43,16 +40,16 @@ class Containers
                 continue;
             }
 
-
             $container_title = $container_information['title'];
+            $container_ref_id = $container_information['ref_id'];
 
-            if (isset($all_containers[$container_title])) {
-                $all_containers[$container_title]['lernplaces_numbers']++;
+            if (isset($all_containers[$container_ref_id])) {
+                $all_containers[$container_ref_id]['lernplaces_numbers']++;
             } else {
-                $all_containers[$container_title] = [
+                $all_containers[$container_ref_id] = [
                     "title" => $container_title,
                     "lernplaces_numbers" => 1,
-                    "ref_id" => $container_information['ref_id']
+                    "ref_id" => $container_ref_id
                 ];
             }
         }
