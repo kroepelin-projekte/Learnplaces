@@ -33,6 +33,7 @@ try {
     $request->route();
 
 } catch (Exception $e) {
+    Response::send(500, 'SERVER_ERROR', ['error' => $e->getMessage()]);
     echo $e->getMessage();
     Response::serverError();
 }
