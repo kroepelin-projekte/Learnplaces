@@ -34,8 +34,9 @@ class VerifyQRCode
             "SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $obj_learn_place->getID(
             ) . " AND user_id = " . $DIC->user()->getId()
         );
-        if($result->rowCount() == 0) {
-            Response::send(401, "QR_CODE_USER_WARS_HERE", ["valid" => true]);
+
+        if($result->rowCount() != 0) {
+            Response::send(200, "QR_CODE_USER_WAS_HERE", ["valid" => true]);
         }
 
         $ar_visit = new VisitJournal();
