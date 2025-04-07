@@ -11,7 +11,6 @@ class Containers
 {
     public function endpoint(array $params, array $request_body): void
     {
-
         global $DIC;
 
         $all_containers = [];

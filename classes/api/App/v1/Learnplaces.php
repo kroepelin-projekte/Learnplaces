@@ -18,7 +18,7 @@ class Learnplaces
     public function endpoint(array $params, array $request_body): void
     {
         if(!is_numeric($params['container_ref_id'])) {
-            Response::send(400);
+            Response::send(400, null, ['error' => 'INVALID_CONTAINER_REF_ID']);
         }
         $container_ref_id = $params['container_ref_id'];
         $learn_places_ref_id = $this->getContainerLearnPlacesObjectID($container_ref_id);
