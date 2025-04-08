@@ -316,6 +316,8 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
      */
     public static function _goto(array $a_target): void
     {
+        global $DIC;
+
         if (!isset($a_target[0])) {
             return;
         }
@@ -323,10 +325,12 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         try {
             [$cmd, $state] = explode('_', $a_target[0]);
         } catch (Exception $ex) {
+            $DIC->ctrl()->setParameterByClass(xsrlContentGUI::class, 'ref_id', $a_target[0]);
+            $DIC->ctrl()->redirectByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlContentGUI::class], 'index');
+            $DIC->ctrl()->clearParametersByClass(xsrlContentGUI::class);
             return;
         }
 
-        global $DIC;
         $DIC->ctrl()->setParameterByClass(xsrlAuthGUI::class, 'state', $state);
         $DIC->ctrl()->redirectByClass([ilUIPluginRouterGUI::class, xsrlAuthGUI::class], xsrlAuthGUI::CMD_AUTH);
         $DIC->ctrl()->clearParametersByClass(xsrlAuthGUI::class);
