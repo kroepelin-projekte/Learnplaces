@@ -221,9 +221,6 @@ class AccordionBlockRepositoryImpl implements AccordionBlockRepository
 
     private function storeBlockRelationsAndSequence(int $accordionId, array $blocks)
     {
-        if(empty($blocks)) {
-            return;
-        }
         try {
 
             /**
