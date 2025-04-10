@@ -46,7 +46,7 @@ class Request
 
                 if($route['auth_mode']) {
                     if(!(new Authenticator())->auth()) {
-                        Response::send(401, null, ['success' => false]);
+                        Response::send(401, DEVMODE ? 'access denied' : '', ['success' => false]);
                     }
                 }
                 $params = [];

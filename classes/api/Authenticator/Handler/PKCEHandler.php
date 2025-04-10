@@ -26,7 +26,7 @@ class PKCEHandler
             || !$this->http_handler->setCodeChallenge()
             || !$this->http_handler->setState()
         ) {
-            Response::send(401, null, ['success' => false]);
+            Response::send(401, DEVMODE ? 'missing http_handler values' : '', ['success' => false]);
         }
         (new OAuthEntity())
             ->setState($this->http_handler->getState())
