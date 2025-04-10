@@ -46,10 +46,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
 RewriteRule "^/api/*" "/Customizing/plugins/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
-
+SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
 RewriteCond %{HTTP:Authorization} ^(.)
 RewriteRule . - [E=HTTP_AUTHORIZATION:%1]
-
 ```
 
 **Clone Project**
