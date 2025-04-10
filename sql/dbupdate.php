@@ -132,5 +132,17 @@ KPG\Learnplaces\api\Database\OAuthEntityInstall::install();
 <?php
 KPG\Learnplaces\api\Database\OAuthEntityInstall::update_2();
 ?>
+<#7>
+<?php
+global $ilDB;
+if (!$ilDB->tableColumnExists('xsrl_configuration', 'tags')) {
+    $ilDB->addTableColumn('xsrl_configuration', 'tags', array(
+        'type' => 'text',
+        'notnull' => false,
+        'length' => 1000,
+        'default' => null
+    ));
+}
+?>
 
 

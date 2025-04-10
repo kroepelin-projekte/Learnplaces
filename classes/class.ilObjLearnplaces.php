@@ -103,7 +103,6 @@ final class ilObjLearnplaces extends ilObjectPlugin
         $learnplaceService = PluginContainer::resolve(LearnplaceService::class);
         $learnplace = $learnplaceService->findByObjectId(intval($this->getId()));
         $learnplaceService->delete($learnplace->getId());
-        // TODO: Delete files on filesystem
     }
 
     /**

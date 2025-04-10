@@ -65,6 +65,15 @@ class Configuration extends ActiveRecord
      */
     protected $fk_visibility_default = null;
 
+    /**
+     * @var string|null
+     *
+     * @con_has_field  true
+     * @con_is_notnull false
+     * @con_fieldtype  text
+     * @con_length     1000
+     */
+    protected $tags = null;
 
     /**
      * @return int
@@ -149,6 +158,25 @@ class Configuration extends ActiveRecord
     public function setMapZoomLevel(int $map_zoom_level): Configuration
     {
         $this->map_zoom_level = $map_zoom_level;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTags(): ?string
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param string|null $tags
+     * @return $this
+     */
+    public function setTags(?string $tags): Configuration
+    {
+        $this->tags = $tags;
 
         return $this;
     }

@@ -37,6 +37,7 @@ final class SettingEditFormView extends ilPropertyFormGUI
     public const POST_LOCATION_RADIUS = 'post_location_radius';
     public const POST_TITLE = 'post_title';
     public const POST_DESCRIPTION = 'post_description';
+    public const POST_TAG = 'post_tag';
 
     private static $validVisibilities = [
         Visibility::ALWAYS,
@@ -113,6 +114,15 @@ final class SettingEditFormView extends ilPropertyFormGUI
         $radioGroup->setRequired(true);
         $this->addItem($radioGroup);
 
+        //create tags header
+        $tagSectionHeader = new ilFormSectionHeaderGUI();
+        $tagSectionHeader->setTitle('Suchwörter');
+        $this->addItem($tagSectionHeader);
+
+        $tags = new ilTextInputGUI('Suchwörter', self::POST_TAG);
+        $tags->setInfo('Kommasepariert eingeben');
+        $this->addItem($tags);
+
         //location settings
         $locationSectionHeader = new ilFormSectionHeaderGUI();
         $locationSectionHeader->setTitle($this->plugin->txt('setting_location'));
@@ -167,6 +177,7 @@ final class SettingEditFormView extends ilPropertyFormGUI
         $this->configuration->setElevation(0);
         $this->configuration->setTitle($this->getInput(self::POST_TITLE));
         $this->configuration->setDescription($this->getInput(self::POST_DESCRIPTION));
+        $this->configuration->setTags(str_replace(' ', '', $this->getInput(self::POST_TAG)));
         return $this->configuration;
     }
 
@@ -188,6 +199,7 @@ final class SettingEditFormView extends ilPropertyFormGUI
             self::POST_LOCATION_RADIUS      => $this->configuration->getRadius(),
             self::POST_TITLE                => $this->configuration->getTitle(),
             self::POST_DESCRIPTION          => $this->configuration->getDescription(),
+            self::POST_TAG                  => $this->configuration->getTags(),
         ];
 
         $this->setValuesByArray($values);

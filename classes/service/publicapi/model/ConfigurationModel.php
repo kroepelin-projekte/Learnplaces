@@ -35,6 +35,11 @@ final class ConfigurationModel
     private $mapZoomLevel = 0;
 
     /**
+     * @var null|string $tags
+     */
+    private $tags;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -121,4 +126,22 @@ final class ConfigurationModel
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getTags(): ?string
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param string|null $tags
+     * @return $this
+     */
+    public function setTags(?string $tags): ConfigurationModel
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
 }

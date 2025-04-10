@@ -30,6 +30,7 @@ use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
  *
  * @package KPG\Learnplaces\gui\settings
  *
+ *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
 final class xsrlSettingGUI
@@ -156,7 +157,8 @@ final class xsrlSettingGUI
             ->setDefaultVisibility($config->getDefaultVisibility())
             ->setTitle(ilObject::_lookupTitle($objectId))
             ->setDescription(ilObject::_lookupDescription($objectId))
-            ->setMapZoom($config->getMapZoomLevel());
+            ->setMapZoom($config->getMapZoomLevel())
+            ->setTags($config->getTags());
 
         $view = new SettingEditFormView($model, $this->plugin, $this->controlFlow);
         $view->fillForm();
@@ -184,7 +186,8 @@ final class xsrlSettingGUI
             $config
                 ->setOnline($settings->isOnline())
                 ->setDefaultVisibility($settings->getDefaultVisibility())
-                ->setMapZoomLevel($settings->getMapZoom());
+                ->setMapZoomLevel($settings->getMapZoom())
+                ->setTags($settings->getTags());
             $this->configService->store($config);
 
             $location

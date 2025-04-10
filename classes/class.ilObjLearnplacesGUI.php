@@ -32,12 +32,13 @@ use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlAccordionBlockGUI
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlSettingGUI
  * @ilCtrl_Calls      ilObjLearnplacesGUI: VisitorsGUI
+ * @ilCtrl_Calls      ilObjLearnplacesGUI: ilObjectMetaDataGUI
  */
 final class ilObjLearnplacesGUI extends ilObject2GUI
 {
     public const DEFAULT_CMD = CommonControllerAction::CMD_INDEX;
-
     public const TAB_ID_PERMISSION = 'id_permissions';
+
     /**
      * @var MapBlockService $mapBlockService
      */
@@ -185,8 +186,8 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
                 if ($template instanceof ilGlobalPageTemplate) {
                     $template->printToStdout();
                 } else {
-                    $template->getStandardTemplate();
-                    $template->show();
+                    //$template->getStandardTemplate();
+                    //$template->show();
                 }
             case strtolower(VisitorsGUI::class):
                 $this->renderTabs();
@@ -219,13 +220,13 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
     protected function setSubtabs(): void
     {
         if ($this->accessGuard->hasWritePermission()) {
-            $this->learnplaceTabs->addSubTab(xsrlContentGUI::TAB_ID, $this->lng->txt(xsrlContentGUI::TAB_ID), $this->ctrl->getLinkTargetByClass(xsrlContentGUI::class, self::DEFAULT_CMD));
-            $this->learnplaceTabs->addSubTab('sequence', $this->plugin->txt('content_change_sequence'), $this->ctrl->getLinkTargetByClass(xsrlContentGUI::class, xsrlContentGUI::CMD_SEQUENCE_VIEW));
+            $this->learnplaceTabs->addSubTab(xsrlContentGUI::TAB_ID, $this->lng->txt(xsrlContentGUI::TAB_ID), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlContentGUI::class], self::DEFAULT_CMD));
+            $this->learnplaceTabs->addSubTab('sequence', $this->plugin->txt('content_change_sequence'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlContentGUI::class], xsrlContentGUI::CMD_SEQUENCE_VIEW));
 
             if ($this->accessGuard->hasWritePermission() && !$this->hasMap()) {
-                $this->learnplaceTabs->addSubTab(xsrlMapBlockGUI::TAB_ID, $this->plugin->txt('tabs_map'), $this->ctrl->getLinkTargetByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_ADD));
+                $this->learnplaceTabs->addSubTab(xsrlMapBlockGUI::TAB_ID, $this->plugin->txt('tabs_map'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlMapBlockGUI::class], CommonControllerAction::CMD_ADD));
             } elseif ($this->hasMap()) {
-                $this->learnplaceTabs->addSubTab(xsrlMapBlockGUI::TAB_ID, $this->plugin->txt('tabs_map'), $this->ctrl->getLinkTargetByClass(xsrlMapBlockGUI::class, self::DEFAULT_CMD));
+                $this->learnplaceTabs->addSubTab(xsrlMapBlockGUI::TAB_ID, $this->plugin->txt('tabs_map'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlMapBlockGUI::class], self::DEFAULT_CMD));
             }
         }
     }
@@ -281,10 +282,10 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
      */
     private function renderTabs(): void
     {
-        $this->learnplaceTabs->addTab(xsrlContentGUI::TAB_ID, $this->plugin->txt('tabs_content'), $this->ctrl->getLinkTargetByClass(xsrlContentGUI::class, self::DEFAULT_CMD));
+        $this->learnplaceTabs->addTab(xsrlContentGUI::TAB_ID, $this->plugin->txt('tabs_content'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlContentGUI::class], self::DEFAULT_CMD));
         if ($this->accessGuard->hasWritePermission()) {
-            $this->learnplaceTabs->addTab(xsrlSettingGUI::TAB_ID, $this->plugin->txt('tabs_settings'), $this->ctrl->getLinkTargetByClass(xsrlSettingGUI::class, CommonControllerAction::CMD_EDIT));
-            $this->learnplaceTabs->addTab(VisitorsGUI::TAB_ID, $this->plugin->txt('tabs_visitor'), $this->ctrl->getLinkTargetByClass(VisitorsGUI::class, CommonControllerAction::CMD_INDEX));
+            $this->learnplaceTabs->addTab(xsrlSettingGUI::TAB_ID, $this->plugin->txt('tabs_settings'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlSettingGUI::class], CommonControllerAction::CMD_EDIT));
+            $this->learnplaceTabs->addTab(VisitorsGUI::TAB_ID, $this->plugin->txt('tabs_visitor'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, VisitorsGUI::class], CommonControllerAction::CMD_INDEX));
         }
         parent::setTabs();
 

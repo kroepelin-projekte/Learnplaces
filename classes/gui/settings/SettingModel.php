@@ -51,6 +51,11 @@ final class SettingModel
     private $mapZoom = 0;
 
     /**
+     * @var null|string $tags
+     */
+    private $tags = null;
+
+    /**
      * @return string
      */
     public function getTitle(): string
@@ -226,6 +231,25 @@ final class SettingModel
     public function setMapZoom(int $mapZoom): SettingModel
     {
         $this->mapZoom = $mapZoom;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTags(): ?string
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param string|null $tags
+     * @return $this
+     */
+    public function setTags(?string $tags): SettingModel
+    {
+        $this->tags = $tags;
 
         return $this;
     }
