@@ -68,8 +68,6 @@ class LearnplacesResourceStorageMigrationVideos implements Migration
      */
     public function step(Environment $environment): void
     {
-        $videos = \KPG\Learnplaces\persistence\entity\VideoBlock::get();
-
         $db = $this->helper->getDatabase();
         $rec = $db->query("SELECT pk_id, path FROM xsrl_video_block WHERE resource_id IS NULL LIMIT 1");
         $res = $db->fetchObject($rec);
@@ -106,6 +104,12 @@ class LearnplacesResourceStorageMigrationVideos implements Migration
     public function getRemainingAmountOfSteps(): int
     {
         $db = $this->helper->getDatabase();
+
+        if (!$db->tableColumnExists('xsrl_video_block', 'resource_id')) {
+            error_log("\n--> Update the Learnplaces plugin first to see the correct remaining migration steps\n");
+            return 0;
+        }
+
         $rec = $db->query("SELECT COUNT(*) AS amount FROM xsrl_video_block WHERE resource_id IS NULL");
         $res = $this->helper->getDatabase()->fetchObject($rec);
         return (int) $res->amount;

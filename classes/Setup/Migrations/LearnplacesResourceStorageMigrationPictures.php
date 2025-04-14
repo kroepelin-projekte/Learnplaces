@@ -68,8 +68,6 @@ class LearnplacesResourceStorageMigrationPictures implements Migration
      */
     public function step(Environment $environment): void
     {
-        $pictures = \KPG\Learnplaces\persistence\entity\Picture::get();
-
         $db = $this->helper->getDatabase();
         $rec = $db->query("SELECT pk_id, original_path FROM xsrl_picture WHERE resource_id IS NULL LIMIT 1");
         $res = $db->fetchObject($rec);
@@ -106,6 +104,12 @@ class LearnplacesResourceStorageMigrationPictures implements Migration
     public function getRemainingAmountOfSteps(): int
     {
         $db = $this->helper->getDatabase();
+
+        if (!$db->tableColumnExists('xsrl_picture', 'resource_id')) {
+            error_log("\n--> Update the Learnplaces plugin first to see the correct remaining migration steps\n");
+            return 0;
+        }
+
         $rec = $db->query("SELECT COUNT(*) AS amount FROM xsrl_picture WHERE resource_id IS NULL");
         $res = $this->helper->getDatabase()->fetchObject($rec);
         return (int) $res->amount;
