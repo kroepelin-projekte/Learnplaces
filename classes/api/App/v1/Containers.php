@@ -34,22 +34,29 @@ class Containers
             if (\ilObject::_isInTrash($ref_id)) {
                 continue;
             }
-
-            if (!$obj_learn_place->getConfiguration()->isOnline() ||
-                $obj_learn_place->getConfiguration()->getDefaultVisibility() === "NEVER") {
+            $learn_place_config = $obj_learn_place->getConfiguration();
+            if (!$learn_place_config->isOnline() ||
+                $learn_place_config->getDefaultVisibility() === "NEVER") {
                 continue;
             }
+            $string_tags = trim($learn_place_config->getTags());
+            $string_tags = trim($string_tags, ',');
+
+            $array_tags = explode(",", $string_tags);
+
 
             $container_title = $container_information['title'];
             $container_ref_id = $container_information['ref_id'];
 
             if (isset($all_containers[$container_ref_id])) {
                 $all_containers[$container_ref_id]['lernplaces_numbers']++;
+                $all_containers[$container_ref_id]['tags'] = array_unique(array_merge($all_containers[$container_ref_id]['tags'], $array_tags));
             } else {
                 $all_containers[$container_ref_id] = [
                     "title" => $container_title,
                     "lernplaces_numbers" => 1,
-                    "ref_id" => $container_ref_id
+                    "ref_id" => $container_ref_id,
+                    "tags" => $array_tags
                 ];
             }
         }

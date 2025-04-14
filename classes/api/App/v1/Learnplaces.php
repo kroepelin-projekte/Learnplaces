@@ -23,12 +23,13 @@ class Learnplaces
         $container_ref_id = $params['container_ref_id'];
         $learn_places_ref_id = $this->getContainerLearnPlacesObjectID($container_ref_id);
         if (empty($learn_places_ref_id)) {
-            Response::send(200, null, []);
+            Response::send(204, null, []);
             return;
         }
 
         global $ilDB;
         global $DIC;
+
         $all_learn_places = [];
         $all_learn_places['container_title'] =  ilObject::_lookupTitle(ilObject::_lookupObjectId($container_ref_id));
         $all_learn_places['learn_places'] = [];
@@ -43,7 +44,8 @@ class Learnplaces
             if (\ilObject::_isInTrash($ref_id)) {
                 continue;
             }
-            if (!$obj_learn_place->getConfiguration()->isOnline() or $obj_learn_place->getConfiguration(
+            $learn_place_config = $obj_learn_place->getConfiguration();
+            if (!$learn_place_config->isOnline() or $obj_learn_place->getConfiguration(
                 )->getDefaultVisibility() === "NEVER") {
                 continue;
             }
@@ -64,6 +66,10 @@ class Learnplaces
                 "SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $obj_learn_place->getID(
                 ) . " AND user_id = " . $DIC->user()->getId()
             );
+            $string_tags = trim($learn_place_config->getTags());
+            $string_tags = trim($string_tags, ',');
+
+            $array_tags = explode(",", $string_tags);
 
             $all_learn_places['learn_places'][] = [
                 "id" => $obj_learn_place->getId(),
@@ -73,6 +79,7 @@ class Learnplaces
                 "tile_image" => $ilias_object_learn_place->getObjectProperties()->getPropertyTileImage()->getTileImage(
                 )->getRid(),
                 "visited" => $visit_result->rowCount() > 0,
+                "tags" => $array_tags
             ];
 
         }
@@ -108,6 +115,7 @@ class Learnplaces
     public function getContainerLearnPlacesObjectID(int $container_ref_id) : array
     {
         global $DIC;
+        $result = [];
         $container_childs_ref_id = $DIC->repositoryTree()->getSubTreeIds((int) $container_ref_id);
         foreach ($container_childs_ref_id as $ref_id) {
             $obj_id = ilObject::_lookupObjectId($ref_id);
