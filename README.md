@@ -22,7 +22,7 @@ such as formatted text, images, videos, ILIAS links or accordions.
 | v3.X           | 5.4 - 6        | 7.0 - 7.4    |
 | v4.X           | 6 - 7          | 7.2 - 7.4    |
 | v5.X           | 8 - 9          | 7.4 - 8.2    |
-| v5.X           | 10             | 8.2          |
+| v6.X           | 10             | 8.2          |
 
 
 ## Installation
@@ -36,7 +36,7 @@ mkdir -p public/Customizing/plugins/Repository/RepositoryObject
 cd public/Customizing/plugins/Repository/RepositoryObject
 ```
 **Apache Config**
-```bash
+```apacheconf
 <Directory /var/www/html>
   AllowOverride All
   Require all granted
