@@ -144,5 +144,3 @@ if (!$ilDB->tableColumnExists('xsrl_configuration', 'tags')) {
     ));
 }
 ?>
-
-

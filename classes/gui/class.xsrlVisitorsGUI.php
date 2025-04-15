@@ -9,7 +9,7 @@ use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\gui\VisitorsTable;
 use KPG\Learnplaces\container\PluginContainer;
 
-class VisitorsGUI
+class xsrlVisitorsGUI
 {
     public const TAB_ID = 'participant';
 

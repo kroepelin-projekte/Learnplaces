@@ -36,7 +36,7 @@ use xsrlSettingGUI;
 use xsrlVideoBlockGUI;
 
 use function ILIAS\UI\examples\Layout\Page\Standard\ui;
-use VisitorsGUI;
+use xsrlVisitorsGUI;
 
 /**
  * Class GUIProvider
@@ -74,8 +74,8 @@ final class GUIProvider implements ServiceProviderInterface
                 $c[AccessGuard::class]
             );
         };
-        $pimple[VisitorsGUI::class] = function ($c) {
-            return new VisitorsGUI(
+        $pimple[xsrlVisitorsGUI::class] = function ($c) {
+            return new xsrlVisitorsGUI(
                 $c->tabs(),
                 $c->ui()->mainTemplate(),
                 $c->ui(),

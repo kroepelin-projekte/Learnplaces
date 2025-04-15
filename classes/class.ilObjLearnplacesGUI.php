@@ -31,8 +31,7 @@ use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlVideoBlockGUI
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlAccordionBlockGUI
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlSettingGUI
- * @ilCtrl_Calls      ilObjLearnplacesGUI: VisitorsGUI
- * @ilCtrl_Calls      ilObjLearnplacesGUI: ilObjectMetaDataGUI
+ * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlVisitorsGUI
  */
 final class ilObjLearnplacesGUI extends ilObject2GUI
 {
@@ -118,6 +117,16 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         $template->setAlertProperties($properties);
 
         switch ($nextClass) {
+            case strtolower(ilInfoScreenGUI::class):
+                if (!$this->access->checkAccess('visible', "", $this->object->getRefId())) {
+                    throw new Exception('Permission denied');
+                }
+                $this->renderTabs();
+                $info = new ilInfoScreenGUI($this);
+                //$info->enablePrivateNotes();
+                $this->ctrl->forwardCommand($info);
+                $this->tpl->printToStdout();
+                break;
             case "":
             case strtolower(ilObjLearnplacesGUI::class):
                 parent::executeCommand();
@@ -181,18 +190,18 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
                 break;
             case strtolower(ilPermissionGUI::class):
                 $this->renderTabs();
-                $this->learnplaceTabs->activateTab(self::TAB_ID_PERMISSION);
                 $this->ctrl->forwardCommand(new ilPermissionGUI($this));
+                $this->learnplaceTabs->activateTab(self::TAB_ID_PERMISSION);
                 if ($template instanceof ilGlobalPageTemplate) {
                     $template->printToStdout();
                 } else {
                     //$template->getStandardTemplate();
                     //$template->show();
                 }
-            case strtolower(VisitorsGUI::class):
+            case strtolower(xsrlVisitorsGUI::class):
                 $this->renderTabs();
-                $this->learnplaceTabs->activateTab(VisitorsGUI::TAB_ID);
-                $this->ctrl->forwardCommand(PluginContainer::resolve(VisitorsGUI::class));
+                $this->learnplaceTabs->activateTab(xsrlVisitorsGUI::TAB_ID);
+                $this->ctrl->forwardCommand(PluginContainer::resolve(xsrlVisitorsGUI::class));
                 break;
             default:
                 $this->ctrl->redirectByClass(static::class, $this->getStandardCmd());
@@ -211,6 +220,14 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         }
 
         $this->ctrl->redirectByClass(ilRepositoryGUI::class, $this->getStandardCmd());
+    }
+
+    public function infoScreen(): void
+    {
+        $this->ctrl->redirectByClass(
+            "ilinfoscreengui",
+            "showSummary"
+        );
     }
 
     /**
@@ -276,6 +293,24 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         $this->ctrl->redirectByClass(xsrlContentGUI::class, self::DEFAULT_CMD);
     }
 
+    public function addInfoTab(): void
+    {
+        $ilAccess = $this->access;
+        $ilTabs = $this->learnplaceTabs;
+
+        // info screen
+        if ($ilAccess->checkAccess('visible', "", $this->object->getRefId())) {
+            $ilTabs->addTarget(
+                "info_short",
+                $this->ctrl->getLinkTargetByClass(
+                    "ilinfoscreengui",
+                    "showSummary"
+                ),
+                "showSummary"
+            );
+        }
+    }
+
     /**
      * @return void
      * @throws ilCtrlException
@@ -285,8 +320,11 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         $this->learnplaceTabs->addTab(xsrlContentGUI::TAB_ID, $this->plugin->txt('tabs_content'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlContentGUI::class], self::DEFAULT_CMD));
         if ($this->accessGuard->hasWritePermission()) {
             $this->learnplaceTabs->addTab(xsrlSettingGUI::TAB_ID, $this->plugin->txt('tabs_settings'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlSettingGUI::class], CommonControllerAction::CMD_EDIT));
-            $this->learnplaceTabs->addTab(VisitorsGUI::TAB_ID, $this->plugin->txt('tabs_visitor'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, VisitorsGUI::class], CommonControllerAction::CMD_INDEX));
+            $this->learnplaceTabs->addTab(xsrlVisitorsGUI::TAB_ID, $this->plugin->txt('tabs_visitor'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlVisitorsGUI::class], CommonControllerAction::CMD_INDEX));
         }
+
+        $this->addInfoTab();
+
         parent::setTabs();
 
         //add an empty tab to prevent ilias from hiding the entire tab bar if only one tab exists.
