@@ -39,11 +39,9 @@ class Containers
                 $learn_place_config->getDefaultVisibility() === "NEVER") {
                 continue;
             }
-            $string_tags = trim($learn_place_config->getTags());
-            $string_tags = trim($string_tags, ',');
 
-            $array_tags = explode(",", $string_tags);
-
+            $array_tags = explode(',', $learn_place_config->getTags());
+            $array_tags = array_map('trim', $array_tags);
 
             $container_title = $container_information['title'];
             $container_ref_id = $container_information['ref_id'];
