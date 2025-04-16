@@ -40,7 +40,8 @@ class Containers
                 continue;
             }
 
-            $array_tags = explode(',', $learn_place_config->getTags());
+            $array_tags = trim($learn_place_config->getTags(), ',');
+            $array_tags = explode(',', $array_tags);
             $array_tags = array_map('trim', $array_tags);
 
             $container_title = $container_information['title'];
@@ -48,7 +49,7 @@ class Containers
 
             if (isset($all_containers[$container_ref_id])) {
                 $all_containers[$container_ref_id]['lernplaces_numbers']++;
-                $all_containers[$container_ref_id]['tags'] = array_unique(array_merge($all_containers[$container_ref_id]['tags'], $array_tags));
+                $all_containers[$container_ref_id]['tags'] = array_values(array_unique(array_merge($all_containers[$container_ref_id]['tags'], $array_tags)));
             } else {
                 $all_containers[$container_ref_id] = [
                     "title" => $container_title,
