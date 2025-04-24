@@ -68,7 +68,7 @@ final class IliasLinkBlockPresentationView implements Renderable
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
-        $this->template = new ilTemplate('public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.ilias_link.html', true, true);
+        $this->template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.ilias_link.html', true, true);
     }
 
     /**
@@ -130,7 +130,7 @@ final class IliasLinkBlockPresentationView implements Renderable
      */
     private function wrapWithBlockTemplate(ilTemplate $blockTemplate): ilTemplate
     {
-        $outerTemplate = new ilTemplate('public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');

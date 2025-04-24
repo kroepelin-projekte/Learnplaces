@@ -5,7 +5,7 @@ use KPG\Learnplaces\persistence\entity\Visibility;
 use KPG\Learnplaces\service\filesystem\PathHelper;
 
 
-require_once('./Customizing/plugins/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
+require_once('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
 
 \KPG\Learnplaces\persistence\entity\AccordionBlock::installDB();
 \KPG\Learnplaces\persistence\entity\AccordionBlockMember::installDB();
@@ -56,12 +56,13 @@ $visibilityAfterVisitOtherPlace->create();
 ?>
 <#2>
 <?php
-require_once('./Customizing/plugins/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
+require_once('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
+
 \KPG\Learnplaces\persistence\entity\Configuration::updateDB(); //map_zoom_level field added
 ?>
 <#3>
 <?php
-require_once('./Customizing/plugins/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
+require_once('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
 
 function lowercaseFileExtension($filename)
 {

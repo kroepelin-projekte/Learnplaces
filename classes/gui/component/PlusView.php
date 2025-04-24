@@ -44,7 +44,7 @@ final class PlusView
      */
     public function getHTML(): string
     {
-        $template = new ilTemplate('public/Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/default/component/tpl.plus.html', true, true);
+        $template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/component/tpl.plus.html', true, true);
         $template->setVariable('LINK', $this->link);
         return $template->get();
     }
