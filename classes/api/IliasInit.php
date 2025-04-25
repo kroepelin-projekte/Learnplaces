@@ -1,11 +1,13 @@
 <?php
+
 namespace KPG\Learnplaces\api;
 
 use ilContext;
 use ilInitialisation;
 
-chdir("../../../../../../../../../");
-
+if (PHP_SAPI !== 'cli') {
+    chdir("../../../../../../../../../");
+}
 
 include_once "Services/Context/classes/class.ilContext.php";
 include_once "Services/Init/classes/class.ilInitialisation.php";
