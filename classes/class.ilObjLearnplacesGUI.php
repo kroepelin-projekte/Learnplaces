@@ -102,7 +102,7 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         $template = PluginContainer::resolve('tpl');
         $template->setTitle(ilObject::_lookupTitle($this->objectId));
         $template->setDescription(ilObject::_lookupDescription($this->objectId));
-        $template->setTitleIcon(/*ilObject::_getIcon($this->objectId)*/'Customizing/plugins/Repository/RepositoryObject/Learnplaces/templates/images/icon_xsrl.svg');
+        $template->setTitleIcon(/*ilObject::_getIcon($this->objectId)*/'Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/images/icon_xsrl.svg');
         if (!$this->getCreationMode()) {
             $this->setLocator();
         }

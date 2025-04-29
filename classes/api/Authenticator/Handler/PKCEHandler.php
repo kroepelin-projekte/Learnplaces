@@ -6,7 +6,6 @@ use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\api\Database\OAuthEntity;
 use KPG\Learnplaces\api\Authenticator\Handler\PKCEUtilHandler;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
-use Random\RandomException;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 
 class PKCEHandler
@@ -38,10 +37,7 @@ class PKCEHandler
         $this->http_handler->redirectTargetAuthGUI();
     }
 
-    /**
-     * @throws ResponseSendingException
-     * @throws RandomException
-     */
+
     public function initAfterILIASAuth(): void
     {
         $record = OAuthEntity::where(['state' => $this->http_handler->getState()])->first();

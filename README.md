@@ -32,8 +32,8 @@ such as formatted text, images, videos, ILIAS links or accordions.
 
 **Create directories**
 ```bash
-mkdir -p public/Customizing/plugins/Repository/RepositoryObject
-cd public/Customizing/plugins/Repository/RepositoryObject
+mkdir -p Customizing/global/plugins/Services/Repository/RepositoryObject
+cd Customizing/global/plugins/Services/Repository/RepositoryObject
 ```
 **Apache Config**
 ```apacheconf
@@ -45,7 +45,7 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule "^/api/*" "/Customizing/plugins/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
+RewriteRule "^/api/*" "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
 SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
 RewriteCond %{HTTP:Authorization} ^(.)
 RewriteRule . - [E=HTTP_AUTHORIZATION:%1]

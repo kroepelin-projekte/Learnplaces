@@ -37,7 +37,6 @@ class PKCEUtilHandler
     {
         global $DIC;
         $userPayload['sub'] = $DIC->user()->getId();
-        // ToDo, mach besser
         $secret = Settings::getSecret();
 
         $userPayload['iat'] = time();
