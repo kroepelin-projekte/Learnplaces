@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 use ILIAS\Filesystem\Exception\FileNotFoundException;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
-use League\Flysystem\FileExistsException;
-use League\Flysystem\FilesystemInterface;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\service\publicapi\block\ConfigurationService;
 use KPG\Learnplaces\service\publicapi\block\LearnplaceService;
@@ -105,7 +103,6 @@ final class ilObjLearnplaces extends ilObjectPlugin
         $learnplaceService = PluginContainer::resolve(LearnplaceService::class);
         $learnplace = $learnplaceService->findByObjectId(intval($this->getId()));
         $learnplaceService->delete($learnplace->getId());
-        // TODO: Delete files on filesystem
     }
 
     /**

@@ -23,6 +23,7 @@ use KPG\Learnplaces\service\publicapi\model\ILIASLinkBlockModel;
 use KPG\Learnplaces\util\DeleteItemModal;
 use xsrlIliasLinkBlockGUI;
 use xsrlPictureBlockGUI;
+use ILIAS\Data\ReferenceId;
 
 /**
  * Class IliasLinkBlockPresentationView
@@ -67,7 +68,7 @@ final class IliasLinkBlockPresentationView implements Renderable
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
-        $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.ilias_link.html', true, true);
+        $this->template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.ilias_link.html', true, true);
     }
 
     /**
@@ -81,8 +82,16 @@ final class IliasLinkBlockPresentationView implements Renderable
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
 
+        /** @var \ILIAS\StaticURL\Services $static_url */
+        $static_url = PluginContainer::resolve('url');
+
+        $url = $static_url->builder()->build(
+            ilObject::_lookupType(ilObject::_lookupObjectId($this->model->getRefId())),
+            new ReferenceId($this->model->getRefId()),
+        )->__toString();
+
         $iliasLink = $renderer->render(
-            $factory->link()->standard($title, ilLink::_getStaticLink($this->model->getRefId()))
+            $factory->link()->standard($title, $url)
         );
 
         $this->template->setVariable('CONTENT', $iliasLink);
@@ -121,7 +130,7 @@ final class IliasLinkBlockPresentationView implements Renderable
      */
     private function wrapWithBlockTemplate(ilTemplate $blockTemplate): ilTemplate
     {
-        $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');

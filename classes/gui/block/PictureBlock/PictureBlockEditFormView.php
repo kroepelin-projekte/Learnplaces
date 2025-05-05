@@ -61,8 +61,12 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
      */
     protected function initBlockSpecificForm(): Section
     {
-        $title = $this->field->text($this->plugin->txt('picture_block_enter_title'))->withMaxLength(256);
-        $description = $this->field->textarea($this->plugin->txt('picture_block_enter_description'))->withMaxLimit(2000);
+        $title = $this->field->text($this->plugin->txt('picture_block_enter_title'))
+            ->withValue($this->block->getTitle())
+            ->withMaxLength(256);
+        $description = $this->field->textarea($this->plugin->txt('picture_block_enter_description'))
+            ->withValue($this->block->getDescription())
+            ->withMaxLimit(2000);
 
         $fileUpload = $this->field->file(new ilLearnplacesUploadHandlerGUI(), $this->plugin->txt('picture_block_select_picture'))
             ->withAcceptedMimeTypes([MimeType::IMAGE__JPEG, MimeType::IMAGE__PNG])

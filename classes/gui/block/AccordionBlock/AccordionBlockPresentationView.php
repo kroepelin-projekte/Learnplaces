@@ -71,7 +71,7 @@ final class AccordionBlockPresentationView implements Renderable
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
         $this->contentView = $contentView;
-        $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.accordion.html', true, true);
+        $this->template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.accordion.html', true, true);
     }
 
     /**
@@ -122,7 +122,7 @@ final class AccordionBlockPresentationView implements Renderable
      */
     private function wrapWithBlockTemplate(ilTemplate $template): ilTemplate
     {
-        $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');

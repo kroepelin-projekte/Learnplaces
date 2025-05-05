@@ -54,7 +54,6 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
      */
     private $blockAccumulator;
 
-
     /**
      * LearnplaceRepositoryImpl constructor.
      *
@@ -109,14 +108,46 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
         }
     }
 
+    public function get(): array
+    {
+        $learnplaces = [];
+        try {
+            $learnplaceEntitys = \KPG\Learnplaces\persistence\entity\Learnplace::get();
+            foreach ($learnplaceEntitys as $learnplaceEntity) {
+                $learnplaces[] = $this->mapToDTO($learnplaceEntity);
+            }
+            return $learnplaces;
+        } catch (arException $ex) {
+            return [];
+        }
+    }
+
+    public function getWhere($where)
+    {
+        $learnplaces = [];
+        try {
+            global $ilDB;
+            foreach ($where as $row) {
+                $query = "SELECT pk_id FROM xsrl_learnplace WHERE fk_object_id IN ($row)";
+                $result = $ilDB->query($query);
+                $record = $ilDB->fetchAssoc($result);
+                $learnplaces[] = $this->mapToDTO(
+                    \KPG\Learnplaces\persistence\entity\Learnplace::findOrFail($record['pk_id'])
+                );
+            }
+            return $learnplaces;
+        } catch (arException $ex) {
+            return [];
+        }
+    }
+
     /**
      * @inheritdoc
      */
     public function findByObjectId(int $id): Learnplace
     {
-
         $learnplaceEntity = \KPG\Learnplaces\persistence\entity\Learnplace::where(['fk_object_id' => $id])->first();
-        if(is_null($learnplaceEntity)) {
+        if (is_null($learnplaceEntity)) {
             throw new EntityNotFoundException("Learnplace with the object id \"$id\" not found.");
         }
 
@@ -133,14 +164,13 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
             $learnplaceEntity->delete();
         } catch (arException $ex) {
             throw new EntityNotFoundException("Learnplace with id \"$id\" not found.", $ex);
-        } catch(ilDatabaseException $ex) {
+        } catch (ilDatabaseException $ex) {
             throw new ilDatabaseException("Unable to delete learnplace with id \"$id\"");
         }
     }
 
     private function mapToDTO(\KPG\Learnplaces\persistence\entity\Learnplace $learnplaceEntity): Learnplace
     {
-
         $learnplace = new Learnplace();
         $learnplace
             ->setId($learnplaceEntity->getPkId())
@@ -160,7 +190,6 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
 
     private function mapToEntity(Learnplace $learnplace): \KPG\Learnplaces\persistence\entity\Learnplace
     {
-
         /**
          * @var \KPG\Learnplaces\persistence\entity\Learnplace $activeRecord
          */
@@ -173,12 +202,11 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
         return $activeRecord;
     }
 
-
     /**
      * Stores all picture relations to the given learnplace.
      *
-     * @param int       $learnplaceId   The id of the leanplace which should be used to save the picture relations.
-     * @param Picture[] $pictures       An array of pictures which should be associated with the given leanplace id.
+     * @param int       $learnplaceId The id of the leanplace which should be used to save the picture relations.
+     * @param Picture[] $pictures     An array of pictures which should be associated with the given leanplace id.
      *
      * @return void
      */
@@ -187,9 +215,9 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
         /**
          * @var Picture $picture
          */
-        foreach($pictures as $picture) {
+        foreach ($pictures as $picture) {
             $galleryEntry = PictureGalleryEntry::where(['fk_picture_id' => $picture->getId()])->first();
-            if(is_null($galleryEntry)) {
+            if (is_null($galleryEntry)) {
                 $galleryEntry = new PictureGalleryEntry();
                 $galleryEntry->setFkPictureId($picture->getId());
             }
@@ -208,7 +236,9 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
             $locationEntity->setFkLearnplaceId($learnplaceId);
             $locationEntity->store();
         } catch (arException $ex) {
-            throw new InvalidArgumentException('Could not save location relation to learnplace for non persistent entity.', 0, $ex);
+            throw new InvalidArgumentException(
+                'Could not save location relation to learnplace for non persistent entity.', 0, $ex
+            );
         }
     }
 
@@ -218,7 +248,7 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
             /**
              * @var \KPG\Learnplaces\persistence\dto\Block $block
              */
-            foreach($blocks as $block) {
+            foreach ($blocks as $block) {
                 $blockEntity = Block::findOrFail($block->getId());
                 /**
                  * @var Block $blockEntity
@@ -228,7 +258,9 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
                 $blockEntity->update();
             }
         } catch (arException $ex) {
-            throw new InvalidArgumentException('Could not store relation to learnplace for non persistent block.', 0, $ex);
+            throw new InvalidArgumentException(
+                'Could not store relation to learnplace for non persistent block.', 0, $ex
+            );
         }
     }
 
@@ -238,8 +270,7 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
             /**
              * @var VisitJournal $visitJournal
              */
-            foreach($visitJournals as $visitJournal) {
-
+            foreach ($visitJournals as $visitJournal) {
                 /**
                  * @var $feedbackEntity \KPG\Learnplaces\persistence\entity\VisitJournal
                  */
@@ -248,19 +279,20 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
                 $feedbackEntity->store();
             }
         } catch (arException $ex) {
-            throw new InvalidArgumentException('Could not save visit journal relation to learnplace, due to non persistent visit journal entities.', 0, $ex);
+            throw new InvalidArgumentException(
+                'Could not save visit journal relation to learnplace, due to non persistent visit journal entities.', 0,
+                $ex
+            );
         }
     }
 
     private function storeAllFeedbackRelations(int $learnplaceId, array $feedbacks)
     {
-
         try {
             /**
              * @var Feedback $feedback
              */
-            foreach($feedbacks as $feedback) {
-
+            foreach ($feedbacks as $feedback) {
                 /**
                  * @var $feedbackEntity \KPG\Learnplaces\persistence\entity\Feedback
                  */
@@ -269,7 +301,9 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
                 $feedbackEntity->store();
             }
         } catch (arException $ex) {
-            throw new InvalidArgumentException('Could not save feedback relation to learnplace, due to non persistent feedback entities.', 0, $ex);
+            throw new InvalidArgumentException(
+                'Could not save feedback relation to learnplace, due to non persistent feedback entities.', 0, $ex
+            );
         }
     }
 
@@ -279,7 +313,9 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
         $galleryEntries = PictureGalleryEntry::where(['fk_learnplace_id' => $id])->get();
 
         $pictures = array_map(
-            function (PictureGalleryEntry $entry) { return $this->pictureRepository->find($entry->getFkPictureId()); },
+            function (PictureGalleryEntry $entry) {
+                return $this->pictureRepository->find($entry->getFkPictureId());
+            },
             $galleryEntries
         );
 
@@ -290,10 +326,11 @@ class LearnplaceRepositoryImpl implements LearnplaceRepository
     {
         $rawBlocks = Block::where(['fk_learnplace_id' => $id])->get();
         $blocks = array_map(
-            function (Block $rawBlock) {return $this->blockAccumulator->fetchSpecificBlocksById($rawBlock->getPkId());},
+            function (Block $rawBlock) {
+                return $this->blockAccumulator->fetchSpecificBlocksById($rawBlock->getPkId());
+            },
             $rawBlocks
         );
         return $blocks;
-
     }
 }

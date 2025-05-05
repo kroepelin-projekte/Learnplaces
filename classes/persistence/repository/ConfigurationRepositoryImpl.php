@@ -82,7 +82,8 @@ class ConfigurationRepositoryImpl implements ConfigurationRepository
                 ->setId($configurationEntity->getPkId())
                 ->setDefaultVisibility($visibility->getName())
                 ->setOnline($configurationEntity->getObjectOnline() === 1)
-                ->setMapZoomLevel($configurationEntity->getMapZoomLevel());
+                ->setMapZoomLevel($configurationEntity->getMapZoomLevel())
+                ->setTags($configurationEntity->getTags());
 
             return $configuration;
         } catch (arException $ex) {
@@ -108,7 +109,8 @@ class ConfigurationRepositoryImpl implements ConfigurationRepository
         $activeRecord
             ->setObjectOnline($configuration->isOnline() ? 1 : 0)
             ->setFkVisibilityDefault($visibility->getPkId())
-            ->setMapZoomLevel($configuration->getMapZoomLevel());
+            ->setMapZoomLevel($configuration->getMapZoomLevel())
+            ->setTags($configuration->getTags());
 
         return $activeRecord;
     }

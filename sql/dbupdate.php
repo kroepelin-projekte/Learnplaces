@@ -4,7 +4,8 @@
 use KPG\Learnplaces\persistence\entity\Visibility;
 use KPG\Learnplaces\service\filesystem\PathHelper;
 
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
+
+require_once('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
 
 \KPG\Learnplaces\persistence\entity\AccordionBlock::installDB();
 \KPG\Learnplaces\persistence\entity\AccordionBlockMember::installDB();
@@ -55,12 +56,13 @@ $visibilityAfterVisitOtherPlace->create();
 ?>
 <#2>
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
+require_once('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
+
 \KPG\Learnplaces\persistence\entity\Configuration::updateDB(); //map_zoom_level field added
 ?>
 <#3>
 <?php
-require_once('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
+require_once('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/autoload.php');
 
 function lowercaseFileExtension($filename)
 {
@@ -123,4 +125,23 @@ foreach ($videos as $video) {
 \KPG\Learnplaces\persistence\entity\Picture::updateDB4();
 \KPG\Learnplaces\persistence\entity\VideoBlock::updateDB4();
 ?>
-
+<#5>
+<?php
+KPG\Learnplaces\api\Database\OAuthEntityInstall::install();
+?>
+<#6>
+<?php
+KPG\Learnplaces\api\Database\OAuthEntityInstall::update_2();
+?>
+<#7>
+<?php
+global $ilDB;
+if (!$ilDB->tableColumnExists('xsrl_configuration', 'tags')) {
+    $ilDB->addTableColumn('xsrl_configuration', 'tags', array(
+        'type' => 'text',
+        'notnull' => false,
+        'length' => 1000,
+        'default' => null
+    ));
+}
+?>

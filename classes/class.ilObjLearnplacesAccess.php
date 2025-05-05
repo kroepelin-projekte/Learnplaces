@@ -28,6 +28,7 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess
      */
     public function __construct()
     {
+        parent::__construct();
         $this->currentUser = PluginContainer::resolve('ilUser');
         $this->accessControl = PluginContainer::resolve('ilAccess');
     }
@@ -83,5 +84,26 @@ final class ilObjLearnplacesAccess extends ilObjectPluginAccess
         } catch (InvalidArgumentException $ex) {
             return true;
         }
+    }
+
+    /**
+     * check whether goto script will succeed
+     */
+    public static function _checkGoto(string $target): bool
+    {
+        global $DIC;
+
+        $ilAccess = $DIC->access();
+
+        $t_arr = explode("_", $target);
+
+        if ($t_arr[1] === 'lernorte-auth') {
+            return true;
+        }
+
+        if ($ilAccess->checkAccess("read", "", (int) $t_arr[1])) {
+            return true;
+        }
+        return false;
     }
 }

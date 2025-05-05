@@ -34,6 +34,10 @@ class Configuration
      */
     private $mapZoomLevel = 0;
 
+    /**
+     * @var null|string $tags
+     */
+    private $tags = null;
 
     /**
      * @return int
@@ -122,4 +126,22 @@ class Configuration
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getTags(): ?string
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param string|null $tags
+     * @return $this
+     */
+    public function setTags(?string $tags): Configuration
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
 }

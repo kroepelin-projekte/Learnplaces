@@ -27,7 +27,8 @@ trait ConfigurationDtoMappingAware
         $dto->setId($this->getId())
             ->setOnline($this->isOnline())
             ->setDefaultVisibility($this->getDefaultVisibility())
-            ->setMapZoomLevel($this->getMapZoomLevel());
+            ->setMapZoomLevel($this->getMapZoomLevel())
+            ->setTags($this->getTags());
 
         return $dto;
     }
@@ -53,7 +54,8 @@ trait ConfigurationModelMappingAware
         $model->setId($this->getId())
             ->setOnline($this->isOnline())
             ->setDefaultVisibility($this->getDefaultVisibility())
-            ->setMapZoomLevel($this->getMapZoomLevel());
+            ->setMapZoomLevel($this->getMapZoomLevel())
+            ->setTags($this->getTags());
 
         return $model;
     }

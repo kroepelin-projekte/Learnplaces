@@ -126,16 +126,16 @@ class LinkInput
         $title = ilObject::_lookupTitle($obj_id);
 
         return $field->numeric($label)
-            ->withByline($this->expandableTree())
-            ->withValue($default_value)
-            ->withAdditionalTransformation(
-                $this->refinery->custom()->constraint(
-                    fn ($value) => ilObject::_exists($value, true),
-                    'Object not found'
-                )
-            )
-            ->withOnLoadCode(function ($id) use ($ref_id, $title) {
-                return <<<JS
+                     ->withByline($this->expandableTree())
+                     ->withValue($default_value)
+                     ->withAdditionalTransformation(
+                         $this->refinery->custom()->constraint(
+                             fn ($value) => ilObject::_exists($value, true),
+                             'Object not found'
+                         )
+                     )
+                     ->withOnLoadCode(function ($id) use ($ref_id, $title) {
+                         return <<<JS
                 (function() {
                     const el = document.getElementById('$id');
                     el.id = 'link_input_element';
@@ -147,8 +147,8 @@ class LinkInput
                     info.innerHTML = '<b>ILIAS</b><br>Ref ID: $ref_id<br>';
                 })();
                 JS;
-            })
-            ->withRequired(true);
+                     })
+                     ->withRequired(true);
     }
 
     /**
@@ -234,8 +234,8 @@ class LinkInput
 
                 /** @var Node $node */
                 $node = $factory->simple($label, $icon)
-                    ->withAdditionalOnLoadCode(function ($id) use ($ref_id, $title) {
-                        return <<<JS
+                                ->withAdditionalOnLoadCode(function ($id) use ($ref_id, $title) {
+                                    return <<<JS
                         (function() {
                             const node = document.getElementById('$id');
                             const node_label = node.firstElementChild.firstElementChild;
@@ -247,7 +247,7 @@ class LinkInput
                             });
                         })();
                         JS;
-                    });
+                                });
 
                 $has_children = count($this->tree->getChildsByTypeFilter((int) $ref_id, self::ALLOWED_TYPES)) > 0;
                 if ($has_children) {
@@ -284,8 +284,8 @@ class LinkInput
         ];
 
         $tree = $this->factory->tree()->expandable("Label", $recursion)
-            ->withEnvironment($environment)
-            ->withData($data);
+                              ->withEnvironment($environment)
+                              ->withData($data);
 
         if (! $do_async) {
             return $this->renderer->render($tree);

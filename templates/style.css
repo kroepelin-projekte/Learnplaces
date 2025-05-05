@@ -1,7 +1,4 @@
-#accordion_container {
-    position: relative;
-}
-#accordion-arrow {
+.accordion-arrow {
     font-size: 40px;
     position: absolute;
     top: 10px;
@@ -16,7 +13,10 @@
     transition: transform 0.3s ease;
     transform-origin: center 60%;
 }
-#accordion_container:has(.panel-collapse.collapse.in) #accordion-arrow {
+.accordion-arrow.arrow-fixed-position {
+    transform: rotate(90deg);
+}
+.accordion-container:has(.accordion-content.in) .accordion-arrow {
     transform: rotate(90deg);
 }
 .accordion-head:hover .panel-body {
@@ -27,13 +27,25 @@
         padding-left: 20px;
     }
 }
-#accordion_container a {
+.accordion-container a {
     text-decoration: none !important;
+}
+
+.accordion-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .5s;
+}
+.accordion-content.in {
+    grid-template-rows: 1fr;
+}
+.accordion-content > div {
+    overflow: hidden;
+}
+.accordion-container {
+    width: 100%;
 }
 
 .well {
     margin-block: 30px;
-}
-.il-video-container {
-
 }

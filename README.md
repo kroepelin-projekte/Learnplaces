@@ -22,6 +22,7 @@ such as formatted text, images, videos, ILIAS links or accordions.
 | v3.X           | 5.4 - 6        | 7.0 - 7.4    |
 | v4.X           | 6 - 7          | 7.2 - 7.4    |
 | v5.X           | 8 - 9          | 7.4 - 8.2    |
+| v6.X           | 10             | 8.2          |
 
 
 ## Installation
@@ -33,6 +34,21 @@ such as formatted text, images, videos, ILIAS links or accordions.
 ```bash
 mkdir -p Customizing/global/plugins/Services/Repository/RepositoryObject
 cd Customizing/global/plugins/Services/Repository/RepositoryObject
+```
+**Apache Config**
+```apacheconf
+<Directory /var/www/html>
+  AllowOverride All
+  Require all granted
+</Directory>
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule "^/api/*" "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
+SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
+RewriteCond %{HTTP:Authorization} ^(.)
+RewriteRule . - [E=HTTP_AUTHORIZATION:%1]
 ```
 
 **Clone Project**
@@ -48,7 +64,7 @@ git switch release_x
 
 **Install dependencies**
 ```bash
-composer install --no-dev
+composer install
 ```
 
 ## Activation

@@ -301,7 +301,7 @@ final class xsrlRichTextBlockGUI
      */
     private function addRichTextEdiorJs(string $content): void
     {
-        $tinymce_library_src = "./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/tinymce/tinymce/tinymce.min.js";
+        $tinymce_library_src = "Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/vendor/tinymce/tinymce/tinymce.js";
         $this->template->addJavaScript($tinymce_library_src);
 
         $content = preg_replace('/(\r\n|\n|\r)/', '', $content);

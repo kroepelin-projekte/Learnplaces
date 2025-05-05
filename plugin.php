@@ -1,7 +1,7 @@
 <?php
 $id = "xsrl";
-$version = "5.0.5";
+$version = "6.00";
 $ilias_min_version = "8.0";
-$ilias_max_version = "9.99";
+$ilias_max_version = "9.999";
 $responsible = "Kröpelin Projekt GmbH";
-$responsible_mail = "info@kroepelin-projekte.de";
+$responsible_mail = "dev@kroepelin-projekte.de";

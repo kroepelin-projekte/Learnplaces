@@ -91,3 +91,31 @@ content_sequence_changed_error#:#Please fill out all fields
 news_created#:#Learnplace created.
 news_updated#:#Learnplace settings updated.
 news_deleted#:#Learnplace deleted.
+
+lang_tab_api_settings#:#API Settings
+lang_tab_sub_api_settings#:#API Settings
+lang_tab_sub_permission_settings#:#Role Permissions
+lang_input_text_base_url#:#Base URL of the Website
+lang_input_text_base_url_byline#:#Please enter the base URL where the ILIAS instance and the associated app are accessible. Enter without https:// or www at the beginning.
+lang_input_text_cookie_expire#:#Automatic Logout After Hours
+lang_input_text_cookie_expire_byline#:#After how many hours of inactivity should a forced logout occur?
+
+lang_settings#:#Settings
+lang_error_required_field#:#Please fill out all fields
+lang_success_settings#:#The settings have been successfully saved
+lang_before_Activation#:#Before the plugin can be activated, the base URL of the website must be entered in the plugin settings.
+lang_input_text_roles#:#Role Configuration
+lang_input_text_roles_byline#:#Input of roles authorized for the interface. Roles should be separated by a comma. Global administrators have access regardless of this setting.
+tabs_visitor#:#Visitors
+lang_input_text_client_url#:#Client URL
+lang_input_text_client_url_byline#:#To ensure a reliable connection between ILIAS and the client, a client URL is required. Include https:// at the beginning. If the field is left empty, it will be assumed that the client is available under the same URL (including subdomain and port).
+lang_visitor_table_visitor#:#Visitor
+lang_visitor_table_login#:#ILIAS Login
+lang_visitor_table_vistited_at#:#Visited At
+lang_input_text_secret#:#App Secret
+lang_input_text_secret_byline#:#Save a secret
+
+lang_secret_info#:#It is recommended to regularly generate a new secret. This can be done using the button below. After regeneration, all users will be logged out. The secret is required for secure communication between ILIAS and the app.
+lang_secret_button#:#Renew secret
+lang_secret_success#:#The secret has been renewed
+lang_security#:#Security

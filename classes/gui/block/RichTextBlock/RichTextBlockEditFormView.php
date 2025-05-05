@@ -44,8 +44,8 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView
      */
     protected function initBlockSpecificForm(): Section
     {
-        $textarea = $this->field->textarea($this->plugin->txt('rich_text_block_content'))
-            ->withValue($this->block->getContent())
+        $textarea = $this->field->hidden(/*$this->plugin->txt('rich_text_block_content')*/)
+            #->withValue($this->block->getContent())
             ->withAdditionalOnLoadCode(fn ($id) => "document.getElementById('$id')?.setAttribute('id', 'textarea');")
             ->withRequired(true);
 

@@ -68,8 +68,6 @@ class LearnplacesResourceStorageMigrationPictures implements Migration
      */
     public function step(Environment $environment): void
     {
-        $pictures = \KPG\Learnplaces\persistence\entity\Picture::get();
-
         $db = $this->helper->getDatabase();
 
         $rec = $db->query("SELECT pk_id, original_path FROM xsrl_picture WHERE resource_id IS NULL LIMIT 1");

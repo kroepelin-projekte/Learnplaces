@@ -92,3 +92,28 @@ content_sequence_changed_error#:#Bitte füllen Sie alle Felder aus
 news_created#:#Lernort wurde erstellt.
 news_updated#:#Lernort-Einstellungen wurden aktualisiert.
 news_deleted#:#Lernort wurde gel&ouml;scht.
+
+lang_tab_api_settings#:#API Einstellungen
+lang_tab_sub_api_settings#:#API Einstellungen
+lang_tab_sub_permission_settings#:#Rollenberechtigungen
+lang_input_text_cookie_expire#:#Automatischer Logout nach Stunden
+lang_input_text_cookie_expire_byline#:#Nach wie vielen Stunden soll ein inaktivität soll ein Zwangslogout erfolgen?
+lang_settings#:#Einstellungen
+lang_error_required_field#:#Bitte Füllen Sie alle Felder aus
+lang_success_settings#:#Die Einstellungen wurden erfolgreich gespeichert
+lang_before_Activation#:#Bevor das Plugin aktiviert werden kann, muss in den Plugin Einstellungen die Basis URL der Webiste eingetragen werden
+lang_input_text_roles#:#Rollenfreigabe
+lang_input_text_roles_byline#:#Eingabe von Rollen, die für die Schnittstelle freigegeben sind. Die Rollen sind mit einem Komma zu trennten. globale Administratoren haben unabhängig von dieser Einstellung Zugriff
+tabs_visitor#:#Besucher
+lang_input_text_client_url#:#Client URL
+lang_input_text_client_url_byline#:#Um eine zuverlässige Verbindung zwischen ILIAS und dem Client zu gewährleisten, wird die Client URL benötigt. Mit https:// am Anfang. Bleibt das Feld leer, so wird angenommen, das der Client unter der gleichen URL (auch Sub Domain, sowie Port) verfügbar ist
+lang_visitor_table_visitor#:#Besucher
+lang_visitor_table_login#:#ILIAS Login
+lang_visitor_table_vistited_at#:#Besucht am
+lang_input_text_secret#:#App Secret
+lang_input_text_secret_byline#:#Speichern Sie ein Secret
+
+lang_secret_info#:#Es wird empfohlen,regelmäßig einen neuen Secret zu generieren. Dies erfolgt mit dem Button unten. Nach der Neugenerierung werden alle User ausgeloggt. Das Secret ist für die sichere Kommunikation zwischen ILIAS und der App erforderlich.
+lang_secret_button#:#Secret erneuern
+lang_secret_success#:#Der Secret wurde erneuert
+lang_security#:#Sicherheit

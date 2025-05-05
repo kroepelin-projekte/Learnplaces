@@ -68,8 +68,6 @@ class LearnplacesResourceStorageMigrationVideos implements Migration
      */
     public function step(Environment $environment): void
     {
-        $videos = \KPG\Learnplaces\persistence\entity\VideoBlock::get();
-
         $db = $this->helper->getDatabase();
         $rec = $db->query("SELECT pk_id, path FROM xsrl_video_block WHERE resource_id IS NULL LIMIT 1");
         $res = $db->fetchObject($rec);

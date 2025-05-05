@@ -227,8 +227,9 @@ class AccordionBlockRepositoryImpl implements AccordionBlockRepository
              * @var \KPG\Learnplaces\persistence\entity\Learnplace $learnplace
              */
             $learnplace = \KPG\Learnplaces\persistence\entity\Learnplace::innerjoinAR(new Block(), 'pk_id', 'fk_learnplace_id', ['fk_learnplace_id'])
-                ->innerjoinAR(new \KPG\Learnplaces\persistence\entity\AccordionBlock(), Block::returnDbTableName() . '.pk_id', 'fk_block_id', ['fk_block_id'], '=', true)
+                ->innerjoinAR(new \KPG\Learnplaces\persistence\entity\AccordionBlock(), Block::returnDbTableName() . '.pk_id', 'fk_block_id', ['fk_block_id'], '=', true) // xsrl_block.pk_id
                 ->where([\KPG\Learnplaces\persistence\entity\AccordionBlock::returnDbTableName() . '.pk_id' => $accordionId])->first();
+
 
             /**
              * @var \KPG\Learnplaces\persistence\dto\Block $block

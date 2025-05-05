@@ -21,6 +21,8 @@ use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\publicapi\model\VideoBlockModel;
 use KPG\Learnplaces\util\DeleteItemModal;
 use xsrlVideoBlockGUI;
+use ILIAS\Filesystem\Stream\Streams;
+use ILIAS\FileDelivery\Delivery\Disposition;
 
 /**
  * Class VideoBlockPresentationView
@@ -64,7 +66,7 @@ final class VideoBlockPresentationView implements Renderable
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
-        $this->template = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.video.html', true, true);
+        $this->template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.video.html', true, true);
     }
 
     /**
@@ -81,6 +83,7 @@ final class VideoBlockPresentationView implements Renderable
         $resourceId = $this->model->getResourceId();
         $resource = new ResourceIdentification($resourceId);
         if ($resourceStorage->manage()->find($resourceId)) {
+
             $src = $resourceStorage->consume()
                                    ->src($resource)
                                    ->getSrc();
@@ -124,7 +127,7 @@ final class VideoBlockPresentationView implements Renderable
      */
     private function wrapWithBlockTemplate(ilTemplate $blockTemplate): ilTemplate
     {
-        $outerTemplate = new ilTemplate('./Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
 
         //setup button
         $factory = PluginContainer::resolve('factory');
