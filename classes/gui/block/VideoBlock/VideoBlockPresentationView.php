@@ -84,93 +84,12 @@ final class VideoBlockPresentationView implements Renderable
         $resource = new ResourceIdentification($resourceId);
         if ($resourceStorage->manage()->find($resourceId)) {
 
-            $videoHTML = '';
-            if (version_compare(ILIAS_VERSION_NUMERIC, "9.0", "<")) {
-                $src = $resourceStorage->consume()
-                    ->src($resource)
-                    ->getSrc();
+            $src = $resourceStorage->consume()
+                                   ->src($resource)
+                                   ->getSrc();
 
-                // Kitchensink-Component Video is not responsive
-                $videoHTML = "<video style='width: 100%;' controls><source src=\"$src\" type=\"video/mp4\">Your browser does not support the video tag.</video>";
-            } else {
-/*               $stream = $resourceStorage->consume()->stream($resource)->getStream();
-
-
-                // Das funktioniert nicht:
-
-                $src = $resourceStorage->consume()->src($resource)->getSrc();
-                $player = $factory->player()->video($src);
-                $videoHTML = $renderer->render($player);
-*/
-
-
-
-
-
-
-
-                global $DIC;
-
-
-
-
-
-
-
-
-                // Das funktioniert. Die richtige Datei liegt aber im ResourceStorage
-
-               # $stream = Streams::ofResource(fopen('Customizing/v1.mp4', 'r'));
-
-
-
-                #$src = $resourceStorage->consume()->src($resource)->getSrc();
-                #$player = $factory->player()->video($src);
-                #$videoHTML = $renderer->render($player);
-
-/*                $src = $resourceStorage->consume()->src($resource)->getSrc();
-                $player = $factory->player()->video($src);
-                $videoHTML = $renderer->render($player);*/
-
-                // not ok
-                $url = $resourceStorage->consume()->src($resource)->getSrc();
-
-                // Das funktioniert nicht
-/*                $stream = $resourceStorage->consume()->stream($resource)->getStream();
-                $url = $DIC->fileDelivery()->buildTokenURL(
-                    $stream,
-                    'Download-Filename.mp4',
-                    Disposition::INLINE,
-                    $DIC->user()->getId(),
-                    6
-                )->getPath();*/
-
-/*                $stream = Streams::ofResource(fopen('Customizing/v1.mp4', 'r'));
-                $url = $DIC->fileDelivery()->buildTokenURL(
-                    $stream,
-                    'Download-Filename.mp4',
-                    Disposition::INLINE,
-                    $DIC->user()->getId(),
-                    6
-                )->getPath();*/
-
-                $player = $factory->player()->video($url);
-                $videoHTML = $renderer->render($player);
-/*
-                $videoHTML = <<<HTML
-<video controls>
-    <source src="$url" type="video/mp4">
-    Dein Browser unterstützt kein HTML5-Video.
-</video>
-HTML;*/
-
-
-/*                $videoBinary = $resourceStorage->consume()->stream($resource)->getStream()->getContents();
-                $videoBase64Encoded = base64_encode($videoBinary);
-                $src = "data:video/mp4;base64,$videoBase64Encoded";*/
-
-               // $videoHTML = "<video style='width: 100%;' controls><source src=\"$src\" type=\"video/mp4\">Your browser does not support the video tag.</video>";
-            }
+            // Kitchensink-Component Video is not responsive
+            $videoHTML = "<video style='width: 100%;' controls><source src=\"$src\" type=\"video/mp4\">Your browser does not support the video tag.</video>";
 
             $this->template->setVariable('CONTENT', $videoHTML);
         }
