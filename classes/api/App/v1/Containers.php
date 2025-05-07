@@ -11,8 +11,6 @@ class Containers
 {
     public function endpoint(array $params, array $request_body): void
     {
-        //global $DIC;
-        //$DIC->user()->setId(6); #ToDo Remove
 
         $all_containers = [];
         foreach ($this->getUserLearnplaceByContainerMembership() as $user_learnplace) {
@@ -35,6 +33,9 @@ class Containers
 
 
             if(\ilObject::_isInTrash($user_learnplace['learnplace_ref_id'])) {
+                continue;
+            }
+            if($obj_learnplace->getConfiguration()->isOnline() === false) {
                 continue;
             }
             if($obj_learnplace->getConfiguration()->getDefaultVisibility() === "NEVER") {
@@ -106,12 +107,7 @@ class Containers
                 }
             }
         }
-        return $this->removingDublicates($user_learnplaces);
-    }
 
-
-    private function removingDublicates(array $user_learnplaces): array
-    {
         $result = [];
         $seen = [];
 
