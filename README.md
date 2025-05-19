@@ -41,11 +41,13 @@ cd Customizing/global/plugins/Services/Repository/RepositoryObject
   AllowOverride All
   Require all granted
 </Directory>
+
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule "^/api/*" "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
+RewriteRule "^/?api/*" "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
+
 SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
 RewriteCond %{HTTP:Authorization} ^(.)
 RewriteRule . - [E=HTTP_AUTHORIZATION:%1]
