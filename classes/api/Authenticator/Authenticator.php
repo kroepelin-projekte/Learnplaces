@@ -24,6 +24,11 @@ class Authenticator
         $authorization_server_variable = $_SERVER['HTTP_AUTHORIZATION'] ?? 'not set';
         $logger->info('$_SERVER[\'authorization\']: ' . $authorization_server_variable);
 
+        foreach (getallheaders() as $header) {
+            $logger->info('____header: ' . $header);
+        }
+
+
         $request_headers = array_change_key_case(getallheaders(), CASE_LOWER);
         if (!isset($request_headers['authorization'])) {
             $logger->error('no authorization header variable found');
