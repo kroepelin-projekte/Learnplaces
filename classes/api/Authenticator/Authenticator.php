@@ -21,14 +21,6 @@ class Authenticator
     {
         $logger = \ilLoggerFactory::getLogger('Learnplaces');
 
-        $authorization_server_variable = $_SERVER['HTTP_AUTHORIZATION'] ?? 'not set';
-        $logger->info('$_SERVER[\'authorization\']: ' . $authorization_server_variable);
-
-        foreach (getallheaders() as $header) {
-            $logger->info('____header: ' . $header);
-        }
-
-
         $request_headers = array_change_key_case(getallheaders(), CASE_LOWER);
         if (!isset($request_headers['authorization'])) {
             $logger->error('no authorization header variable found');
@@ -37,7 +29,7 @@ class Authenticator
         }
         $bearer_token = $request_headers['authorization'];
         if (!str_starts_with($bearer_token, 'Bearer ')) {
-            $logger->error('no bearer token found. authorization header: ' . $request_headers['authorization']);
+            $logger->error('no bearer token found.');
             Response::send(401, DEVMODE ? 'no bearer token' : '', ['success' => false]);
             return false;
         }
