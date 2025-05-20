@@ -33,7 +33,7 @@ class Authenticator
         }
         $bearer_token = $request_headers['authorization'];
         if (!str_starts_with($bearer_token, 'Bearer ')) {
-            $logger->error('no bearer token found.');
+            $logger->error('no bearer token found: ' . $bearer_token);
             Response::send(401, DEVMODE ? 'no bearer token' : '', ['success' => false]);
             return false;
         }
