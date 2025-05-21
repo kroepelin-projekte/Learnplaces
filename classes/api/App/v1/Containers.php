@@ -11,55 +11,54 @@ class Containers
 {
     public function endpoint(array $params, array $request_body): void
     {
-        global $DIC;
 
         $all_containers = [];
+        foreach ($this->getUserLearnplaceByContainerMembership() as $user_learnplace) {
+            $container_ref_id = $user_learnplace['container_ref_id'];
+            if(!isset($all_containers[$container_ref_id])) {
+                if(\ilObject::_isInTrash($container_ref_id)) {
+                    continue;
+                }
+                if($user_learnplace['container_type'] === 'grp') {
+                    $obj_container =  new \ilObjGroup($container_ref_id);
+                } else {
+                    $obj_container =  new \ilObjCourse($container_ref_id);
+                }
 
-        foreach (PluginContainer::resolve(LearnplaceRepository::class)->get() as $obj_learn_place) {
-
-            foreach (\ilObjLearnplaces::_getAllReferences((int) $obj_learn_place->getObjectId()) as $ref_id) {
-                $ilias_object_learn_place = new \ilObjLearnplaces($ref_id);
-                break;
+                if($obj_container->getOfflineStatus()) {
+                    continue;
+                }
             }
-            if (!$container_information = $this->getContainer($ilias_object_learn_place->getRefId())) {
+            $obj_learnplace = PluginContainer::resolve(LearnplaceRepository::class)->findByObjectId($user_learnplace['learnplace_obj_id']);
+
+
+            if(\ilObject::_isInTrash($user_learnplace['learnplace_ref_id'])) {
                 continue;
             }
-
-            if (!$DIC->rbac()->system()->checkAccessOfUser(
-                $DIC->user()->getId(), 'read', $ilias_object_learn_place->getRefId()
-            )) {
+            if($obj_learnplace->getConfiguration()->isOnline() === false) {
                 continue;
             }
-
-            if (\ilObject::_isInTrash($ref_id)) {
+            if($obj_learnplace->getConfiguration()->getDefaultVisibility() === "NEVER") {
                 continue;
             }
-            $learn_place_config = $obj_learn_place->getConfiguration();
-            if (!$learn_place_config->isOnline() ||
-                $learn_place_config->getDefaultVisibility() === "NEVER") {
-                continue;
-            }
+            $learnplace_tags = $this->getTagsByLearnPlaceObjID($user_learnplace['learnplace_obj_id']);
+            $container_title = ilObject::_lookupTitle(ilObject::_lookupObjectId($container_ref_id));
 
-            $array_tags = trim($learn_place_config->getTags(), ',');
-            $array_tags = explode(',', $array_tags);
-            $array_tags = array_map('trim', $array_tags);
-
-            $container_title = $container_information['title'];
-            $container_ref_id = $container_information['ref_id'];
-
-            if (isset($all_containers[$container_ref_id])) {
+            if(isset($all_containers[$container_ref_id])) {
                 $all_containers[$container_ref_id]['lernplaces_numbers']++;
-                $all_containers[$container_ref_id]['tags'] = array_values(array_unique(array_merge($all_containers[$container_ref_id]['tags'], $array_tags)));
+                $all_containers[$container_ref_id]['tags'] = array_values(
+                    array_unique(array_merge($all_containers[$container_ref_id]['tags'], $learnplace_tags))
+                );
             } else {
                 $all_containers[$container_ref_id] = [
                     "title" => $container_title,
                     "lernplaces_numbers" => 1,
                     "ref_id" => $container_ref_id,
-                    "tags" => $array_tags
+                    "tags" => $learnplace_tags
                 ];
             }
         }
-        if($all_containers == []) {
+        if ($all_containers == []) {
             Response::send(204);
         }
 
@@ -68,22 +67,59 @@ class Containers
         Response::send(200, null, $response_array);
     }
 
-    public function getContainer(int|bool $ref_id): array|bool
+    private function getTagsByLearnPlaceObjID(int $obj_id): array
+    {
+        $obj_learnplace = PluginContainer::resolve(LearnplaceRepository::class)->findByObjectId($obj_id);
+        $learn_place_config = $obj_learnplace->getConfiguration();
+        $array_tags = trim($learn_place_config->getTags(), ',');
+        $array_tags = explode(',', $array_tags);
+        $array_tags = array_map('trim', $array_tags);
+        return $array_tags;
+    }
+
+    private function getUserLearnplaceByContainerMembership(): array
     {
         global $DIC;
-        $result = $DIC->repositoryTree()->getPathFull($ref_id);
-        for ($i = count($result) - 2; $i >= 0; $i--) {
-            if ($result[$i]['type'] == "crs" || $result[$i]['type'] == "grp") {
-                if ($result[$i]['ref_id'] == 1 || ilObject::_isInTrash($result[$i]['ref_id'])) {
-                    return false;
+        $assigned_objects = \ilParticipants::_getMembershipByType(
+            $DIC->user()->getId(),
+            ['crs', 'grp'],
+            false,
+        );
+
+        $user_learnplaces = [];
+
+        foreach ($assigned_objects as $object_obj_id) {
+            foreach (ilObject::_getAllReferences($object_obj_id) as $ref_id) {
+                $learnplaces = $DIC->repositoryTree()->getSubTree(
+                    $DIC->repositoryTree()->getNodeData($ref_id),
+                    true,
+                    ['xsrl']
+                );
+                if (is_array($learnplaces) and !empty($learnplaces)) {
+                    foreach ($learnplaces as $learnplace) {
+                        $user_learnplaces[] = [
+                            'container_ref_id' => $ref_id,
+                            'learnplace_obj_id' => $learnplace['obj_id'],
+                            'learnplace_ref_id' => $learnplace['ref_id'],
+                            'container_type' => ilObject::_lookupType($ref_id, true),
+                        ];
+                    }
                 }
-                return [
-                    "ref_id" => $result[$i]['ref_id'],
-                    "title" => $result[$i]['title']
-                ];
-                break;
             }
         }
-        return false;
+
+        $result = [];
+        $seen = [];
+
+        foreach ($user_learnplaces as $item) {
+            $id = $item['learnplace_obj_id'];
+
+
+            if (!isset($seen[$id]) || ($item['container_type'] === 'grp' && $seen[$id] !== 'grp')) {
+                $seen[$id] = $item['container_type'];
+                $result[$id] = $item;
+            }
+        }
+        return array_values($result);
     }
 }
