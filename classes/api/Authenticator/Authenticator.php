@@ -21,10 +21,6 @@ class Authenticator
     {
         $logger = \ilLoggerFactory::getLogger('Learnplaces');
 
-        foreach(getallheaders() as $key => $value) {
-            $logger->info($key . ': ' . $value);
-        }
-
         $request_headers = array_change_key_case(getallheaders(), CASE_LOWER);
         if (!isset($request_headers['authorization'])) {
             $logger->error('no authorization header variable found');
