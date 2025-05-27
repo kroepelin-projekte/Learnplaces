@@ -36,19 +36,65 @@ mkdir -p Customizing/global/plugins/Services/Repository/RepositoryObject
 cd Customizing/global/plugins/Services/Repository/RepositoryObject
 ```
 **Apache Config**
+
+```htaccess
+<IfModule mod_rewrite.c>
+        RewriteEngine on
+
+        RewriteCond %{HTTP:Authorization} ^(.*)
+        RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteCond %{REQUEST_FILENAME} !-l
+        RewriteRule "^/?api/*" "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
+
+        RewriteRule ^go\/(.*)$ goto.php/$1 [L]
+        RewriteCond %{QUERY_STRING}  ^lang=([^=]*)$
+        RewriteRule ^goto_(.*)_(wiki_([0-9]+|wpage)(.*)).html$ goto.php?client_id=$1&target=$2&lang=%1 [L]
+        RewriteRule ^goto_(.*)_(wiki_([0-9]+|wpage)(.*)).html$ goto.php?client_id=$1&target=$2 [L]
+        RewriteRule ^([^\/]*)_user_(.*)$ goto.php?client_id=$1&target=usr_n$2 [L]
+        RewriteRule ^goto_(.*)_(usr_([a-z]+)).html$ goto.php?client_id=$1&target=$2 [L]
+        RewriteCond %{QUERY_STRING}  ^lang=([^=]*)$
+        RewriteRule ^goto_(.*)_([a-z]+_[0-9]+(.*)).html$ goto.php?client_id=$1&target=$2&lang=%1 [L]
+        RewriteRule ^goto_(.*)_([a-z]+_[0-9]+(.*)).html$ goto.php?client_id=$1&target=$2 [L]
+        RewriteRule ^data/.*/.*/.*$ ./Services/WebAccessChecker/wac.php [L]
+        RewriteCond %{HTTP_USER_AGENT} ^(DavClnt)$
+        RewriteCond %{REQUEST_METHOD} ^(OPTIONS)$
+        RewriteRule .* "-" [R=401,L]
+</IfModule>
+<IfModule mod_alias.c>
+        RedirectMatch 404 /\.git
+        RedirectMatch 404 /patches
+        RedirectMatch 404 /\.github
+</IfModule>
+<IfModule mod_xsendfile.c>
+        XSendFile On
+</IfModule>
+
+AddType video/ogg .ogv
+AddType video/mp4 .mp4
+AddType video/webm .webm
+AddType audio/mp3 .mp3
+```
+
 ```apacheconf
 <Directory /var/www/html>
   AllowOverride All
   Require all granted
 </Directory>
+
+SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule "^/api/*" "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
-SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
-RewriteCond %{HTTP:Authorization} ^(.)
-RewriteRule . - [E=HTTP_AUTHORIZATION:%1]
+RewriteRule "^/?api/*" "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
+
+
 ```
 
 **Clone Project**

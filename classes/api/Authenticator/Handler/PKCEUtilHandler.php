@@ -2,21 +2,14 @@
 
 namespace KPG\Learnplaces\api\Authenticator\Handler;
 
-use Random\RandomException;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 
 class PKCEUtilHandler
 {
-
-    /**
-     * @throws RandomException
-     */
     public function generateCode(): string
     {
         return bin2hex(random_bytes(32));
     }
-
-
 
     public function base64UrlEncode(string $text): string
     {

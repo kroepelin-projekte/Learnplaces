@@ -19,21 +19,27 @@ class Authenticator
      */
     public function auth(): bool
     {
+        $logger = \ilLoggerFactory::getLogger('Learnplaces');
+
         $request_headers = array_change_key_case(getallheaders(), CASE_LOWER);
         if (!isset($request_headers['authorization'])) {
+            $logger->error('no authorization header variable found');
             Response::send(401, DEVMODE ? 'no header' : '', ['success' => false]);
             return false;
         }
         $bearer_token = $request_headers['authorization'];
         if (!str_starts_with($bearer_token, 'Bearer ')) {
-            Response::send(401, DEVMODE ? 'no bearer token' : '', ['success' => false]);
+            $logger->error('no bearer token found: ' . $bearer_token);
+            Response::send(401, DEVMODE ? 'no bearer token' . $bearer_token : '', ['success' => false]);
             return false;
         }
+        $logger->info('bearer token found');
         $http_handler = new HTTPHandler();
         $http_handler->setAccessToken(substr($bearer_token, 7));
         $pkce_handler = new PKCEHandler($http_handler);
         if(!$pkce_handler->initAccessTokenAuth()){
-            Response::send(401, DEVMODE ? 'oauth pkce error' : '', ['success' => false]);
+            $logger->error('bearer token not valid');
+            Response::send(401, DEVMODE ? 'bearer token not valid' : '', ['success' => false]);
             return false;
         }
 
