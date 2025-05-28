@@ -137,7 +137,7 @@ class Learnplaces
             }
 
             $obj_learnplace = new \ilObjLearnplaces($learnplace['ref_id']);
-            $obj_learnplace_repository = PluginContainer::resolve(LearnplaceRepository::class)->findByObjectId($obj_learnplace->getId()); // eventuell nur mit ilObject::getObjID. zeile Darüber
+            $obj_learnplace_repository = PluginContainer::resolve(LearnplaceRepository::class)->findByObjectId($obj_learnplace->getId());
             $obj_learnplace_configuration = $obj_learnplace_repository->getConfiguration();
 
             // Check if Learnplace in trash or offline or visibility is never
