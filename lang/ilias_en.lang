@@ -119,3 +119,5 @@ lang_secret_info#:#It is recommended to regularly generate a new secret. This ca
 lang_secret_button#:#Renew secret
 lang_secret_success#:#The secret has been renewed
 lang_security#:#Security
+
+app_link#:#Learnplaces App

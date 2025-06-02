@@ -33,6 +33,7 @@ use KPG\Learnplaces\service\publicapi\model\RichTextBlockModel;
 use KPG\Learnplaces\service\publicapi\model\VideoBlockModel;
 use KPG\Learnplaces\service\security\AccessGuard;
 use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
+use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 
 /**
  *
@@ -250,7 +251,17 @@ final class xsrlContentGUI
 
         $this->template->addCss('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/style.css');
         $this->template->addJavaScript('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/script.js');
-        $this->template->setContent($template->get());
+
+        $button = '';
+        if (!empty(Settings::getClientURL())) {
+            $url = rtrim(Settings::getClientURL(), '/') . '/lernort/' . $learnplace->getId();
+            $button = "<a class='btn btn-default' href='$url' target='_blank'>{$this->plugin->txt('app_link')}</a>";
+        }
+
+        $this->template->setContent(
+            $button
+            . $template->get()
+        );
     }
 
     /**
