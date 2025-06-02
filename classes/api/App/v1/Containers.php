@@ -74,6 +74,7 @@ class Containers
         $array_tags = trim($learn_place_config->getTags(), ',');
         $array_tags = explode(',', $array_tags);
         $array_tags = array_map('trim', $array_tags);
+        $array_tags = array_filter($array_tags);
         return $array_tags;
     }
 
