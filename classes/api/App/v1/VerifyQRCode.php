@@ -29,19 +29,18 @@ class VerifyQRCode
             [$client_token]
         );
         if ($rec = $db->fetchAssoc($set)) {
-
             $result = $db->query(
                 "SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $rec['pk_id']
                 . " AND user_id = " . $DIC->user()->getId()
             );
 
             if ($result->rowCount() != 0) {
-                Response::send(200, "QR_CODE_USER_WAS_HERE", ["found" => true, "first_time_found" => false]);
+                Response::send(200, "QR_CODE_USER_WAS_HERE", ["found" => true, "first_time_found" => false, "id" => $rec['pk_id']]);
             }
 
             $ar_visit = new VisitJournal();
             $ar_visit->setUserId($DIC->user()->getId())->setFkLearnplaceId($rec['pk_id'])->setTime(time())->create();
-            Response::send(200, null, ["found" => true, "first_time_found" => true]);
+            Response::send(200, null, ["found" => true, "first_time_found" => true, "id" => $rec['pk_id']]);
         }
 
         Response::send(200, "QR_CODE_NOT_FOUND", ["found" => false]);
