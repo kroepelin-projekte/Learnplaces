@@ -83,7 +83,8 @@ class ConfigurationRepositoryImpl implements ConfigurationRepository
                 ->setDefaultVisibility($visibility->getName())
                 ->setOnline($configurationEntity->getObjectOnline() === 1)
                 ->setMapZoomLevel($configurationEntity->getMapZoomLevel())
-                ->setTags($configurationEntity->getTags());
+                ->setTags($configurationEntity->getTags())
+                ->setQrCodeToken($configurationEntity->getQrCodeToken());
 
             return $configuration;
         } catch (arException $ex) {
@@ -110,7 +111,8 @@ class ConfigurationRepositoryImpl implements ConfigurationRepository
             ->setObjectOnline($configuration->isOnline() ? 1 : 0)
             ->setFkVisibilityDefault($visibility->getPkId())
             ->setMapZoomLevel($configuration->getMapZoomLevel())
-            ->setTags($configuration->getTags());
+            ->setTags($configuration->getTags())
+            ->setQrCodeToken($configuration->getQrCodeToken());
 
         return $activeRecord;
     }

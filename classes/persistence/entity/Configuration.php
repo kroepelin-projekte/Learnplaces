@@ -76,6 +76,16 @@ class Configuration extends ActiveRecord
     protected $tags = null;
 
     /**
+     * @var string
+     *
+     * @con_has_field  true
+     * @con_is_notnull true
+     * @con_fieldtype  text
+     * @con_length     255
+     */
+    protected $qr_code_token = '';
+
+    /**
      * @return int
      */
     public function getPkId(): int
@@ -178,6 +188,24 @@ class Configuration extends ActiveRecord
     {
         $this->tags = $tags;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQrCodeToken(): string
+    {
+        return $this->qr_code_token;
+    }
+
+    /**
+     * @param string $qrCodeToken
+     * @return $this
+     */
+    public function setQrCodeToken(string $qrCodeToken): Configuration
+    {
+        $this->qr_code_token = $qrCodeToken;
         return $this;
     }
 }

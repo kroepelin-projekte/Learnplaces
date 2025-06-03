@@ -28,7 +28,8 @@ trait ConfigurationDtoMappingAware
             ->setOnline($this->isOnline())
             ->setDefaultVisibility($this->getDefaultVisibility())
             ->setMapZoomLevel($this->getMapZoomLevel())
-            ->setTags($this->getTags());
+            ->setTags($this->getTags())
+            ->setQrCodeToken($this->getQrCodeToken());
 
         return $dto;
     }
@@ -55,7 +56,8 @@ trait ConfigurationModelMappingAware
             ->setOnline($this->isOnline())
             ->setDefaultVisibility($this->getDefaultVisibility())
             ->setMapZoomLevel($this->getMapZoomLevel())
-            ->setTags($this->getTags());
+            ->setTags($this->getTags())
+            ->setQrCodeToken($this->getQrCodeToken());
 
         return $model;
     }

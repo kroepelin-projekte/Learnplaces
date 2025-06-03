@@ -145,3 +145,22 @@ if (!$ilDB->tableColumnExists('xsrl_configuration', 'tags')) {
     ));
 }
 ?>
+<#8>
+<?php
+global $ilDB, $DIC;
+if (!$ilDB->tableColumnExists('xsrl_configuration', 'qr_code_token')) {
+    $ilDB->addTableColumn('xsrl_configuration', 'qr_code_token', array(
+        'type' => 'text',
+        'notnull' => true,
+        'length' => 255,
+        'default' => ''
+    ));
+
+    $stmt = $ilDB->prepareManip("UPDATE xsrl_configuration SET qr_code_token = ? WHERE pk_id = ?", ['text', 'integer']);
+    $set = $ilDB->query("SELECT * FROM xsrl_configuration");
+    while ($rec = $ilDB->fetchAssoc($set)) {
+        $ilDB->execute($stmt, [bin2hex(random_bytes(32)), $rec['pk_id']]);
+    }
+    $ilDB->free($stmt);
+}
+?>

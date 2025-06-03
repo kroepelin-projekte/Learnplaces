@@ -52,7 +52,7 @@ final class ilObjLearnplaces extends ilObjectPlugin
         $locationService = PluginContainer::resolve(LocationService::class);
 
         $location = $locationService->store(new LocationModel());
-        $config = $configService->store(new ConfigurationModel());
+        $config = $configService->store((new ConfigurationModel())->setQrCodeToken(bin2hex(random_bytes(32))));
         $learnplace = new LearnplaceModel();
         $learnplace
             ->setLocation($location)

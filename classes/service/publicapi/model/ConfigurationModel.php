@@ -40,6 +40,11 @@ final class ConfigurationModel
     private $tags;
 
     /**
+     * @var string $qrCodeToken
+     */
+    private $qrCodeToken;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -142,6 +147,24 @@ final class ConfigurationModel
     {
         $this->tags = $tags;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQrCodeToken(): string
+    {
+        return $this->qrCodeToken;
+    }
+
+    /**
+     * @param string $qrCodeToken
+     * @return $this
+     */
+    public function setQrCodeToken(string $qrCodeToken): ConfigurationModel
+    {
+        $this->qrCodeToken = $qrCodeToken;
         return $this;
     }
 }

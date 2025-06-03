@@ -228,13 +228,10 @@ final class xsrlSettingGUI
         $f = PluginContainer::resolve('factory');
         $r = PluginContainer::resolve('renderer');
         $ctrl = PluginContainer::resolve('ctrl');
-        $obj_learn_place = PluginContainer::resolve(LearnplaceRepository::class)->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
+        $learnplce = PluginContainer::resolve(LearnplaceRepository::class)->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
+        $config = $learnplce->getConfiguration();
 
-
-        $obj_qr_code = new QrCode();
-
-        $token = $obj_qr_code->createToken($obj_learn_place->getId());
-
+        $token = $config->getQrCodeToken();
         $qrCode = $this->getQrCode($token, 'Lernort');
 
         $uri = $qrCode->getDataUri();
