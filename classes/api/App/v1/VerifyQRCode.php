@@ -3,7 +3,6 @@
 namespace KPG\Learnplaces\api\App\v1;
 
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
-use KPG\Learnplaces\util\QrCode;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
@@ -22,9 +21,9 @@ class VerifyQRCode
         $db = $DIC->database();
 
         $set = $db->queryF(
-            "SELECT xsrl_configuration.pk_id, xsrl_configuration.qr_code_token
+            "SELECT pk_id, qr_code_token
             FROM xsrl_configuration
-            WHERE xsrl_configuration.qr_code_token = ?",
+            WHERE xsrl_configuration.qr_code_token = %s",
             ['text'],
             [$client_token]
         );
