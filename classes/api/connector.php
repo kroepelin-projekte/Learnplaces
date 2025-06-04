@@ -12,7 +12,11 @@ try {
     header("Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS");
     header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With, Learnplaces_token");
     header('Access-Control-Expose-Headers: Learnplaces_token');
-    header('Cache-Control: public, max-age=31536000'); // Cache für 1 Jahr (31536000 Sekunden)
+
+    // header('Cache-Control: public, max-age=31536000'); // Cache für 1 Jahr (31536000 Sekunden)
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache'); // Für Abwärtskompatibilität mit HTTP/1.0
+
 
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         http_response_code(200);
