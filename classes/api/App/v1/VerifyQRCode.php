@@ -33,13 +33,16 @@ class VerifyQRCode
                 . " AND user_id = " . $DIC->user()->getId()
             );
 
+            $learnplace = PluginContainer::resolve(LearnplaceRepository::class)->find($rec['pk_id']);
+            $title = ilObject::_lookupTitle($learnplace->getObjectId());
+
             if ($result->rowCount() != 0) {
-                Response::send(200, "QR_CODE_USER_WAS_HERE", ["found" => true, "first_time_found" => false, "id" => $rec['pk_id']]);
+                Response::send(200, "QR_CODE_USER_WAS_HERE", ["found" => true, "first_time_found" => false, "id" => $rec['pk_id'], "title" => $title]);
             }
 
             $ar_visit = new VisitJournal();
             $ar_visit->setUserId($DIC->user()->getId())->setFkLearnplaceId($rec['pk_id'])->setTime(time())->create();
-            Response::send(200, null, ["found" => true, "first_time_found" => true, "id" => $rec['pk_id']]);
+            Response::send(200, null, ["found" => true, "first_time_found" => true, "id" => $rec['pk_id'], "title" => $title]);
         }
 
         Response::send(200, "QR_CODE_NOT_FOUND", ["found" => false]);

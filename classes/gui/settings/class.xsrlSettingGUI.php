@@ -22,7 +22,6 @@ use ILIAS\UI\Factory;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 use JetBrains\PhpStorm\NoReturn;
-use KPG\Learnplaces\util\QrCode;
 use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
 
 /**
@@ -257,9 +256,8 @@ final class xsrlSettingGUI
     #[NoReturn]
     public function downloadQrCode(): void
     {
-        $obj_qr_code = new QrCode();
         $obj_learn_place = PluginContainer::resolve(LearnplaceRepository::class)->findByObjectId(ilObject::_lookupObjectId($this->getCurrentRefId()));
-        $token = $obj_qr_code->createToken($obj_learn_place->getId());
+        $token = $obj_learn_place->getConfiguration()->getQrCodeToken();
         $qrCode = $this->getQrCode($token, 'Lernort');
         $binary = $qrCode->getString();
 
