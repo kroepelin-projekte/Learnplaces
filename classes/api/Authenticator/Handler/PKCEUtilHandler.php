@@ -33,7 +33,9 @@ class PKCEUtilHandler
         $secret = Settings::getSecret();
 
         $userPayload['iat'] = time();
-        $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
+        if (Settings::getCookieExpire() > 0) {
+            $userPayload['exp'] = time() + Settings::getCookieExpire() * 60 * 60;
+        }
         return $this->encodeAccessToken($userPayload, $secret);
     }
 
@@ -78,11 +80,11 @@ class PKCEUtilHandler
 
         $payload = json_decode($this->base64UrlDecode($matches['payload']), true);
 
-        if (!is_array($payload) || !isset($payload['sub'], $payload['exp'])) {
+        if (!is_array($payload) || !isset($payload['sub'])) {
             return false;
         }
 
-        if (!is_int($payload['exp']) || $payload['exp'] <= 0) {
+        if (isset($payload['exp']) && (!is_int($payload['exp']) || $payload['exp'] <= 0)) {
             return false;
         }
 
@@ -90,7 +92,7 @@ class PKCEUtilHandler
             return false;
         }
 
-        if (time() >= $payload['exp']) {
+        if (isset($payload['exp']) && time() >= $payload['exp']) {
             return false;
         }
 

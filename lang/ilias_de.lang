@@ -97,7 +97,7 @@ lang_tab_api_settings#:#API Einstellungen
 lang_tab_sub_api_settings#:#API Einstellungen
 lang_tab_sub_permission_settings#:#Rollenberechtigungen
 lang_input_text_cookie_expire#:#Automatischer Logout nach Stunden
-lang_input_text_cookie_expire_byline#:#Nach wie vielen Stunden soll ein inaktivität soll ein Zwangslogout erfolgen?
+lang_input_text_cookie_expire_byline#:#Nach wie vielen Stunden soll ein inaktivität soll ein Zwangslogout erfolgen? (0 für unendlich)
 lang_settings#:#Einstellungen
 lang_error_required_field#:#Bitte Füllen Sie alle Felder aus
 lang_success_settings#:#Die Einstellungen wurden erfolgreich gespeichert
