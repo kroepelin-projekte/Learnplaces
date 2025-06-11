@@ -155,6 +155,7 @@ class LearnplacesInfo
                 "longitude" => $learn_place_location->getLongitude(),
                 "elevation" => $learn_place_location->getElevation(),
                 "radius" => $learn_place_location->getRadius(),
+                "zoom" => $learn_place_configuration->getMapZoomLevel(),
             ],
             "visited" => $result->rowCount() > 0,
         ];
