@@ -12,6 +12,8 @@ use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 use ilObject;
 use ILIAS\Data\ReferenceId;
 use KPG\Learnplaces\persistence\entity\VisitJournal;
+use ILIAS\ResourceStorage\Identification\ResourceIdentification;
+use ilUtil;
 
 class LearnplacesInfo
 {
@@ -36,8 +38,9 @@ class LearnplacesInfo
             break;
         };
 
-        if (!$obj_learn_place->getConfiguration()->isOnline() or $obj_learn_place->getConfiguration(
-            )->getDefaultVisibility() === "NEVER") {
+        if (!$obj_learn_place->getConfiguration()->isOnline()
+            or $obj_learn_place->getConfiguration()->getDefaultVisibility() === "NEVER"
+        ) {
             Response::send(400, "LEARNPLACE_NOT_FOUND", []);
         }
         Response::send(200, null, $this->getResponseArray($obj_learn_place, $obj_learn_place->getConfiguration()));
@@ -46,6 +49,8 @@ class LearnplacesInfo
     private function getBlockArray(Block $block, int $learn_place_id): array|false
     {
         global $DIC;
+
+        $media_size = [];
 
         if ($block->getVisibility() === "NEVER") {
             return false;
@@ -76,6 +81,7 @@ class LearnplacesInfo
 
         if (method_exists($block, 'getPicture')) {
             $block_array['picture'] = $block->getPicture()->getResourceId();
+            $media_size[] = $DIC->resourceStorage()->consume()->stream(new ResourceIdentification($block->getPicture()->getResourceId()))->getStream()->getSize();
         }
 
         if (method_exists($block, 'getRefId')) {
@@ -92,6 +98,7 @@ class LearnplacesInfo
 
         if (method_exists($block, 'getResourceId')) {
             $block_array['resource_id'] = $block->getResourceId();
+            $media_size[] = $DIC->resourceStorage()->consume()->stream(new ResourceIdentification($block->getResourceId()))->getStream()->getSize();
         }
 
         if (method_exists($block, 'getBlocks')) {
@@ -103,11 +110,23 @@ class LearnplacesInfo
                 $array = $this->getBlockArray($sub_block, $learn_place_id);
                 if ($array !== false) {
                     $sub_block_array[] = $array;
+
+                    if (method_exists($block, 'getResourceId')) {
+                        $media_size[] = $DIC->resourceStorage()->consume()->stream(new ResourceIdentification($sub_block->getResourceId()))->getStream()->getSize();
+                    }
+                    if (method_exists($block, 'getPicture')) {
+                        $media_size[] = $DIC->resourceStorage()->consume()->stream(new ResourceIdentification($sub_block->getPicture()->getResourceId()))->getStream()->getSize();
+                    }
                 }
             }
 
             $block_array['sub_blocks'] = $sub_block_array;
         }
+
+        $total_bytes = array_sum($media_size);
+        //$total_bytes = intval($total_bits / 8);  // Bits zu Bytes umrechnen
+
+        $block_array['bytes'] = $total_bytes;
 
         return $block_array;
     }
@@ -166,6 +185,12 @@ class LearnplacesInfo
                 $block_array[] = $array;
             }
         }
+
+        // content size
+        $total_bytes = array_sum(array_column($block_array, 'bytes'));
+        $formatted_size = ilUtil::formatSize($total_bytes);
+        $result['content_size'] = $formatted_size;
+
         $result['blocks'] = $this->orderBlockArray($this->filterBlockArray($block_array, $this->removing_block_ids));
         return $result;
     }
