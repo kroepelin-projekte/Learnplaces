@@ -222,14 +222,28 @@ class AccordionBlockRepositoryImpl implements AccordionBlockRepository
     private function storeBlockRelationsAndSequence(int $accordionId, array $blocks)
     {
         try {
-
-            /**
-             * @var \KPG\Learnplaces\persistence\entity\Learnplace $learnplace
-             */
-            $learnplace = \KPG\Learnplaces\persistence\entity\Learnplace::innerjoinAR(new Block(), 'pk_id', 'fk_learnplace_id', ['fk_learnplace_id'])
+/*            $learnplace = \KPG\Learnplaces\persistence\entity\Learnplace::innerjoinAR(new Block(), 'pk_id', 'fk_learnplace_id', ['fk_learnplace_id'])
                 ->innerjoinAR(new \KPG\Learnplaces\persistence\entity\AccordionBlock(), Block::returnDbTableName() . '.pk_id', 'fk_block_id', ['fk_block_id'], '=', true) // xsrl_block.pk_id
-                ->where([\KPG\Learnplaces\persistence\entity\AccordionBlock::returnDbTableName() . '.pk_id' => $accordionId])->first();
+                ->where([\KPG\Learnplaces\persistence\entity\AccordionBlock::returnDbTableName() . '.pk_id' => $accordionId])->first();*/
 
+            global $DIC;
+
+            $quotedAccordionId = $DIC->database()->quote($accordionId);
+
+            $query = $DIC->database()->query("
+                SELECT xsrl_learnplace.pk_id as id
+                FROM xsrl_learnplace 
+                INNER JOIN xsrl_block AS b 
+                    ON xsrl_learnplace.pk_id = b.fk_learnplace_id 
+                INNER JOIN xsrl_accordion_block AS ab 
+                    ON b.pk_id = ab.fk_block_id 
+                WHERE ab.pk_id = $quotedAccordionId
+            ");
+
+            $learnplace_id = null;
+            if ($result = $DIC->database()->fetchAssoc($query)) {
+                $learnplace_id = $result['id'];
+            }
 
             /**
              * @var \KPG\Learnplaces\persistence\dto\Block $block
@@ -241,9 +255,14 @@ class AccordionBlockRepositoryImpl implements AccordionBlockRepository
                 $blockEntity = Block::findOrFail($block->getId());
 
                 // Only update the learnplace relation if we have one, for example while cloning we don't know the learnplace relation until the end
-                if ($learnplace !== null) {
-                    $blockEntity->setFkLearnplaceId($learnplace->getPkId());
+
+                if ($learnplace_id !== null) {
+                    $blockEntity->setFkLearnplaceId($learnplace_id);
                 }
+
+/*                if ($learnplace !== null) {
+                    $blockEntity->setFkLearnplaceId($learnplace->getPkId());
+                }*/
                 $blockEntity->setSequence($block->getSequence());
                 $blockEntity->update();
 
