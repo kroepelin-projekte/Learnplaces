@@ -43,10 +43,11 @@ class Request
         $uri_without_query = explode('?', $full_uri)[0];
 
         if (strpos($uri_without_query, '/api/') !== false) {
-            $requestedUri = urldecode(substr($uri_without_query, strpos($uri_without_query, '/api/') + strlen('/api/')));
+            $requestedUri = "/" .urldecode(substr($uri_without_query, strpos($uri_without_query, '/api/') + strlen('/api/')));
         } else {
             Response::send(404, DEVMODE ? 'URL_WRONG_FORMAT_API_NOT_FOUND' : '', ['success' => false]);
         }
+
         foreach ($this->routes as $route) {
             if (preg_match(
                     $route['pattern'], $requestedUri, $matches
