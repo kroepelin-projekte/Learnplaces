@@ -119,3 +119,11 @@ lang_secret_success#:#Der Secret wurde erneuert
 lang_security#:#Sicherheit
 
 app_link#:#Zur Lernorte App
+
+lang_delete_all_visitors#:#Alle Besucher löschen
+lang_delete_all_visitors_modal#:#Möchten Sie alle Besucher löschen? Nach der Löschung können die Besucher nicht mehr wiederhergestellt werden.
+lang_delete_visitors#:#Besucher löschen
+lang_visitors_delete_success#:#Besucher wurden gelöscht
+
+lang_config_host_domain#:#Host URL
+lang_config_host_domain_helptext#:#Um ein zuverlässiges Routing zu gewährleisten muss die vollständige URL des Hosts angegeben werden. Mögliche Subdomains und Unterverzeichnisse sind mit anzugeben. Wird das Feld freigelassen, wird nur die Base Domain von Host genommen.

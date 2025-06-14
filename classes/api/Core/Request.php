@@ -5,6 +5,7 @@ namespace KPG\Learnplaces\api\Core;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Authenticator;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
+use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 
 class Request
 {
@@ -38,7 +39,14 @@ class Request
      */
     public function route(): void
     {
-        $requestedUri = urldecode(str_replace($this->path, '', explode('?', $_SERVER['REQUEST_URI'])[0]));
+        $full_uri = $_SERVER['REQUEST_URI'];
+        $uri_without_query = explode('?', $full_uri)[0];
+
+        if (strpos($uri_without_query, '/api/') !== false) {
+            $requestedUri = urldecode(substr($uri_without_query, strpos($uri_without_query, '/api/') + strlen('/api/')));
+        } else {
+            Response::send(404, DEVMODE ? 'URL_WRONG_FORMAT_API_NOT_FOUND' : '', ['success' => false]);
+        }
         foreach ($this->routes as $route) {
             if (preg_match(
                     $route['pattern'], $requestedUri, $matches
