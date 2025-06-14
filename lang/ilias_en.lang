@@ -127,7 +127,5 @@ lang_delete_all_visitors_modal#:#Do you want to delete all visitors? After delet
 lang_delete_visitors#:#Delete visitors
 lang_visitors_delete_success#:#Visitors have been deleted
 
-lang_config_host_domain#:#Host URL
-lang_config_host_domain_helptext#:#To ensure reliable routing, the full URL of the host must be specified. Possible subdomains and subdirectories must also be included. If the field is left empty, only the base domain of the host will be used.
 
 
