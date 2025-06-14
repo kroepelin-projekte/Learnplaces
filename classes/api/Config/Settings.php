@@ -56,13 +56,4 @@ class Settings implements constConfig
         $settings = new \ilSetting(self::SETTING_MODULE_ID);
         return $settings->get("secret", '');
     }
-    public static function setHostURL(string $url): void {
-        $settings = new \ilSetting(self::SETTING_MODULE_ID);
-        $settings->set('host_url', $url);
-    }
-    public static function getHostURL(): string {
-        $settings = new \ilSetting(self::SETTING_MODULE_ID);
-        return $settings->get("host_url", '');
-    }
-
 }

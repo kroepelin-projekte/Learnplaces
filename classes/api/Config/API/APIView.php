@@ -35,11 +35,8 @@ class APIView implements constConfig
             $this->plugin->txt(self::LANG_INPUT_TEXT_CLIENT_URL),
             $this->plugin->txt(self::LANG_INPUT_TEXT_BASE_CLIENT_BYLINE)
         )->withValue(Settings::getClientURL())->withRequired(false);
-        $host_input = $this->DIC->ui()->factory()->input()->field()->text(
-            $this->plugin->txt('lang_config_host_domain'), $this->plugin->txt('lang_config_host_domain_helptext')
-        )->withValue(Settings::getHostURL())->withRequired(false);
         $sections = $this->DIC->ui()->factory()->input()->field()->section(
-            ['cookie' => $cookie_input, "host" => $host_input, "client" => $client_input],
+            ['cookie' => $cookie_input, "client" => $client_input],
             $this->plugin->txt(self::LANG_SETTINGS)
         );
 
