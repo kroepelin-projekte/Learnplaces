@@ -47,7 +47,9 @@ class Request
         } else {
             Response::send(404, DEVMODE ? 'URL_WRONG_FORMAT_API_NOT_FOUND' : '', ['success' => false]);
         }
-
+        echo "<pre>";
+        print_r($this->routes);
+        die($requestedUri);
         foreach ($this->routes as $route) {
             if (preg_match(
                     $route['pattern'], $requestedUri, $matches
