@@ -119,8 +119,7 @@ class LearnplacesInfo
                     }
                 }
             }
-            // hier sortieren
-            $block_array['sub_blocks'] = $sub_block_array;
+            $block_array['sub_blocks'] = $this->orderBlockArray($sub_block_array);
         }
 
         $total_bytes = array_sum($media_size);
