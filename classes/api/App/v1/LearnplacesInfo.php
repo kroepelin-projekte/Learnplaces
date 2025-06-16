@@ -119,7 +119,7 @@ class LearnplacesInfo
                     }
                 }
             }
-
+            // hier sortieren
             $block_array['sub_blocks'] = $sub_block_array;
         }
 

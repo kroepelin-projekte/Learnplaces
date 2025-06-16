@@ -1,5 +1,6 @@
 <?php
-$this->add('learnplaceapp/v1/health', 'KPG\Learnplaces\api\App\v1', 'Health@endpoint', 'GET', true);
+$this->add('learnplaceapp/v1/health', 'KPG\Learnplaces\api\App\v1', 'Health@endpoint', 'GET');
+$this->add('learnplaceapp/v1/health', 'KPG\Learnplaces\api\App\v1', 'Health@refresh', 'GET', true);
 
 $this->add('learnplaceapp/v1/containers', 'KPG\Learnplaces\api\App\v1', 'Containers@endpoint', 'GET', true);
 
