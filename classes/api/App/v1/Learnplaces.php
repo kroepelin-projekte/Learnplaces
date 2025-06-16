@@ -147,8 +147,7 @@ class Learnplaces
 
             // visit status
             $visit_result = $this->dic->database()->query(
-                "SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $obj_learnplace->getID(
-                ) . " AND user_id = " . $this->dic->user()->getId()
+                "SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $obj_learnplace_repository->getID() . " AND user_id = " . $this->dic->user()->getId()
             );
 
             // Learnplace Tags
