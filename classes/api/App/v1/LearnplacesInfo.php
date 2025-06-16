@@ -43,7 +43,7 @@ class LearnplacesInfo
         ) {
             Response::send(400, "LEARNPLACE_NOT_FOUND", []);
         }
-        Response::send(200, null, $this->getResponseArray($obj_learn_place, $obj_learn_place->getConfiguration()));
+        Response::send(200, null, $this->getResponseArray($obj_learn_place, $obj_learn_place->getConfiguration(), $ref_id));
     }
 
     private function getBlockArray(Block $block, int $learn_place_id): array|false
@@ -147,7 +147,7 @@ class LearnplacesInfo
         return $block_array;
     }
 
-    private function getResponseArray(Learnplace $obj_learn_place, Configuration $learn_place_configuration): array
+    private function getResponseArray(Learnplace $obj_learn_place, Configuration $learn_place_configuration, int $leanrplace_ref_id): array
     {
         global $DIC;
         $learn_place_location = $obj_learn_place->getLocation();
@@ -177,6 +177,7 @@ class LearnplacesInfo
                 "zoom" => $learn_place_configuration->getMapZoomLevel(),
             ],
             "visited" => $result->rowCount() > 0,
+            "container_title" => $this->getContainerTitle($leanrplace_ref_id)
         ];
         $block_array = [];
         foreach ($learn_place_blocks as $block) {
@@ -193,5 +194,16 @@ class LearnplacesInfo
 
         $result['blocks'] = $this->orderBlockArray($this->filterBlockArray($block_array, $this->removing_block_ids));
         return $result;
+    }
+
+    public function getContainerTitle(int $learnplace_ref_id): string
+    {
+        global $DIC;
+        foreach (array_reverse($DIC->repositoryTree()->getNodePath($learnplace_ref_id)) as $node) {
+            if($node['type'] == 'crs' OR $node['type'] == 'grp') {
+                return $node['title'];
+            }
+        }
+        Response::send(500, DEVMODE ? "Container doesn't exist" : null, []);
     }
 }
