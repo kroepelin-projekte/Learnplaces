@@ -287,8 +287,8 @@ final class xsrlSettingGUI
             ->encoding(new Encoding('UTF-8'))
             ->size(300)
             ->margin(10)
-            ->labelText($label)
-            ->labelFont(new OpenSans(30))
+            //->labelText($label)
+            //->labelFont(new OpenSans(30))
             ->build();
     }
 }
