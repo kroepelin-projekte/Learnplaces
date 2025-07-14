@@ -47,7 +47,7 @@ cd Customizing/global/plugins/Services/Repository/RepositoryObject
         RewriteCond %{REQUEST_FILENAME} !-f
         RewriteCond %{REQUEST_FILENAME} !-d
         RewriteCond %{REQUEST_FILENAME} !-l
-        RewriteRule "^/?api/*" "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
+        RewriteRule ^/?api/(.*) /Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php [L]
 
         RewriteRule ^go\/(.*)$ goto.php/$1 [L]
         RewriteCond %{QUERY_STRING}  ^lang=([^=]*)$

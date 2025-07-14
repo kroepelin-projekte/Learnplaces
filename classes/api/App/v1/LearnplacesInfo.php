@@ -204,5 +204,6 @@ class LearnplacesInfo
             }
         }
         Response::send(500, DEVMODE ? "Container doesn't exist" : null, []);
+        return '';
     }
 }

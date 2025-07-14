@@ -39,13 +39,16 @@ class VerifyQRCode
                 . " AND user_id = " . $DIC->user()->getId()
             );
 
-
             $learnplace = PluginContainer::resolve(LearnplaceRepository::class)->find($rec['pk_id']);
             $title = ilObject::_lookupTitle($learnplace->getObjectId());
 
             if ($result->rowCount() != 0) {
                 Response::send(200, null, ["status" => "QR_CODE_USER_WAS_HERE", "id" => $rec['pk_id'], "title" => $title]);
             }
+
+            // update learning progress
+            $obj_learnplace = \ilObjectFactory::getInstanceByObjId($learnplace->getObjectId());
+            $obj_learnplace->setLearningProgressStatus(\ilLPStatus::LP_STATUS_COMPLETED_NUM);
 
             $ar_visit = new VisitJournal();
             $ar_visit->setUserId($DIC->user()->getId())->setFkLearnplaceId($rec['pk_id'])->setTime(time())->create();

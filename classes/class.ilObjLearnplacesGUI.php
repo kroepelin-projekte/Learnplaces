@@ -20,7 +20,7 @@ use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
  *
  * @ilCtrl_isCalledBy ilObjLearnplacesGUI: ilRepositoryGUI, ilObjPluginDispatchGUI
  * @ilCtrl_isCalledBy ilObjLearnplacesGUI: ilAdministrationGUI
- * @ilCtrl_Calls      ilObjLearnplacesGUI: ilPermissionGUI, ilInfoScreenGUI, ilObjectCopyGUI
+ * @ilCtrl_Calls      ilObjLearnplacesGUI: ilPermissionGUI, ilInfoScreenGUI, ilObjectCopyGUI, ilLearningProgressGUI
  * @ilCtrl_Calls      ilObjLearnplacesGUI: ilCommonActionDispatcherGUI
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlPictureUploadBlockGUI
  * @ilCtrl_Calls      ilObjLearnplacesGUI: xsrlPictureBlockGUI
@@ -37,6 +37,7 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
 {
     public const DEFAULT_CMD = CommonControllerAction::CMD_INDEX;
     public const TAB_ID_PERMISSION = 'id_permissions';
+    public const LP_SESSION_ID = 'xsrl_lp_session_state';
 
     /**
      * @var MapBlockService $mapBlockService

@@ -158,6 +158,13 @@ class xsrlVisitorsGUI
 
         $learnplace_object = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($query->retrieve('ref_id', $refinery->kindlyTo()->int())));
 
+        $res = $database->query("SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $database->quote($learnplace_object->getId(), 'integer'));
+        while ($rec = $database->fetchAssoc($res)) {
+            // update learning progress
+            $obj_learnplace = \ilObjectFactory::getInstanceByObjId($learnplace_object->getObjectId());
+            $obj_learnplace->setLearningProgressStatus(\ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM, $rec['user_id']);
+        }
+
         $database->manipulate("DELETE FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $database->quote($learnplace_object->getId(), 'integer'));
 
         $DIC->ui()->mainTemplate()->setOnScreenMessage('success', 'Besucher wurden gelöscht', true);

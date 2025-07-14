@@ -24,7 +24,7 @@ use KPG\Learnplaces\service\publicapi\model\PictureBlockModel;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class ilObjLearnplaces extends ilObjectPlugin
+final class ilObjLearnplaces extends ilObjectPlugin implements ilLPStatusPluginInterface
 {
     /*
     const TRANSLATE_NEWS_TITLE = true;
@@ -248,5 +248,91 @@ final class ilObjLearnplaces extends ilObjectPlugin
 
         $copyPicture->setResourceId($newResourceId);
         return ($pictureRepository->store($copyPicture->toDto()))->toModel();
+    }
+
+    /**
+     * @return array|int[]
+     */
+    public function getLPCompleted(): array
+    {
+        $user = [];
+        foreach (\ilLPMarks::_getAllUserIds($this->getId()) as $user_id) {
+            if (\ilLPStatus::_lookupStatus($this->getId(), $user_id) === ilLPStatus::LP_STATUS_COMPLETED_NUM) {
+                $user[] = $user_id;
+            }
+        }
+        return $user;
+    }
+
+    /**
+     * @return array|int[]
+     */
+    public function getLPNotAttempted(): array
+    {
+        $user = [];
+        foreach (\ilLPMarks::_getAllUserIds($this->getId()) as $user_id) {
+            if (\ilLPStatus::_lookupStatus($this->getId(), $user_id) === ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM) {
+                $user[] = $user_id;
+            }
+        }
+        return $user;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLPFailed(): array
+    {
+        $user = [];
+        foreach (\ilLPMarks::_getAllUserIds($this->getId()) as $user_id) {
+            if (\ilLPStatus::_lookupStatus($this->getId(), $user_id) === ilLPStatus::LP_STATUS_FAILED_NUM) {
+                $user[] = $user_id;
+            }
+        }
+        return $user;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLPInProgress(): array
+    {
+        $user = [];
+        foreach (\ilLPMarks::_getAllUserIds($this->getId()) as $user_id) {
+            if (\ilLPStatus::_lookupStatus($this->getId(), $user_id) === ilLPStatus::LP_STATUS_IN_PROGRESS_NUM) {
+                $user[] = $user_id;
+            }
+        }
+        return $user;
+    }
+
+    /**
+     * @param int $a_user_id
+     * @return int
+     */
+    public function getLPStatusForUser(int $a_user_id): int
+    {
+        global $ilUser;
+        if ($ilUser->getId() == $a_user_id) {
+            return $_SESSION[ilObjLearnplacesGUI::LP_SESSION_ID] ?? 0;
+        } else {
+            return ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM;
+        }
+    }
+
+    /**
+     * @param int      $il_lpstatus_num
+     * @param int|null $user_id
+     * @return void
+     */
+    public function setLearningProgressStatus(int $il_lpstatus_num, int $user_id = null): void
+    {
+        if ($user_id === null) {
+            global $ilUser;
+            $user_id = $ilUser->getId();
+        }
+
+        $_SESSION[\ilObjLearnplacesGUI::LP_SESSION_ID] = $il_lpstatus_num;
+        ilLPStatusWrapper::_updateStatus($this->getId(), $user_id);
     }
 }

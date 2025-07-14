@@ -5,3 +5,4 @@ $ilias_min_version = "9.0";
 $ilias_max_version = "9.999";
 $responsible = "Kröpelin Projekt GmbH";
 $responsible_mail = "dev@kroepelin-projekte.de";
+$learning_progress = true;
