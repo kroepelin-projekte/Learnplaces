@@ -99,7 +99,7 @@ abstract class AbstractBlockEditFormView
             ->withOption(Visibility::AFTER_VISIT_PLACE, $this->plugin->txt('visibility_after_visit_place'))
             ->withOption(Visibility::ONLY_AT_PLACE, $this->plugin->txt('visibility_only_at_place'))
             ->withOption(Visibility::NEVER, $this->plugin->txt('visibility_never'))
-            ->withValue($this->block->getVisibility())
+            ->withValue($this->block->getVisibility() ?: Visibility::ALWAYS)
             ->withRequired(true);
 
         $visibilitySectionHeader = $this->field->section([

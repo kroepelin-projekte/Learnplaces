@@ -37,7 +37,18 @@ final class VideoBlockEditFormView extends AbstractBlockEditFormView
     {
         $fileUpload = $this->field->file(new ilLearnplacesUploadHandlerGUI(), $this->plugin->txt('video_block_select_video'))
             ->withAcceptedMimeTypes([MimeType::VIDEO__MP4])
-            ->withRequired($this->block->getId() <= 0);
+            ->withRequired(true);
+
+        $rid = $this->block->getResourceId();
+        if ($resource = $this->resourceStorage->manage()->find($rid)) {
+            $src = $this->resourceStorage->consume()->src($resource)->getSrc();
+
+            $fileUpload = $fileUpload
+                ->withValue([$rid])
+                ->withByLine(
+                    "<video src='$src' controls='controls' style='width: 100%; max-width: 800px; padding: 10px 10px 10px 0;' />"
+                );
+        }
 
         return $this->field->section([
             self::POST_VIDEO => $fileUpload,

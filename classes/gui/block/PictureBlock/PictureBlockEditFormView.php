@@ -70,28 +70,18 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
 
         $fileUpload = $this->field->file(new ilLearnplacesUploadHandlerGUI(), $this->plugin->txt('picture_block_select_picture'))
             ->withAcceptedMimeTypes([MimeType::IMAGE__JPEG, MimeType::IMAGE__PNG])
-            ->withRequired($this->block->getId() <= 0);
+            ->withRequired(true);
 
         if ($picture = $this->block->getPicture()) {
             $resourceId = $picture->getResourceId();
-            $resource = new ResourceIdentification($resourceId);
-            if ($this->resourceStorage->manage()->find($resourceId)) {
+            if ($resource = $this->resourceStorage->manage()->find($resourceId)) {
                 $src = $this->resourceStorage->consume()->src($resource)->getSrc();
-                $fileUpload = $fileUpload->withAdditionalOnLoadCode(function ($id) use ($src) {
-                    return <<<JS
-                    const file_element = document.getElementById('$id');
-                    const image_element = document.createElement('img');
-                    image_element.src = `$src`;
-                    image_element.alt = 'Preview Image';
-                    image_element.style.marginTop = '20px';
-                    image_element.style.width = '100%';
-                    image_element.style.maxWidth = '1000px';
-                    image_element.style.height = '1000px';
-                    image_element.style.objectFit = 'contain';
-                    image_element.style.objectPosition = 'left top';
-                    file_element.parentElement.append(image_element);
-                    JS;
-                });
+
+                $fileUpload = $fileUpload
+                    ->withValue([$resourceId])
+                    ->withByLine(
+                    "<img src='$src' als='Preview Image' style='width: 100%; max-width: 800px; padding: 10px 10px 10px 0;' />"
+                );
             }
         }
 

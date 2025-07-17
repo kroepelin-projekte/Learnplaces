@@ -17,7 +17,7 @@ final class VideoBlockModel extends BlockModel
 {
     use VideoBlockDtoMappingAware;
 
-    private string $resourceId;
+    private string $resourceId = '';
 
     public function getResourceId(): string
     {
