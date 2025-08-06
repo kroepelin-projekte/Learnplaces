@@ -6,9 +6,11 @@ use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Handler\PK
 
 class Auth
 {
-
     public function endpoint(array $params, array $request_body): void
     {
+        $logger = \ilLoggerFactory::getLogger('Learnplaces');
+        $logger->info('API Auth Endpoint. Now redirecting to goto ilObjLearnplacesGUI');
+
         (new PkceHandler())->initBeforeILIASAuth();
     }
 }

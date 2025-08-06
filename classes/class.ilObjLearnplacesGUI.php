@@ -118,6 +118,22 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         $template->setAlertProperties($properties);
 
         switch ($nextClass) {
+            case strtolower(ilLearningProgressGUI::class):
+                $user_id = $this->user->getId();
+                if (!$this->access->checkAccess('write', "", $this->object->getRefId())) {
+                    throw new Exception('Permission denied');
+                }
+                $this->renderTabs();
+                $this->tabs_gui->setTabActive("learning_progress");
+                $new_gui = new ilLearningProgressGUI(
+                    ilLearningProgressBaseGUI::LP_CONTEXT_REPOSITORY,
+                    $this->object->getRefId(),
+                    $user_id
+                );
+                $this->ctrl->forwardCommand($new_gui);
+                $this->tpl->printToStdout();
+                break;
+
             case strtolower(ilInfoScreenGUI::class):
                 if (!$this->access->checkAccess('visible', "", $this->object->getRefId())) {
                     throw new Exception('Permission denied');
@@ -322,6 +338,15 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         if ($this->accessGuard->hasWritePermission()) {
             $this->learnplaceTabs->addTab(xsrlSettingGUI::TAB_ID, $this->plugin->txt('tabs_settings'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlSettingGUI::class], CommonControllerAction::CMD_EDIT));
             $this->learnplaceTabs->addTab(xsrlVisitorsGUI::TAB_ID, $this->plugin->txt('tabs_visitor'), $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlVisitorsGUI::class], CommonControllerAction::CMD_INDEX));
+
+            if (ilLearningProgressAccess::checkAccess($this->object->getRefId())) {
+                $this->tabs_gui->addTarget(
+                    'learning_progress',
+                    $this->ctrl->getLinkTargetByClass([ilObjPluginDispatchGUI::class, self::class, ilLearningProgressGUI::class], ''),
+                    '',
+                    array('illplistofobjectsgui', 'illplistofsettingsgui', 'illearningprogressgui', 'illplistofprogressgui')
+                );
+            }
         }
 
         $this->addInfoTab();
@@ -370,6 +395,9 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
             $DIC->ctrl()->clearParametersByClass(xsrlContentGUI::class);
             return;
         }
+
+        $logger = ilLoggerFactory::getLogger('Learnplaces');
+        $logger->info('goto: redirect from ilObjLearnplacesGUI to xsrlAuthGUI');
 
         $DIC->ctrl()->setParameterByClass(xsrlAuthGUI::class, 'state', $state);
         $DIC->ctrl()->redirectByClass([ilUIPluginRouterGUI::class, xsrlAuthGUI::class], xsrlAuthGUI::CMD_AUTH);

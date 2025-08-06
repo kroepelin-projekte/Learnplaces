@@ -14,7 +14,10 @@ class Token
      */
     public function endpoint(array $params, array $request_body): void
     {
+        $logger = \ilLoggerFactory::getLogger('Learnplaces');
+        $logger->info('API Token endpoint');
         if (!isset($request_body['state'], $request_body['code'], $request_body['code_verifier'])) {
+            $logger->info('[API Token endpoint] State, Code or Code Verifier not set.');
             Response::send(401, DEVMODE ? 'token route: wrong body' : '', ['success' => false]);
         }
 
