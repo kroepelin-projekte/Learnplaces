@@ -12,6 +12,7 @@ use KPG\Learnplaces\service\publicapi\model\ILIASLinkBlockModel;
 use KPG\Learnplaces\service\publicapi\model\MapBlockModel;
 use KPG\Learnplaces\service\security\AccessGuard;
 use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
+use KPG\Learnplaces\persistence\entity\VideoBlock;
 
 /**
  * Class ilObjLearnplacesGUI
@@ -145,6 +146,10 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
                 $this->tpl->printToStdout();
                 break;
             case "":
+                if ($this->ctrl->getCmd() === 'streamVideo') {
+                    $this->streamVideo();
+                    break;
+                }
             case strtolower(ilObjLearnplacesGUI::class):
                 parent::executeCommand();
                 break;
@@ -402,5 +407,27 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         $DIC->ctrl()->setParameterByClass(xsrlAuthGUI::class, 'state', $state);
         $DIC->ctrl()->redirectByClass([ilUIPluginRouterGUI::class, xsrlAuthGUI::class], xsrlAuthGUI::CMD_AUTH);
         $DIC->ctrl()->clearParametersByClass(xsrlAuthGUI::class);
+    }
+
+    /**
+     * @return void
+     * @throws arException
+     */
+    private function streamVideo(): void
+    {
+        global $DIC;
+        $query = $DIC->http()->wrapper()->query();
+        $int = $DIC->refinery()->kindlyTo()->int();
+        if (!$query->has('block_id')) {
+            return;
+        }
+        $block_id = $query->retrieve('block_id', $int);
+        $rid = VideoBlock::where(['fk_block_id' => $block_id])->first()->getResourceId();
+
+        if ($identification = $DIC->resourceStorage()->manage()->find($rid)) {
+            $file_path = $DIC->resourceStorage()->consume()->stream($identification)->getStream()->getMetaData('uri');
+            $stream = new \KPG\Learnplaces\util\VideoStream($file_path);
+            $stream->start();
+        }
     }
 }

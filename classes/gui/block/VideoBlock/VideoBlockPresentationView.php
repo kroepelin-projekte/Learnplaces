@@ -23,6 +23,7 @@ use KPG\Learnplaces\util\DeleteItemModal;
 use xsrlVideoBlockGUI;
 use ILIAS\Filesystem\Stream\Streams;
 use ILIAS\FileDelivery\Delivery\Disposition;
+use KPG\Learnplaces\util\VideoStream;
 
 /**
  * Class VideoBlockPresentationView
@@ -79,20 +80,18 @@ final class VideoBlockPresentationView implements Renderable
         $renderer = PluginContainer::resolve('renderer');
         /** @var \ILIAS\ResourceStorage\Services $resourceStorage */
         $resourceStorage = PluginContainer::resolve('resourceStorage');
+        $ctrl = PluginContainer::resolve('ctrl');
 
-        $resourceId = $this->model->getResourceId();
-        $resource = new ResourceIdentification($resourceId);
-        if ($resourceStorage->manage()->find($resourceId)) {
+        $block_id = $this->model->getId();
 
-            $src = $resourceStorage->consume()
-                                   ->src($resource)
-                                   ->getSrc();
+        $ctrl->setParameterByClass(\ilObjLearnplacesGUI::class, 'block_id', $block_id);
+        $src = $ctrl->getLinkTargetByClass([\ilObjPluginDispatchGUI::class, \ilObjLearnplacesGUI::class], 'streamVideo');
+        $ctrl->clearParametersByClass(\ilObjLearnplacesGUI::class);
 
-            // Kitchensink-Component Video is not responsive
-            $videoHTML = "<video style='width: 100%;' controls><source src=\"$src\" type=\"video/mp4\">Your browser does not support the video tag.</video>";
+        // Kitchensink-Component Video is not responsive
+        $videoHTML = "<video style='width: 100%;' controls><source src=\"$src\" type=\"video/mp4\">Your browser does not support the video tag.</video>";
 
-            $this->template->setVariable('CONTENT', $videoHTML);
-        }
+        $this->template->setVariable('CONTENT', $videoHTML);
     }
 
     /**

@@ -44,10 +44,7 @@ final class VideoBlockEditFormView extends AbstractBlockEditFormView
             $src = $this->resourceStorage->consume()->src($resource)->getSrc();
 
             $fileUpload = $fileUpload
-                ->withValue([$rid])
-                ->withByLine(
-                    "<video src='$src' controls='controls' style='width: 100%; max-width: 800px; padding: 10px 10px 10px 0;' />"
-                );
+                ->withValue([$rid]);
         }
 
         return $this->field->section([
