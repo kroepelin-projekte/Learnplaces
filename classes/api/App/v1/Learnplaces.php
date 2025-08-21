@@ -181,10 +181,11 @@ class Learnplaces
      */
     private function checkLearnplace(Learnplace $obj_learnplace_repository, Configuration $obj_learnplace_configuration): bool
     {
+        // todo: check removed. _isInTrash needs ref_id
         // Check Learnplace is in trash
-        if(ilObject::_isInTrash($obj_learnplace_repository->getObjectId())) {
+/*        if(ilObject::_isInTrash($obj_learnplace_repository->getObjectId())) {
             return false;
-        }
+        }*/
 
         // Check Learnplace offline status
         if(ilObject::lookupOfflineStatus($obj_learnplace_repository->getObjectId())) {

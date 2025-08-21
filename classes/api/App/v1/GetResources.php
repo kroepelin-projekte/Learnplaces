@@ -18,14 +18,6 @@ class GetResources
         $rid = htmlspecialchars($params['rid']);
 
         if ($identification = $DIC->resourceStorage()->manage()->find($rid)) {
-            $mime_type = $DIC->resourceStorage()->manage()->getCurrentRevision($identification)->getInformation()->getMimeType();
-            if (str_contains($mime_type, 'video')) {
-                $file_path = $DIC->resourceStorage()->consume()->stream($identification)->getStream()->getMetaData('uri');
-                $video_stream = new \KPG\Learnplaces\util\VideoStream($file_path);
-                $video_stream->start();
-                return;
-            }
-
             $DIC->resourceStorage()->consume()->download(new ResourceIdentification($rid))->run();
             Response::send(200);
         }
