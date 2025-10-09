@@ -166,6 +166,7 @@ class Learnplaces
                 "location" => [
                     "latitude" => $obj_learnplace_repository->getLocation()->getLatitude(),
                     "longitude" => $obj_learnplace_repository->getLocation()->getLongitude(),
+                    "radius" => $obj_learnplace_repository->getLocation()->getRadius(),
                 ]
             ];
         }
