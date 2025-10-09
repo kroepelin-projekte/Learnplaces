@@ -162,7 +162,11 @@ class Learnplaces
                 "tile_image" => $obj_learnplace->getObjectProperties()->getPropertyTileImage()->getTileImage(
                 )->getRid(),
                 "visited" => $visit_result->rowCount() > 0,
-                "tags" =>  explode(",", $string_tags)
+                "tags" =>  explode(",", $string_tags),
+                "location" => [
+                    "latitude" => $obj_learnplace_repository->getLocation()->getLatitude(),
+                    "longitude" => $obj_learnplace_repository->getLocation()->getLongitude(),
+                ]
             ];
         }
         return $all_learnplaces;
