@@ -35,9 +35,17 @@ such as formatted text, images, videos, ILIAS links or accordions.
 mkdir -p Customizing/global/plugins/Services/Repository/RepositoryObject
 cd Customizing/global/plugins/Services/Repository/RepositoryObject
 ```
-**Apache Config**
 
-```htaccess
+**Nginx Config**
+```nginx
+# Learnplaces
+location ~ ^/api/learnplaceapp/(.*)$ {
+    rewrite ^/api/learnplaceapp/(.*)$ /Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php last;
+}
+```
+
+**Apache Config**
+```apacheconf
 <IfModule mod_rewrite.c>
         RewriteEngine on
 
