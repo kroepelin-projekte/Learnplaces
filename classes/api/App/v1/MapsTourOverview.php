@@ -24,10 +24,11 @@ class MapsTourOverview
 
         $map_data = [];
         foreach ($learnplaces_map_plugin->getTourModel()->getTourMapsOfUser() as $tour) {
-            $map_data[$tour['context_ref_id']] = [
+            $current_map = [
                 'map_id' => $tour['map_id'],
                 "title" => $tour['title'],
                 "context_ref_id" => $tour['context_ref_id'],
+                'tour_learnplaces' => []
             ];
 
             foreach ($tour['tour_learnplaces'] as $learnplace ) {
@@ -35,7 +36,7 @@ class MapsTourOverview
                 $visited = $learnplace['visited'];
                 $learnplace_object = $learnplace_service->findByObjectId(\ilObject::_lookupObjId($learnplace_ref_id));
 
-                $map_data[$tour['context_ref_id']]['tour_learnplaces'][] = [
+                $current_map['tour_learnplaces'][] = [
                     'id' => $learnplace_object->getId(),
                     "learnplace_ref_id" => $learnplace_ref_id,
                     'title' => \ilObject::_lookupTitle($learnplace_object->getObjectId()),
@@ -45,6 +46,8 @@ class MapsTourOverview
                     'visited' => $visited,
                 ];
             }
+
+            $map_data[] = $current_map;
         }
 
         Response::send(200, null, $map_data);
