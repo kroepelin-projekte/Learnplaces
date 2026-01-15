@@ -14,6 +14,7 @@ $this->add('learnplaceapp/v1/resources/:rid', 'KPG\Learnplaces\api\App\v1', 'Get
 $this->add('learnplaceapp/v1/maps-tour', 'KPG\Learnplaces\api\App\v1', 'MapsTourOverview@endpoint', 'GET', true);
 $this->add('learnplaceapp/v1/maps-tour/:id', 'KPG\Learnplaces\api\App\v1', 'MapsTour@endpoint', 'GET', true);
 $this->add('learnplaceapp/v1/maps-collection', 'KPG\Learnplaces\api\App\v1', 'MapsCollectionOverview@endpoint', 'GET', true);
+$this->add('learnplaceapp/v1/maps-collection/:id', 'KPG\Learnplaces\api\App\v1', 'MapsCollection@endpoint', 'GET', true);
 
 $this->add('learnplaceapp/v1/auth', 'KPG\Learnplaces\api\App\v1', 'Auth@endpoint', 'GET');
 $this->add('learnplaceapp/v1/token', 'KPG\Learnplaces\api\App\v1', 'Token@endpoint', 'POST');

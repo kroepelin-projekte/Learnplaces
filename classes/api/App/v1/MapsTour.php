@@ -38,9 +38,7 @@ class MapsTour
                 "context_ref_id" => $tour['context_ref_id'],
             ];
 
-            foreach ($tour['tour_learnplaces'] as $learnplace ) {
-                $learnplace_ref_id = $learnplace['learnplace_ref_id'];
-                $visited = $learnplace['visited'];
+            foreach ($tour['tour_learnplaces'] as $learnplace_ref_id ) {
                 $learnplace_object = $learnplace_service->findByObjectId(\ilObject::_lookupObjId($learnplace_ref_id));
 
                 $map_data['tour_learnplaces'][] = [
@@ -50,7 +48,7 @@ class MapsTour
                     'latitude' => $learnplace_object->getLocation()->getLatitude(),
                     'longitude' => $learnplace_object->getLocation()->getLongitude(),
                     'radius' => $learnplace_object->getLocation()->getRadius(),
-                    'visited' => $visited,
+                    'visited' => $learnplaces_map_plugin->getTourModel()->isVisited($DIC->user()->getId(), $learnplace_object->getId()),
                 ];
             }
 
