@@ -5,6 +5,7 @@ namespace KPG\Learnplaces\api\App\v1;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
+use KPG\Learnplaces\persistence\dto\Configuration;
 
 class MapsTour
 {
@@ -38,8 +39,14 @@ class MapsTour
                 "context_ref_id" => $tour['context_ref_id'],
             ];
 
-            foreach ($tour['tour_learnplaces'] as $learnplace_ref_id ) {
+            foreach ($tour['tour_learnplaces'] ?? [] as $learnplace_ref_id ) {
                 $learnplace_object = $learnplace_service->findByObjectId(\ilObject::_lookupObjId($learnplace_ref_id));
+
+                /** @var Configuration $configuration */
+                $configuration = $learnplace_object->getConfiguration();
+                if (!$configuration->isOnline()) {
+                    continue;
+                }
 
                 $map_data['tour_learnplaces'][] = [
                     'id' => $learnplace_object->getId(),
