@@ -29,39 +29,12 @@ class MapsTour
         /** @var LearnplaceRepository $learnplace_service  */
         $learnplace_service = PluginContainer::resolve(LearnplaceRepository::class);
 
-        $tour = $learnplaces_map_plugin->getTourModel()->getTourMap($id);
+        $tour_map_data = $learnplaces_map_plugin->getTourModel()->getTourMap($id);
 
-        if ($tour) {
-            $map_data = [
-                'map_id' => $tour['map_id'],
-                "title" => $tour['title'],
-                "description" => $tour['description'],
-                "context_ref_id" => $tour['context_ref_id'],
-            ];
-
-            foreach ($tour['tour_learnplaces'] ?? [] as $learnplace_ref_id ) {
-                $learnplace_object = $learnplace_service->findByObjectId(\ilObject::_lookupObjId($learnplace_ref_id));
-
-                /** @var Configuration $configuration */
-                $configuration = $learnplace_object->getConfiguration();
-                if (!$configuration->isOnline()) {
-                    continue;
-                }
-
-                $map_data['tour_learnplaces'][] = [
-                    'id' => $learnplace_object->getId(),
-                    "learnplace_ref_id" => $learnplace_ref_id,
-                    'title' => \ilObject::_lookupTitle($learnplace_object->getObjectId()),
-                    'latitude' => $learnplace_object->getLocation()->getLatitude(),
-                    'longitude' => $learnplace_object->getLocation()->getLongitude(),
-                    'radius' => $learnplace_object->getLocation()->getRadius(),
-                    'visited' => $learnplaces_map_plugin->getTourModel()->isVisited($DIC->user()->getId(), $learnplace_object->getId()),
-                ];
-            }
-
-            Response::send(200, null, $map_data);
+        if (!$tour_map_data) {
+            Response::send(404, null, ['error' => 'Tour Map not found']);
         }
 
-        Response::send(404, null, ['error' => 'Tour Map not found']);
+        Response::send(200, null, $tour_map_data);
     }
 }

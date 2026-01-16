@@ -19,36 +19,8 @@ class MapsTourOverview
             Response::send(200, null, []);
         }
 
-        /** @var LearnplaceRepository $learnplace_service  */
-        $learnplace_service = PluginContainer::resolve(LearnplaceRepository::class);
+        $tour_map_data = iterator_to_array($learnplaces_map_plugin->getTourModel()->getTourMapsOfUser());
 
-        $map_data = [];
-        foreach ($learnplaces_map_plugin->getTourModel()->getTourMapsOfUser() as $tour) {
-            $current_map = [
-                'map_id' => $tour['map_id'],
-                "title" => $tour['title'],
-                'description' => nl2br($tour['description']),
-                "context_ref_id" => $tour['context_ref_id'],
-                'tour_learnplaces' => []
-            ];
-
-            foreach ($tour['tour_learnplaces'] as $learnplace_ref_id ) {
-                $learnplace_object = $learnplace_service->findByObjectId(\ilObject::_lookupObjId($learnplace_ref_id));
-
-                $current_map['tour_learnplaces'][] = [
-                    'id' => $learnplace_object->getId(),
-                    "learnplace_ref_id" => $learnplace_ref_id,
-                    'title' => \ilObject::_lookupTitle($learnplace_object->getObjectId()),
-                    'latitude' => $learnplace_object->getLocation()->getLatitude(),
-                    'longitude' => $learnplace_object->getLocation()->getLongitude(),
-                    'radius' => $learnplace_object->getLocation()->getRadius(),
-                    'visited' => $learnplaces_map_plugin->getTourModel()->isVisited($DIC->user()->getId(), $learnplace_object->getId())
-                ];
-            }
-
-            $map_data[] = $current_map;
-        }
-
-        Response::send(200, null, $map_data);
+        Response::send(200, null, $tour_map_data);
     }
 }

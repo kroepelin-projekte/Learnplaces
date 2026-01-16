@@ -52,7 +52,14 @@ class VerifyQRCode
 
             $ar_visit = new VisitJournal();
             $ar_visit->setUserId($DIC->user()->getId())->setFkLearnplaceId($rec['pk_id'])->setTime(time())->create();
-            Response::send(200, null, ["status" => "QR_CODE_USER_FIRST_TIME_HERE", "id" => $rec['pk_id'], "title" => $title]);
+            Response::send(200, null, [
+                "status" => "QR_CODE_USER_FIRST_TIME_HERE",
+                "id" => $rec['pk_id'],
+                "title" => $title,
+                "latitude" => $learnplace->getLocation()->getLatitude(),
+                "longitude" => $learnplace->getLocation()->getLongitude(),
+                "radius" => $learnplace->getLocation()->getRadius()
+            ]);
         }
 
         Response::send(200, DEVMODE ? "QR_CODE_NOT_FOUND" : null, ["status" => "QR_CODE_NOT_FOUND"]);
