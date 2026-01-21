@@ -1,6 +1,7 @@
 <?php
 
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\ConfigController;
+
 /**
  * @ilCtrl_IsCalledBy ilLearnplacesConfigGUI: ilObjComponentSettingsGUI
  */

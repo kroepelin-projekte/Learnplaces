@@ -6,13 +6,11 @@ require_once __DIR__ . '/bootstrap.php';
 
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\helper\CommonControllerAction;
-use KPG\Learnplaces\service\publicapi\block\LearnplaceService;
 use KPG\Learnplaces\service\publicapi\block\MapBlockService;
 use KPG\Learnplaces\service\publicapi\model\ILIASLinkBlockModel;
-use KPG\Learnplaces\service\publicapi\model\MapBlockModel;
 use KPG\Learnplaces\service\security\AccessGuard;
-use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
 use KPG\Learnplaces\persistence\entity\VideoBlock;
+use KPG\Learnplaces\util\VideoStream;
 
 /**
  * Class ilObjLearnplacesGUI
@@ -40,32 +38,20 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
     public const TAB_ID_PERMISSION = 'id_permissions';
     public const LP_SESSION_ID = 'xsrl_lp_session_state';
 
-    /**
-     * @var MapBlockService $mapBlockService
-     */
-    private $mapBlockService;
-    /**
-     * @var int $objectId
-     */
-    private $objectId;
-    /**
-     * @var ilTabsGUI $learnplaceTabs
-     */
-    private $learnplaceTabs;
-    /**
-     * @var AccessGuard $accessGuard
-     */
-    private $accessGuard;
-
+    private MapBlockService $mapBlockService;
+    private int $objectId;
+    private ilTabsGUI $learnplaceTabs;
+    private AccessGuard $accessGuard;
     private ilLearnplacesPlugin $plugin;
 
     /**
      * ilObjLearnplacesGUI constructor.
      *
-     * @param int|null  $a_ref_id
-     * @param int       $a_id_type
-     * @param int       $a_parent_node_id
+     * @param int|null $a_ref_id
+     * @param int      $a_id_type
+     * @param int      $a_parent_node_id
      *
+     * @throws ilCtrlException
      * @see ilObjectPluginGUI for possible id types.
      */
     public function __construct($a_ref_id = 0, int $a_id_type = self::REPOSITORY_NODE_ID, int $a_parent_node_id = 0)
@@ -93,6 +79,9 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
 
     /**
      * Main Triage to following GUI-Classes
+     *
+     * @throws ilCtrlException|arException
+     * @throws Exception
      */
     public function executeCommand(): void
     {
@@ -104,7 +93,7 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         $template = PluginContainer::resolve('tpl');
         $template->setTitle(ilObject::_lookupTitle($this->objectId));
         $template->setDescription(ilObject::_lookupDescription($this->objectId));
-        $template->setTitleIcon(/*ilObject::_getIcon($this->objectId)*/'Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/images/icon_xsrl.svg');
+        $template->setTitleIcon('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/images/icon_xsrl.svg');
         if (!$this->getCreationMode()) {
             $this->setLocator();
         }
@@ -141,7 +130,6 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
                 }
                 $this->renderTabs();
                 $info = new ilInfoScreenGUI($this);
-                //$info->enablePrivateNotes();
                 $this->ctrl->forwardCommand($info);
                 $this->tpl->printToStdout();
                 break;
@@ -150,6 +138,7 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
                     $this->streamVideo();
                     break;
                 }
+                break;
             case strtolower(ilObjLearnplacesGUI::class):
                 parent::executeCommand();
                 break;
@@ -216,21 +205,22 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
                 $this->learnplaceTabs->activateTab(self::TAB_ID_PERMISSION);
                 if ($template instanceof ilGlobalPageTemplate) {
                     $template->printToStdout();
-                } else {
-                    //$template->getStandardTemplate();
-                    //$template->show();
                 }
+                break;
             case strtolower(xsrlVisitorsGUI::class):
                 $this->renderTabs();
                 $this->learnplaceTabs->activateTab(xsrlVisitorsGUI::TAB_ID);
                 $this->ctrl->forwardCommand(PluginContainer::resolve(xsrlVisitorsGUI::class));
                 break;
             default:
-                $this->ctrl->redirectByClass(static::class, $this->getStandardCmd());
+                $this->ctrl->redirectByClass(ilObjLearnplacesGUI::class, $this->getStandardCmd());
                 break;
         }
     }
 
+    /**
+     * @throws ilCtrlException
+     */
     public function performCommand(string $cmd): void
     {
         if ($this->accessGuard->hasReadPermission()) {
@@ -244,6 +234,9 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         $this->ctrl->redirectByClass(ilRepositoryGUI::class, $this->getStandardCmd());
     }
 
+    /**
+     * @throws ilCtrlException
+     */
     public function infoScreen(): void
     {
         $this->ctrl->redirectByClass(
@@ -290,17 +283,11 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         return self::DEFAULT_CMD;
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function supportsCloning(): bool
     {
         return true;
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function supportsExport(): bool
     {
         return false;
@@ -315,6 +302,9 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         $this->ctrl->redirectByClass(xsrlContentGUI::class, self::DEFAULT_CMD);
     }
 
+    /**
+     * @throws ilCtrlException
+     */
     public function addInfoTab(): void
     {
         $ilAccess = $this->access;
@@ -374,7 +364,7 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         try {
             $map = $this->mapBlockService->findByObjectId(ilObject::_lookupObjectId($this->ref_id));
             return $this->accessGuard->isValidBlockReference($map->getId());
-        } catch (InvalidArgumentException $ex) {
+        } catch (InvalidArgumentException) {
             return false;
         }
     }
@@ -393,8 +383,8 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
         }
 
         try {
-            [$cmd, $state] = explode('_', $a_target[0]);
-        } catch (Exception $ex) {
+            [, $state] = explode('_', $a_target[0]);
+        } catch (Exception) {
             $DIC->ctrl()->setParameterByClass(xsrlContentGUI::class, 'ref_id', $a_target[0]);
             $DIC->ctrl()->redirectByClass([ilObjPluginDispatchGUI::class, ilObjLearnplacesGUI::class, xsrlContentGUI::class], 'index');
             $DIC->ctrl()->clearParametersByClass(xsrlContentGUI::class);
@@ -426,7 +416,7 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
 
         if ($identification = $DIC->resourceStorage()->manage()->find($rid)) {
             $file_path = $DIC->resourceStorage()->consume()->stream($identification)->getStream()->getMetaData('uri');
-            $stream = new \KPG\Learnplaces\util\VideoStream($file_path);
+            $stream = new VideoStream($file_path);
             $stream->start();
         }
     }

@@ -3,9 +3,7 @@
 declare(strict_types=1);
 
 use ILIAS\DI\UIServices;
-use ILIAS\Filesystem\Stream\Stream;
 use ILIAS\Refinery\Factory as Refinery;
-use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use Psr\Http\Message\ServerRequestInterface;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\AccordionBlock\AccordionBlockPresentationView;
@@ -19,21 +17,19 @@ use KPG\Learnplaces\gui\block\RichTextBlock\RichTextBlockEditFormView;
 use KPG\Learnplaces\gui\block\util\AccordionAware;
 use KPG\Learnplaces\gui\block\util\ReferenceIdAware;
 use KPG\Learnplaces\gui\block\VideoBlock\VideoBlockPresentationView;
-use KPG\Learnplaces\gui\component\PlusView;
 use KPG\Learnplaces\gui\ContentPresentationView;
 use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\publicapi\block\AccordionBlockService;
 use KPG\Learnplaces\service\publicapi\block\LearnplaceService;
 use KPG\Learnplaces\service\publicapi\model\AccordionBlockModel;
 use KPG\Learnplaces\service\publicapi\model\BlockModel;
-use KPG\Learnplaces\service\publicapi\model\ILIASLinkBlockModel;
 use KPG\Learnplaces\service\publicapi\model\MapBlockModel;
-use KPG\Learnplaces\service\publicapi\model\PictureBlockModel;
-use KPG\Learnplaces\service\publicapi\model\RichTextBlockModel;
-use KPG\Learnplaces\service\publicapi\model\VideoBlockModel;
 use KPG\Learnplaces\service\security\AccessGuard;
 use KPG\Learnplaces\service\visibility\LearnplaceServiceDecoratorFactory;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
+use KPG\Learnplaces\gui\component\PlusView;
+use ILIAS\UI\Component\Input\Container\Form\Standard;
+use ILIAS\UI\Factory;
 
 /**
  *
@@ -64,7 +60,7 @@ final class xsrlContentGUI
      */
     public const ANCHOR_TEMPLATE = 'sequence-';
 
-    private static $blockTypeViewMapping = [
+    private static array $blockTypeViewMapping = [
         //BlockType::PICTURE_UPLOAD   => xsrlPictureUploadBlockGUI::class,
         BlockType::PICTURE => xsrlPictureBlockGUI::class,
         BlockType::RICH_TEXT => xsrlRichTextBlockGUI::class,
@@ -74,77 +70,42 @@ final class xsrlContentGUI
         BlockType::ACCORDION => xsrlAccordionBlockGUI::class,
     ];
 
-    /**
-     * @var ilTabsGUI $tabs
-     */
-    private $tabs;
-    /**
-     * @var ilGlobalPageTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var RenderableBlockViewFactory $renderableFactory
-     */
-    private $renderableFactory;
-    /**
-     * @var LearnplaceService $learnplaceService
-     */
-    private $learnplaceService;
-    /**
-     * @var AccordionBlockService $accordionService
-     */
-    private $accordionService;
-    /**
-     * @var LearnplaceServiceDecoratorFactory $learnplaceServiceDecorationFactory
-     */
-    private $learnplaceServiceDecorationFactory;
-    /**
-     * @var BlockAddFormGUI $blockAddGUI
-     */
-    private $blockAddGUI;
-    /**
-     * @var ServerRequestInterface $request
-     */
-    private $request;
-    /**
-     * @var AccessGuard $accessGuard
-     */
-    private $accessGuard;
-
+    private ilTabsGUI $tabs;
+    private ilGlobalPageTemplate $template;
+    private ilCtrl $controlFlow;
+    private ilLearnplacesPlugin $plugin;
+    private RenderableBlockViewFactory $renderableFactory;
+    private LearnplaceService $learnplaceService;
+    private AccordionBlockService $accordionService;
+    private LearnplaceServiceDecoratorFactory $learnplaceServiceDecorationFactory;
+    private BlockAddFormGUI $blockAddGUI;
+    private ServerRequestInterface $request;
+    private AccessGuard $accessGuard;
     private UIServices $ui;
     private ILIAS\HTTP\Services $http;
-
-    private $refinery;
+    private Refinery $refinery;
 
     /**
      * xsrlContentGUI constructor.
      *
-     * @param ilTabsGUI $tabs
-     * @param ilGlobalPageTemplate | ilTemplate $template
-     * @param UIServices $ui
-     * @param ilCtrl $controlFlow
-     * @param ILIAS\HTTP\Services $http
-     * @param Refinery $refinery
-     * @param ilLearnplacesPlugin $plugin
-     * @param RenderableBlockViewFactory $renderableFactory
-     * @param LearnplaceService $learnplaceService
-     * @param AccordionBlockService $accordionService
+     * @param ilTabsGUI                         $tabs
+     * @param ilGlobalPageTemplate              $template
+     * @param UIServices                        $ui
+     * @param ilCtrl                            $controlFlow
+     * @param ILIAS\HTTP\Services               $http
+     * @param Refinery                          $refinery
+     * @param ilLearnplacesPlugin               $plugin
+     * @param RenderableBlockViewFactory        $renderableFactory
+     * @param LearnplaceService                 $learnplaceService
+     * @param AccordionBlockService             $accordionService
      * @param LearnplaceServiceDecoratorFactory $learnplaceServiceDecorationFactory
-     * @param BlockAddFormGUI $blockAddGUI
-     * @param ServerRequestInterface $request
-     * @param AccessGuard $accessGuard
+     * @param BlockAddFormGUI                   $blockAddGUI
+     * @param ServerRequestInterface            $request
+     * @param AccessGuard                       $accessGuard
      */
     public function __construct(
         ilTabsGUI $tabs,
-        $template,
+        ilGlobalPageTemplate $template,
         UIServices $ui,
         ilCtrl $controlFlow,
         ILIAS\HTTP\Services $http,
@@ -189,7 +150,9 @@ final class xsrlContentGUI
                 if ($this->accessGuard->hasReadPermission()) {
                     $this->index();
                     if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
-                        $this->template->show();
+                        if (method_exists($this->template, 'show')) {
+                            $this->template->show();
+                        }
                     } else {
                         $this->template->printToStdout();
                     }
@@ -209,7 +172,9 @@ final class xsrlContentGUI
                 if ($this->accessGuard->hasWritePermission()) {
                     $this->{$cmd}();
                     if (version_compare(ILIAS_VERSION_NUMERIC, "6.0", "<")) {
-                        $this->template->show();
+                        if (method_exists($this->template, 'show')) {
+                            $this->template->show();
+                        }
                     } else {
                         $this->template->printToStdout();
                     }
@@ -228,7 +193,6 @@ final class xsrlContentGUI
      * actions
      *
      * @return void
-     * @throws ilCtrlException
      * @throws ilTemplateException
      */
     private function index(): void
@@ -301,7 +265,7 @@ final class xsrlContentGUI
         }
 
         $input = intval($form_data[BlockAddFormGUI::POST_VISIBILITY_SECTION][BlockAddFormGUI::POST_BLOCK_TYPES]);
-        $controller = static::$blockTypeViewMapping[$input];
+        $controller = xsrlContentGUI::$blockTypeViewMapping[$input];
         $this->controlFlow->saveParameterByClass($controller, PlusView::POSITION_QUERY_PARAM);
         $this->controlFlow->saveParameterByClass($controller, PlusView::ACCORDION_QUERY_PARAM);
 
@@ -335,7 +299,6 @@ final class xsrlContentGUI
 
         $blockIterator->append(new ArrayIterator($learnplace->getBlocks()));
 
-        $post = $this->request->getParsedBody();
         $form = $this->sequenceForm()->withRequest($this->http->request());
         $formData = $form->getData();
         if ($form->getError()) {
@@ -361,7 +324,6 @@ final class xsrlContentGUI
                 $id = intval(str_replace('block_', '', $key));
                 yield $id => intval($entry);
             }
-            return;
         };
 
         $mappedBlocks = $mappedBlockGenerator($iterator);
@@ -446,6 +408,7 @@ final class xsrlContentGUI
 
     /**
      * @return void
+     * @throws ilCtrlException
      */
     private function sequenceView(): void
     {
@@ -460,12 +423,12 @@ final class xsrlContentGUI
     }
 
     /**
-     * @return \ILIAS\UI\Component\Input\Container\Form\Standard
+     * @return Standard
      * @throws ilCtrlException
      */
-    private function sequenceForm(): \ILIAS\UI\Component\Input\Container\Form\Standard
+    private function sequenceForm(): Standard
     {
-        /** @var \ILIAS\UI\Factory $factory */
+        /** @var Factory $factory */
         $factory = PluginContainer::resolve('factory');
         $field = $factory->input()->field();
 
@@ -482,6 +445,7 @@ final class xsrlContentGUI
             }
             $view = $renderableBlockViewFactory->getInstance($block);
 
+            $blocksOfAccordion = [];
             if ($block instanceof AccordionBlockModel) {
                 $block->setExpand(false);
                 $blocksOfAccordion = $block->getBlocks();

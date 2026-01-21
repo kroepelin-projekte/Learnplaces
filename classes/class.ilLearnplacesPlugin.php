@@ -122,4 +122,8 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
         }
     }
 */
+    public static function _getIcon(string $a_type): string
+    {
+        return 'Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/images/icon_xsrl.svg';
+    }
 }
