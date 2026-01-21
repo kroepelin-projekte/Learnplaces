@@ -7,15 +7,11 @@ namespace KPG\Learnplaces\Setup\Migrations;
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
-use _PHPStan_01e5828ef\Nette\Neon\Exception;
-use ILIAS\DI\Container;
-use ILIAS\Filesystem\Stream\Stream;
 use ILIAS\Setup\Environment;
 use ILIAS\Setup\Migration;
 use ILIAS\Setup\Objective;
 use ilLearnplacesStakeholder;
 use ilResourceStorageMigrationHelper;
-use InitResourceStorage;
 
 class LearnplacesResourceStorageMigrationVideos implements Migration
 {
@@ -54,8 +50,9 @@ class LearnplacesResourceStorageMigrationVideos implements Migration
      *
      * This is not supposed to modify the environment, but will be run to prime the
      * migration object to run `step` and `getRemainingAmountOfSteps` afterwards.
+     * @throws \Exception
      */
-    public function prepare(Environment $environment) : void
+    public function prepare(Environment $environment): void
     {
         $this->helper = new ilResourceStorageMigrationHelper(
             new ilLearnplacesStakeholder(),

@@ -19,6 +19,7 @@ use KPG\Learnplaces\util\DeleteItemModal;
 use xsrlIliasLinkBlockGUI;
 use ILIAS\Data\ReferenceId;
 use ILIAS\StaticURL\Services;
+use ilTemplateException;
 
 /**
  * Class IliasLinkBlockPresentationView
@@ -92,7 +93,7 @@ final class IliasLinkBlockPresentationView implements Renderable
 
     /**
      * @inheritDoc
-     * @throws ilSplitButtonException
+     * @throws ilSplitButtonException|ilTemplateException|\ilCtrlException
      */
     public function getHtml(): string
     {
@@ -110,6 +111,7 @@ final class IliasLinkBlockPresentationView implements Renderable
      * @return ilTemplate               The wrapped template.
      *
      * @throws ilSplitButtonException   Thrown if something went wrong with the split button.
+     * @throws \ilCtrlException
      */
     private function wrapWithBlockTemplate(ilTemplate $blockTemplate): ilTemplate
     {

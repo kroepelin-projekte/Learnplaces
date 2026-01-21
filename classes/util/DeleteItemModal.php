@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\util;
 
-use Closure;
-use ilObjPluginDispatchGUI;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\helper\CommonControllerAction;
-use xsrlAccordionBlockGUI;
 use xsrlContentGUI;
 
 trait DeleteItemModal
@@ -25,9 +22,6 @@ trait DeleteItemModal
     {
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
-        $query = PluginContainer::resolve('query');
-        $refinery = PluginContainer::resolve('refinery');
-        $ctrl = PluginContainer::resolve('ctrl');
 
         if (version_compare(ILIAS_VERSION_NUMERIC, '9.0', '>=')) {
             $affected_item = $factory->modal()->interruptiveItem()
