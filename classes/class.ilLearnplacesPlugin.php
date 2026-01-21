@@ -1,6 +1,33 @@
 <?php
 
 use KPG\Learnplaces\container\PluginContainer;
+use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
+use KPG\Learnplaces\persistence\entity\AccordionBlock;
+use KPG\Learnplaces\persistence\entity\AccordionBlockMember;
+use KPG\Learnplaces\persistence\entity\Answer;
+use KPG\Learnplaces\persistence\entity\AudioBlock;
+use KPG\Learnplaces\persistence\entity\Block;
+use KPG\Learnplaces\persistence\entity\Comment;
+use KPG\Learnplaces\persistence\entity\CommentBlock;
+use KPG\Learnplaces\persistence\entity\Configuration;
+use KPG\Learnplaces\persistence\entity\ExternalStreamBlock;
+use KPG\Learnplaces\persistence\entity\FeedbackBlock;
+use KPG\Learnplaces\persistence\entity\Feedback;
+use KPG\Learnplaces\persistence\entity\HorizontalLineBlock;
+use KPG\Learnplaces\persistence\entity\ILIASLinkBlock;
+use KPG\Learnplaces\persistence\entity\Learnplace;
+use KPG\Learnplaces\persistence\entity\LearnplaceConstraint;
+use KPG\Learnplaces\persistence\entity\Location;
+use KPG\Learnplaces\persistence\entity\MapBlock;
+use KPG\Learnplaces\persistence\entity\Picture;
+use KPG\Learnplaces\persistence\entity\PictureBlock;
+use KPG\Learnplaces\persistence\entity\PictureGalleryEntry;
+use KPG\Learnplaces\persistence\entity\PictureUploadBlock;
+use KPG\Learnplaces\persistence\entity\RichTextBlock;
+use KPG\Learnplaces\persistence\entity\VideoBlock;
+use KPG\Learnplaces\persistence\entity\Visibility;
+use KPG\Learnplaces\persistence\entity\VisitJournal;
+use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 
 require_once __DIR__ . '/bootstrap.php';
 
@@ -52,7 +79,7 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
     {
         $this->deleteFiles();
         $this->dropDatabase();
-        \Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings::uninstall();
+        Settings::uninstall();
     }
 
     /**
@@ -61,31 +88,31 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
     private function dropDatabase(): void
     {
         $database = PluginContainer::resolve('database');
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\AccordionBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\AccordionBlockMember::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\Answer::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\AudioBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\Block::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\Comment::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\CommentBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\Configuration::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\ExternalStreamBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\FeedbackBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\Feedback::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\HorizontalLineBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\ILIASLinkBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\Learnplace::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\LearnplaceConstraint::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\Location::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\MapBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\Picture::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\PictureBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\PictureGalleryEntry::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\PictureUploadBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\RichTextBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\VideoBlock::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\Visibility::returnDbTableName(), false);
-        $database->dropTable(\KPG\Learnplaces\persistence\entity\VisitJournal::returnDbTableName(), false);
+        $database->dropTable(AccordionBlock::returnDbTableName(), false);
+        $database->dropTable(AccordionBlockMember::returnDbTableName(), false);
+        $database->dropTable(Answer::returnDbTableName(), false);
+        $database->dropTable(AudioBlock::returnDbTableName(), false);
+        $database->dropTable(Block::returnDbTableName(), false);
+        $database->dropTable(Comment::returnDbTableName(), false);
+        $database->dropTable(CommentBlock::returnDbTableName(), false);
+        $database->dropTable(Configuration::returnDbTableName(), false);
+        $database->dropTable(ExternalStreamBlock::returnDbTableName(), false);
+        $database->dropTable(FeedbackBlock::returnDbTableName(), false);
+        $database->dropTable(Feedback::returnDbTableName(), false);
+        $database->dropTable(HorizontalLineBlock::returnDbTableName(), false);
+        $database->dropTable(ILIASLinkBlock::returnDbTableName(), false);
+        $database->dropTable(Learnplace::returnDbTableName(), false);
+        $database->dropTable(LearnplaceConstraint::returnDbTableName(), false);
+        $database->dropTable(Location::returnDbTableName(), false);
+        $database->dropTable(MapBlock::returnDbTableName(), false);
+        $database->dropTable(Picture::returnDbTableName(), false);
+        $database->dropTable(PictureBlock::returnDbTableName(), false);
+        $database->dropTable(PictureGalleryEntry::returnDbTableName(), false);
+        $database->dropTable(PictureUploadBlock::returnDbTableName(), false);
+        $database->dropTable(RichTextBlock::returnDbTableName(), false);
+        $database->dropTable(VideoBlock::returnDbTableName(), false);
+        $database->dropTable(Visibility::returnDbTableName(), false);
+        $database->dropTable(VisitJournal::returnDbTableName(), false);
     }
 
     /**
@@ -95,33 +122,21 @@ final class ilLearnplacesPlugin extends ilRepositoryObjectPlugin
     {
         $resourceStorage = PluginContainer::resolve('resourceStorage');
 
-        $pictures = \KPG\Learnplaces\persistence\entity\Picture::get();
+        $pictures = Picture::get();
         foreach ($pictures as $picture) {
             $resourceId = $picture->getResourceId();
-            $identification = new \ILIAS\ResourceStorage\Identification\ResourceIdentification($resourceId);
+            $identification = new ResourceIdentification($resourceId);
             $resourceStorage->manage()->remove($identification, new ilLearnplacesStakeholder());
         }
 
-        $videoBlocks = \KPG\Learnplaces\persistence\entity\VideoBlock::get();
+        $videoBlocks = VideoBlock::get();
         foreach ($videoBlocks as $videoBlock) {
             $resourceId = $videoBlock->getResourceId();
-            $identification = new \ILIAS\ResourceStorage\Identification\ResourceIdentification($resourceId);
+            $identification = new ResourceIdentification($resourceId);
             $resourceStorage->manage()->remove($identification, new ilLearnplacesStakeholder());
         }
     }
-/*
-    public function beforeActivation(): bool
-    {
-        $base_url = \Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings::getBaseURL();
-        if ($base_url === '') {
-            global $DIC;
-            $DIC->ui()->maintemplate()->setOnScreenMessage('failure', $this->txt("lang_before_Activation"));
-            return false;
-        } else {
-            return true;
-        }
-    }
-*/
+
     public static function _getIcon(string $a_type): string
     {
         return 'Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/images/icon_xsrl.svg';

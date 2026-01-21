@@ -14,14 +14,8 @@ require_once __DIR__ . '/bootstrap.php';
  */
 final class ilObjLearnplacesAccess extends ilObjectPluginAccess
 {
-    /**
-     * @var ilObjUser $currentUser
-     */
-    private $currentUser;
-    /**
-     * @var ilAccessHandler $accessControl
-     */
-    private $accessControl;
+    private ilObjUser $currentUser;
+    private ilAccessHandler $accessControl;
 
     /**
      * ilObjLearnplacesAccess constructor.

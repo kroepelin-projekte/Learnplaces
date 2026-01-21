@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use ILIAS\Filesystem\Exception\FileNotFoundException;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\service\publicapi\block\ConfigurationService;
@@ -13,7 +12,6 @@ use KPG\Learnplaces\service\publicapi\model\LearnplaceModel;
 use KPG\Learnplaces\service\publicapi\model\LocationModel;
 use KPG\Learnplaces\service\publicapi\block\util\BlockOperationDispatcher;
 use KPG\Learnplaces\service\publicapi\model\AccordionBlockModel;
-use KPG\Learnplaces\service\filesystem\PathHelper;
 use KPG\Learnplaces\service\publicapi\model\PictureModel;
 use KPG\Learnplaces\persistence\repository\PictureRepository;
 use KPG\Learnplaces\service\publicapi\model\VideoBlockModel;
@@ -106,9 +104,10 @@ final class ilObjLearnplaces extends ilObjectPlugin implements ilLPStatusPluginI
     }
 
     /**
-     * @param ilObject2    $new_obj - cloned object
-     * @param int          $a_target_id
-     * @param int|null     $a_copy_id
+     * @param ilObject2 $new_obj - cloned object
+     * @param int       $a_target_id
+     * @param int|null  $a_copy_id
+     * @throws ilException
      */
     protected function doCloneObject($new_obj, $a_target_id, $a_copy_id = null): void
     {
@@ -206,7 +205,7 @@ final class ilObjLearnplaces extends ilObjectPlugin implements ilLPStatusPluginI
      * @param int $objectId
      * @param string $resourceId
      * @return string
-     * @throws ilException
+     * @throws ilException|Exception
      */
     private function copyFileToNewObject(int $objectId, string $resourceId): string
     {

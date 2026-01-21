@@ -61,8 +61,8 @@ final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI
         $commands = array(
             array(
                 'permission' => 'read',
-                'cmd'        => CommonControllerAction::CMD_INDEX,
-                'default'    => true,
+                'cmd' => CommonControllerAction::CMD_INDEX,
+                'default' => true,
             ),
         );
 
@@ -78,7 +78,7 @@ final class ilObjLearnplacesListGUI extends ilObjectPluginListGUI
     {
         $properties = parent::getProperties();
 
-        if(!ilObjLearnplacesAccess::checkOnline(intval($this->obj_id))) {
+        if (!ilObjLearnplacesAccess::checkOnline($this->obj_id)) {
             $properties[] = [
                 'alert' => true,
                 'property' => $this->txt('common_status'),
