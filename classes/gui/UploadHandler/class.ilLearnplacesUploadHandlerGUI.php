@@ -9,7 +9,6 @@ use ILIAS\FileUpload\Handler\BasicFileInfoResult;
 use ILIAS\FileUpload\Handler\BasicHandlerResult;
 use ILIAS\FileUpload\Handler\HandlerResult;
 use ILIAS\ResourceStorage\Services;
-use ILIAS\ResourceStorage\Stakeholder\ResourceStakeholder;
 
 /**
  * @ilCtrl_isCalledBy ilLearnplacesUploadHandlerGUI: ilobjplugindispatchgui
@@ -17,7 +16,6 @@ use ILIAS\ResourceStorage\Stakeholder\ResourceStakeholder;
 class ilLearnplacesUploadHandlerGUI extends AbstractCtrlAwareUploadHandler
 {
     private Services $storage;
-    /** @var ResourceStakeholder */
     private ilLearnplacesStakeholder $stakeholder;
 
     public function __construct()

@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\block\AccordionBlock;
 
-use ilButtonToSplitButtonMenuItemAdapter;
 use ilCtrl;
-use ILIAS\UI\Implementation\Component\Input\Field\Section;
 use ilLearnplacesPlugin;
-use ilLinkButton;
 use ilSplitButtonException;
-use ilSplitButtonGUI;
 use ilTemplate;
-use ilTextInputGUI;
 use LogicException;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\Renderable;
@@ -22,6 +17,8 @@ use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\publicapi\model\AccordionBlockModel;
 use KPG\Learnplaces\util\DeleteItemModal;
 use xsrlAccordionBlockGUI;
+use ilTemplateException;
+use ilCtrlException;
 
 /**
  * Class AccordionBlockPresentationView
@@ -38,26 +35,11 @@ final class AccordionBlockPresentationView implements Renderable
     public const SEQUENCE_ID_PREFIX = 'block_';
     public const TYPE = 'accordion';
 
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var AccordionBlockModel $model
-     */
-    private $model;
-    /**
-     * @var ContentPresentationView $contentView
-     */
-    private $contentView;
+    private ilLearnplacesPlugin $plugin;
+    private ilTemplate $template;
+    private ilCtrl $controlFlow;
+    private AccordionBlockModel $model;
+    private ContentPresentationView $contentView;
 
     /**
      * PictureUploadBlockPresentationView constructor.
@@ -71,11 +53,13 @@ final class AccordionBlockPresentationView implements Renderable
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
         $this->contentView = $contentView;
-        $this->template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.accordion.html', true, true);
+        $this->template = $plugin->getTemplate('default/block/tpl.accordion.html');
     }
 
     /**
      * @return void
+     * @throws ilCtrlException
+     * @throws ilTemplateException
      */
     private function initView(): void
     {
@@ -103,7 +87,7 @@ final class AccordionBlockPresentationView implements Renderable
      */
     public function getHtml(): string
     {
-        if(is_null($this->model)) {
+        if (is_null($this->model)) {
             throw new LogicException('The accordion block view requires a model to render its content.');
         }
 
@@ -114,15 +98,16 @@ final class AccordionBlockPresentationView implements Renderable
     /**
      * Wraps the given template with the tpl.block.html template.
      *
-     * @param ilTemplate $template      The block template which should be wrapped.
+     * @param ilTemplate $template The block template which should be wrapped.
      *
      * @return ilTemplate               The wrapped template.
      *
      * @throws ilSplitButtonException   Thrown if something went wrong with the split button.
+     * @throws ilCtrlException|ilTemplateException
      */
     private function wrapWithBlockTemplate(ilTemplate $template): ilTemplate
     {
-        $outerTemplate = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = \ilLearnplacesPlugin::getInstance()->getTemplate('default/tpl.block.html');
 
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
@@ -144,7 +129,7 @@ final class AccordionBlockPresentationView implements Renderable
         ])->withLabel($lng->txt('actions')));
 
         //fill outer template
-        if(!$this->isReadonly()) {
+        if (!$this->isReadonly()) {
             $outerTemplate->setVariable('ACTION_BUTTON', $actionMenu . $deleteButton['modal']);
         }
         $outerTemplate->setVariable('CONTENT', $template->get());

@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\block\RichTextBlock;
 
-use ilButtonToSplitButtonMenuItemAdapter;
 use ilCtrl;
 use ilLearnplacesPlugin;
-use ilLinkButton;
 use ilSplitButtonException;
-use ilSplitButtonGUI;
 use ilTemplate;
-use ilTextInputGUI;
 use LogicException;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\Renderable;
@@ -19,9 +15,9 @@ use KPG\Learnplaces\gui\block\util\ReadOnlyViewAware;
 use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\publicapi\model\RichTextBlockModel;
 use KPG\Learnplaces\util\DeleteItemModal;
-use xsrlContentGUI;
-use xsrlPictureBlockGUI;
 use xsrlRichTextBlockGUI;
+use ilTemplateException;
+use ILIAS\UI\Factory;
 
 /**
  * Class RichTextBlockPresentationView
@@ -35,26 +31,13 @@ final class RichTextBlockPresentationView implements Renderable
     use ReadOnlyViewAware;
     use DeleteItemModal;
 
-
     public const SEQUENCE_ID_PREFIX = 'block_';
     public const TYPE = 'richtext';
 
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var RichTextBlockModel $model
-     */
-    private $model;
+    private ilLearnplacesPlugin $plugin;
+    private ilTemplate $template;
+    private ilCtrl $controlFlow;
+    private RichTextBlockModel $model;
 
     /**
      * PictureUploadBlockPresentationView constructor.
@@ -66,7 +49,7 @@ final class RichTextBlockPresentationView implements Renderable
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
-        $this->template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.rich_text.html', true, true);
+        $this->template = \ilLearnplacesPlugin::getInstance()->getTemplate('default/block/tpl.rich_text.html');
     }
 
     /**
@@ -89,10 +72,11 @@ final class RichTextBlockPresentationView implements Renderable
 
     /**
      * @inheritDoc
+     * @throws ilSplitButtonException|ilTemplateException
      */
     public function getHtml(): string
     {
-        if(is_null($this->model)) {
+        if (is_null($this->model)) {
             throw new LogicException('The rich text block view requires a model to render its content.');
         }
 
@@ -102,17 +86,18 @@ final class RichTextBlockPresentationView implements Renderable
     /**
      * Wraps the given template with the tpl.block.html template.
      *
-     * @param ilTemplate $template      The block template which should be wrapped.
+     * @param ilTemplate $template The block template which should be wrapped.
      *
      * @return ilTemplate               The wrapped template.
      *
      * @throws ilSplitButtonException   Thrown if something went wrong with the split button.
+     * @throws \ilCtrlException
      */
     private function wrapWithBlockTemplate(ilTemplate $template): ilTemplate
     {
-        $outerTemplate = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = \ilLearnplacesPlugin::getInstance()->getTemplate('default/tpl.block.html');
 
-        /** @var \ILIAS\UI\Factory $factory */
+        /** @var Factory $factory */
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
         $lng = PluginContainer::resolve('lng');
@@ -134,7 +119,7 @@ final class RichTextBlockPresentationView implements Renderable
         ])->withLabel($lng->txt('actions')));
 
         //fill outer template
-        if(!$this->isReadonly()) {
+        if (!$this->isReadonly()) {
             $outerTemplate->setVariable('ACTION_BUTTON', $actionMenu . $deleteButton['modal']);
         }
         $outerTemplate->setVariable('CONTENT', $template->get());

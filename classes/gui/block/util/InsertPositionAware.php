@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\block\util;
 
-use ilCtrl;
-use Psr\Http\Message\ServerRequestInterface;
 use KPG\Learnplaces\gui\component\PlusView;
 
 use function array_key_exists;
@@ -31,7 +29,7 @@ trait InsertPositionAware
     private function getInsertPosition(array $queries): int
     {
         $position = 0;
-        if(!array_key_exists(PlusView::POSITION_QUERY_PARAM, $queries)) {
+        if (!array_key_exists(PlusView::POSITION_QUERY_PARAM, $queries)) {
             return $position;
         }
 

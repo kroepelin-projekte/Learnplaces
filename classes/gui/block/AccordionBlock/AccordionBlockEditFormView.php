@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\block\AccordionBlock;
 
-use ilCheckboxInputGUI;
 use ILIAS\UI\Implementation\Component\Input\Field\Section;
-use ilTextInputGUI;
-use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\AbstractBlockEditFormView;
-use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\publicapi\model\BlockModel;
 use KPG\Learnplaces\service\publicapi\model\AccordionBlockModel;
 use xsrlAccordionBlockGUI;
@@ -60,6 +56,7 @@ final class AccordionBlockEditFormView extends AbstractBlockEditFormView
 
     /**
      * @inheritDoc
+     * @throws \ilCtrlException
      */
     protected function getFormActionUrl(): string
     {

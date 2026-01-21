@@ -38,50 +38,16 @@ final class xsrlVideoBlockGUI
     public const TAB_ID = 'content';
     public const BLOCK_ID_QUERY_KEY = 'block';
 
-    /**
-     * @var ilTabsGUI $tabs
-     */
-    private $tabs;
-    /**
-     * @var ilGlobalPageTemplate | ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var VideoBlockService $videoBlockService
-     */
-    private $videoBlockService;
-    /**
-     * @var VideoService $videoService
-     */
-    private $videoService;
-    /**
-     * @var LearnplaceService $learnplaceService
-     */
-    private $learnplaceService;
-    /**
-     * @var ConfigurationService $configService
-     */
-    private $configService;
-    /**
-     * @var AccordionBlockService $accordionService
-     */
-    private $accordionService;
-    /**
-     * @var ServerRequestInterface $request
-     */
-    private $request;
-    /**
-     * @var AccessGuard $blockAccessGuard
-     */
-    private $blockAccessGuard;
+    private ilTabsGUI $tabs;
+    private ilGlobalPageTemplate $template;
+    private ilCtrl $controlFlow;
+    private ilLearnplacesPlugin $plugin;
+    private VideoBlockService $videoBlockService;
+    private VideoService $videoService;
+    private LearnplaceService $learnplaceService;
+    private ConfigurationService $configService;
+    private AccordionBlockService $accordionService;
+    private AccessGuard $blockAccessGuard;
 
     /**
      * xsrlVideoBlockGUI constructor.
@@ -213,13 +179,10 @@ final class xsrlVideoBlockGUI
 
             $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
-        } catch (ValidationException $ex) {
+        } catch (ValidationException|LogicException) {
             $form->setValuesByPost();
             $this->template->setContent($form->getHTML());
-        } catch (LogicException $ex) {
-            $form->setValuesByPost();
-            $this->template->setContent($form->getHTML());
-        } catch (FileUploadException $ex) {
+        } catch (FileUploadException) {
             $form->setValuesByPost();
             $this->template->setOnScreenMessage('failure', $this->plugin->txt('video_block_upload_error'), true);
             $this->template->setContent($form->getHTML());
@@ -262,7 +225,6 @@ final class xsrlVideoBlockGUI
             $resourceId = current($form->getFormData()[VideoBlockEditFormView::POST_VIDEO]);
             if ($resourceId) {
                 //store new video
-                $video = $this->videoService->storeUpload(ilObject::_lookupObjectId($this->getCurrentRefId()), $resourceId);
                 $block->setResourceId($resourceId);
 
                 //delete old video
@@ -275,13 +237,13 @@ final class xsrlVideoBlockGUI
             $anchor = xsrlContentGUI::ANCHOR_TEMPLATE . $block->getSequence();
             $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
-        } catch (ValidationException $ex) {
+        } catch (ValidationException) {
             $form->setValuesByPost();
             $this->template->setContent($form->getHTML());
-        } catch (LogicException $ex) {
+        } catch (LogicException) {
             $form->setValuesByPost();
             $this->template->setContent($form->getHTML());
-        } catch (FileUploadException $ex) {
+        } catch (FileUploadException) {
             $form->setValuesByPost();
             $this->template->setOnScreenMessage('failure', $this->plugin->txt('video_block_upload_error'), true);
             $this->template->setContent($form->getHTML());

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\block\util;
 
-use Psr\Http\Message\ServerRequestInterface;
 use KPG\Learnplaces\gui\component\PlusView;
 
 /**
@@ -29,7 +28,7 @@ trait AccordionAware
     private function getCurrentAccordionId(array $queries): int
     {
         $accordionId = 0;
-        if(!array_key_exists(PlusView::ACCORDION_QUERY_PARAM, $queries)) {
+        if (!array_key_exists(PlusView::ACCORDION_QUERY_PARAM, $queries)) {
             return $accordionId;
         }
 

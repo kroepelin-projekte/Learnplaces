@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use ILIAS\UI\Implementation\Component\Input\Field\Section;
-use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\AbstractBlockEditFormView;
 use KPG\Learnplaces\service\publicapi\model\ILIASLinkBlockModel;
 use KPG\Learnplaces\service\publicapi\model\BlockModel;
@@ -48,6 +47,7 @@ final class xsrlIliasLinkBlockEditFormViewGUI extends AbstractBlockEditFormView
 
     /**
      * @inheritDoc
+     * @throws ilCtrlException
      */
     protected function getFormActionUrl(): string
     {

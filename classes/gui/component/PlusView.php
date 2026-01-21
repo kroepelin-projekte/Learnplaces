@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\component;
 
-use ilTemplate;
+use ilLearnplacesPlugin;
+use ilTemplateException;
 
 /**
  * Class PlusGUI
@@ -21,10 +22,7 @@ final class PlusView
     public const POSITION_QUERY_PARAM = 'position';
     public const ACCORDION_QUERY_PARAM = 'accordion';
 
-    /**
-     * @var string $link
-     */
-    private $link;
+    private string $link;
 
     /**
      * PlusView constructor.
@@ -40,11 +38,11 @@ final class PlusView
 
     /**
      * @return string
-     * @throws \ilTemplateException
+     * @throws ilTemplateException
      */
     public function getHTML(): string
     {
-        $template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/component/tpl.plus.html', true, true);
+        $template = ilLearnplacesPlugin::getInstance()->getTemplate('default/component/tpl.plus.html');
         $template->setVariable('LINK', $this->link);
         return $template->get();
     }

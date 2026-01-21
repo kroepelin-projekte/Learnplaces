@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\block\VideoBlock;
 
-use ilFileInputGUI;
 use ILIAS\FileUpload\MimeType;
 use ILIAS\UI\Component\Input\Field\Section;
 use ilLearnplacesUploadHandlerGUI;
 use KPG\Learnplaces\gui\block\AbstractBlockEditFormView;
 use xsrlVideoBlockGUI;
+use ilCtrlException;
 
 /**
  * Class VideoBlockEditFormView
@@ -54,6 +54,7 @@ final class VideoBlockEditFormView extends AbstractBlockEditFormView
 
     /**
      * @inheritDoc
+     * @throws ilCtrlException
      */
     protected function getFormActionUrl(): string
     {

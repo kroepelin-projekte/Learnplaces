@@ -79,7 +79,6 @@ final class xsrlContentGUI
     private AccordionBlockService $accordionService;
     private LearnplaceServiceDecoratorFactory $learnplaceServiceDecorationFactory;
     private BlockAddFormGUI $blockAddGUI;
-    private ServerRequestInterface $request;
     private AccessGuard $accessGuard;
     private UIServices $ui;
     private ILIAS\HTTP\Services $http;
@@ -193,13 +192,12 @@ final class xsrlContentGUI
      * actions
      *
      * @return void
-     * @throws ilTemplateException
+     * @throws ilTemplateException|ilCtrlException
      */
     private function index(): void
     {
         $writePermission = $this->accessGuard->hasWritePermission();
-        $template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block_list.html', true, true);
-
+        $template = $this->plugin->getTemplate('default/tpl.block_list.html');
         //decorate the learnplace only if the user has no write rights
         $learnplaceService = ($writePermission) ? $this->learnplaceService : $this->learnplaceServiceDecorationFactory->decorate($this->learnplaceService);
 

@@ -6,11 +6,8 @@ namespace KPG\Learnplaces\gui\block\PictureUploadBlock;
 
 use ilCtrl;
 use ilLearnplacesPlugin;
-use ilLinkButton;
 use ilSplitButtonException;
-use ilSplitButtonGUI;
 use ilTemplate;
-use ilTextInputGUI;
 use LogicException;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\Renderable;
@@ -20,6 +17,7 @@ use KPG\Learnplaces\service\publicapi\model\PictureUploadBlockModel;
 use xsrlPictureUploadBlockGUI;
 
 use function is_null;
+use ILIAS\UI\Factory;
 
 /**
  * Class PictureUploadBlockPresentationView
@@ -34,22 +32,10 @@ final class PictureUploadBlockPresentationView implements Renderable
 
     public const SEQUENCE_ID_PREFIX = 'block_';
 
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var PictureUploadBlockModel $model
-     */
-    private $model;
+    private ilLearnplacesPlugin $plugin;
+    private ilTemplate $template;
+    private ilCtrl $controlFlow;
+    private PictureUploadBlockModel $model;
 
     /**
      * PictureUploadBlockPresentationView constructor.
@@ -61,7 +47,7 @@ final class PictureUploadBlockPresentationView implements Renderable
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
-        $this->template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.picture_upload.html', true, true);
+        $this->template = \ilLearnplacesPlugin::getInstance()->getTemplate('default/block/tpl.picture_upload.html');
         $this->initView();
     }
 
@@ -84,10 +70,11 @@ final class PictureUploadBlockPresentationView implements Renderable
 
     /**
      * @inheritDoc
+     * @throws ilSplitButtonException
      */
     public function getHtml(): string
     {
-        if(is_null($this->model)) {
+        if (is_null($this->model)) {
             throw new LogicException('The picture upload block view requires a model to render its content.');
         }
 
@@ -104,9 +91,9 @@ final class PictureUploadBlockPresentationView implements Renderable
      */
     private function wrapWithBlockTemplate(ilTemplate $blockTemplate): ilTemplate
     {
-        $outerTemplate = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = \ilLearnplacesPlugin::getInstance()->getTemplate('default/tpl.block.html');
 
-        /** @var \ILIAS\UI\Factory $factory */
+        /** @var Factory $factory */
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
 
@@ -118,7 +105,7 @@ final class PictureUploadBlockPresentationView implements Renderable
         ])->withLabel('Actions'));
 
         //fill outer template
-        if(!$this->isReadonly()) {
+        if (!$this->isReadonly()) {
             $outerTemplate->setVariable('ACTION_BUTTON', $actionMenu);
         }
         $outerTemplate->setVariable('CONTENT', $blockTemplate->get());

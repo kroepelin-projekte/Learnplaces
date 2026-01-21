@@ -5,26 +5,19 @@ declare(strict_types=1);
 namespace KPG\Learnplaces\gui\block;
 
 use ilCtrl;
-use ilFormSectionHeaderGUI;
-use ilHiddenInputGUI;
 use ILIAS\HTTP\Services;
 use ILIAS\UI\Factory;
 use ILIAS\UI\Renderer;
 use ilLearnplacesPlugin;
-use ilLinkButton;
-use ilPropertyFormGUI;
-use ilRadioGroupInputGUI;
-use ilRadioOption;
 use KPG\Learnplaces\container\PluginContainer;
-use KPG\Learnplaces\gui\block\RichTextBlock\RichTextBlockEditFormView;
 use KPG\Learnplaces\gui\exception\ValidationException;
 use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\publicapi\model\BlockModel;
 use KPG\Learnplaces\util\Visibility;
 
-use function array_merge_clobber;
 use function in_array;
 use function intval;
+use ILIAS\UI\Component\Input\Container\Form\Standard;
 
 /**
  * Class xsrlAbstractBlockFormGUI
@@ -49,21 +42,14 @@ abstract class AbstractBlockEditFormView
 
     protected BlockModel $block;
     protected ilLearnplacesPlugin $plugin;
-    /** @var ilCtrl $ctrl */
-    protected object $ctrl;
-    /** @var Services $http */
-    protected object $http;
-    protected \ILIAS\UI\Component\Input\Container\Form\Standard $form;
-    /** @var mixed|null */
-    protected $form_data;
-    /** @var object \ILIAS\ResourceStorage\Services  */
-    protected object $resourceStorage;
-    /** @var Factory $factory */
-    protected object $factory;
-    /** @var Renderer $renderer */
-    protected object $renderer;
-    /** @var object|\ILIAS\UI\Component\Input\Field\Factory $field */
-    protected object $field;
+    protected ilCtrl $ctrl;
+    protected Services $http;
+    protected Standard $form;
+    protected mixed $form_data;
+    protected \ILIAS\ResourceStorage\Services $resourceStorage;
+    protected Factory $factory;
+    protected Renderer $renderer;
+    protected \ILIAS\UI\Component\Input\Field\Factory $field;
 
     /**
      * AbstractBlockFormView constructor.
@@ -74,7 +60,7 @@ abstract class AbstractBlockEditFormView
     {
         $this->block = $setting;
         $this->ctrl = PluginContainer::resolve('ilCtrl');
-        $this->http = $http = PluginContainer::resolve('http');
+        $this->http = PluginContainer::resolve('http');
         $this->plugin = ilLearnplacesPlugin::getInstance();
         $this->resourceStorage = PluginContainer::resolve('resourceStorage');
         $this->factory = PluginContainer::resolve('factory');
@@ -110,7 +96,7 @@ abstract class AbstractBlockEditFormView
         $formParts[self::POST_ID] = $post_id;
         $formParts[self::VISIBILITY_SECTION] = $visibilitySectionHeader;
 
-        if($this->hasBlockSpecificParts()) {
+        if ($this->hasBlockSpecificParts()) {
             //create block specific settings header
             $blockSpecificParts = $this->initBlockSpecificForm();
             $formParts[self::BLOCK_SPECIFIC_PARTS] = $blockSpecificParts;
@@ -157,12 +143,12 @@ abstract class AbstractBlockEditFormView
         $form = $form->withRequest($this->http->request());
         $this->form_data = $form->getData();
 
-        if($form->getError()) {
+        if ($form->getError()) {
             throw new ValidationException('Received block content is not valid and got rejected.');
         }
 
         $visibility = $this->form_data[self::VISIBILITY_SECTION][self::POST_VISIBILITY];
-        if(!in_array($visibility, self::$validVisibilities)) {
+        if (!in_array($visibility, self::$validVisibilities)) {
             throw new ValidationException('Invalid visibility received!');
         }
 
@@ -181,9 +167,9 @@ abstract class AbstractBlockEditFormView
     }
 
     /**
-     * @return \ILIAS\UI\Component\Input\Container\Form\Standard
+     * @return Standard
      */
-    public function getForm(): \ILIAS\UI\Component\Input\Container\Form\Standard
+    public function getForm(): Standard
     {
         return $this->form;
     }
@@ -210,7 +196,7 @@ abstract class AbstractBlockEditFormView
     protected function getFormCmd(): string
     {
         $cmd = CommonControllerAction::CMD_CREATE;
-        if($this->block->getId() > 0) {
+        if ($this->block->getId() > 0) {
             $cmd = CommonControllerAction::CMD_UPDATE;
         }
         return $cmd;

@@ -13,6 +13,8 @@ use KPG\Learnplaces\gui\component\PlusView;
 use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\publicapi\model\BlockModel;
 use xsrlContentGUI;
+use ilTemplateException;
+use ilCtrlException;
 
 /**
  * Class ContentPresentationView
@@ -25,26 +27,14 @@ final class ContentPresentationView
 {
     use ReadOnlyViewAware;
 
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var RenderableBlockViewFactory $renderableFactory
-     */
-    private $renderableFactory;
+    private ilCtrl $controlFlow;
+    private ilLearnplacesPlugin $plugin;
+    private RenderableBlockViewFactory $renderableFactory;
     /**
      * @var BlockModel[] $blocks
      */
-    private $blocks;
-    /**
-     * @var int $accordionId
-     */
-    private $accordionId = 0;
+    private array $blocks;
+    private int $accordionId = 0;
 
     /**
      * ContentPresentationView constructor.
@@ -80,6 +70,7 @@ final class ContentPresentationView
 
     /**
      * @return string
+     * @throws ilTemplateException|ilCtrlException
      */
     public function getHTML(): string
     {
@@ -88,7 +79,7 @@ final class ContentPresentationView
 
     /**
      * @return string
-     * @throws \ilTemplateException
+     * @throws ilTemplateException|ilCtrlException
      */
     private function renderView(): string
     {
@@ -101,10 +92,10 @@ final class ContentPresentationView
                 $view->setReadonly(!$writePermission);
                 $blockHtml .= $view->getHtml();
 
-                if($writePermission) {
+                if ($writePermission) {
                     $blockHtml .= $this->getPlusView(intval($position) + 1)->getHTML();
                 }
-            } catch (InvalidArgumentException $exception) {
+            } catch (InvalidArgumentException) {
                 //ignore the models without view
             }
         }
@@ -115,7 +106,7 @@ final class ContentPresentationView
     /**
      * @param int $position
      * @return PlusView
-     * @throws \ilCtrlException
+     * @throws ilCtrlException
      */
     private function getPlusView(int $position): PlusView
     {

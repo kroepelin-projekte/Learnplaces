@@ -20,7 +20,7 @@ class VisitorsTable implements I\DataRetrieval
     private Container $DIC;
     private ilLearnplacesPlugin $plugin;
 
-    public function __construct( ilLearnplacesPlugin $plugin, $table_data)
+    public function __construct(ilLearnplacesPlugin $plugin, $table_data)
     {
         global $DIC;
         $this->ui_factory = $DIC['ui.factory'];
@@ -31,11 +31,24 @@ class VisitorsTable implements I\DataRetrieval
         $this->table_data = $table_data;
     }
 
+    /**
+     * @param array $table_data
+     * @return void
+     */
     public function setTableData(array $table_data): void
     {
         $this->table_data = $table_data;
     }
 
+    /**
+     * @param DataRowBuilder $row_builder
+     * @param array          $visible_column_ids
+     * @param Range          $range
+     * @param Order          $order
+     * @param array|null     $filter_data
+     * @param array|null     $additional_parameters
+     * @return Generator
+     */
     public function getRows(
         DataRowBuilder $row_builder,
         array $visible_column_ids,
@@ -66,9 +79,11 @@ class VisitorsTable implements I\DataRetrieval
             yield $row_builder->buildDataRow($row_id, $record);
             $row_id++;
         }
-
     }
 
+    /**
+     * @return array
+     */
     protected function getColumsForRepresentation(): array
     {
         $f = $this->ui_factory;
@@ -80,11 +95,19 @@ class VisitorsTable implements I\DataRetrieval
         return $columns;
     }
 
+    /**
+     * @param array|null $filter_data
+     * @param array|null $additional_parameters
+     * @return int|null
+     */
     public function getTotalRowCount(?array $filter_data, ?array $additional_parameters): ?int
     {
         return count($this->table_data);
     }
 
+    /**
+     * @return Data
+     */
     public function getTableForRepresentation(): Data
     {
         return $this->ui_factory->table()->data(

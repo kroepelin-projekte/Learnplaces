@@ -7,8 +7,6 @@ namespace KPG\Learnplaces\gui\block\RichTextBlock;
 use HTMLPurifier;
 use HTMLPurifier_Config;
 use ILIAS\UI\Implementation\Component\Input\Field\Section;
-use ilLearnplacesPlugin;
-use ilTextAreaInputGUI;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\AbstractBlockEditFormView;
 use KPG\Learnplaces\service\publicapi\model\BlockModel;
@@ -44,8 +42,7 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView
      */
     protected function initBlockSpecificForm(): Section
     {
-        $textarea = $this->field->hidden(/*$this->plugin->txt('rich_text_block_content')*/)
-            #->withValue($this->block->getContent())
+        $textarea = $this->field->hidden()
             ->withAdditionalOnLoadCode(fn ($id) => "document.getElementById('$id')?.setAttribute('id', 'textarea');")
             ->withRequired(true);
 
@@ -56,6 +53,7 @@ final class RichTextBlockEditFormView extends AbstractBlockEditFormView
 
     /**
      * @inheritDoc
+     * @throws \ilCtrlException
      */
     protected function getFormActionUrl(): string
     {

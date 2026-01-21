@@ -46,25 +46,17 @@ final class SettingEditFormView extends ilPropertyFormGUI
         Visibility::AFTER_VISIT_PLACE,
     ];
 
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var SettingModel $configuration
-     */
-    private $configuration;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
+    private ilLearnplacesPlugin $plugin;
+    private SettingModel $configuration;
+    private ilCtrl $controlFlow;
 
     /**
      * SettingEditFormView constructor.
      *
-     * @param SettingModel        $setting
+     * @param SettingModel $setting
      * @param ilLearnplacesPlugin $plugin
-     * @param ilCtrl              $controlFlow
+     * @param ilCtrl $controlFlow
+     * @throws \ilCtrlException
      */
     public function __construct(SettingModel $setting, ilLearnplacesPlugin $plugin, ilCtrl $controlFlow)
     {
@@ -81,7 +73,9 @@ final class SettingEditFormView extends ilPropertyFormGUI
      */
     private function initForm(): void
     {
-        $this->setFormAction($this->controlFlow->getFormActionByClass(xsrlSettingGUI::class, CommonControllerAction::CMD_EDIT));
+        $this->setFormAction(
+            $this->controlFlow->getFormActionByClass(xsrlSettingGUI::class, CommonControllerAction::CMD_EDIT)
+        );
         $this->setPreventDoubleSubmission(true);
         $this->setShowTopButtons(false);
 
@@ -106,10 +100,16 @@ final class SettingEditFormView extends ilPropertyFormGUI
         $visibilitySectionHeader->setTitle($this->plugin->txt('common_visibility'));
         $this->addItem($visibilitySectionHeader);
 
-        $radioGroup = new ilRadioGroupInputGUI($this->plugin->txt('setting_visibility_default'), self::POST_DEFAULT_VISIBILITY);
+        $radioGroup = new ilRadioGroupInputGUI(
+            $this->plugin->txt('setting_visibility_default'), self::POST_DEFAULT_VISIBILITY
+        );
         $radioGroup->addOption(new ilRadioOption($this->plugin->txt('visibility_always'), Visibility::ALWAYS));
-        $radioGroup->addOption(new ilRadioOption($this->plugin->txt('visibility_after_visit_place'), Visibility::AFTER_VISIT_PLACE));
-        $radioGroup->addOption(new ilRadioOption($this->plugin->txt('visibility_only_at_place'), Visibility::ONLY_AT_PLACE));
+        $radioGroup->addOption(
+            new ilRadioOption($this->plugin->txt('visibility_after_visit_place'), Visibility::AFTER_VISIT_PLACE)
+        );
+        $radioGroup->addOption(
+            new ilRadioOption($this->plugin->txt('visibility_only_at_place'), Visibility::ONLY_AT_PLACE)
+        );
         $radioGroup->addOption(new ilRadioOption($this->plugin->txt('visibility_never'), Visibility::NEVER));
         $radioGroup->setRequired(true);
         $this->addItem($radioGroup);
@@ -159,12 +159,12 @@ final class SettingEditFormView extends ilPropertyFormGUI
      */
     public function getSettings(): SettingModel
     {
-        if(!$this->checkInput()) {
+        if (!$this->checkInput()) {
             throw new ValidationException('Received configuration content is not valid and got rejected.');
         }
 
         $visibility = $this->getInput(self::POST_DEFAULT_VISIBILITY);
-        if(!in_array($visibility, self::$validVisibilities)) {
+        if (!in_array($visibility, self::$validVisibilities)) {
             throw new ValidationException('Invalid visibility received!');
         }
 
@@ -189,17 +189,17 @@ final class SettingEditFormView extends ilPropertyFormGUI
     public function fillForm(): void
     {
         $values = [
-            self::POST_DEFAULT_VISIBILITY   => $this->configuration->getDefaultVisibility(),
-            self::POST_ONLINE               => $this->configuration->isOnline(),
-            self::POST_LOCATION             => [
-                'latitude'  => $this->configuration->getLatitude(),
+            self::POST_DEFAULT_VISIBILITY => $this->configuration->getDefaultVisibility(),
+            self::POST_ONLINE => $this->configuration->isOnline(),
+            self::POST_LOCATION => [
+                'latitude' => $this->configuration->getLatitude(),
                 'longitude' => $this->configuration->getLongitude(),
-                'zoom'      => $this->configuration->getMapZoom()
+                'zoom' => $this->configuration->getMapZoom()
             ],
-            self::POST_LOCATION_RADIUS      => $this->configuration->getRadius(),
-            self::POST_TITLE                => $this->configuration->getTitle(),
-            self::POST_DESCRIPTION          => $this->configuration->getDescription(),
-            self::POST_TAG                  => $this->configuration->getTags(),
+            self::POST_LOCATION_RADIUS => $this->configuration->getRadius(),
+            self::POST_TITLE => $this->configuration->getTitle(),
+            self::POST_DESCRIPTION => $this->configuration->getDescription(),
+            self::POST_TAG => $this->configuration->getTags(),
         ];
 
         $this->setValuesByArray($values);

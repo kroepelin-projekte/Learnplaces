@@ -13,30 +13,13 @@ class xsrlVisitorsGUI
 {
     public const TAB_ID = 'participant';
 
-    /**
-     * @var ilTabsGUI $tabs
-     */
-    private $tabs;
-    /**
-     * @var ilGlobalPageTemplate $template
-     */
+    private ilTabsGUI $tabs;
     private ilGlobalPageTemplate $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
     private ilCtrl $controlFlow;
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
     private ilLearnplacesPlugin $plugin;
-
-    /**
-     * @var AccessGuard $accessGuard
-     */
     private AccessGuard $accessGuard;
-
     private UIServices $ui;
-    private $learnplaceService;
+    private LearnplaceService $learnplaceService;
 
     public function __construct(
         ilTabsGUI $tabs,
@@ -123,18 +106,20 @@ class xsrlVisitorsGUI
                 CommonControllerAction::CMD_DELETE
             ),
         )->withActionButtonLabel($this->plugin->txt('lang_delete_visitors'))
-                                 ->withAffectedItems([
-                                     $this->ui->factory()->modal()->interruptiveItem()->standard(
-                                         "",
-                                         ''
-                                     ),
-                                 ]);
+            ->withAffectedItems([
+                $this->ui->factory()->modal()->interruptiveItem()->standard(
+                    "",
+                    ''
+                ),
+            ]);
 
         $action_delete = $DIC->ctrl()->getLinkTargetByClass(
             xsrlVisitorsGUI::class,
             CommonControllerAction::CMD_DELETE
         );
-        $delete_button = $this->ui->factory()->button()->standard($this->plugin->txt('lang_delete_all_visitors'), $action_delete)->withOnClick(
+        $delete_button = $this->ui->factory()->button()->standard(
+            $this->plugin->txt('lang_delete_all_visitors'), $action_delete
+        )->withOnClick(
             $delete_modal->getShowSignal()
         );
 
@@ -145,6 +130,11 @@ class xsrlVisitorsGUI
         );
     }
 
+    /**
+     * @throws ilObjectNotFoundException
+     * @throws ilCtrlException
+     * @throws ilDatabaseException
+     */
     public function delete(): void
     {
         global $DIC;
@@ -156,16 +146,28 @@ class xsrlVisitorsGUI
             throw new \Exception('Learnplaces - getToken(): ref_id is missing');
         }
 
-        $learnplace_object = $this->learnplaceService->findByObjectId(ilObject::_lookupObjectId($query->retrieve('ref_id', $refinery->kindlyTo()->int())));
+        $learnplace_object = $this->learnplaceService->findByObjectId(
+            ilObject::_lookupObjectId($query->retrieve('ref_id', $refinery->kindlyTo()->int()))
+        );
 
-        $res = $database->query("SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $database->quote($learnplace_object->getId(), 'integer'));
+        $res = $database->query(
+            "SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $database->quote(
+                $learnplace_object->getId(),
+                'integer'
+            )
+        );
         while ($rec = $database->fetchAssoc($res)) {
             // update learning progress
             $obj_learnplace = \ilObjectFactory::getInstanceByObjId($learnplace_object->getObjectId());
             $obj_learnplace->setLearningProgressStatus(\ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM, $rec['user_id']);
         }
 
-        $database->manipulate("DELETE FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $database->quote($learnplace_object->getId(), 'integer'));
+        $database->manipulate(
+            "DELETE FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $database->quote(
+                $learnplace_object->getId(),
+                'integer'
+            )
+        );
 
         $DIC->ui()->mainTemplate()->setOnScreenMessage('success', 'Besucher wurden gelöscht', true);
         $DIC->ctrl()->redirectByClass(xsrlVisitorsGUI::class, CommonControllerAction::CMD_INDEX);

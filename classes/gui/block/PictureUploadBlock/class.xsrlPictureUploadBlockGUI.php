@@ -35,46 +35,15 @@ final class xsrlPictureUploadBlockGUI
     public const TAB_ID = 'content';
     public const BLOCK_ID_QUERY_KEY = 'block';
 
-    /**
-     * @var ilTabsGUI $tabs
-     */
-    private $tabs;
-    /**
-     * @var ilGlobalPageTemplate | ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var PictureUploadBlockService $pictureUploadService
-     */
-    private $pictureUploadService;
-    /**
-     * @var LearnplaceService $learnplaceService
-     */
-    private $learnplaceService;
-    /**
-     * @var ConfigurationService $configService
-     */
-    private $configService;
-    /**
-     * @var AccordionBlockService $accordionService
-     */
-    private $accordionService;
-    /**
-     * @var ServerRequestInterface $request
-     */
-    private $request;
-    /**
-     * @var AccessGuard $blockAccessGuard
-     */
-    private $blockAccessGuard;
+    private ilTabsGUI $tabs;
+    private ilGlobalPageTemplate $template;
+    private ilCtrl $controlFlow;
+    private ilLearnplacesPlugin $plugin;
+    private PictureUploadBlockService $pictureUploadService;
+    private LearnplaceService $learnplaceService;
+    private ConfigurationService $configService;
+    private AccordionBlockService $accordionService;
+    private AccessGuard $blockAccessGuard;
 
     /**
      * xsrlPictureUploadBlockGUI constructor.
@@ -198,10 +167,7 @@ final class xsrlPictureUploadBlockGUI
 
             $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
-        } catch (ValidationException $ex) {
-            $form->setValuesByPost();
-            $this->template->setContent($form->getHTML());
-        } catch (InvalidArgumentException $ex) {
+        } catch (ValidationException|InvalidArgumentException) {
             $form->setValuesByPost();
             $this->template->setContent($form->getHTML());
         }

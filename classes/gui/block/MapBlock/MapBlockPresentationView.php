@@ -7,11 +7,8 @@ namespace KPG\Learnplaces\gui\block\MapBlock;
 use ilCtrl;
 use ILIAS\HTTP\Services;
 use ilLearnplacesPlugin;
-use ilLinkButton;
 use ilMapUtil;
-use ilObject;
 use ilTemplate;
-use ilToolbarGUI;
 use LogicException;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\util\ReadOnlyViewAware;
@@ -19,9 +16,10 @@ use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\publicapi\model\ConfigurationModel;
 use KPG\Learnplaces\service\publicapi\model\LocationModel;
 use KPG\Learnplaces\service\publicapi\model\MapBlockModel;
-use KPG\Learnplaces\service\publicapi\model\PictureBlockModel;
 use KPG\Learnplaces\util\DeleteItemModal;
 use xsrlMapBlockGUI;
+use ILIAS\Refinery;
+use KPG\Learnplaces\service\publicapi\model\BlockModel;
 
 /**
  * Class MapBlockPresentationView
@@ -37,33 +35,14 @@ final class MapBlockPresentationView
 
     public const TYPE = 'map';
 
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var PictureBlockModel $model
-     */
-    private $model;
-    /**
-     * @var LocationModel $location
-     */
-    private $location;
-    /**
-     * @var ConfigurationModel $configuration
-     */
-    private $configuration;
-    /** @var Services $http */
-    private object $http;
-    private object $refinery;
+    private ilLearnplacesPlugin $plugin;
+    private ilTemplate $template;
+    private ilCtrl $controlFlow;
+    private BlockModel $model;
+    private LocationModel $location;
+    private ConfigurationModel $configuration;
+    private Services $http;
+    private Refinery $refinery;
 
     /**
      * PictureUploadBlockPresentationView constructor.
@@ -77,7 +56,7 @@ final class MapBlockPresentationView
         $this->controlFlow = $controlFlow;
         $this->http = PluginContainer::resolve('http');
         $this->refinery = PluginContainer::resolve('refinery');
-        $this->template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.map_tab.html', true, true);
+        $this->template = \ilLearnplacesPlugin::getInstance()->getTemplate('default/tpl.map_tab.html');
     }
 
     /**
@@ -89,7 +68,6 @@ final class MapBlockPresentationView
         //setup button
         global $DIC;
         $factory = $DIC->ui()->factory();
-        $renderer = $DIC->ui()->renderer();
 
         $editAction = $this->controlFlow->getLinkTargetByClass(xsrlMapBlockGUI::class, CommonControllerAction::CMD_EDIT) . '&' . xsrlMapBlockGUI::BLOCK_ID_QUERY_KEY . '=' . $this->model->getId();
         $editButton = $factory->button()->standard($this->plugin->txt('common_edit'), $editAction);
@@ -116,15 +94,15 @@ final class MapBlockPresentationView
 
         $map = ilMapUtil::getMapGUI();
         $map->setMapId($map_id = "map_" . hash('sha256', uniqid('map', true)))
-                ->setLatitude((string) $this->location->getLatitude())
-                ->setLongitude((string) $this->location->getLongitude())
-                ->setZoom($this->configuration->getMapZoomLevel())
-                ->setEnableTypeControl(true)
-                ->setEnableLargeMapControl(true)
-                ->setEnableUpdateListener(false)
-                ->setEnableCentralMarker(true)
-                ->setWidth('100%')
-                ->setHeight('500px');
+            ->setLatitude((string) $this->location->getLatitude())
+            ->setLongitude((string) $this->location->getLongitude())
+            ->setZoom($this->configuration->getMapZoomLevel())
+            ->setEnableTypeControl(true)
+            ->setEnableLargeMapControl(true)
+            ->setEnableUpdateListener(false)
+            ->setEnableCentralMarker(true)
+            ->setWidth('100%')
+            ->setHeight('500px');
 
         $this->template->setVariable('CONTENT', $map->getHtml());
     }
@@ -147,7 +125,7 @@ final class MapBlockPresentationView
      */
     public function getHtml(): string
     {
-        if(is_null($this->model)) {
+        if (is_null($this->model)) {
             throw new LogicException('The picture block view requires a model to render its content.');
         }
 

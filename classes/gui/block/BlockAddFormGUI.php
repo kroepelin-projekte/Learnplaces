@@ -5,14 +5,10 @@ declare(strict_types=1);
 namespace KPG\Learnplaces\gui\block;
 
 use ilCtrl;
-use ilFormSectionHeaderGUI;
 use ILIAS\UI\Component\Input\Container\Form\Standard;
 use ILIAS\UI\Factory;
 use ILIAS\UI\Renderer;
 use ilLearnplacesPlugin;
-use ilPropertyFormGUI;
-use ilRadioGroupInputGUI;
-use ilRadioOption;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\component\PlusView;
 use KPG\Learnplaces\gui\helper\CommonControllerAction;
@@ -37,13 +33,10 @@ final class BlockAddFormGUI
     private ilCtrl $controlFlow;
     private bool $mapEnabled = true;
     private $accordionEnabled = true;
-    private \ILIAS\UI\Component\Input\Container\Form\Standard $form;
-    /** @var Factory $factory */
-    protected object $factory;
-    /** @var object|\ILIAS\UI\Component\Input\Field\Factory $field */
-    protected object $field;
-    /** @var Renderer $factory */
-    private $renderer;
+    private Standard $form;
+    protected Factory $factory;
+    protected \ILIAS\UI\Component\Input\Field\Factory $field;
+    private Renderer $renderer;
 
     /**
      * @param ilLearnplacesPlugin $plugin

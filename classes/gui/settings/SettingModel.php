@@ -13,47 +13,16 @@ namespace KPG\Learnplaces\gui\settings;
  */
 final class SettingModel
 {
-    /**
-     * @var string $title
-     */
-    private $title = "";
-    /**
-     * @var string $description
-     */
-    private $description = "";
-    /**
-     * @var bool $online
-     */
-    private $online = false;
-    /**
-     * @var string $defaultVisibility
-     */
-    private $defaultVisibility = "ALWAYS";
-    /**
-     * @var float $latitude
-     */
-    private $latitude = 0.0;
-    /**
-     * @var float $longitude
-     */
-    private $longitude = 0.0;
-    /**
-     * @var float $elevation
-     */
-    private $elevation = 0.0;
-    /**
-     * @var int $radius
-     */
-    private $radius = 200;
-    /**
-     * @var int $mapZoom
-     */
-    private $mapZoom = 0;
-
-    /**
-     * @var null|string $tags
-     */
-    private $tags = null;
+    private string $title = "";
+    private string $description = "";
+    private bool $online = false;
+    private string $defaultVisibility = "ALWAYS";
+    private float $latitude = 0.0;
+    private float $longitude = 0.0;
+    private float $elevation = 0.0;
+    private int $radius = 200;
+    private int $mapZoom = 0;
+    private ?string $tags = null;
 
     /**
      * @return string

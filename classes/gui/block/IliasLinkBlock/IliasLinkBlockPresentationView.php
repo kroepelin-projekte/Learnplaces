@@ -4,16 +4,11 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\block\IliasLinkBlock;
 
-use ilButtonToSplitButtonMenuItemAdapter;
 use ilCtrl;
 use ilLearnplacesPlugin;
-use ilLink;
-use ilLinkButton;
 use ilObject;
 use ilSplitButtonException;
-use ilSplitButtonGUI;
 use ilTemplate;
-use ilTextInputGUI;
 use LogicException;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\Renderable;
@@ -22,8 +17,8 @@ use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\publicapi\model\ILIASLinkBlockModel;
 use KPG\Learnplaces\util\DeleteItemModal;
 use xsrlIliasLinkBlockGUI;
-use xsrlPictureBlockGUI;
 use ILIAS\Data\ReferenceId;
+use ILIAS\StaticURL\Services;
 
 /**
  * Class IliasLinkBlockPresentationView
@@ -37,26 +32,13 @@ final class IliasLinkBlockPresentationView implements Renderable
     use ReadOnlyViewAware;
     use DeleteItemModal;
 
-
     public const SEQUENCE_ID_PREFIX = 'block_';
     public const TYPE = 'link';
 
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var ILIASLinkBlockModel $model
-     */
-    private $model;
+    private ilLearnplacesPlugin $plugin;
+    private ilTemplate $template;
+    private ilCtrl $controlFlow;
+    private ILIASLinkBlockModel $model;
 
     /**
      * PictureUploadBlockPresentationView constructor.
@@ -68,7 +50,7 @@ final class IliasLinkBlockPresentationView implements Renderable
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
-        $this->template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.ilias_link.html', true, true);
+        $this->template = \ilLearnplacesPlugin::getInstance()->getTemplate('default/block/tpl.ilias_link.html');
     }
 
     /**
@@ -82,7 +64,7 @@ final class IliasLinkBlockPresentationView implements Renderable
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
 
-        /** @var \ILIAS\StaticURL\Services $static_url */
+        /** @var Services $static_url */
         $static_url = PluginContainer::resolve('url');
 
         $url = $static_url->builder()->build(
@@ -110,10 +92,11 @@ final class IliasLinkBlockPresentationView implements Renderable
 
     /**
      * @inheritDoc
+     * @throws ilSplitButtonException
      */
     public function getHtml(): string
     {
-        if(is_null($this->model)) {
+        if (is_null($this->model)) {
             throw new LogicException('The picture block view requires a model to render its content.');
         }
 
@@ -130,7 +113,7 @@ final class IliasLinkBlockPresentationView implements Renderable
      */
     private function wrapWithBlockTemplate(ilTemplate $blockTemplate): ilTemplate
     {
-        $outerTemplate = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = \ilLearnplacesPlugin::getInstance()->getTemplate('default/tpl.block.html');
 
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
@@ -153,7 +136,7 @@ final class IliasLinkBlockPresentationView implements Renderable
         ])->withLabel($lng->txt('actions')));
 
         //fill outer template
-        if(!$this->isReadonly()) {
+        if (!$this->isReadonly()) {
             $outerTemplate->setVariable('ACTION_BUTTON', $actionMenu . $deleteButton['modal']);
         }
         $outerTemplate->setVariable('CONTENT', $blockTemplate->get());

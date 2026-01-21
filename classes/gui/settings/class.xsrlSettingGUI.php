@@ -16,13 +16,11 @@ use KPG\Learnplaces\container\PluginContainer;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\Builder\Builder;
-use Endroid\QrCode\Label\Font\OpenSans;
-use ILIAS\Data\ReferenceId;
 use ILIAS\UI\Factory;
-use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 use JetBrains\PhpStorm\NoReturn;
 use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
+use Endroid\QrCode\Label\Font\OpenSans;
 
 /**
  * Class xsrlSettingGUI
@@ -41,42 +39,14 @@ final class xsrlSettingGUI
     public const TAB_ID = 'Settings';
     public const BLOCK_ID_QUERY_KEY = 'block';
 
-    /**
-     * @var ilTabsGUI $tabs
-     */
-    private $tabs;
-    /**
-     * @var ilGlobalPageTemplate | ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var ConfigurationService $configService
-     */
-    private $configService;
-    /**
-     * @var LocationService $locationService
-     */
-    private $locationService;
-    /**
-     * @var LearnplaceService $learnplaceService
-     */
-    private $learnplaceService;
-    /**
-     * @var ServerRequestInterface $request
-     */
-    private $request;
-    /**
-     * @var AccessGuard $accessGuard
-     */
-    private $accessGuard;
+    private ilTabsGUI $tabs;
+    private ilGlobalPageTemplate $template;
+    private ilCtrl $controlFlow;
+    private ilLearnplacesPlugin $plugin;
+    private ConfigurationService $configService;
+    private LocationService $locationService;
+    private LearnplaceService $learnplaceService;
+    private AccessGuard $accessGuard;
 
     /**
      * xsrlSettingGUI constructor.
@@ -203,7 +173,7 @@ final class xsrlSettingGUI
 
             $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirect($this, CommonControllerAction::CMD_EDIT);
-        } catch (ValidationException $ex) {
+        } catch (ValidationException) {
             $view->setValuesByPost();
             $this->template->setContent($view->getHTML());
         }
@@ -287,8 +257,8 @@ final class xsrlSettingGUI
             ->encoding(new Encoding('UTF-8'))
             ->size(300)
             ->margin(10)
-            //->labelText($label)
-            //->labelFont(new OpenSans(30))
+            ->labelText($label)
+            ->labelFont(new OpenSans(20))
             ->build();
     }
 }

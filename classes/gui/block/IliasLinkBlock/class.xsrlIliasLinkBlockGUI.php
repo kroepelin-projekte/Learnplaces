@@ -39,46 +39,15 @@ final class xsrlIliasLinkBlockGUI
     public const BLOCK_ID_QUERY_KEY = 'block';
     public const ANCHOR_TEMPLATE = 'sequence-';
 
-    /**
-     * @var ilTabsGUI $tabs
-     */
-    private $tabs;
-    /**
-     * @var ilGlobalPageTemplate | ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var ILIASLinkBlockService $iliasLinkService
-     */
-    private $iliasLinkService;
-    /**
-     * @var LearnplaceService $learnplaceService
-     */
-    private $learnplaceService;
-    /**
-     * @var ConfigurationService $configService
-     */
-    private $configService;
-    /**
-     * @var AccordionBlockService $accprdionService
-     */
-    private $accprdionService;
-    /**
-     * @var ServerRequestInterface $request
-     */
-    private $request;
-    /**
-     * @var AccessGuard $blockAccessGuard
-     */
-    private $blockAccessGuard;
+    private ilTabsGUI $tabs;
+    private ilGlobalPageTemplate $template;
+    private ilCtrl $controlFlow;
+    private ilLearnplacesPlugin $plugin;
+    private ILIASLinkBlockService $iliasLinkService;
+    private LearnplaceService $learnplaceService;
+    private ConfigurationService $configService;
+    private AccordionBlockService $accprdionService;
+    private AccessGuard $blockAccessGuard;
 
     /**
      * xsrlIliasLinkBlockGUI constructor.
@@ -212,7 +181,7 @@ final class xsrlIliasLinkBlockGUI
 
             $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
-        } catch (ValidationException $ex) {
+        } catch (ValidationException) {
             $form->setValuesByPost();
             $this->template->setContent($form->getHTML());
         }

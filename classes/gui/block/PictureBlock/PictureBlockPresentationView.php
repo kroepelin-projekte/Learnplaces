@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\block\PictureBlock;
 
-use ilButtonToSplitButtonMenuItemAdapter;
 use ilCtrl;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ilLearnplacesPlugin;
-use ilLinkButton;
 use ilSplitButtonException;
-use ilSplitButtonGUI;
 use ilTemplate;
-use ilTextInputGUI;
 use LogicException;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\Renderable;
@@ -23,6 +19,7 @@ use KPG\Learnplaces\util\DeleteItemModal;
 use xsrlPictureBlockGUI;
 
 use function is_null;
+use ILIAS\UI\Factory;
 
 /**
  * Class PictureBlockPresentationView
@@ -39,22 +36,10 @@ final class PictureBlockPresentationView implements Renderable
     public const SEQUENCE_ID_PREFIX = 'block_';
     public const TYPE = 'picture';
 
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var PictureBlockModel $model
-     */
-    private $model;
+    private ilLearnplacesPlugin $plugin;
+    private ilTemplate $template;
+    private ilCtrl $controlFlow;
+    private PictureBlockModel $model;
 
     /**
      * PictureUploadBlockPresentationView constructor.
@@ -66,7 +51,7 @@ final class PictureBlockPresentationView implements Renderable
     {
         $this->plugin = $plugin;
         $this->controlFlow = $controlFlow;
-        $this->template = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/block/tpl.picture.html', true, true);
+        $this->template = \ilLearnplacesPlugin::getInstance()->getTemplate('default/block/tpl.picture.html');
     }
 
     /**
@@ -127,9 +112,9 @@ final class PictureBlockPresentationView implements Renderable
      */
     private function wrapWithBlockTemplate(ilTemplate $blockTemplate): ilTemplate
     {
-        $outerTemplate = new ilTemplate('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/templates/default/tpl.block.html', true, true);
+        $outerTemplate = \ilLearnplacesPlugin::getInstance()->getTemplate('default/tpl.block.html');
 
-        /** @var \ILIAS\UI\Factory $factory */
+        /** @var Factory $factory */
         $factory = PluginContainer::resolve('factory');
         $renderer = PluginContainer::resolve('renderer');
         $lng = PluginContainer::resolve('lng');

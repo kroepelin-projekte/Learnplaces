@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\block\util;
 
-use ilAccessHandler;
 use Psr\Http\Message\ServerRequestInterface;
-use KPG\Learnplaces\service\security\AccessGuard;
-
-use function strcmp;
 
 /**
  * Trait ReferenceIdAware
@@ -19,10 +15,7 @@ use function strcmp;
  */
 trait ReferenceIdAware
 {
-    /**
-     * @var ServerRequestInterface $request
-     */
-    private $request;
+    private ServerRequestInterface $request;
 
     /**
      * @return int

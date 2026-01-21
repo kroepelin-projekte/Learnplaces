@@ -26,6 +26,7 @@ final class PictureUploadBlockEditFormView extends AbstractBlockEditFormView
 
     /**
      * @inheritDoc
+     * @throws \ilCtrlException
      */
     protected function getFormActionUrl(): string
     {

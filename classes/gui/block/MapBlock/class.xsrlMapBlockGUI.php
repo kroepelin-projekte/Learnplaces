@@ -33,42 +33,11 @@ final class xsrlMapBlockGUI
     public const TAB_ID = 'Map';
     public const BLOCK_ID_QUERY_KEY = 'block';
 
-    /**
-     * @var ilTabsGUI $tabs
-     */
-    private $tabs;
-    /**
-     * @var ilGlobalPageTemplate | ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var MapBlockService $mapBlockService
-     */
-    private $mapBlockService;
-    /**
-     * @var LearnplaceService $learnplaceService
-     */
-    private $learnplaceService;
-    /**
-     * @var ConfigurationService $configService
-     */
-    private $configService;
-    /**
-     * @var ServerRequestInterface $request
-     */
-    private $request;
-    /**
-     * @var AccessGuard $blockAccessGuard
-     */
-    private $blockAccessGuard;
+    private ilTabsGUI $tabs;
+    private ilGlobalPageTemplate $template;
+    private MapBlockService $mapBlockService;
+    private LearnplaceService $learnplaceService;
+    private ConfigurationService $configService;
 
     /**
      * xsrlMapBlockGUI constructor.
@@ -315,7 +284,7 @@ final class xsrlMapBlockGUI
     private function fetchMapModelFromLearnplace(LearnplaceModel $learnplace): MapBlockModel
     {
         foreach ($learnplace->getBlocks() as $block) {
-            if($block instanceof MapBlockModel) {
+            if ($block instanceof MapBlockModel) {
                 return $block;
             }
         }

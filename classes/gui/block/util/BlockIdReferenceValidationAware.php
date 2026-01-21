@@ -6,10 +6,10 @@ namespace KPG\Learnplaces\gui\block\util;
 
 use ilCtrl;
 use ilLearnplacesPlugin;
-use ilUtil;
 use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\security\AccessGuard;
 use xsrlContentGUI;
+use ilCtrlException;
 
 /**
  * Trait BlockIdReferenceValidationAware
@@ -20,27 +20,18 @@ use xsrlContentGUI;
  */
 trait BlockIdReferenceValidationAware
 {
-    /**
-     * @var AccessGuard $blockAccessGuard
-     */
-    private $blockAccessGuard;
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
+    private AccessGuard $blockAccessGuard;
+    private ilLearnplacesPlugin $plugin;
+    private ilCtrl $controlFlow;
 
     /**
      * @param int $blockId
      * @return void
-     * @throws \ilCtrlException
+     * @throws ilCtrlException
      */
     private function redirectInvalidRequests(int $blockId): void
     {
-        if(!$this->blockAccessGuard->isValidBlockReference($blockId)) {
+        if (!$this->blockAccessGuard->isValidBlockReference($blockId)) {
             $this->template->setOnScreenMessage('failure', $this->plugin->txt('common_access_denied'), true);
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX);
         }

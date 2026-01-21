@@ -4,23 +4,15 @@ declare(strict_types=1);
 
 namespace KPG\Learnplaces\gui\block\PictureBlock;
 
-use ilFileInputGUI;
 use ILIAS\FileUpload\MimeType;
-use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ILIAS\UI\Component\Input\Field\Section;
 use ilLearnplacesUploadHandlerGUI;
-use ilTextAreaInputGUI;
-use ilTextInputGUI;
-use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\gui\block\AbstractBlockEditFormView;
-use KPG\Learnplaces\gui\helper\CommonControllerAction;
 use KPG\Learnplaces\service\publicapi\model\BlockModel;
 use KPG\Learnplaces\service\publicapi\model\PictureBlockModel;
-use KPG\Learnplaces\service\publicapi\model\PictureUploadBlockModel;
 use xsrlPictureBlockGUI;
 
 use function version_compare;
-
 use const ILIAS_VERSION_NUMERIC;
 
 /**
@@ -80,8 +72,8 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
                 $fileUpload = $fileUpload
                     ->withValue([$resourceId])
                     ->withByLine(
-                    "<img src='$src' als='Preview Image' style='width: 100%; max-width: 800px; padding: 10px 10px 10px 0;' />"
-                );
+                        "<img src='$src' als='Preview Image' style='width: 100%; max-width: 800px; padding: 10px 10px 10px 0;' />"
+                    );
             }
         }
 
@@ -94,6 +86,7 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
 
     /**
      * @inheritDoc
+     * @throws \ilCtrlException
      */
     protected function getFormActionUrl(): string
     {
@@ -103,7 +96,7 @@ final class PictureBlockEditFormView extends AbstractBlockEditFormView
     /**
      * @inheritDoc
      */
-    protected function getObject()
+    protected function getObject(): void
     {
         $this->block->setTitle($this->getFormData()[self::POST_TITLE]);
         $this->block->setDescription($this->getFormData()[self::POST_DESCRIPTION]);

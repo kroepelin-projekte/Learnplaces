@@ -20,6 +20,7 @@ use KPG\Learnplaces\service\publicapi\block\LearnplaceService;
 use KPG\Learnplaces\service\publicapi\block\PictureBlockService;
 use KPG\Learnplaces\service\publicapi\model\PictureBlockModel;
 use KPG\Learnplaces\service\security\AccessGuard;
+use ILIAS\HTTP\Services;
 
 /**
  * Class xsrlPictureBlockGUI
@@ -36,69 +37,33 @@ final class xsrlPictureBlockGUI
     public const TAB_ID = 'content';
     public const BLOCK_ID_QUERY_KEY = 'block';
 
-    /**
-     * @var ilTabsGUI $tabs
-     */
-    private $tabs;
-    /**
-     * @var ilGlobalPageTemplate | ilTemplate $template
-     */
-    private $template;
-    /**
-     * @var ilCtrl $controlFlow
-     */
-    private $controlFlow;
-    /**
-     * @var ilLearnplacesPlugin $plugin
-     */
-    private $plugin;
-    /**
-     * @var PictureService $pictureService
-     */
-    private $pictureService;
-    /**
-     * @var PictureBlockService $pictureBlockService
-     */
-    private $pictureBlockService;
-    /**
-     * @var LearnplaceService $learnplaceService
-     */
-    private $learnplaceService;
-    /**
-     * @var ConfigurationService $configService
-     */
-    private $configService;
-    /**
-     * @var AccordionBlockService $accordionService
-     */
-    private $accordionService;
-    /**
-     * @var ServerRequestInterface $request
-     */
-    private $request;
-    /**
-     * @var AccessGuard $blockAccessGuard
-     */
-    private $blockAccessGuard;
+    private ilTabsGUI $tabs;
+    private ilGlobalPageTemplate $template;
+    private ilCtrl $controlFlow;
+    private ilLearnplacesPlugin $plugin;
+    private PictureService $pictureService;
+    private PictureBlockService $pictureBlockService;
+    private LearnplaceService $learnplaceService;
+    private ConfigurationService $configService;
+    private AccordionBlockService $accordionService;
+    private AccessGuard $blockAccessGuard;
     private UIServices $ui;
-    private \ILIAS\HTTP\Services $http;
+    private Services $http;
 
     /**
      * xsrlPictureBlockGUI constructor.
      *
-     * @param ilTabsGUI $tabs
+     * @param ilTabsGUI                         $tabs
      * @param ilGlobalPageTemplate | ilTemplate $template
-     * @param UIServices $ui
-     * @param ilCtrl $controlFlow
-     * @param \ILIAS\HTTP\Services $http
-     * @param ilLearnplacesPlugin $plugin
-     * @param PictureService $pictureService
-     * @param PictureBlockService $pictureBlockService
-     * @param LearnplaceService $learnplaceService
-     * @param ConfigurationService $configService
-     * @param AccordionBlockService $accordionService
-     * @param ServerRequestInterface $request
-     * @param AccessGuard $blockAccessGuard
+     * @param ilCtrl                            $controlFlow
+     * @param ilLearnplacesPlugin               $plugin
+     * @param PictureService                    $pictureService
+     * @param PictureBlockService               $pictureBlockService
+     * @param LearnplaceService                 $learnplaceService
+     * @param ConfigurationService              $configService
+     * @param AccordionBlockService             $accordionService
+     * @param ServerRequestInterface            $request
+     * @param AccessGuard                       $blockAccessGuard
      */
     public function __construct(ilTabsGUI $tabs, $template, ilCtrl $controlFlow, ilLearnplacesPlugin $plugin, PictureService $pictureService, PictureBlockService $pictureBlockService, LearnplaceService $learnplaceService, ConfigurationService $configService, AccordionBlockService $accordionService, ServerRequestInterface $request, AccessGuard $blockAccessGuard)
     {
@@ -215,13 +180,13 @@ final class xsrlPictureBlockGUI
 
             $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
-        } catch (ValidationException $ex) {
+        } catch (ValidationException) {
             $form->setValuesByPost();
             $this->template->setContent($form->getHTML());
-        } catch (LogicException $ex) {
+        } catch (LogicException) {
             $form->setValuesByPost();
             $this->template->setContent($form->getHTML());
-        } catch (FileUploadException $ex) {
+        } catch (FileUploadException) {
             $form->setValuesByPost();
             $this->template->setOnScreenMessage('failure', $this->plugin->txt('picture_block_upload_error'), true);
             $this->template->setContent($form->getHTML());
@@ -276,13 +241,13 @@ final class xsrlPictureBlockGUI
             $anchor = xsrlContentGUI::ANCHOR_TEMPLATE . $block->getSequence();
             $this->template->setOnScreenMessage('success', $this->plugin->txt('message_changes_save_success'), true);
             $this->controlFlow->redirectByClass(xsrlContentGUI::class, CommonControllerAction::CMD_INDEX, $anchor);
-        } catch (ValidationException $ex) {
+        } catch (ValidationException) {
             $form->setValuesByPost();
             $this->template->setContent($form->getHTML());
-        } catch (LogicException $ex) {
+        } catch (LogicException) {
             $form->setValuesByPost();
             $this->template->setContent($form->getHTML());
-        } catch (FileUploadException $ex) {
+        } catch (FileUploadException) {
             $form->setValuesByPost();
             $this->template->setOnScreenMessage('failure', $this->plugin->txt('picture_block_upload_error'), true);
             $this->template->setContent($form->getHTML());

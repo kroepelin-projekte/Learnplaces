@@ -8,6 +8,7 @@ class ilLearnplacesStakeholder extends AbstractResourceStakeholder
 {
     public function __construct()
     {
+        parent::__construct();
     }
 
     /**
