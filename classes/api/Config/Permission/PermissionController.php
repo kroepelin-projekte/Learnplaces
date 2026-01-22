@@ -56,5 +56,4 @@ class PermissionController implements constConfig
             $this->showPermissionSettings();
         }
     }
-
 }

@@ -4,7 +4,6 @@ namespace Repository\RepositoryObject\Learnplaces\classes\api\Config;
 
 class Settings implements constConfig
 {
-
     public static function setCookieExpire(int $expire): void
     {
         $settings = new \ilSetting(self::SETTING_MODULE_ID);
@@ -28,11 +27,13 @@ class Settings implements constConfig
         $settings = new \ilSetting(self::SETTING_MODULE_ID);
         return $settings->get("roles", "");
     }
+
     public static function uninstall(): void
     {
         $settings = new \ilSetting(self::SETTING_MODULE_ID);
         $settings->delete(self::SETTING_MODULE_ID);
     }
+
     public static function setClientURL(string $url): void
     {
         $settings = new \ilSetting(self::SETTING_MODULE_ID);

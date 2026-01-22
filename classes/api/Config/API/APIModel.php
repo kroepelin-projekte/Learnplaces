@@ -30,7 +30,7 @@ class APIModel implements constConfig
         return [true, $this->plugin->txt(self::LANG_SUCCESS_SETTINGS)];
     }
 
-    public function refreshSecret()
+    public function refreshSecret(): void
     {
         Settings::setSecret(bin2hex(random_bytes(32)));
     }

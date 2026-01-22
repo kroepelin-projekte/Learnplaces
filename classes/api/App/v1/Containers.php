@@ -6,45 +6,49 @@ use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
 use ilObject;
+use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 
 class Containers
 {
+    /**
+     * @throws ResponseSendingException
+     */
     public function endpoint(array $params, array $request_body): void
     {
 
         $all_containers = [];
         foreach ($this->getUserLearnplaceByContainerMembership() as $user_learnplace) {
             $container_ref_id = $user_learnplace['container_ref_id'];
-            if(!isset($all_containers[$container_ref_id])) {
-                if(\ilObject::_isInTrash($container_ref_id)) {
+            if (!isset($all_containers[$container_ref_id])) {
+                if (\ilObject::_isInTrash($container_ref_id)) {
                     continue;
                 }
-                if($user_learnplace['container_type'] === 'grp') {
-                    $obj_container =  new \ilObjGroup($container_ref_id);
+                if ($user_learnplace['container_type'] === 'grp') {
+                    $obj_container = new \ilObjGroup($container_ref_id);
                 } else {
-                    $obj_container =  new \ilObjCourse($container_ref_id);
+                    $obj_container = new \ilObjCourse($container_ref_id);
                 }
 
-                if($obj_container->getOfflineStatus()) {
+                if ($obj_container->getOfflineStatus()) {
                     continue;
                 }
             }
             $obj_learnplace = PluginContainer::resolve(LearnplaceRepository::class)->findByObjectId($user_learnplace['learnplace_obj_id']);
 
 
-            if(\ilObject::_isInTrash($user_learnplace['learnplace_ref_id'])) {
+            if (\ilObject::_isInTrash($user_learnplace['learnplace_ref_id'])) {
                 continue;
             }
-            if($obj_learnplace->getConfiguration()->isOnline() === false) {
+            if ($obj_learnplace->getConfiguration()->isOnline() === false) {
                 continue;
             }
-            if($obj_learnplace->getConfiguration()->getDefaultVisibility() === "NEVER") {
+            if ($obj_learnplace->getConfiguration()->getDefaultVisibility() === "NEVER") {
                 continue;
             }
             $learnplace_tags = $this->getTagsByLearnPlaceObjID($user_learnplace['learnplace_obj_id']);
             $container_title = ilObject::_lookupTitle(ilObject::_lookupObjectId($container_ref_id));
 
-            if(isset($all_containers[$container_ref_id])) {
+            if (isset($all_containers[$container_ref_id])) {
                 $all_containers[$container_ref_id]['lernplaces_numbers']++;
                 $all_containers[$container_ref_id]['tags'] = array_values(
                     array_unique(array_merge($all_containers[$container_ref_id]['tags'], $learnplace_tags))

@@ -2,10 +2,6 @@
 
 namespace Repository\RepositoryObject\Learnplaces\classes\api\Authenticator;
 
-use ilAuthFrontendCredentials;
-use ilAuthProviderFactory;
-use ilAuthStatus;
-use ilAuthFrontendFactory;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
@@ -37,7 +33,7 @@ class Authenticator
         $http_handler = new HTTPHandler();
         $http_handler->setAccessToken(substr($bearer_token, 7));
         $pkce_handler = new PKCEHandler($http_handler);
-        if(!$pkce_handler->initAccessTokenAuth()){
+        if (!$pkce_handler->initAccessTokenAuth()) {
             $logger->error('bearer token not valid');
             Response::send(401, DEVMODE ? 'bearer token not valid' : '', ['success' => false]);
             return false;

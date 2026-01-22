@@ -5,8 +5,8 @@ namespace Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Hand
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\api\Database\OAuthEntity;
 use KPG\Learnplaces\api\Authenticator\Handler\PKCEUtilHandler;
-use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
+use JetBrains\PhpStorm\NoReturn;
 
 class PKCEHandler
 {
@@ -37,7 +37,7 @@ class PKCEHandler
         $this->http_handler->redirectTargetAuthGUI();
     }
 
-
+    #[NoReturn]
     public function initAfterILIASAuth(): void
     {
         $record = OAuthEntity::where(['state' => $this->http_handler->getState()])->first();
@@ -96,16 +96,15 @@ class PKCEHandler
 
     public function initAccessTokenAuth(): bool|string|int
     {
-
-        if(!$user_id = $this->pkce_util->decodeAccessToken($this->http_handler->getAccessToken())){
+        if (!$user_id = $this->pkce_util->decodeAccessToken($this->http_handler->getAccessToken())) {
             return false;
         }
         global $DIC;
         $DIC->user()->setId($user_id);
 
         $record = OAuthEntity::get();
-        foreach($record as $r){
-            if(time() > $r->getExpire()){
+        foreach ($record as $r) {
+            if (time() > $r->getExpire()) {
                 $r->delete();
             }
         }

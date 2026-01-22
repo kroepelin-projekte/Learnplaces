@@ -29,8 +29,7 @@ class VerifyQRCode
             [$client_token]
         );
         if ($rec = $db->fetchAssoc($set)) {
-
-            if(!$this->checkAccessible((int) $rec['pk_id'], $DIC)){
+            if (!$this->checkAccessible((int) $rec['pk_id'], $DIC)) {
                 Response::send(200, DEVMODE ? "QR_CODE_ACCESS_DENIED" : null, ["status" => "QR_CODE_ACCESS_DENIED"]);
             }
 
@@ -43,7 +42,9 @@ class VerifyQRCode
             $title = ilObject::_lookupTitle($learnplace->getObjectId());
 
             if ($result->rowCount() != 0) {
-                Response::send(200, null, ["status" => "QR_CODE_USER_WAS_HERE", "id" => $rec['pk_id'], "title" => $title]);
+                Response::send(
+                    200, null, ["status" => "QR_CODE_USER_WAS_HERE", "id" => $rec['pk_id'], "title" => $title]
+                );
             }
 
             // update learning progress
@@ -63,25 +64,23 @@ class VerifyQRCode
         }
 
         Response::send(200, DEVMODE ? "QR_CODE_NOT_FOUND" : null, ["status" => "QR_CODE_NOT_FOUND"]);
-
     }
 
     /**
      * Checks if the user has read access to a learning place.
      *
-     * @param int       $learn_place_id The ID of the learning place to check.
-     * @param Container $DIC            The dependency injection container providing system services.
+     * @param int $learn_place_id The ID of the learning place to check.
+     * @param Container $DIC      The dependency injection container providing system services.
      *
      * @return bool Returns true if the user has read access, otherwise false.
      */
-    public function checkAccessible(int $learn_place_id, Container $DIC): bool {
-
+    public function checkAccessible(int $learn_place_id, Container $DIC): bool
+    {
         $obj_learn_place = PluginContainer::resolve(LearnplaceRepository::class)->find($learn_place_id);
         foreach (\ilObjLearnplaces::_getAllReferences((int) $obj_learn_place->getObjectId()) as $learn_place_ref_id) {
-            if($DIC->rbac()->system()->checkAccess('read', $learn_place_ref_id)) {
+            if ($DIC->rbac()->system()->checkAccess('read', $learn_place_ref_id)) {
                 return true;
             }
-
         }
         return false;
     }

@@ -5,14 +5,11 @@ namespace KPG\Learnplaces\api\App\v1;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
-use ILIAS\HTTP\Response\Sender\ResponseSendingException;
-use KPG\Learnplaces\persistence\entity\VisitJournal;
-use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ilObject;
 use ILIAS\DI\Container;
 use KPG\Learnplaces\persistence\dto\Learnplace;
-use ilObjLearnplaces;
 use KPG\Learnplaces\persistence\dto\Configuration;
+use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 
 class Learnplaces
 {
@@ -37,6 +34,7 @@ class Learnplaces
      * @param array $request_body The body of the request, typically containing additional data.
      *
      * @return void
+     * @throws ResponseSendingException
      */
     public function endpoint(array $params, array $request_body): void
     {
@@ -70,6 +68,7 @@ class Learnplaces
      * @param string $container_type   The type of the container (e.g., course or group).
      *
      * @return void
+     * @throws ResponseSendingException
      */
     private function checkContainer(int $container_ref_id, string $container_type): void
     {
@@ -127,27 +126,29 @@ class Learnplaces
         $all_learnplaces['learn_places'] = [];
 
         foreach ($learnplaces as $learnplace) {
-
             //Check if the container is of type "Course".
             // If it is, each learning location must be checked to see if a group qualifies as a container.
-            if ($container_type == self::TYPE_COURSE and $this->checkPossiblyGroupContainerByLearnPlaceRefId(
-                    $learnplace['ref_id'], $container_ref_id
-                )) {
+            if ($container_type == self::TYPE_COURSE
+                && $this->checkPossiblyGroupContainerByLearnPlaceRefId($learnplace['ref_id'], $container_ref_id)
+            ) {
                 continue;
             }
 
             $obj_learnplace = new \ilObjLearnplaces($learnplace['ref_id']);
-            $obj_learnplace_repository = PluginContainer::resolve(LearnplaceRepository::class)->findByObjectId($obj_learnplace->getId());
+            $obj_learnplace_repository = PluginContainer::resolve(LearnplaceRepository::class)->findByObjectId(
+                $obj_learnplace->getId()
+            );
             $obj_learnplace_configuration = $obj_learnplace_repository->getConfiguration();
 
             // Check if Learnplace in trash or offline or visibility is never
-            if(!$this->checkLearnplace($obj_learnplace_repository, $obj_learnplace_configuration)) {
+            if (!$this->checkLearnplace($obj_learnplace_repository, $obj_learnplace_configuration)) {
                 continue;
             }
 
             // visit status
             $visit_result = $this->dic->database()->query(
-                "SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $obj_learnplace_repository->getID() . " AND user_id = " . $this->dic->user()->getId()
+                "SELECT * FROM xsrl_visit_journal WHERE fk_learnplace_id = " . $obj_learnplace_repository->getID()
+                . " AND user_id = " . $this->dic->user()->getId()
             );
 
             // Learnplace Tags
@@ -157,12 +158,12 @@ class Learnplaces
             $all_learnplaces['learn_places'][] = [
                 "id" => $obj_learnplace_repository->getId(),
                 "obj_id" => $obj_learnplace_repository->getObjectId(),
-                "title" =>   $obj_learnplace->getTitle(),
+                "title" => $obj_learnplace->getTitle(),
                 "description" => nl2br($obj_learnplace->getDescription()),
-                "tile_image" => $obj_learnplace->getObjectProperties()->getPropertyTileImage()->getTileImage(
-                )->getRid(),
+                "tile_image" => $obj_learnplace->getObjectProperties()->getPropertyTileImage()->getTileImage()->getRid(
+                ),
                 "visited" => $visit_result->rowCount() > 0,
-                "tags" =>  explode(",", $string_tags),
+                "tags" => explode(",", $string_tags),
                 "location" => [
                     "latitude" => $obj_learnplace_repository->getLocation()->getLatitude(),
                     "longitude" => $obj_learnplace_repository->getLocation()->getLongitude(),
@@ -184,21 +185,25 @@ class Learnplaces
      *
      * @return bool Returns true if the learnplace is not in the trash, is online, and visible; otherwise, false.
      */
-    private function checkLearnplace(Learnplace $obj_learnplace_repository, Configuration $obj_learnplace_configuration): bool
-    {
-        // todo: check removed. _isInTrash needs ref_id
+    private function checkLearnplace(
+        Learnplace $obj_learnplace_repository,
+        Configuration $obj_learnplace_configuration
+    ): bool {
+        // check removed. _isInTrash needs ref_id
         // Check Learnplace is in trash
-/*        if(ilObject::_isInTrash($obj_learnplace_repository->getObjectId())) {
-            return false;
-        }*/
+        /*        if(ilObject::_isInTrash($obj_learnplace_repository->getObjectId())) {
+                    return false;
+                }*/
 
         // Check Learnplace offline status
-        if(ilObject::lookupOfflineStatus($obj_learnplace_repository->getObjectId())) {
+        if (ilObject::lookupOfflineStatus($obj_learnplace_repository->getObjectId())) {
             return false;
         }
 
         //Check Learnplace is offline or visibility is never
-        if (!$obj_learnplace_configuration->isOnline() or $obj_learnplace_configuration->getDefaultVisibility() === "NEVER") {
+        if (!$obj_learnplace_configuration->isOnline()
+            || $obj_learnplace_configuration->getDefaultVisibility() === "NEVER"
+        ) {
             return false;
         }
         return true;
@@ -217,11 +222,15 @@ class Learnplaces
      */
     private function checkPossiblyGroupContainerByLearnPlaceRefId(int $learnplace_ref_id, int $container_ref_id): bool
     {
-        foreach (array_reverse($this->dic->repositoryTree()->getNodePath($learnplace_ref_id, $container_ref_id)) as $parent) {
-            if($parent['type'] == self::TYPE_COURSE) {
+        foreach (
+            array_reverse(
+                $this->dic->repositoryTree()->getNodePath($learnplace_ref_id, $container_ref_id)
+            ) as $parent
+        ) {
+            if ($parent['type'] == self::TYPE_COURSE) {
                 return false;
             }
-            if($parent['type'] == self::TYPE_GROUP) {
+            if ($parent['type'] == self::TYPE_GROUP) {
                 return true;
             }
         }

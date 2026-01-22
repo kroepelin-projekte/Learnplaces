@@ -24,7 +24,8 @@ class PermissionView implements constConfig
     public function initForm(): Standard
     {
         $form_action = $this->DIC->ctrl()->getLinkTargetByClass(
-            \ilLearnplacesConfigGUI::class, self::CMD_SAVE_PERMISSION_SETTINGS
+            \ilLearnplacesConfigGUI::class,
+            self::CMD_SAVE_PERMISSION_SETTINGS
         );
 
         $roles_input = $this->DIC->ui()->factory()->input()->field()->text(
@@ -33,7 +34,8 @@ class PermissionView implements constConfig
         )->withValue(Settings::getPermissionRoles())->withRequired(true);
 
         $sections = $this->DIC->ui()->factory()->input()->field()->section(
-            ['roles' => $roles_input], $this->plugin->txt(self::LANG_SETTINGS)
+            ['roles' => $roles_input],
+            $this->plugin->txt(self::LANG_SETTINGS)
         );
         return $this->DIC->ui()->factory()->input()->container()->form()->standard($form_action, ['permission' => $sections]);
     }

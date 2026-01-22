@@ -11,7 +11,6 @@ use KPG\Learnplaces\persistence\dto\Learnplace;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 use ilObject;
 use ILIAS\Data\ReferenceId;
-use KPG\Learnplaces\persistence\entity\VisitJournal;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ilUtil;
 
@@ -123,7 +122,6 @@ class LearnplacesInfo
         }
 
         $total_bytes = array_sum($media_size);
-        //$total_bytes = intval($total_bits / 8);  // Bits zu Bytes umrechnen
 
         $block_array['bytes'] = $total_bytes;
 
@@ -180,7 +178,7 @@ class LearnplacesInfo
         ];
         $block_array = [];
         foreach ($learn_place_blocks as $block) {
-            $array = $this->getBlockArray($block, (int) $obj_learn_place->getId());
+            $array = $this->getBlockArray($block, $obj_learn_place->getId());
             if ($array !== false) {
                 $block_array[] = $array;
             }
@@ -195,11 +193,14 @@ class LearnplacesInfo
         return $result;
     }
 
+    /**
+     * @throws ResponseSendingException
+     */
     public function getContainerTitle(int $learnplace_ref_id): string
     {
         global $DIC;
         foreach (array_reverse($DIC->repositoryTree()->getNodePath($learnplace_ref_id)) as $node) {
-            if($node['type'] == 'crs' OR $node['type'] == 'grp') {
+            if ($node['type'] == 'crs' || $node['type'] == 'grp') {
                 return $node['title'];
             }
         }

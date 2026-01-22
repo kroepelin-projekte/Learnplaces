@@ -28,8 +28,6 @@ class Token
 
         (new PKCEHandler($http_handler))->initTokenAuth();
 
-        Response::send(
-            201, null, ['success' => true]
-        );
+        Response::send(201, null, ['success' => true]);
     }
 }

@@ -3,13 +3,13 @@
 namespace KPG\Learnplaces\api\App\v1;
 
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
-use KPG\Learnplaces\container\PluginContainer;
-use KPG\Learnplaces\persistence\repository\LearnplaceRepository;
-use KPG\Learnplaces\persistence\dto\Location;
-use Kpg\Plugins\LearnplacesMap\PageEditor\Tour\TourModel;
+use ILIAS\HTTP\Response\Sender\ResponseSendingException;
 
 class MapsCollection
 {
+    /**
+     * @throws ResponseSendingException
+     */
     public function endpoint(array $params, array $request_body): void
     {
         global $DIC;

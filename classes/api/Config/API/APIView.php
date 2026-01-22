@@ -24,7 +24,8 @@ class APIView implements constConfig
     public function initForm(): UI\Component\Input\Container\Form\Standard
     {
         $form_action = $this->DIC->ctrl()->getLinkTargetByClass(
-            \ilLearnplacesConfigGUI::class, self::CMD_SAVE_API_SETTINGS
+            \ilLearnplacesConfigGUI::class,
+            self::CMD_SAVE_API_SETTINGS
         );
 
         $cookie_input = $this->DIC->ui()->factory()->input()->field()->numeric(
@@ -51,7 +52,8 @@ class APIView implements constConfig
     public function buildRefreshButton(): UI\Component\Button\Button
     {
         $action = $this->DIC->ctrl()->getLinkTargetByClass(
-            \ilLearnplacesConfigGUI::class, self::CMD_REFRESH_SECRET
+            \ilLearnplacesConfigGUI::class,
+            self::CMD_REFRESH_SECRET
         );
         return $this->DIC->ui()->factory()->button()->standard($this->plugin->txt(self::LANG_SECRET_BUTTON), $action);
     }

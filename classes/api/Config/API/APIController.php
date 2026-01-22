@@ -43,7 +43,8 @@ class APIController implements constConfig
     {
         $panel = $this->DIC->ui()->factory()->panel()->standard('', $this->view->initForm());
         $panel_secret = $this->DIC->ui()->factory()->panel()->standard(
-            $this->plugin->txt(self::LANG_SETTINGS), [$this->view->buildSecretInformation(), $this->view->buildRefreshButton()]
+            $this->plugin->txt(self::LANG_SETTINGS),
+            [$this->view->buildSecretInformation(), $this->view->buildRefreshButton()]
         );
         $this->DIC->ui()->mainTemplate()->setContent($this->DIC->ui()->renderer()->render([$panel, $panel_secret]));
     }

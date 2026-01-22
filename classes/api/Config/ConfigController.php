@@ -53,7 +53,8 @@ class ConfigController implements constConfig
     private function initTabs(): void
     {
         $this->DIC->tabs()->addTab(
-            self::TAB_ID_API_SETTINGS, $this->plugin->txt(self::LANG_TAB_API_SETTINGS),
+            self::TAB_ID_API_SETTINGS,
+            $this->plugin->txt(self::LANG_TAB_API_SETTINGS),
             $this->DIC->ctrl()->getLinkTargetByClass(ilLearnplacesConfigGUI::class, self::CMD_SHOW_API_SETTINGS)
         );
     }
@@ -64,11 +65,13 @@ class ConfigController implements constConfig
     private function initSubTabs(): void
     {
         $this->DIC->tabs()->addSubTab(
-            self::TAB_SUB_ID_API_SETTINGS, $this->plugin->txt(self::LANG_TAB_SUB_API_SETTINGS),
+            self::TAB_SUB_ID_API_SETTINGS,
+            $this->plugin->txt(self::LANG_TAB_SUB_API_SETTINGS),
             $this->DIC->ctrl()->getLinkTargetByClass(ilLearnplacesConfigGUI::class, self::CMD_SHOW_API_SETTINGS)
         );
         $this->DIC->tabs()->addSubTab(
-            self::TAB_SUB_ID_PERMISSION_SETTINGS, $this->plugin->txt(self::LANG_TAB_SUB_PERMISSION_SETTINGS),
+            self::TAB_SUB_ID_PERMISSION_SETTINGS,
+            $this->plugin->txt(self::LANG_TAB_SUB_PERMISSION_SETTINGS),
             $this->DIC->ctrl()->getLinkTargetByClass(ilLearnplacesConfigGUI::class, self::CMD_SHOW_PERMISSION_SETTINGS)
         );
     }
@@ -82,5 +85,4 @@ class ConfigController implements constConfig
     {
         $this->DIC->tabs()->activateSubTab($id);
     }
-
 }
