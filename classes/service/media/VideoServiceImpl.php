@@ -6,18 +6,13 @@ namespace KPG\Learnplaces\service\media;
 
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ilLearnplacesStakeholder;
-use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 use KPG\Learnplaces\container\PluginContainer;
-use KPG\Learnplaces\service\filesystem\PathHelper;
 use KPG\Learnplaces\service\media\exception\FileUploadException;
 use KPG\Learnplaces\service\media\wrapper\FileTypeDetector;
 use KPG\Learnplaces\service\publicapi\model\VideoModel;
-use wapmorgan\FileTypeDetector\Detector;
-
-use function array_pop;
+use ILIAS\FileUpload\MimeType;
 
 /**
  * Class VideoServiceImpl
@@ -34,7 +29,7 @@ final class VideoServiceImpl implements VideoService
      * @var string[] $allowedVideoTypes
      */
     private static $allowedVideoTypes = [
-        Detector::MP4
+        MimeType::VIDEO__MP4
     ];
 
     /**

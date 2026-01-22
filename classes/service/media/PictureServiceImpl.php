@@ -6,22 +6,14 @@ namespace KPG\Learnplaces\service\media;
 
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 use ilLearnplacesStakeholder;
-use Intervention\Image\ImageManager;
 use InvalidArgumentException;
-use LogicException;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UploadedFileInterface;
-use RuntimeException;
 use KPG\Learnplaces\container\PluginContainer;
 use KPG\Learnplaces\persistence\repository\exception\EntityNotFoundException;
 use KPG\Learnplaces\persistence\repository\PictureRepository;
-use KPG\Learnplaces\service\filesystem\PathHelper;
-use KPG\Learnplaces\service\media\exception\FileUploadException;
 use KPG\Learnplaces\service\media\wrapper\FileTypeDetector;
 use KPG\Learnplaces\service\publicapi\model\PictureModel;
-use wapmorgan\FileTypeDetector\Detector;
-
-use function array_pop;
+use ILIAS\FileUpload\MimeType;
 
 /**
  * Class PictureServiceImpl
@@ -38,8 +30,8 @@ final class PictureServiceImpl implements PictureService
      * @var string[] $allowedPictureTypes
      */
     private static $allowedPictureTypes = [
-        Detector::JPEG,
-        Detector::PNG
+        MimeType::IMAGE__JPEG,
+        MimeType::IMAGE__PNG
     ];
 
     /**
@@ -75,6 +67,7 @@ final class PictureServiceImpl implements PictureService
     /**
      * @inheritDoc
      * @return void
+     * @throws \ilDatabaseException
      */
     public function delete(int $pictureId): void
     {

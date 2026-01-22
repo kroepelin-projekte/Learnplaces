@@ -5,7 +5,6 @@ namespace KPG\Learnplaces\api\Core;
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
 use Repository\RepositoryObject\Learnplaces\classes\api\Authenticator\Authenticator;
 use ILIAS\HTTP\Response\Sender\ResponseSendingException;
-use Repository\RepositoryObject\Learnplaces\classes\api\Config\Settings;
 
 class Request
 {
@@ -14,7 +13,7 @@ class Request
 
     public function __construct()
     {
-        require_once('Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/routes.php');
+        require_once('public/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/routes.php');
     }
 
     private function add(
@@ -43,17 +42,16 @@ class Request
         $uri_without_query = explode('?', $full_uri)[0];
 
         if (strpos($uri_without_query, '/api/') !== false) {
-            $requestedUri = urldecode(substr($uri_without_query, strpos($uri_without_query, '/api/') + strlen('/api/')));
+            $requestedUri = urldecode(
+                substr($uri_without_query, strpos($uri_without_query, '/api/') + strlen('/api/'))
+            );
         } else {
             Response::send(404, DEVMODE ? 'URL_WRONG_FORMAT_API_NOT_FOUND' : '', ['success' => false]);
         }
         foreach ($this->routes as $route) {
-            if (preg_match(
-                    $route['pattern'], $requestedUri, $matches
-                ) && $route['http_method'] == $_SERVER['REQUEST_METHOD']) {
-
-                if($route['auth_mode']) {
-                    if(!(new Authenticator())->auth()) {
+            if (preg_match($route['pattern'], $requestedUri, $matches) && $route['http_method'] == $_SERVER['REQUEST_METHOD']) {
+                if ($route['auth_mode']) {
+                    if (!(new Authenticator())->auth()) {
                         Response::send(401, DEVMODE ? 'access denied' : '', ['success' => false]);
                     }
                 }
@@ -74,7 +72,7 @@ class Request
     private function callHandler(string $handler, string $namespace, array $params): void
     {
         list($controller, $action) = explode('@', $handler);
-        $controllerName =  $namespace . "\\" . $controller;
+        $controllerName = $namespace . "\\" . $controller;
         $obj_Controller = new $controllerName();
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -86,12 +84,12 @@ class Request
             $requestBody = json_decode($rawBody, true);
             if (json_last_error() != JSON_ERROR_NONE) {
                 Response::send(
-                    400, 'JSON_STRING_BROKEN',
+                    400,
+                    'JSON_STRING_BROKEN',
                     ['rawInput' => $rawBody, 'error' => json_last_error_msg()]
                 );
             }
         }
         $obj_Controller->$action($params, (array) $requestBody);
     }
-
 }

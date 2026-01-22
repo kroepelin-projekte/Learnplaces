@@ -138,7 +138,7 @@ final class ilObjLearnplacesGUI extends ilObject2GUI
                     $this->streamVideo();
                     break;
                 }
-                break;
+                // no break
             case strtolower(ilObjLearnplacesGUI::class):
                 parent::executeCommand();
                 break;
