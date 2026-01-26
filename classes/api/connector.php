@@ -1,5 +1,9 @@
 <?php
 
+if (PHP_SAPI === 'cli') {
+    return;
+}
+
 chdir("../../../../../../../../../../");
 
 use RepositoryObject\Learnplaces\classes\api\Core\Response;
@@ -33,6 +37,6 @@ try {
     $request->route();
 
 } catch (Exception $e) {
-    echo $e->getMessage();
+    // echo $e->getMessage();
     Response::serverError();
 }
