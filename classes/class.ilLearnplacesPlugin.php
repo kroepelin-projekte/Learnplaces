@@ -30,6 +30,7 @@ use KPG\Learnplaces\persistence\entity\VisitJournal;
 use ILIAS\ResourceStorage\Identification\ResourceIdentification;
 
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
  * Class ilLearnplacesPlugin
