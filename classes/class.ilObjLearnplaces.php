@@ -324,7 +324,7 @@ final class ilObjLearnplaces extends ilObjectPlugin implements ilLPStatusPluginI
             " AND usr_id = " . $ilDB->quote($a_user_id, "integer")
         );
         $row = $ilDB->fetchAssoc($set);
-        $status = $row["status"];
+        $status = $row["status"] ?? null;
         if (!$status) {
             $status = ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM;
         }
