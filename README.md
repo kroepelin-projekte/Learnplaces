@@ -36,7 +36,77 @@ mkdir -p Customizing/global/plugins/Services/Repository/RepositoryObject
 cd Customizing/global/plugins/Services/Repository/RepositoryObject
 ```
 
-**Nginx Config**
+## Apache Config
+In ILIAS 10, the `public/.htaccess` file is generated automatically and may be overwritten during updates or maintenance tasks.  
+Therefore, we recommend configuring custom rewrite rules on the server level (Apache vhost / directory configuration) instead of editing `.htaccess`.
+
+ILIAS should always be served from the `public/` directory. Depending on the setup, this is typically done in one of the following ways.
+
+### Variant A: `public/` as DocumentRoot (recommended)
+```apacheconf
+<IfModule mod_ssl.c>
+  <VirtualHost *:443>
+    ServerName example.tld
+    DocumentRoot /var/www/html/ilias/public
+    
+    <Directory /var/www/html/ilias/public>
+      Require all granted
+      AllowOverride All
+      Options -Indexes +FollowSymLinks +MultiViews
+    
+      <FilesMatch \.php$>
+        SetHandler "proxy:unix:/run/php/php8.2-fpm.sock|fcgi://localhost"
+      </FilesMatch>
+    </Directory>
+    
+    RewriteEngine On
+    
+    # Preserve the Authorization header (required for some PHP/FastCGI setups)
+    RewriteCond %{HTTP:Authorization} ^(.+)
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+    
+    # Learnplaces API endpoint (root install)
+    RewriteRule ^/?api/learnplaceapp(/.*)?$ /Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php [END,PT]
+    
+    # ...
+  </VirtualHost>
+</IfModule>
+```
+
+### Variant B: ILIAS under a path using `Alias` (e.g. `/ilias`)
+```apacheconf
+<IfModule mod_ssl.c>
+  <VirtualHost *:443>
+    ServerName example.tld
+    DocumentRoot /var/www/html/ilias/public
+    
+    Alias /ilias /var/www/html/ilias/public
+    
+    <Directory /var/www/html/ilias/public>
+      Require all granted
+      AllowOverride All
+      Options -Indexes +FollowSymLinks +MultiViews
+    
+      <FilesMatch \.php$>
+        SetHandler "proxy:unix:/run/php/php8.2-fpm.sock|fcgi://localhost"
+      </FilesMatch>
+    </Directory>
+    
+    RewriteEngine On
+    
+    # Preserve the Authorization header (required for some PHP/FastCGI setups)
+    RewriteCond %{HTTP:Authorization} ^(.+)
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+    
+    # Learnplaces API endpoint (alias install)
+    RewriteRule ^/?ilias/api/learnplaceapp(/.*)?$ /ilias/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php [END,PT]
+       
+    # ...
+  </VirtualHost>
+</IfModule>
+```
+
+## Nginx Config
 ```nginx
 # Learnplaces
 location ~ ^/api/learnplaceapp/(.*)$ {
@@ -44,66 +114,6 @@ location ~ ^/api/learnplaceapp/(.*)$ {
 }
 ```
 
-**Apache Config**
-```apacheconf
-<IfModule mod_rewrite.c>
-        RewriteEngine on
-
-        RewriteCond %{HTTP:Authorization} ^(.*)
-        RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
-
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteCond %{REQUEST_FILENAME} !-d
-        RewriteCond %{REQUEST_FILENAME} !-l
-        RewriteRule ^/?api/(.*) /Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php [L]
-
-        RewriteRule ^go\/(.*)$ goto.php/$1 [L]
-        RewriteCond %{QUERY_STRING}  ^lang=([^=]*)$
-        RewriteRule ^goto_(.*)_(wiki_([0-9]+|wpage)(.*)).html$ goto.php?client_id=$1&target=$2&lang=%1 [L]
-        RewriteRule ^goto_(.*)_(wiki_([0-9]+|wpage)(.*)).html$ goto.php?client_id=$1&target=$2 [L]
-        RewriteRule ^([^\/]*)_user_(.*)$ goto.php?client_id=$1&target=usr_n$2 [L]
-        RewriteRule ^goto_(.*)_(usr_([a-z]+)).html$ goto.php?client_id=$1&target=$2 [L]
-        RewriteCond %{QUERY_STRING}  ^lang=([^=]*)$
-        RewriteRule ^goto_(.*)_([a-z]+_[0-9]+(.*)).html$ goto.php?client_id=$1&target=$2&lang=%1 [L]
-        RewriteRule ^goto_(.*)_([a-z]+_[0-9]+(.*)).html$ goto.php?client_id=$1&target=$2 [L]
-        RewriteRule ^data/.*/.*/.*$ ./Services/WebAccessChecker/wac.php [L]
-        RewriteCond %{HTTP_USER_AGENT} ^(DavClnt)$
-        RewriteCond %{REQUEST_METHOD} ^(OPTIONS)$
-        RewriteRule .* "-" [R=401,L]
-</IfModule>
-<IfModule mod_alias.c>
-        RedirectMatch 404 /\.git
-        RedirectMatch 404 /patches
-        RedirectMatch 404 /\.github
-</IfModule>
-<IfModule mod_xsendfile.c>
-        XSendFile On
-</IfModule>
-
-AddType video/ogg .ogv
-AddType video/mp4 .mp4
-AddType video/webm .webm
-AddType audio/mp3 .mp3
-```
-
-```apacheconf
-<Directory /var/www/html>
-  AllowOverride All
-  Require all granted
-</Directory>
-
-SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
-RewriteCond %{HTTP:Authorization} ^(.*)
-RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
-
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule "^/?api/*" "/Customizing/global/plugins/Services/Repository/RepositoryObject/Learnplaces/classes/api/connector.php" [L]
-
-
-```
 
 **Clone Project**
 ```bash
